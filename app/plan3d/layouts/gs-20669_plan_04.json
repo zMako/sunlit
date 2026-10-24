@@ -1,0 +1,202 @@
+{
+ "unit": "gs-20669_plan_04",
+ "listing": "gs-20669",
+ "plan_image": "/Users/maciejkopiec/sunlit/feasibility/listings/gs-20669/plans/plan_04.jpg",
+ "scale": {
+  "m_per_px": 0.09529,
+  "from": [
+   "area:prior 0 bedroom(s)",
+   "door_width"
+  ],
+  "sqft_listed": null,
+  "agreement": null,
+  "door_ref_px": 31.5,
+  "origin_px": [
+   167.0,
+   11.0
+  ],
+  "image_scale": 1.0,
+  "rescale_k": 3.491
+ },
+ "ceiling_m": 2.6,
+ "walls": [
+  {
+   "id": "w0",
+   "a": [
+    0.0,
+    0.286
+   ],
+   "b": [
+    11.149,
+    0.286
+   ],
+   "thickness_m": 0.572,
+   "exterior": true
+  },
+  {
+   "id": "w1",
+   "a": [
+    0.478,
+    3.239
+   ],
+   "b": [
+    10.482,
+    3.239
+   ],
+   "thickness_m": 0.38,
+   "exterior": false
+  },
+  {
+   "id": "w2",
+   "a": [
+    4.192,
+    7.243
+   ],
+   "b": [
+    11.149,
+    7.243
+   ],
+   "thickness_m": 0.38,
+   "exterior": false
+  },
+  {
+   "id": "w3",
+   "a": [
+    3.288,
+    0.094
+   ],
+   "b": [
+    3.288,
+    3.526
+   ],
+   "thickness_m": 1.047,
+   "exterior": false
+  },
+  {
+   "id": "w4",
+   "a": [
+    4.049,
+    3.431
+   ],
+   "b": [
+    4.049,
+    9.341
+   ],
+   "thickness_m": 0.342,
+   "exterior": false
+  },
+  {
+   "id": "w5",
+   "a": [
+    10.769,
+    0.094
+   ],
+   "b": [
+    10.769,
+    26.015
+   ],
+   "thickness_m": 0.572,
+   "exterior": true
+  }
+ ],
+ "openings": [
+  {
+   "id": "o0",
+   "wall": "w1",
+   "type": "door",
+   "s0": 3.431,
+   "s1": 10.008,
+   "width_m": 6.576,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "swing": "in_left"
+  },
+  {
+   "id": "o1",
+   "wall": "w2",
+   "type": "door",
+   "s0": 0.0,
+   "s1": 3.145,
+   "width_m": 3.145,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "swing": "in_left"
+  },
+  {
+   "id": "o2",
+   "wall": "w4",
+   "type": "door",
+   "s0": 0.0,
+   "s1": 2.859,
+   "width_m": 2.859,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "swing": "out_right"
+  }
+ ],
+ "rooms": [
+  {
+   "id": "r0",
+   "name": "Room 1",
+   "type": "other",
+   "polygon": [
+    [
+     3.906,
+     0.667
+    ],
+    [
+     10.388,
+     0.667
+    ],
+    [
+     10.388,
+     2.859
+    ],
+    [
+     3.906,
+     2.859
+    ]
+   ],
+   "area_m2": 14.99,
+   "walls": [],
+   "centre_px": [
+    242.0,
+    29.5
+   ]
+  },
+  {
+   "id": "r1",
+   "name": "Room 2",
+   "type": "other",
+   "polygon": [
+    [
+     4.384,
+     3.62
+    ],
+    [
+     10.388,
+     3.62
+    ],
+    [
+     10.388,
+     6.863
+    ],
+    [
+     4.384,
+     6.863
+    ]
+   ],
+   "area_m2": 20.71,
+   "walls": [],
+   "centre_px": [
+    244.5,
+    66.0
+   ]
+  }
+ ],
+ "fixtures": [],
+ "materials": {},
+ "review": {
+  "rounds": 0
+ }
+}

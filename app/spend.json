@@ -1,70 +1,22 @@
 {
  "usd": {
   "google": 0.403,
-  "anthropic": 8.894734
+  "anthropic": 8.996296
  },
  "counts": {
-  "anthropic_calls": 737,
+  "anthropic_calls": 743,
   "google_geocode": 77,
   "google_root_tile": 3,
   "google_tile": 65,
   "poly_pizza": 7
  },
  "tokens": {
-  "in": 3356387,
-  "out": 1428331,
+  "in": 3411127,
+  "out": 1438380,
   "cache_read": 0,
   "cache_write": 65756
  },
  "events": [
-  {
-   "t": "2026-10-24T09:34:02",
-   "bucket": "anthropic",
-   "usd": 0.001612,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-8741-8743-shoreham-15"
-  },
-  {
-   "t": "2026-10-24T09:34:43",
-   "bucket": "anthropic",
-   "usd": 0.00136,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-969-bush-1"
-  },
-  {
-   "t": "2026-10-24T09:34:57",
-   "bucket": "anthropic",
-   "usd": 0.001707,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-990-geary-306"
-  },
-  {
-   "t": "2026-10-24T09:35:17",
-   "bucket": "anthropic",
-   "usd": 0.002241,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-990-geary-402"
-  },
-  {
-   "t": "2026-10-24T09:35:36",
-   "bucket": "anthropic",
-   "usd": 0.002269,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-990-geary-509"
-  },
-  {
-   "t": "2026-10-24T09:42:06",
-   "bucket": "anthropic",
-   "usd": 0.000851,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 furnish living"
-  },
   {
    "t": "2026-10-24T09:54:34",
    "bucket": "anthropic",
@@ -4016,6 +3968,54 @@
    "key": "google_geocode",
    "n": 1,
    "note": "map index geocode 990 Geary, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:46:30",
+   "bucket": "anthropic",
+   "usd": 0.028706,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_01.jpg"
+  },
+  {
+   "t": "2026-10-24T13:46:44",
+   "bucket": "anthropic",
+   "usd": 0.038404,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_01.jpg"
+  },
+  {
+   "t": "2026-10-24T13:46:55",
+   "bucket": "anthropic",
+   "usd": 0.028746,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_01.jpg"
+  },
+  {
+   "t": "2026-10-24T13:49:08",
+   "bucket": "anthropic",
+   "usd": 0.002331,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 furnish living"
+  },
+  {
+   "t": "2026-10-24T13:49:17",
+   "bucket": "anthropic",
+   "usd": 0.001612,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 furnish bedroom"
+  },
+  {
+   "t": "2026-10-24T13:49:24",
+   "bucket": "anthropic",
+   "usd": 0.001764,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 furnish bedroom"
   }
  ]
 }

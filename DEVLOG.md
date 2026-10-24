@@ -272,3 +272,15 @@ Segmentation + harness -> segmentation-driven layout -> panorama completion -> l
 - Screenshot sweep (quality=low) over 288 units: 0 black frames, 9 headless screenshot timeouts (two units), no page errors.
 - Anthropic spend $8.89 of $10 after annotating 68 units (reader + repair + annotation ~5 cents each); batch paused.
   Plan-engine leftovers are being fixed by an Opus worker against the saved sweep baseline and golden layouts.
+
+## Oct 24 19:40: engine v2 applied; three "win" workstreams started (owner's brief, Opus agents)
+- Engine v2 (Opus worker): leak repair (exterior gaps always closed, weak-arc interior doors when they enclose a room),
+  single-line thin walls, region sanity (min 0.6 m2, merge across non-wall lines, cap 16 rooms), polygon validity and
+  overlap trimming, wide openings kept as "opening". Sweep: rooms>=2 338->360, bath-sized rooms 250->295, >16-room
+  plans 9->0, invalid polygons 21->0. Library rebuilt geometry-only for non-annotated units: 359 walkable units now
+  (was 289). 93 annotated units kept their names/fixtures; 777 Tenn demo unit annotated and pre-furnished. Goldens
+  regenerated. Spend $8.99 / $10.
+- Started (Opus): (1) library to ~500 plan-backed units via AvalonBay (plans with true sqft) + on-demand Claude
+  annotation button under the ledger; (2) honest side-by-side: listing photo | our render from the photo's camera |
+  low-strength img2img polish with our depth as control; (3) metrics: breadth, plan-to-3D seconds, scale accuracy vs
+  printed dims/sqft, CubiCasa5K sample if obtainable -> metrics/summary.json shown on the landing page.

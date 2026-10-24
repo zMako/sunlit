@@ -1,0 +1,352 @@
+{
+ "unit": "gs-20671_plan_02",
+ "listing": "gs-20671",
+ "plan_image": "/Users/maciejkopiec/sunlit/feasibility/listings/gs-20671/plans/plan_02.jpg",
+ "scale": {
+  "m_per_px": 0.05078,
+  "from": [
+   "area:prior 0 bedroom(s)",
+   "door_width"
+  ],
+  "sqft_listed": null,
+  "agreement": null,
+  "door_ref_px": 31.5,
+  "origin_px": [
+   11.0,
+   258.0
+  ],
+  "image_scale": 1.0,
+  "rescale_k": 1.86
+ },
+ "ceiling_m": 2.6,
+ "walls": [
+  {
+   "id": "w0",
+   "a": [
+    16.198,
+    2.184
+   ],
+   "b": [
+    21.023,
+    2.184
+   ],
+   "thickness_m": 0.305,
+   "exterior": true
+  },
+  {
+   "id": "w1",
+   "a": [
+    0.05,
+    3.757
+   ],
+   "b": [
+    9.75,
+    3.757
+   ],
+   "thickness_m": 0.305,
+   "exterior": true
+  },
+  {
+   "id": "w2",
+   "a": [
+    19.957,
+    5.788
+   ],
+   "b": [
+    21.023,
+    5.788
+   ],
+   "thickness_m": 0.305,
+   "exterior": true
+  },
+  {
+   "id": "w3",
+   "a": [
+    0.05,
+    7.211
+   ],
+   "b": [
+    9.647,
+    7.211
+   ],
+   "thickness_m": 0.305,
+   "exterior": true
+  },
+  {
+   "id": "w4",
+   "a": [
+    9.647,
+    7.211
+   ],
+   "b": [
+    20.26,
+    7.211
+   ],
+   "thickness_m": 0.305,
+   "exterior": true
+  },
+  {
+   "id": "w5",
+   "a": [
+    0.153,
+    3.657
+   ],
+   "b": [
+    0.153,
+    7.414
+   ],
+   "thickness_m": 0.305,
+   "exterior": true
+  },
+  {
+   "id": "w6",
+   "a": [
+    6.195,
+    2.794
+   ],
+   "b": [
+    6.195,
+    7.058
+   ],
+   "thickness_m": 0.305,
+   "exterior": false
+  },
+  {
+   "id": "w7",
+   "a": [
+    7.337,
+    5.535
+   ],
+   "b": [
+    7.337,
+    7.414
+   ],
+   "thickness_m": 0.255,
+   "exterior": false
+  },
+  {
+   "id": "w8",
+   "a": [
+    7.363,
+    3.657
+   ],
+   "b": [
+    7.363,
+    5.535
+   ],
+   "thickness_m": 0.305,
+   "exterior": false
+  },
+  {
+   "id": "w9",
+   "a": [
+    9.902,
+    0.0
+   ],
+   "b": [
+    9.902,
+    7.414
+   ],
+   "thickness_m": 0.305,
+   "exterior": true
+  },
+  {
+   "id": "w10",
+   "a": [
+    17.824,
+    2.336
+   ],
+   "b": [
+    17.824,
+    7.414
+   ],
+   "thickness_m": 0.305,
+   "exterior": true
+  },
+  {
+   "id": "w11",
+   "a": [
+    20.057,
+    5.688
+   ],
+   "b": [
+    20.057,
+    7.414
+   ],
+   "thickness_m": 0.305,
+   "exterior": true
+  },
+  {
+   "id": "w12",
+   "a": [
+    20.82,
+    2.081
+   ],
+   "b": [
+    20.82,
+    5.993
+   ],
+   "thickness_m": 0.305,
+   "exterior": true
+  }
+ ],
+ "openings": [
+  {
+   "id": "o0",
+   "wall": "w1",
+   "type": "door",
+   "s0": 7.769,
+   "s1": 9.699,
+   "width_m": 1.929,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "swing": "in_right"
+  },
+  {
+   "id": "o1",
+   "wall": "w3",
+   "type": "door",
+   "s0": 7.668,
+   "s1": 9.597,
+   "width_m": 1.929,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "swing": "out_left"
+  },
+  {
+   "id": "o2",
+   "wall": "w6",
+   "type": "door",
+   "s0": 1.168,
+   "s1": 4.265,
+   "width_m": 3.097,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "swing": "out_left"
+  },
+  {
+   "id": "o3",
+   "wall": "w7",
+   "type": "door",
+   "s0": 0.0,
+   "s1": 1.27,
+   "width_m": 1.27,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "swing": "in_right"
+  },
+  {
+   "id": "o4",
+   "wall": "w10",
+   "type": "door",
+   "s0": 0.0,
+   "s1": 1.27,
+   "width_m": 1.27,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "swing": "in_right"
+  }
+ ],
+ "rooms": [
+  {
+   "id": "r0",
+   "name": "Room 1",
+   "type": "other",
+   "polygon": [
+    [
+     18.026,
+     2.386
+    ],
+    [
+     20.615,
+     2.386
+    ],
+    [
+     20.615,
+     5.688
+    ],
+    [
+     19.855,
+     5.688
+    ],
+    [
+     19.855,
+     7.008
+    ],
+    [
+     18.026,
+     7.008
+    ]
+   ],
+   "area_m2": 11.24,
+   "walls": [],
+   "centre_px": [
+    395.0,
+    357.0
+   ]
+  },
+  {
+   "id": "r1",
+   "name": "Room 2",
+   "type": "other",
+   "polygon": [
+    [
+     0.355,
+     3.962
+    ],
+    [
+     5.993,
+     3.962
+    ],
+    [
+     5.993,
+     7.008
+    ],
+    [
+     0.355,
+     7.008
+    ]
+   ],
+   "area_m2": 17.61,
+   "walls": [],
+   "centre_px": [
+    73.5,
+    366.0
+   ]
+  },
+  {
+   "id": "r2",
+   "name": "Room 3",
+   "type": "other",
+   "polygon": [
+    [
+     7.566,
+     3.962
+    ],
+    [
+     9.699,
+     3.962
+    ],
+    [
+     9.699,
+     7.008
+    ],
+    [
+     7.566,
+     7.008
+    ]
+   ],
+   "area_m2": 6.85,
+   "walls": [],
+   "centre_px": [
+    181.0,
+    366.0
+   ]
+  }
+ ],
+ "fixtures": [],
+ "materials": {},
+ "review": {
+  "rounds": 0
+ }
+}
