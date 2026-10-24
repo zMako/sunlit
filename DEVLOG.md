@@ -260,3 +260,15 @@ Segmentation + harness -> segmentation-driven layout -> panorama completion -> l
   page has no sqft at all. `feasibility/sightmap_sqft.py` kept for buildings that do embed it.
 - Walk physics (`app/plan3d/walk.js`, WALK.md): collisions with walls/furniture/fixtures, doors closed until opened with E
   (hinge animation, block while closed), crosshair, room HUD, bump feedback. Render pass: see app/plan3d/review/REPORT.md.
+
+## Oct 24 18:20: map front door, screenshot sweep, spend
+- `app/map/` (Opus worker): Leaflet with OSM tiles proxied and cached at /tiles (325 tiles pre-warmed for SF z12-15),
+  104 listings with photo strips, plans, beds/baths, price (RentSFNow) or "pricing on request" (Greystar), filters,
+  hover-synced pins/cards, detail drawer (gallery, plans, description, 3D units with Open 3D / Walk / Furnish / Checkout),
+  compare tray for 3 units. RentSFNow geocoded via Google ($0.37, cached in geo.json). Data defects found: 27 RentSFNow
+  units are Oakland/LA (scraper hard-coded "San Francisco"; fixed for future runs, map hides them), the neighbourhood
+  field was a site-wide default, Greystar bodies are contact-form boilerplate, 276 of 289 units are on the bedroom
+  prior for size and are labelled "typical size".
+- Screenshot sweep (quality=low) over 288 units: 0 black frames, 9 headless screenshot timeouts (two units), no page errors.
+- Anthropic spend $8.89 of $10 after annotating 68 units (reader + repair + annotation ~5 cents each); batch paused.
+  Plan-engine leftovers are being fixed by an Opus worker against the saved sweep baseline and golden layouts.

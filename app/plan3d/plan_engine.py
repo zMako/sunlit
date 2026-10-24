@@ -220,6 +220,47 @@ def bridge(pieces, shape, thick, ink=None, max_gap_frac=0.3):
         if not any(u["o"] == o["o"] and abs(u["c"] - o["c"]) <= thick and abs(u["a"] - o["a"]) <= thick and abs(u["b"] - o["b"]) <= thick for u in uniq): uniq.append(o)
     return img, uniq
 
+def thin_walls(closed, thin, thick, pieces):
+    """Walls drawn as single thin lines (closet backs, partition lines) and walls that are entirely glazing (2-3 parallel thin
+    lines, curtain walls): long straight thin strokes whose BOTH ends land on a wall. Single lines become thin wall pieces;
+    parallel bundles become a wall piece carrying one window over its length. Returns (closed, new pieces, new openings)."""
+    H, W = closed.shape; Lt = int(max(3 * thick, 0.04 * min(H, W))); newp = []; newo = []
+    near_wall = cv2.dilate(closed, cv2.getStructuringElement(cv2.MORPH_RECT, (int(thick) + 5, int(thick) + 5)))
+    for o, ker in (("h", (Lt, 1)), ("v", (1, Lt))):
+        m = cv2.morphologyEx(thin, cv2.MORPH_OPEN, cv2.getStructuringElement(cv2.MORPH_RECT, ker))
+        n, lab, st, _ = cv2.connectedComponentsWithStats(m, 8); segs = []
+        for i in range(1, n):
+            x, y, w, h, a = st[i]; across = h if o == "h" else w
+            if across > max(4, 0.6 * thick): continue   # thick: a filled fixture edge, not a line
+            c = y + h / 2 if o == "h" else x + w / 2; s0, s1 = (x, x + w) if o == "h" else (y, y + h)
+            segs.append([c, s0, s1, across])
+        # bundle parallel lines that overlap along the axis and sit within a wall band of each other (window glazing)
+        segs.sort(); used = [False] * len(segs)
+        for k, sg in enumerate(segs):
+            if used[k]: continue
+            grp = [sg]; used[k] = True
+            for k2 in range(k + 1, len(segs)):
+                q = segs[k2]
+                if used[k2] or q[0] - grp[-1][0] > 1.6 * thick: continue
+                if min(q[2], sg[2]) - max(q[1], sg[1]) >= 0.7 * min(q[2] - q[1], sg[2] - sg[1]): grp.append(q); used[k2] = True
+            c0, c1 = min(g_[0] for g_ in grp), max(g_[0] for g_ in grp); s0, s1 = min(g_[1] for g_ in grp), max(g_[2] for g_ in grp); c = (c0 + c1) / 2
+            # both ends must land on a wall (within a wall thickness past the end)
+            def hits(pos):
+                r = int(thick) + 3
+                if o == "h": sub = near_wall[max(0, int(c0) - 1):int(c1) + 2, max(0, int(pos) - r):min(W, int(pos) + r)]
+                else: sub = near_wall[max(0, int(pos) - r):min(H, int(pos) + r), max(0, int(c0) - 1):int(c1) + 2]
+                return sub.size > 0 and sub.any()
+            if not (hits(s0) and hits(s1)): continue
+            if o == "h": band = closed[max(0, int(c0) - 1):int(c1) + 2, int(s0):int(s1)]
+            else: band = closed[int(s0):int(s1), max(0, int(c0) - 1):int(c1) + 2]
+            if band.size and band.mean() > 0.5: continue   # already a wall
+            glazing = len(grp) >= 2; t = max(2, int(round(c1 - c0 + 2))) if glazing else max(2, int(round(0.5 * thick)))
+            pc = {"o": o, "c": float(c), "s0": int(s0), "s1": int(s1), "t": t, "block": False, "thin": not glazing, "glazing": glazing}
+            x0, y0, x1, y1 = ext_of(pc); cv2.rectangle(closed, (int(x0), int(y0)), (int(math.ceil(x1)), int(math.ceil(y1))), 1, -1)
+            newp.append(pc)
+            if glazing: newo.append({"piece": len(pieces) + len(newp) - 1, "o": o, "c": float(c), "a": float(s0), "b": float(s1), "t": t, "meets": len(pieces) + len(newp) - 1, "kind": "window", "score": 0.9, "glazing": True})
+    return closed, newp, newo
+
 def outside_of(closed):
     """Free pixels connected (4-conn) to the image border."""
     free = (closed == 0).astype(np.uint8); n, lab = cv2.connectedComponents(free, connectivity=4)
@@ -390,6 +431,9 @@ def extract(path, extra=None):
             if o == "h": cv2.rectangle(closed, (int(a), int(c - thick / 2)), (int(b), int(c + thick / 2)), 1, -1)
             else: cv2.rectangle(closed, (int(c - thick / 2), int(a)), (int(c + thick / 2), int(b)), 1, -1)
             if i >= 0: openings.append({"piece": i, "o": o, "c": c, "a": float(a), "b": float(b), "t": pieces[i]["t"], "meets": i, "kind": e["type"], "score": 1.0, "from_review": True})
+    for b in blocks: cv2.rectangle(closed, (b["x0"], b["y0"]), (b["x1"] - 1, b["y1"] - 1), 1, -1)   # columns, fireplaces: solid, rooms end at them
+    thin = cv2.subtract(loose, cv2.dilate(closed, cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))))
+    closed, tp, to = thin_walls(closed, thin, thick, pieces); pieces = pieces + tp; openings = openings + to
     thin = cv2.subtract(loose, cv2.dilate(closed, cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))))
     closed, openings = repair_leaks(closed, pieces, openings, thin, thick, door_ref)
     lab, rooms = rooms_from(closed, thick)

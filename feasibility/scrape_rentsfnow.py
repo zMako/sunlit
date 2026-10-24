@@ -56,8 +56,10 @@ def scrape(url):
         if m and price is None: price = int(m.group(1).replace(",", ""))
         if sqft is not None and headline is None and i > 2 and 15 < len(l) < 140 and not l.startswith("$") and "sqft" not in l.lower() and "Bath" not in l: headline = l
     desc = next((l for l in lines if len(l) > 200 and "cookie" not in l.lower() and "{" not in l), "")
-    neighborhood = lines[47] if len(lines) > 47 and len(lines[47]) < 40 else None
-    address = f"{addr_slug.replace('-', ' ').title()} #{unit}, San Francisco, CA"
+    # city: RentSFNow also lists Oakland and LA units under the same URL scheme; take the city from the page's breadcrumb/text, default SF
+    city = next((c for c in ("Oakland", "Los Angeles", "Santa Monica", "Berkeley", "Emeryville", "Alameda") if any(c in l for l in lines[:120])), "San Francisco")
+    neighborhood = None   # the page's "neighborhood" line is the site-wide default (always "Alamo Square"); geocoding supplies the real one
+    address = f"{addr_slug.replace('-', ' ').title()} #{unit}, {city}, CA"
     d.mkdir(parents=True, exist_ok=True); n = 0
     for u in own[:30]:
         rr = get(u)
