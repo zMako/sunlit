@@ -319,7 +319,15 @@
     255.0,
     260.5
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 1.14,
+    "head_m": 2.09,
+    "style": "fixed",
+    "source": "building photos"
+   },
+   "floor_direction": "EW",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r1",
@@ -349,7 +357,15 @@
     166.5,
     323.0
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 1.14,
+    "head_m": 2.09,
+    "style": "fixed",
+    "source": "building photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r2",
@@ -379,7 +395,15 @@
     255.0,
     359.0
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 1.16,
+    "head_m": 1.99,
+    "style": "fixed",
+    "source": "building photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r3",
@@ -409,7 +433,15 @@
     80.0,
     406.5
    ],
-   "material_source": "building wet"
+   "material_source": "building wet",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "double-hung",
+    "source": "default"
+   },
+   "floor_direction": "EW",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r4",
@@ -439,7 +471,15 @@
     164.5,
     406.5
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 1.14,
+    "head_m": 2.09,
+    "style": "fixed",
+    "source": "building photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   }
  ],
  "fixtures": [
@@ -561,17 +601,106 @@
    "r0": "Planks023A",
    "r1": "Planks023A",
    "r2": "Planks023A",
-   "r3": "WoodFloor003",
+   "r3": "ph_american_walnut_veneer",
    "r4": "Planks023A"
   },
   "wall": {
-   "r0": null,
-   "r1": null,
-   "r2": null,
-   "r3": null,
-   "r4": null
+   "r0": "ph_white_stucco",
+   "r1": "ph_white_stucco",
+   "r2": "ph_white_stucco",
+   "r3": "paint_white",
+   "r4": "ph_white_stucco"
   },
-  "cabinet": "WoodFloor001"
+  "door": {
+   "r0": "paint_pale_blue",
+   "r1": "paint_pale_blue",
+   "r2": "ph_corrugated_iron",
+   "r3": "ph_distressed_painted_planks",
+   "r4": "paint_pale_blue"
+  },
+  "wall_rgb": {
+   "r0": [
+    203,
+    211,
+    231
+   ],
+   "r1": [
+    203,
+    211,
+    231
+   ],
+   "r2": [
+    206,
+    215,
+    233
+   ],
+   "r3": [
+    210,
+    216,
+    234
+   ],
+   "r4": [
+    203,
+    211,
+    231
+   ]
+  },
+  "ceiling_rgb": {
+   "r0": [
+    198,
+    208,
+    226
+   ],
+   "r1": [
+    198,
+    208,
+    226
+   ],
+   "r2": [
+    198,
+    204,
+    214
+   ],
+   "r3": [
+    185,
+    196,
+    216
+   ],
+   "r4": [
+    198,
+    208,
+    226
+   ]
+  },
+  "trim_rgb": {
+   "r0": [
+    191,
+    201,
+    224
+   ],
+   "r1": [
+    191,
+    201,
+    224
+   ],
+   "r2": [
+    189,
+    200,
+    224
+   ],
+   "r3": [
+    177,
+    190,
+    214
+   ],
+   "r4": [
+    191,
+    201,
+    224
+   ]
+  },
+  "cabinet": "paint_pale_blue",
+  "counter": "paint_pale_blue"
  },
  "review": {
   "rounds": 1,
@@ -583,5 +712,6 @@
    "Bath window at the bottom is marked but the bath door is red at the bottom"
   ],
   "usd": 0.0152
- }
+ },
+ "ceiling_source": "photo structure"
 }

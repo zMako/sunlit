@@ -599,7 +599,15 @@
     581.125,
     701.75
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.56,
+    "head_m": 2.58,
+    "style": "slider",
+    "source": "building photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r1",
@@ -629,7 +637,15 @@
     888.0,
     411.5
    ],
-   "material_source": "building wet"
+   "material_source": "building wet",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "casement",
+    "source": "default"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r2",
@@ -659,7 +675,18 @@
     1246.0,
     375.5
    ],
-   "material_source": "room photos"
+   "material_source": "room photos",
+   "window_specs": {
+    "sill_m": 0.55,
+    "head_m": 2.59,
+    "style": "slider",
+    "source": "room photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "photo",
+   "photos": [
+    4
+   ]
   },
   {
    "id": "r3",
@@ -689,7 +716,15 @@
     1228.5,
     639.0
    ],
-   "material_source": "building wet"
+   "material_source": "building wet",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "double-hung",
+    "source": "default"
+   },
+   "floor_direction": "EW",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r4",
@@ -719,7 +754,15 @@
     1414.5,
     641.0
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.55,
+    "head_m": 2.58,
+    "style": "slider",
+    "source": "building photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r5",
@@ -749,7 +792,15 @@
     788.5,
     893.0
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.55,
+    "head_m": 2.58,
+    "style": "slider",
+    "source": "building photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   }
  ],
  "fixtures": [
@@ -897,21 +948,126 @@
  "materials": {
   "floor": {
    "r0": "WoodFloor054",
-   "r1": "WoodFloor008",
+   "r1": "ph_interior_tiles",
    "r2": "WoodFloor054",
-   "r3": "WoodFloor008",
+   "r3": "ph_interior_tiles",
    "r4": "WoodFloor054",
    "r5": "WoodFloor054"
   },
   "wall": {
-   "r0": null,
-   "r1": null,
-   "r2": null,
-   "r3": null,
-   "r4": null,
-   "r5": null
+   "r0": "paint_white",
+   "r1": "paint_white",
+   "r2": "paint_white",
+   "r3": "paint_white",
+   "r4": "paint_white",
+   "r5": "paint_white"
   },
-  "cabinet": "WoodFloor041"
+  "door": {
+   "r0": "ph_bamboo_wall",
+   "r1": "paint_white",
+   "r2": "ph_bamboo_wall",
+   "r3": "paint_white",
+   "r4": "ph_bamboo_wall",
+   "r5": "ph_bamboo_wall"
+  },
+  "wall_rgb": {
+   "r0": [
+    160,
+    150,
+    132
+   ],
+   "r1": [
+    151,
+    118,
+    92
+   ],
+   "r2": [
+    187,
+    182,
+    167
+   ],
+   "r3": [
+    237,
+    206,
+    174
+   ],
+   "r4": [
+    187,
+    182,
+    167
+   ],
+   "r5": [
+    187,
+    182,
+    167
+   ]
+  },
+  "ceiling_rgb": {
+   "r0": [
+    148,
+    128,
+    100
+   ],
+   "r1": [
+    151,
+    143,
+    136
+   ],
+   "r2": [
+    151,
+    132,
+    104
+   ],
+   "r3": [
+    169,
+    143,
+    115
+   ],
+   "r4": [
+    151,
+    132,
+    104
+   ],
+   "r5": [
+    151,
+    132,
+    104
+   ]
+  },
+  "trim_rgb": {
+   "r0": [
+    124,
+    106,
+    82
+   ],
+   "r1": [
+    114,
+    105,
+    95
+   ],
+   "r2": [
+    119,
+    100,
+    71
+   ],
+   "r3": [
+    114,
+    105,
+    95
+   ],
+   "r4": [
+    130,
+    113,
+    94
+   ],
+   "r5": [
+    130,
+    113,
+    94
+   ]
+  },
+  "cabinet": "ph_interior_tiles",
+  "counter": "ph_interior_tiles"
  },
  "review": {
   "rounds": 1,
@@ -925,5 +1081,6 @@
    "Dark filled block at the bottom of the kitchen is a wall piece, tinted incorrectly"
   ],
   "usd": 0.0219
- }
+ },
+ "ceiling_source": "photo structure"
 }

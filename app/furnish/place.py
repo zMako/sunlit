@@ -121,7 +121,16 @@ def place(R, items):
         fp = footprint(x, z, it["w_m"], it["d_m"], yaw); inward = np.array([math.sin(math.radians(yaw)), math.cos(math.radians(yaw))])
         front = np.array([x, z]) + inward * (it["d_m"] / 2 + 0.3)
         o = dict(it, x=round(x, 3), z=round(z, 3), rot_deg=round(yaw, 1), fp=fp, front=front, cat=it["category"], wall=wall["i"] if wall else None, t=t); occupied.append(o); placed.append(o); return o
-    order = sorted(items, key=lambda it: (WALL_BACKED.get(it["category"], 5 if it["category"] in RELATIONAL else 4), -it["w_m"] * it["d_m"]))
+    # pinned items (already placed earlier, e.g. by the streaming agent or the user) keep their position and become obstacles
+    for it in items:
+        if it.get("pinned") and it.get("x") is not None and it.get("z") is not None:
+            yaw = (-(it.get("rot_deg") or 0)) % 360
+            o = commit(it, float(it["x"]), float(it["z"]), yaw)
+            # wall/t are unknown for pinned items; nightstands need them: recover the wall if the item sits against one
+            for w in room.walls:
+                d_ = abs(float((np.array([it["x"], it["z"]]) - w["a"]) @ w["in"]) - it["d_m"] / 2)
+                if d_ < 0.12: o["wall"] = w["i"]; o["t"] = float((np.array([it["x"], it["z"]]) - w["a"]) @ w["dir"]); break
+    order = sorted([it for it in items if not it.get("pinned")], key=lambda it: (WALL_BACKED.get(it["category"], 5 if it["category"] in RELATIONAL else 4), -it["w_m"] * it["d_m"]))
     for it in order:
         cat = it["category"]; w_m, d_m, h_m = it["w_m"], it["d_m"], it["h_m"]
         if cat in WALL_BACKED:

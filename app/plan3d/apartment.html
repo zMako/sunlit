@@ -28,13 +28,19 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { Sky } from 'three/addons/objects/Sky.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { Apartment, MaterialLib } from './build.js';
 import { Furnish } from '../furnish/furnish.js';
 
 const Q = new URLSearchParams(location.search); const unit = Q.get('unit') || 'test_unit';
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(innerWidth, innerHeight); renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05; renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.localClippingEnabled = true;
+const QUALITY = Q.get('q') || 'high';   // high: GTAO + bloom + 4k shadows; low: direct render (fast machines/headless)
+renderer.toneMapping = THREE.AgXToneMapping; renderer.toneMappingExposure = 1.18; renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.localClippingEnabled = true;
 document.body.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.05, 300);
@@ -43,20 +49,46 @@ const walk = new PointerLockControls(camera, renderer.domElement);
 
 // sky + environment
 const sky = new Sky(); sky.scale.setScalar(2000); scene.add(sky);
-const sunDir = new THREE.Vector3().setFromSphericalCoords(1, THREE.MathUtils.degToRad(52), THREE.MathUtils.degToRad(-35));
-Object.assign(sky.material.uniforms.turbidity, { value: 4 }); sky.material.uniforms.rayleigh.value = 1.6; sky.material.uniforms.mieCoefficient.value = 0.004; sky.material.uniforms.mieDirectionalG.value = 0.8; sky.material.uniforms.sunPosition.value.copy(sunDir);
-const pmrem = new THREE.PMREMGenerator(renderer); scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture; scene.environmentIntensity = 0.55;
-const hemi = new THREE.HemisphereLight(0xcfe3ff, 0x6b5a48, 0.35); scene.add(hemi);
-const sun = new THREE.DirectionalLight(0xfff3e0, 2.6); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.02; sun.shadow.radius = 4; scene.add(sun); scene.add(sun.target);
+const lib = await new MaterialLib('../furnish/materials/').load();
+const layout = await (await fetch(`layouts/${unit}.json`)).json();
+// sun azimuth: pour light through the exterior wall carrying the most window width (outward normal of that wall), 38 deg high
+function sunDirectionFor(L) {
+  const byWall = {}; for (const o of L.openings) if (o.type === 'window') byWall[o.wall] = (byWall[o.wall] || 0) + (o.width_m || (o.s1 - o.s0));
+  let best = null; for (const w of L.walls) { const ww = byWall[w.id] || 0; if (ww > 0 && (!best || ww > best.ww)) best = { w, ww }; }
+  let out = new THREE.Vector3(-0.6, 0, -0.8);
+  if (best) { const a = best.w.a, b = best.w.b; const d = new THREE.Vector2(b[0] - a[0], b[1] - a[1]).normalize(); const n = new THREE.Vector2(-d.y, d.x);   // builder's "in" normal
+    // the room centre tells which side is inside: outward = away from the nearest room centroid
+    const mid = new THREE.Vector2((a[0] + b[0]) / 2, (a[1] + b[1]) / 2); let nearest = null, nd = Infinity;
+    for (const r of L.rooms) { const c = r.polygon.reduce((acc, p) => acc.add(new THREE.Vector2(p[0], p[1])), new THREE.Vector2()).multiplyScalar(1 / r.polygon.length); const dd = c.distanceTo(mid); if (dd < nd) { nd = dd; nearest = c; } }
+    if (nearest) { const toRoom = nearest.clone().sub(mid); if (toRoom.dot(n) > 0) n.negate(); }
+    out = new THREE.Vector3(n.x, 0, n.y).normalize();
+  }
+  const el = THREE.MathUtils.degToRad(38); const yaw = Math.atan2(out.x, out.z) + THREE.MathUtils.degToRad(22);   // a little off-axis so shadows have shape
+  return new THREE.Vector3(Math.sin(yaw) * Math.cos(el), Math.sin(el), Math.cos(yaw) * Math.cos(el)).normalize();
+}
+const sunDir = sunDirectionFor(layout);
+sky.material.uniforms.turbidity.value = 3.5; sky.material.uniforms.rayleigh.value = 1.3; sky.material.uniforms.mieCoefficient.value = 0.003; sky.material.uniforms.mieDirectionalG.value = 0.85; sky.material.uniforms.sunPosition.value.copy(sunDir);
+const pmrem = new THREE.PMREMGenerator(renderer);
+// interior reflections/ambient: a neutral studio environment (a blue sky env tints every white wall grey-blue); the Sky stays visible through the glass
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture; scene.environmentIntensity = 0.5;
+const hemi = new THREE.HemisphereLight(0xfff4e6, 0x8a7a66, 0.32); scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xfff1dc, 2.1); sun.castShadow = true; sun.shadow.mapSize.set(QUALITY === 'high' ? 4096 : 2048, QUALITY === 'high' ? 4096 : 2048); sun.shadow.bias = -0.00025; sun.shadow.normalBias = 0.03; sun.shadow.radius = 3; scene.add(sun); scene.add(sun.target);
 
 // ground outside
 const ground = new THREE.Mesh(new THREE.CircleGeometry(80, 48), new THREE.MeshStandardMaterial({ color: 0x9aa39a, roughness: 1 })); ground.rotation.x = -Math.PI / 2; ground.position.y = -0.02; ground.receiveShadow = true; scene.add(ground);
 
-const lib = await new MaterialLib('../furnish/materials/').load();
-const layout = await (await fetch(`layouts/${unit}.json`)).json();
 const apt = new Apartment(layout, lib); scene.add(apt.group);
 const bb = apt.bounds; const center = bb.getCenter(new THREE.Vector3()); const size = bb.getSize(new THREE.Vector3()); const ext = Math.max(size.x, size.z);
-sun.position.copy(center).add(sunDir.clone().multiplyScalar(ext * 2.5)); sun.target.position.copy(center); const sc = sun.shadow.camera; sc.left = sc.bottom = -ext; sc.right = sc.top = ext; sc.near = 0.5; sc.far = ext * 6; sc.updateProjectionMatrix();
+sun.position.copy(center).add(sunDir.clone().multiplyScalar(ext * 2.5)); sun.target.position.copy(center); const sc = sun.shadow.camera; sc.left = sc.bottom = -ext * 0.75; sc.right = sc.top = ext * 0.75; sc.near = 0.5; sc.far = ext * 6; sc.updateProjectionMatrix();
+// post-processing: ground-truth ambient occlusion for contact shadows in corners and under furniture, a touch of bloom on the glass
+const composer = new EffectComposer(renderer); composer.addPass(new RenderPass(scene, camera));
+let gtao = null, bloom = null;
+if (QUALITY === 'high') {
+  gtao = new GTAOPass(scene, camera, innerWidth, innerHeight); gtao.output = GTAOPass.OUTPUT.Default; gtao.blendIntensity = 0.85;
+  gtao.updateGtaoMaterial({ radius: 0.35, distanceExponent: 1.5, thickness: 0.6, scale: 1.4, samples: 16, distanceFallOff: 1.0, screenSpaceRadius: false }); gtao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 4, rings: 2, samples: 12 }); composer.addPass(gtao);
+  bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.18, 0.6, 0.92); composer.addPass(bloom);
+}
+composer.addPass(new OutputPass());
 const floorPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 window.apartment = { layout, roomMeshes: apt.roomMeshes, floorPlane, scene, camera, renderer, apt };
 
@@ -92,12 +124,12 @@ let mode = 'doll'; const clipPlane = new THREE.Plane(new THREE.Vector3(0, -1, 0)
 function applyClip(on) { const planes = on ? [clipPlane] : []; apt.group.traverse(o => { if (o.isMesh && o.material) { const ms = Array.isArray(o.material) ? o.material : [o.material]; ms.forEach(m => { m.clippingPlanes = planes; m.clipShadows = true; }); } }); }
 function setDoll() {
   mode = 'doll'; if (walk.isLocked) walk.unlock(); document.getElementById('bDoll').classList.add('on'); document.getElementById('bWalk').classList.remove('on'); document.getElementById('hint').style.display = 'none'; document.getElementById('cross').style.display = 'none';
-  apt.ceilingMeshes.forEach(m => m.visible = false); apt.labels.forEach(l => l.visible = true); applyClip(true); setFurnClip([clipPlane]); orbit.enabled = true;
+  apt.ceilingMeshes.forEach(m => m.visible = false); apt.labels.forEach(l => l.visible = true); applyClip(true); setFurnClip([clipPlane]); orbit.enabled = true; labelOcclusion(false);
   camera.fov = 45; camera.position.set(center.x + ext * 0.75, ext * 0.95 + 2, center.z + ext * 0.9); orbit.target.set(center.x, 0.6, center.z); camera.updateProjectionMatrix(); orbit.update();
 }
 function setWalk(roomId, yawDeg) {
   mode = 'walk'; document.getElementById('bWalk').classList.add('on'); document.getElementById('bDoll').classList.remove('on'); document.getElementById('hint').style.display = 'block'; document.getElementById('cross').style.display = 'block';
-  apt.ceilingMeshes.forEach(m => m.visible = true); apt.labels.forEach(l => l.visible = false); applyClip(false); setFurnClip([]); orbit.enabled = false;
+  apt.ceilingMeshes.forEach(m => m.visible = true); apt.labels.forEach(l => l.visible = false); applyClip(false); setFurnClip([]); orbit.enabled = false; labelOcclusion(true);
   if (roomId && furn[roomId]) activateRoom(roomId);
   const r = apt.roomMeshes[roomId] || Object.values(apt.roomMeshes)[0]; const c = r.center; camera.fov = 70; camera.updateProjectionMatrix();
   camera.position.set(c.x, 1.6, c.z); const yaw = THREE.MathUtils.degToRad(yawDeg ?? 35); camera.rotation.set(0, 0, 0); camera.lookAt(c.x + Math.sin(yaw), 1.5, c.z + Math.cos(yaw));
@@ -126,11 +158,13 @@ function stepWalk(dt) {
   if (nx > bb.min.x + m && nx < bb.max.x - m) camera.position.x = nx; if (nz > bb.min.z + m && nz < bb.max.z - m) camera.position.z = nz; camera.position.y = 1.6;
 }
 const v0 = Q.get('view'); if (v0 === 'walk') setWalk(Q.get('room'), Q.has('yaw') ? +Q.get('yaw') : undefined); else setDoll();
-setTimeout(() => { if (mode === 'doll') setFurnClip([clipPlane]); }, 1500);
+setTimeout(() => { if (mode === 'doll') setFurnClip([clipPlane]); labelOcclusion(mode === 'walk'); }, 1500);
 if (Q.has('clip')) { clipPlane.constant = +Q.get('clip'); document.getElementById('clip').value = Q.get('clip'); document.getElementById('clipv').textContent = (+Q.get('clip')).toFixed(2) + ' m'; }
-addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); composer.setSize(innerWidth, innerHeight); if (gtao) gtao.setSize(innerWidth, innerHeight); });
+// furniture labels (sprites with depthTest off) show through walls in walk view: occlude them there, float them in the dollhouse
+function labelOcclusion(walkMode) { for (const f of Object.values(furn)) f.group?.traverse(o => { if (o.isSprite) { o.material.depthTest = walkMode; o.material.depthWrite = false; o.material.needsUpdate = true; } }); }
 let roomTick = 0;
-(function loop() { requestAnimationFrame(loop); const dt = Math.min(clock.getDelta(), 0.05); if (mode === 'walk') { stepWalk(dt); if ((roomTick += dt) > 0.5) { roomTick = 0; const r = currentRoom(); if (r && r !== activeRoom && furn[r]) activateRoom(r); } } else orbit.update(); renderer.render(scene, camera); })();
+(function loop() { requestAnimationFrame(loop); const dt = Math.min(clock.getDelta(), 0.05); if (mode === 'walk') { stepWalk(dt); if ((roomTick += dt) > 0.5) { roomTick = 0; const r = currentRoom(); if (r && r !== activeRoom && furn[r]) activateRoom(r); } } else orbit.update(); composer.render(); })();
 if (Q.has('furn')) activateRoom(Q.get('furn'));
 window.setWalk = setWalk; window.setDoll = setDoll;
 </script></body></html>

@@ -1159,7 +1159,15 @@
     819.6666666666666,
     470.3333333333333
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.55,
+    "head_m": 2.58,
+    "style": "slider",
+    "source": "building photos"
+   },
+   "floor_direction": "EW",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r1",
@@ -1189,7 +1197,15 @@
     1033.0,
     514.5
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.55,
+    "head_m": 2.58,
+    "style": "slider",
+    "source": "building photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r2",
@@ -1235,7 +1251,15 @@
     798.25,
     617.25
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.43,
+    "head_m": 2.47,
+    "style": "casement",
+    "source": "building photos"
+   },
+   "floor_direction": "EW",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r3",
@@ -1265,7 +1289,15 @@
     1127.0,
     649.5
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.55,
+    "head_m": 2.58,
+    "style": "slider",
+    "source": "building photos"
+   },
+   "floor_direction": "EW",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r4",
@@ -1303,7 +1335,15 @@
     932.0,
     712.6666666666666
    ],
-   "material_source": "building wet"
+   "material_source": "building wet",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "double-hung",
+    "source": "default"
+   },
+   "floor_direction": "EW",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r5",
@@ -1333,7 +1373,15 @@
     1156.0,
     779.0
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.55,
+    "head_m": 2.58,
+    "style": "slider",
+    "source": "building photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r6",
@@ -1363,7 +1411,15 @@
     1029.0,
     776.5
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.55,
+    "head_m": 2.58,
+    "style": "slider",
+    "source": "building photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r7",
@@ -1393,7 +1449,15 @@
     877.5,
     828.0
    ],
-   "material_source": "building wet"
+   "material_source": "building wet",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "double-hung",
+    "source": "default"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r8",
@@ -1423,7 +1487,15 @@
     972.5,
     828.0
    ],
-   "material_source": "building wet"
+   "material_source": "building wet",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "double-hung",
+    "source": "default"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r9",
@@ -1501,7 +1573,18 @@
     1174.875,
     1077.5
    ],
-   "material_source": "room photos"
+   "material_source": "room photos",
+   "window_specs": {
+    "sill_m": 0.43,
+    "head_m": 2.47,
+    "style": "casement",
+    "source": "room photos"
+   },
+   "floor_direction": "EW",
+   "floor_direction_source": "photo",
+   "photos": [
+    5
+   ]
   },
   {
    "id": "r10",
@@ -1531,7 +1614,15 @@
     965.5,
     940.0
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.55,
+    "head_m": 2.58,
+    "style": "slider",
+    "source": "building photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r11",
@@ -1593,7 +1684,15 @@
     920.6666666666666,
     1051.6666666666667
    ],
-   "material_source": "building wet"
+   "material_source": "building wet",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "double-hung",
+    "source": "default"
+   },
+   "floor_direction": "EW",
+   "floor_direction_source": "long axis"
   }
  ],
  "fixtures": [
@@ -1854,32 +1953,233 @@
   "floor": {
    "r0": "WoodFloor054",
    "r1": "WoodFloor054",
-   "r2": "WoodFloor054",
+   "r2": "WoodFloor035",
    "r3": "WoodFloor054",
-   "r4": "WoodFloor008",
+   "r4": "ph_interior_tiles",
    "r5": "WoodFloor054",
    "r6": "WoodFloor054",
-   "r7": "WoodFloor008",
-   "r8": "WoodFloor008",
+   "r7": "ph_interior_tiles",
+   "r8": "ph_interior_tiles",
    "r9": "WoodFloor035",
    "r10": "WoodFloor054",
-   "r11": "WoodFloor008"
+   "r11": "ph_interior_tiles"
   },
   "wall": {
-   "r0": null,
-   "r1": null,
-   "r2": null,
-   "r3": null,
-   "r4": null,
-   "r5": null,
-   "r6": null,
-   "r7": null,
-   "r8": null,
-   "r9": null,
-   "r10": null,
-   "r11": null
+   "r0": "paint_white",
+   "r1": "paint_white",
+   "r2": "paint_white",
+   "r3": "paint_white",
+   "r4": "paint_white",
+   "r5": "paint_white",
+   "r6": "paint_white",
+   "r7": "paint_white",
+   "r8": "paint_white",
+   "r9": "paint_white",
+   "r10": "paint_white",
+   "r11": "paint_white"
   },
-  "cabinet": "WoodFloor041"
+  "door": {
+   "r0": "ph_bamboo_wall",
+   "r1": "ph_bamboo_wall",
+   "r2": "ph_bamboo_wall",
+   "r3": "ph_bamboo_wall",
+   "r4": "paint_white",
+   "r5": "ph_bamboo_wall",
+   "r6": "ph_bamboo_wall",
+   "r7": "paint_white",
+   "r8": "paint_white",
+   "r9": "ph_bamboo_wall",
+   "r10": "ph_bamboo_wall",
+   "r11": "paint_white"
+  },
+  "wall_rgb": {
+   "r0": [
+    187,
+    182,
+    167
+   ],
+   "r1": [
+    187,
+    182,
+    167
+   ],
+   "r2": [
+    208,
+    205,
+    183
+   ],
+   "r3": [
+    187,
+    182,
+    167
+   ],
+   "r4": [
+    237,
+    206,
+    174
+   ],
+   "r5": [
+    187,
+    182,
+    167
+   ],
+   "r6": [
+    187,
+    182,
+    167
+   ],
+   "r7": [
+    237,
+    206,
+    174
+   ],
+   "r8": [
+    237,
+    206,
+    174
+   ],
+   "r9": [
+    208,
+    205,
+    183
+   ],
+   "r10": [
+    187,
+    182,
+    167
+   ],
+   "r11": [
+    237,
+    206,
+    174
+   ]
+  },
+  "ceiling_rgb": {
+   "r0": [
+    151,
+    132,
+    104
+   ],
+   "r1": [
+    151,
+    132,
+    104
+   ],
+   "r2": [
+    161,
+    147,
+    123
+   ],
+   "r3": [
+    151,
+    132,
+    104
+   ],
+   "r4": [
+    169,
+    143,
+    115
+   ],
+   "r5": [
+    151,
+    132,
+    104
+   ],
+   "r6": [
+    151,
+    132,
+    104
+   ],
+   "r7": [
+    169,
+    143,
+    115
+   ],
+   "r8": [
+    169,
+    143,
+    115
+   ],
+   "r9": [
+    161,
+    147,
+    123
+   ],
+   "r10": [
+    151,
+    132,
+    104
+   ],
+   "r11": [
+    169,
+    143,
+    115
+   ]
+  },
+  "trim_rgb": {
+   "r0": [
+    130,
+    113,
+    94
+   ],
+   "r1": [
+    130,
+    113,
+    94
+   ],
+   "r2": [
+    153,
+    142,
+    121
+   ],
+   "r3": [
+    130,
+    113,
+    94
+   ],
+   "r4": [
+    114,
+    105,
+    95
+   ],
+   "r5": [
+    130,
+    113,
+    94
+   ],
+   "r6": [
+    130,
+    113,
+    94
+   ],
+   "r7": [
+    114,
+    105,
+    95
+   ],
+   "r8": [
+    114,
+    105,
+    95
+   ],
+   "r9": [
+    153,
+    142,
+    121
+   ],
+   "r10": [
+    130,
+    113,
+    94
+   ],
+   "r11": [
+    114,
+    105,
+    95
+   ]
+  },
+  "cabinet": "ph_interior_tiles",
+  "counter": "ph_interior_tiles"
  },
  "review": {
   "rounds": 1,
@@ -1892,5 +2192,6 @@
    "Bedroom 2 has a spurious door/window at the left bottom corner, and blue windows were placed on the Entry walls where none exist"
   ],
   "usd": 0.0296
- }
+ },
+ "ceiling_source": "photo structure"
 }

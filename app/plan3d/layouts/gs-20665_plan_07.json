@@ -346,7 +346,15 @@
     260.8181818181818,
     220.54545454545453
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.6,
+    "head_m": 2.41,
+    "style": "double-hung",
+    "source": "building photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r1",
@@ -376,7 +384,15 @@
     108.0,
     240.0
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.41,
+    "head_m": 2.25,
+    "style": "slider",
+    "source": "building photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r2",
@@ -406,7 +422,15 @@
     306.5,
     318.0
    ],
-   "material_source": "building wet"
+   "material_source": "building wet",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "double-hung",
+    "source": "default"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   }
  ],
  "fixtures": [
@@ -511,16 +535,73 @@
  ],
  "materials": {
   "floor": {
-   "r0": "WoodFloor003",
+   "r0": "ph_american_walnut_veneer",
    "r1": "WoodFloor003",
-   "r2": "Planks023A"
+   "r2": "ph_american_walnut_veneer"
   },
   "wall": {
-   "r0": null,
-   "r1": null,
-   "r2": null
+   "r0": "paint_white",
+   "r1": "ph_white_stucco",
+   "r2": "ph_white_stucco"
   },
-  "cabinet": "WoodFloor003"
+  "door": {
+   "r0": "ph_corrugated_iron",
+   "r1": "paint_white",
+   "r2": "ph_corrugated_iron"
+  },
+  "wall_rgb": {
+   "r0": [
+    217,
+    221,
+    236
+   ],
+   "r1": [
+    210,
+    215,
+    226
+   ],
+   "r2": [
+    223,
+    226,
+    233
+   ]
+  },
+  "ceiling_rgb": {
+   "r0": [
+    188,
+    92,
+    39
+   ],
+   "r1": [
+    184,
+    85,
+    31
+   ],
+   "r2": [
+    183,
+    183,
+    189
+   ]
+  },
+  "trim_rgb": {
+   "r0": [
+    206,
+    216,
+    225
+   ],
+   "r1": [
+    179,
+    199,
+    217
+   ],
+   "r2": [
+    182,
+    183,
+    195
+   ]
+  },
+  "cabinet": "ph_corrugated_iron",
+  "counter": "ph_corrugated_iron"
  },
  "review": {
   "rounds": 1,
@@ -533,5 +614,6 @@
    "The door at the bottom of the kitchen is marked as red, but the bottom wall has an odd segment."
   ],
   "usd": 0.0118
- }
+ },
+ "ceiling_source": "photo structure"
 }

@@ -630,7 +630,15 @@
     554.5,
     298.5
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.56,
+    "head_m": 2.58,
+    "style": "slider",
+    "source": "building photos"
+   },
+   "floor_direction": "EW",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r1",
@@ -660,7 +668,15 @@
     949.0,
     175.5
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.55,
+    "head_m": 2.58,
+    "style": "slider",
+    "source": "building photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r2",
@@ -690,7 +706,15 @@
     1332.5,
     296.0
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.43,
+    "head_m": 2.47,
+    "style": "casement",
+    "source": "building photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r3",
@@ -728,7 +752,15 @@
     1023.6666666666666,
     398.6666666666667
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.55,
+    "head_m": 2.58,
+    "style": "slider",
+    "source": "building photos"
+   },
+   "floor_direction": "EW",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r4",
@@ -758,7 +790,15 @@
     1330.5,
     654.0
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.55,
+    "head_m": 2.58,
+    "style": "slider",
+    "source": "building photos"
+   },
+   "floor_direction": "EW",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r5",
@@ -804,7 +844,15 @@
     1297.5,
     1019.25
    ],
-   "material_source": "building wet"
+   "material_source": "building wet",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "casement",
+    "source": "default"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   }
  ],
  "fixtures": [
@@ -967,20 +1015,125 @@
   "floor": {
    "r0": "WoodFloor054",
    "r1": "WoodFloor054",
-   "r2": "WoodFloor054",
+   "r2": "WoodFloor035",
    "r3": "WoodFloor054",
    "r4": "WoodFloor054",
-   "r5": "WoodFloor008"
+   "r5": "ph_interior_tiles"
   },
   "wall": {
-   "r0": null,
-   "r1": null,
-   "r2": null,
-   "r3": null,
-   "r4": null,
-   "r5": null
+   "r0": "paint_white",
+   "r1": "paint_white",
+   "r2": "paint_white",
+   "r3": "paint_white",
+   "r4": "paint_white",
+   "r5": "paint_white"
   },
-  "cabinet": "WoodFloor041"
+  "door": {
+   "r0": "ph_bamboo_wall",
+   "r1": "ph_bamboo_wall",
+   "r2": "ph_bamboo_wall",
+   "r3": "ph_bamboo_wall",
+   "r4": "ph_bamboo_wall",
+   "r5": "paint_white"
+  },
+  "wall_rgb": {
+   "r0": [
+    160,
+    150,
+    132
+   ],
+   "r1": [
+    187,
+    182,
+    167
+   ],
+   "r2": [
+    208,
+    205,
+    183
+   ],
+   "r3": [
+    187,
+    182,
+    167
+   ],
+   "r4": [
+    187,
+    182,
+    167
+   ],
+   "r5": [
+    151,
+    118,
+    92
+   ]
+  },
+  "ceiling_rgb": {
+   "r0": [
+    148,
+    128,
+    100
+   ],
+   "r1": [
+    151,
+    132,
+    104
+   ],
+   "r2": [
+    161,
+    147,
+    123
+   ],
+   "r3": [
+    151,
+    132,
+    104
+   ],
+   "r4": [
+    151,
+    132,
+    104
+   ],
+   "r5": [
+    151,
+    143,
+    136
+   ]
+  },
+  "trim_rgb": {
+   "r0": [
+    124,
+    106,
+    82
+   ],
+   "r1": [
+    130,
+    113,
+    94
+   ],
+   "r2": [
+    153,
+    142,
+    121
+   ],
+   "r3": [
+    130,
+    113,
+    94
+   ],
+   "r4": [
+    130,
+    113,
+    94
+   ],
+   "r5": [
+    114,
+    105,
+    95
+   ]
+  },
+  "cabinet": "ph_interior_tiles",
+  "counter": "ph_interior_tiles"
  },
  "review": {
   "rounds": 1,
@@ -996,5 +1149,6 @@
    "Blue line across the bath/dining boundary is a false window"
   ],
   "usd": 0.023
- }
+ },
+ "ceiling_source": "photo structure"
 }

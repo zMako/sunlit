@@ -19,7 +19,7 @@
   "image_scale": 0.24725699273682583,
   "door_vs_reader": 1.321
  },
- "ceiling_m": 2.6,
+ "ceiling_m": 2.4,
  "walls": [
   {
    "id": "w0",
@@ -2437,7 +2437,15 @@
     993.0,
     480.94736842105266
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "double-hung",
+    "source": "default"
+   },
+   "floor_direction": "EW",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r1",
@@ -2475,7 +2483,15 @@
     908.6666666666666,
     497.3333333333333
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "double-hung",
+    "source": "default"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r2",
@@ -2661,7 +2677,15 @@
     992.8139534883721,
     613.1860465116279
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "double-hung",
+    "source": "default"
+   },
+   "floor_direction": "EW",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r3",
@@ -2691,7 +2715,15 @@
     646.5,
     667.0
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "double-hung",
+    "source": "default"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r4",
@@ -2725,7 +2757,15 @@
     709.0,
     698.8
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "double-hung",
+    "source": "default"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r5",
@@ -2863,7 +2903,15 @@
     646.5806451612904,
     861.483870967742
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "double-hung",
+    "source": "default"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r6",
@@ -2893,7 +2941,15 @@
     1089.5,
     781.0
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "double-hung",
+    "source": "default"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r7",
@@ -2923,7 +2979,15 @@
     438.0,
     844.0
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "double-hung",
+    "source": "default"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r8",
@@ -2953,7 +3017,15 @@
     669.5,
     1148.0
    ],
-   "material_source": "building wet"
+   "material_source": "building wet",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "double-hung",
+    "source": "default"
+   },
+   "floor_direction": "EW",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r9",
@@ -2983,7 +3055,15 @@
     169.0,
     1429.0
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "double-hung",
+    "source": "default"
+   },
+   "floor_direction": "EW",
+   "floor_direction_source": "long axis"
   }
  ],
  "fixtures": [
@@ -3116,30 +3196,199 @@
  ],
  "materials": {
   "floor": {
-   "r0": null,
-   "r1": null,
-   "r2": null,
-   "r3": null,
-   "r4": null,
-   "r5": null,
-   "r6": null,
-   "r7": null,
+   "r0": "WoodFloor050",
+   "r1": "WoodFloor050",
+   "r2": "WoodFloor050",
+   "r3": "WoodFloor050",
+   "r4": "WoodFloor050",
+   "r5": "WoodFloor050",
+   "r6": "WoodFloor050",
+   "r7": "WoodFloor050",
    "r8": "WoodFloor050",
-   "r9": null
+   "r9": "WoodFloor050"
   },
   "wall": {
-   "r0": null,
-   "r1": null,
-   "r2": null,
-   "r3": null,
-   "r4": null,
-   "r5": null,
-   "r6": null,
-   "r7": null,
-   "r8": null,
-   "r9": null
+   "r0": "paint_white",
+   "r1": "paint_white",
+   "r2": "paint_white",
+   "r3": "paint_white",
+   "r4": "paint_white",
+   "r5": "paint_white",
+   "r6": "paint_white",
+   "r7": "paint_white",
+   "r8": "paint_white",
+   "r9": "paint_white"
   },
-  "cabinet": "Bamboo002C"
+  "door": {
+   "r0": "paint_beige",
+   "r1": "paint_beige",
+   "r2": "paint_beige",
+   "r3": "paint_beige",
+   "r4": "paint_beige",
+   "r5": "paint_beige",
+   "r6": "paint_beige",
+   "r7": "paint_beige",
+   "r8": "paint_beige",
+   "r9": "paint_beige"
+  },
+  "wall_rgb": {
+   "r0": [
+    237,
+    226,
+    211
+   ],
+   "r1": [
+    237,
+    226,
+    211
+   ],
+   "r2": [
+    237,
+    226,
+    211
+   ],
+   "r3": [
+    237,
+    226,
+    211
+   ],
+   "r4": [
+    237,
+    226,
+    211
+   ],
+   "r5": [
+    237,
+    226,
+    211
+   ],
+   "r6": [
+    237,
+    226,
+    211
+   ],
+   "r7": [
+    237,
+    226,
+    211
+   ],
+   "r8": [
+    243,
+    224,
+    202
+   ],
+   "r9": [
+    237,
+    226,
+    211
+   ]
+  },
+  "ceiling_rgb": {
+   "r0": [
+    223,
+    220,
+    203
+   ],
+   "r1": [
+    223,
+    220,
+    203
+   ],
+   "r2": [
+    223,
+    220,
+    203
+   ],
+   "r3": [
+    223,
+    220,
+    203
+   ],
+   "r4": [
+    223,
+    220,
+    203
+   ],
+   "r5": [
+    223,
+    220,
+    203
+   ],
+   "r6": [
+    223,
+    220,
+    203
+   ],
+   "r7": [
+    223,
+    220,
+    203
+   ],
+   "r8": [
+    210,
+    193,
+    134
+   ],
+   "r9": [
+    223,
+    220,
+    203
+   ]
+  },
+  "trim_rgb": {
+   "r0": [
+    149,
+    130,
+    96
+   ],
+   "r1": [
+    149,
+    130,
+    96
+   ],
+   "r2": [
+    149,
+    130,
+    96
+   ],
+   "r3": [
+    149,
+    130,
+    96
+   ],
+   "r4": [
+    149,
+    130,
+    96
+   ],
+   "r5": [
+    149,
+    130,
+    96
+   ],
+   "r6": [
+    149,
+    130,
+    96
+   ],
+   "r7": [
+    149,
+    130,
+    96
+   ],
+   "r8": [
+    155,
+    135,
+    89
+   ],
+   "r9": [
+    149,
+    130,
+    96
+   ]
+  },
+  "cabinet": "ph_oak_veneer_01",
+  "counter": "ph_oak_veneer_01"
  },
  "review": {
   "rounds": 1,
@@ -3153,5 +3402,6 @@
    "Logo region 10 is spurious"
   ],
   "usd": 0.0266
- }
+ },
+ "ceiling_source": "photo structure"
 }

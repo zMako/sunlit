@@ -565,7 +565,15 @@
     638.8571428571429,
     653.2857142857143
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.56,
+    "head_m": 2.58,
+    "style": "slider",
+    "source": "building photos"
+   },
+   "floor_direction": "EW",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r1",
@@ -595,7 +603,15 @@
     762.5,
     413.0
    ],
-   "material_source": "building wet"
+   "material_source": "building wet",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "casement",
+    "source": "default"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r2",
@@ -649,7 +665,15 @@
     1053.2,
     541.8
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.43,
+    "head_m": 2.47,
+    "style": "casement",
+    "source": "building photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r3",
@@ -679,7 +703,15 @@
     1354.0,
     435.5
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.43,
+    "head_m": 2.47,
+    "style": "casement",
+    "source": "building photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   }
  ],
  "fixtures": [
@@ -855,17 +887,90 @@
  "materials": {
   "floor": {
    "r0": "WoodFloor054",
-   "r1": "WoodFloor008",
-   "r2": "WoodFloor054",
-   "r3": "WoodFloor054"
+   "r1": "ph_interior_tiles",
+   "r2": "WoodFloor035",
+   "r3": "WoodFloor035"
   },
   "wall": {
-   "r0": null,
-   "r1": null,
-   "r2": null,
-   "r3": null
+   "r0": "paint_white",
+   "r1": "paint_white",
+   "r2": "paint_white",
+   "r3": "paint_white"
   },
-  "cabinet": "WoodFloor041"
+  "door": {
+   "r0": "ph_bamboo_wall",
+   "r1": "paint_white",
+   "r2": "ph_bamboo_wall",
+   "r3": "ph_bamboo_wall"
+  },
+  "wall_rgb": {
+   "r0": [
+    160,
+    150,
+    132
+   ],
+   "r1": [
+    151,
+    118,
+    92
+   ],
+   "r2": [
+    208,
+    205,
+    183
+   ],
+   "r3": [
+    208,
+    205,
+    183
+   ]
+  },
+  "ceiling_rgb": {
+   "r0": [
+    148,
+    128,
+    100
+   ],
+   "r1": [
+    151,
+    143,
+    136
+   ],
+   "r2": [
+    161,
+    147,
+    123
+   ],
+   "r3": [
+    161,
+    147,
+    123
+   ]
+  },
+  "trim_rgb": {
+   "r0": [
+    124,
+    106,
+    82
+   ],
+   "r1": [
+    114,
+    105,
+    95
+   ],
+   "r2": [
+    153,
+    142,
+    121
+   ],
+   "r3": [
+    153,
+    142,
+    121
+   ]
+  },
+  "cabinet": "ph_interior_tiles",
+  "counter": "ph_interior_tiles"
  },
  "review": {
   "rounds": 1,
@@ -878,5 +983,6 @@
    "Region 1 extends past the entry door into the hallway"
   ],
   "usd": 0.0216
- }
+ },
+ "ceiling_source": "photo structure"
 }

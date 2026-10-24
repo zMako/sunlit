@@ -453,7 +453,15 @@
     968.5,
     221.5
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.55,
+    "head_m": 2.58,
+    "style": "slider",
+    "source": "building photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r1",
@@ -483,7 +491,15 @@
     1333.5,
     336.0
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.43,
+    "head_m": 2.47,
+    "style": "casement",
+    "source": "building photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r2",
@@ -529,7 +545,15 @@
     1277.25,
     658.25
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.43,
+    "head_m": 2.47,
+    "style": "casement",
+    "source": "building photos"
+   },
+   "floor_direction": "EW",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r3",
@@ -575,7 +599,15 @@
     1299.75,
     1023.5
    ],
-   "material_source": "building wet"
+   "material_source": "building wet",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "casement",
+    "source": "default"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   }
  ],
  "fixtures": [
@@ -737,17 +769,90 @@
  "materials": {
   "floor": {
    "r0": "WoodFloor054",
-   "r1": "WoodFloor054",
-   "r2": "WoodFloor054",
-   "r3": "WoodFloor008"
+   "r1": "WoodFloor035",
+   "r2": "WoodFloor035",
+   "r3": "ph_interior_tiles"
   },
   "wall": {
-   "r0": null,
-   "r1": null,
-   "r2": null,
-   "r3": null
+   "r0": "paint_white",
+   "r1": "paint_white",
+   "r2": "paint_white",
+   "r3": "paint_white"
   },
-  "cabinet": "WoodFloor041"
+  "door": {
+   "r0": "ph_bamboo_wall",
+   "r1": "ph_bamboo_wall",
+   "r2": "ph_bamboo_wall",
+   "r3": "paint_white"
+  },
+  "wall_rgb": {
+   "r0": [
+    187,
+    182,
+    167
+   ],
+   "r1": [
+    208,
+    205,
+    183
+   ],
+   "r2": [
+    208,
+    205,
+    183
+   ],
+   "r3": [
+    151,
+    118,
+    92
+   ]
+  },
+  "ceiling_rgb": {
+   "r0": [
+    151,
+    132,
+    104
+   ],
+   "r1": [
+    161,
+    147,
+    123
+   ],
+   "r2": [
+    161,
+    147,
+    123
+   ],
+   "r3": [
+    151,
+    143,
+    136
+   ]
+  },
+  "trim_rgb": {
+   "r0": [
+    130,
+    113,
+    94
+   ],
+   "r1": [
+    153,
+    142,
+    121
+   ],
+   "r2": [
+    153,
+    142,
+    121
+   ],
+   "r3": [
+    114,
+    105,
+    95
+   ]
+  },
+  "cabinet": "ph_interior_tiles",
+  "counter": "ph_interior_tiles"
  },
  "review": {
   "rounds": 1,
@@ -760,5 +865,6 @@
    "Kitchen bottom-left door appears as an extra door"
   ],
   "usd": 0.0209
- }
+ },
+ "ceiling_source": "photo structure"
 }

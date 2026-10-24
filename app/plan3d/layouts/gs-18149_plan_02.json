@@ -17,7 +17,7 @@
   ],
   "image_scale": 0.48484848484848486
  },
- "ceiling_m": 2.6,
+ "ceiling_m": 2.4,
  "walls": [
   {
    "id": "w0",
@@ -336,7 +336,15 @@
     1141.0,
     99.0
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "double-hung",
+    "source": "default"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r1",
@@ -382,7 +390,15 @@
     106.5,
     1406.25
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "double-hung",
+    "source": "default"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r2",
@@ -412,7 +428,15 @@
     911.5,
     1449.0
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "double-hung",
+    "source": "default"
+   },
+   "floor_direction": "EW",
+   "floor_direction_source": "long axis"
   }
  ],
  "fixtures": [
@@ -587,16 +611,73 @@
  ],
  "materials": {
   "floor": {
-   "r0": null,
-   "r1": null,
-   "r2": null
+   "r0": "WoodFloor050",
+   "r1": "WoodFloor050",
+   "r2": "WoodFloor050"
   },
   "wall": {
-   "r0": null,
-   "r1": null,
-   "r2": null
+   "r0": "paint_white",
+   "r1": "paint_white",
+   "r2": "paint_white"
   },
-  "cabinet": "Bamboo002C"
+  "door": {
+   "r0": "paint_beige",
+   "r1": "paint_beige",
+   "r2": "paint_beige"
+  },
+  "wall_rgb": {
+   "r0": [
+    237,
+    226,
+    211
+   ],
+   "r1": [
+    237,
+    226,
+    211
+   ],
+   "r2": [
+    237,
+    226,
+    211
+   ]
+  },
+  "ceiling_rgb": {
+   "r0": [
+    223,
+    220,
+    203
+   ],
+   "r1": [
+    223,
+    220,
+    203
+   ],
+   "r2": [
+    223,
+    220,
+    203
+   ]
+  },
+  "trim_rgb": {
+   "r0": [
+    149,
+    130,
+    96
+   ],
+   "r1": [
+    149,
+    130,
+    96
+   ],
+   "r2": [
+    149,
+    130,
+    96
+   ]
+  },
+  "cabinet": "ph_oak_veneer_01",
+  "counter": "ph_oak_veneer_01"
  },
  "review": {
   "rounds": 1,
@@ -606,5 +687,6 @@
    "Interior doors and windows are not marked"
   ],
   "usd": 0.026
- }
+ },
+ "ceiling_source": "photo structure"
 }

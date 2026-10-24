@@ -540,7 +540,15 @@
     779.125,
     762.875
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.56,
+    "head_m": 2.58,
+    "style": "slider",
+    "source": "building photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r1",
@@ -586,7 +594,15 @@
     1115.25,
     450.5
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.43,
+    "head_m": 2.47,
+    "style": "casement",
+    "source": "building photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r2",
@@ -616,7 +632,15 @@
     546.5,
     701.0
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.55,
+    "head_m": 2.58,
+    "style": "slider",
+    "source": "building photos"
+   },
+   "floor_direction": "EW",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r3",
@@ -646,7 +670,15 @@
     1211.5,
     685.0
    ],
-   "material_source": "building wet"
+   "material_source": "building wet",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "double-hung",
+    "source": "default"
+   },
+   "floor_direction": "EW",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r4",
@@ -676,7 +708,15 @@
     1022.5,
     686.5
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.55,
+    "head_m": 2.58,
+    "style": "slider",
+    "source": "building photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r5",
@@ -706,7 +746,15 @@
     1015.5,
     874.5
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.55,
+    "head_m": 2.58,
+    "style": "slider",
+    "source": "building photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r6",
@@ -736,7 +784,15 @@
     546.5,
     997.0
    ],
-   "material_source": "building wet"
+   "material_source": "building wet",
+   "window_specs": {
+    "sill_m": 0.9,
+    "head_m": 2.2,
+    "style": "casement",
+    "source": "default"
+   },
+   "floor_direction": "EW",
+   "floor_direction_source": "long axis"
   }
  ],
  "fixtures": [
@@ -912,23 +968,144 @@
  "materials": {
   "floor": {
    "r0": "WoodFloor054",
-   "r1": "WoodFloor054",
+   "r1": "WoodFloor035",
    "r2": "WoodFloor054",
-   "r3": "WoodFloor008",
+   "r3": "ph_interior_tiles",
    "r4": "WoodFloor054",
    "r5": "WoodFloor054",
-   "r6": "WoodFloor008"
+   "r6": "ph_interior_tiles"
   },
   "wall": {
-   "r0": null,
-   "r1": null,
-   "r2": null,
-   "r3": null,
-   "r4": null,
-   "r5": null,
-   "r6": null
+   "r0": "paint_white",
+   "r1": "paint_white",
+   "r2": "paint_white",
+   "r3": "paint_white",
+   "r4": "paint_white",
+   "r5": "paint_white",
+   "r6": "paint_white"
   },
-  "cabinet": "WoodFloor041"
+  "door": {
+   "r0": "ph_bamboo_wall",
+   "r1": "ph_bamboo_wall",
+   "r2": "ph_bamboo_wall",
+   "r3": "paint_white",
+   "r4": "ph_bamboo_wall",
+   "r5": "ph_bamboo_wall",
+   "r6": "paint_white"
+  },
+  "wall_rgb": {
+   "r0": [
+    160,
+    150,
+    132
+   ],
+   "r1": [
+    208,
+    205,
+    183
+   ],
+   "r2": [
+    187,
+    182,
+    167
+   ],
+   "r3": [
+    237,
+    206,
+    174
+   ],
+   "r4": [
+    187,
+    182,
+    167
+   ],
+   "r5": [
+    187,
+    182,
+    167
+   ],
+   "r6": [
+    151,
+    118,
+    92
+   ]
+  },
+  "ceiling_rgb": {
+   "r0": [
+    148,
+    128,
+    100
+   ],
+   "r1": [
+    161,
+    147,
+    123
+   ],
+   "r2": [
+    151,
+    132,
+    104
+   ],
+   "r3": [
+    169,
+    143,
+    115
+   ],
+   "r4": [
+    151,
+    132,
+    104
+   ],
+   "r5": [
+    151,
+    132,
+    104
+   ],
+   "r6": [
+    151,
+    143,
+    136
+   ]
+  },
+  "trim_rgb": {
+   "r0": [
+    124,
+    106,
+    82
+   ],
+   "r1": [
+    153,
+    142,
+    121
+   ],
+   "r2": [
+    130,
+    113,
+    94
+   ],
+   "r3": [
+    114,
+    105,
+    95
+   ],
+   "r4": [
+    130,
+    113,
+    94
+   ],
+   "r5": [
+    130,
+    113,
+    94
+   ],
+   "r6": [
+    114,
+    105,
+    95
+   ]
+  },
+  "cabinet": "ph_interior_tiles",
+  "counter": "ph_interior_tiles"
  },
  "review": {
   "rounds": 1,
@@ -941,5 +1118,6 @@
    "Entry has no tinted region of its own"
   ],
   "usd": 0.0235
- }
+ },
+ "ceiling_source": "photo structure"
 }

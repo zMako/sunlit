@@ -364,7 +364,15 @@
     90.66666666666667,
     455.3333333333333
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.6,
+    "head_m": 2.41,
+    "style": "double-hung",
+    "source": "building photos"
+   },
+   "floor_direction": "NS",
+   "floor_direction_source": "long axis"
   },
   {
    "id": "r1",
@@ -402,7 +410,15 @@
     180.66666666666666,
     557.0
    ],
-   "material_source": "building dry"
+   "material_source": "building dry",
+   "window_specs": {
+    "sill_m": 0.51,
+    "head_m": 2.41,
+    "style": "slider",
+    "source": "building photos"
+   },
+   "floor_direction": "EW",
+   "floor_direction_source": "long axis"
   }
  ],
  "fixtures": [
@@ -535,14 +551,55 @@
  ],
  "materials": {
   "floor": {
-   "r0": "WoodFloor003",
+   "r0": "ph_american_walnut_veneer",
    "r1": "WoodFloor003"
   },
   "wall": {
-   "r0": null,
-   "r1": null
+   "r0": "paint_white",
+   "r1": "ph_white_stucco"
   },
-  "cabinet": "WoodFloor003"
+  "door": {
+   "r0": "ph_corrugated_iron",
+   "r1": "ph_corrugated_iron"
+  },
+  "wall_rgb": {
+   "r0": [
+    217,
+    221,
+    236
+   ],
+   "r1": [
+    212,
+    219,
+    229
+   ]
+  },
+  "ceiling_rgb": {
+   "r0": [
+    188,
+    92,
+    39
+   ],
+   "r1": [
+    185,
+    89,
+    35
+   ]
+  },
+  "trim_rgb": {
+   "r0": [
+    206,
+    216,
+    225
+   ],
+   "r1": [
+    204,
+    209,
+    225
+   ]
+  },
+  "cabinet": "ph_corrugated_iron",
+  "counter": "ph_corrugated_iron"
  },
  "review": {
   "rounds": 1,
@@ -555,5 +612,6 @@
    "Patio is not detected, as it is open space with no walls"
   ],
   "usd": 0.0123
- }
+ },
+ "ceiling_source": "photo structure"
 }
