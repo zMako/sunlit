@@ -12,8 +12,8 @@ MODELS = {"haiku": "claude-haiku-5-5", "sonnet": "claude-sonnet-5-5", "opus": "c
 
 def room_info(R):
     xs = [p[0] for p in R["polygon"]]; zs = [p[1] for p in R["polygon"]]
-    edges = R.get("edges", []); lens = sorted((e["len"] for e in edges), reverse=True)
-    return {"area_m2": R.get("area_m2"), "long_m": round(lens[0], 2) if lens else round(max(xs) - min(xs), 2), "short_m": round(lens[-1], 2) if lens else round(max(zs) - min(zs), 2),
+    bw, bd = (max(xs) - min(xs)), (max(zs) - min(zs))   # bounding box, not edge lengths: notched polygons have tiny edges
+    return {"area_m2": R.get("area_m2"), "long_m": round(max(bw, bd), 2), "short_m": round(min(bw, bd), 2),
             "ceiling_m": R.get("ceiling_m"), "n_windows": len(R.get("windows", [])), "n_doors": len([d for d in R.get("doors", []) if d.get("width_m", 0) >= 0.55]),
             "wall_colour": (R.get("vlm") or {}).get("wall_colour"), "floor": (R.get("vlm") or {}).get("floor_material")}
 

@@ -1,7 +1,7 @@
 """Floor plan (raster) -> layout JSON (see LAYOUT_CONTRACT.md). Classical vision does the geometry: walls are the thick
 strokes (everything else is thin), openings are gaps in walls, rooms are the enclosed white regions; the VLM names rooms and
 fixtures and reviews an overlay. v0: wall extraction + debug overlay."""
-import sys, json, pathlib, math
+import sys, json, pathlib, math, re
 import numpy as np, cv2
 from PIL import Image
 
@@ -581,9 +581,13 @@ def apply_annotation(L, E, A):
     """Room names/types from the marks; fixtures from fractional boxes -> metres, snapped to the nearest wall of their room."""
     H, W = E["gray"].shape; sc = L["scale"]; mpp = sc["m_per_px"]; ox, oy = sc["origin_px"]
     marks = {a["mark"]: a for a in A.get("rooms", [])}
+    drop = set()
     for k, r in enumerate(L["rooms"]):
         a = marks.get(k + 1)
         if a: r["name"], r["type"] = a["name"], a["type"]
+        if a and re.search(r"spurious|title|legend|logo|not a room|outside", a["name"], re.I): drop.add(k)
+    if drop and len(L["rooms"]) - len(drop) >= 1:   # the VLM says a region is a title block or legend: not a room
+        L["rooms"] = [r for k, r in enumerate(L["rooms"]) if k not in drop]
     fixtures = []
     HEIGHTS = {"counter": 0.9, "island": 0.9, "sink": 0.9, "stove": 0.9, "fridge": 1.8, "dishwasher": 0.86, "tub": 0.55, "shower": 2.0, "toilet": 0.75, "vanity": 0.85, "closet_rod": 1.7, "fireplace": 1.1, "washer": 0.9}
     for k, f in enumerate(A.get("fixtures", [])):

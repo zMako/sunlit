@@ -1,110 +1,22 @@
 {
  "usd": {
   "google": 0.038,
-  "anthropic": 4.752041
+  "anthropic": 4.990389
  },
  "counts": {
-  "anthropic_calls": 578,
+  "anthropic_calls": 589,
   "google_geocode": 4,
   "google_root_tile": 3,
   "google_tile": 65,
   "poly_pizza": 7
  },
  "tokens": {
-  "in": 2650966,
-  "out": 1141719,
+  "in": 2724864,
+  "out": 1158936,
   "cache_read": 0,
   "cache_write": 65756
  },
  "events": [
-  {
-   "t": "2026-10-24T06:30:41",
-   "bucket": "anthropic",
-   "usd": 0.000612,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure kitchen: Kitchen"
-  },
-  {
-   "t": "2026-10-24T06:30:50",
-   "bucket": "anthropic",
-   "usd": 0.000718,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bathroom: Bathroom 1 (pink tile)"
-  },
-  {
-   "t": "2026-10-24T06:31:00",
-   "bucket": "anthropic",
-   "usd": 0.000687,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure kitchen: Kitchen"
-  },
-  {
-   "t": "2026-10-24T06:31:10",
-   "bucket": "anthropic",
-   "usd": 0.000827,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living: Living room (beamed ceiling)"
-  },
-  {
-   "t": "2026-10-24T06:31:23",
-   "bucket": "anthropic",
-   "usd": 0.001167,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bedroom: Bedroom 1 (bay)"
-  },
-  {
-   "t": "2026-10-24T06:31:31",
-   "bucket": "anthropic",
-   "usd": 0.000687,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bedroom: Bedroom 2 (bay)"
-  },
-  {
-   "t": "2026-10-24T06:31:39",
-   "bucket": "anthropic",
-   "usd": 0.00059,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bathroom: Bathroom"
-  },
-  {
-   "t": "2026-10-24T06:31:46",
-   "bucket": "anthropic",
-   "usd": 0.000642,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living: Living room"
-  },
-  {
-   "t": "2026-10-24T06:31:54",
-   "bucket": "anthropic",
-   "usd": 0.000503,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure kitchen: Kitchen"
-  },
-  {
-   "t": "2026-10-24T06:32:01",
-   "bucket": "anthropic",
-   "usd": 0.00066,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bedroom: Bedroom"
-  },
-  {
-   "t": "2026-10-24T06:32:10",
-   "bucket": "anthropic",
-   "usd": 0.000544,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bathroom: Bathroom"
-  },
   {
    "t": "2026-10-24T06:32:17",
    "bucket": "anthropic",
@@ -4016,6 +3928,94 @@
    "key": "anthropic_calls",
    "n": 1,
    "note": "claude-sonnet-5-5 plan v2 plan_07.jpg"
+  },
+  {
+   "t": "2026-10-24T12:50:30",
+   "bucket": "anthropic",
+   "usd": 0.031056,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_07.jpg"
+  },
+  {
+   "t": "2026-10-24T12:50:41",
+   "bucket": "anthropic",
+   "usd": 0.023936,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_08.jpg"
+  },
+  {
+   "t": "2026-10-24T12:50:53",
+   "bucket": "anthropic",
+   "usd": 0.033554,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_08.jpg"
+  },
+  {
+   "t": "2026-10-24T12:50:55",
+   "bucket": "anthropic",
+   "usd": 0.00136,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 furnish living"
+  },
+  {
+   "t": "2026-10-24T12:51:02",
+   "bucket": "anthropic",
+   "usd": 0.024836,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_09.jpg"
+  },
+  {
+   "t": "2026-10-24T12:51:15",
+   "bucket": "anthropic",
+   "usd": 0.034974,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_09.jpg"
+  },
+  {
+   "t": "2026-10-24T12:51:22",
+   "bucket": "anthropic",
+   "usd": 0.023306,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_09.jpg"
+  },
+  {
+   "t": "2026-10-24T12:51:33",
+   "bucket": "anthropic",
+   "usd": 0.001258,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 furnish bedroom"
+  },
+  {
+   "t": "2026-10-24T12:51:33",
+   "bucket": "anthropic",
+   "usd": 0.027656,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_10.jpg"
+  },
+  {
+   "t": "2026-10-24T12:51:41",
+   "bucket": "anthropic",
+   "usd": 0.001678,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 furnish living"
+  },
+  {
+   "t": "2026-10-24T12:51:46",
+   "bucket": "anthropic",
+   "usd": 0.034734,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_10.jpg"
   }
  ]
 }
