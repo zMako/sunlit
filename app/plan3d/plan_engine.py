@@ -9,7 +9,9 @@ def load_ink(path, max_side=1600):
     im = Image.open(path).convert("L"); s = min(1.0, max_side / max(im.size)); 
     if s < 1: im = im.resize((int(im.width * s), int(im.height * s)), Image.LANCZOS)
     g = np.asarray(im).astype(np.uint8)
-    # adaptive-ish threshold: ink is dark; plans are mostly white
+    # paper normalisation: the most common bright level is the paper; stretch it to 255 so thresholds hold on off-white scans
+    hist = np.bincount(g.ravel(), minlength=256); bright = hist[150:]; paper = int(150 + bright.argmax()) if bright.sum() else 255
+    if paper < 250: g = np.clip(g.astype(np.float32) * (255.0 / paper), 0, 255).astype(np.uint8)
     ink = (g < 190).astype(np.uint8)   # paper is near-white, light-grey fills are fixtures; walls are dark grey (SightMap) or black
     return g, ink, s
 
@@ -95,7 +97,7 @@ def walls_two_tone(g):
         ink = (g < 190).astype(np.uint8); t = wall_thickness(ink); return walls_mask(ink, t), t
     cls.sort(key=lambda c: -c[0]); dom = cls[0]
     masks = [c for c in cls if c[0] >= 0.10 * dom[0] and 0.25 <= c[1] / dom[1] <= 4.0]   # minor classes join when they are plausible walls (thin interior next to heavy exterior)
-    return np.clip(sum(c[2] for c in masks), 0, 1).astype(np.uint8), float(min(c[1] for c in masks))
+    return np.clip(sum(c[2] for c in masks), 0, 1).astype(np.uint8), float(dom[1])   # union of weights, geometry parameters from the dominant one
 
 def ext_of(pc):   # piece extent as (x0, y0, x1, y1) in pixels
     t = max(pc["t"], 2) / 2
@@ -194,13 +196,25 @@ def rooms_from(closed, thick):
     return lab, rooms
 
 def is_plan(g):
-    """A floor plan is mostly paper: >= 45% near-white pixels and <= 35% ink. Photos mislabelled as plans fail this."""
-    white = float((g > 235).mean()); ink = float((g < 190).mean()); return white >= 0.45 and ink <= 0.35
+    """A floor plan is mostly paper (after normalisation): >= 45% near-white pixels and <= 35% ink. Photos and 3D renders fail."""
+    white = float((g > 235).mean()); ink = float((g < 190).mean()); mid = float(((g > 70) & (g < 215)).mean())
+    return white >= 0.45 and ink <= 0.35 and mid <= 0.25   # drawings are paper + ink with few mid-tones; renders and photos are continuous-tone
+
+def softness(path, max_side=800):
+    """Ratio of soft gradients to hard edges: drawings ~0.4-1.5, 3D renders and photos > 3."""
+    im = Image.open(path).convert("L"); im.thumbnail((max_side, max_side)); g = np.asarray(im).astype(np.float32)
+    gx = cv2.Sobel(g, cv2.CV_32F, 1, 0, ksize=3); gy = cv2.Sobel(g, cv2.CV_32F, 0, 1, ksize=3); m = np.sqrt(gx * gx + gy * gy) / 4
+    soft = float(((m > 4) & (m < 30)).mean()); hard = float((m >= 60).mean()); return soft / max(hard, 1e-6)
+
+def colourful(path, max_side=400):
+    """Fraction of saturated pixels: drawings are grey-on-paper, photos and 3D renders are not."""
+    im = Image.open(path).convert("RGB"); im.thumbnail((max_side, max_side)); a = np.asarray(im).astype(np.int16)
+    sat = (a.max(2) - a.min(2)); return float((sat > 40).mean())
 
 def extract(path, extra=None):
     """extra: list of {'type', 'x0','y0','x1','y1'} in image FRACTIONS to force-bridge (from the VLM review)."""
     g, ink, s = load_ink(path)
-    if not is_plan(g): raise ValueError(f"not a floor plan (white {float((g > 235).mean()):.2f}, ink {float((g < 190).mean()):.2f})")
+    if not is_plan(g) or colourful(path) > 0.08 or softness(path) > 3.0: raise ValueError(f"not a floor plan (white {float((g > 235).mean()):.2f}, ink {float((g < 190).mean()):.2f}, mid {float(((g > 70) & (g < 215)).mean()):.2f}, colour {colourful(path):.2f})")
     wm, thick = walls_two_tone(g); pieces, blocks = wall_rects(wm, thick)
     loose = (g < 235).astype(np.uint8)
     closed, openings = bridge(pieces, g.shape, thick, ink=loose)

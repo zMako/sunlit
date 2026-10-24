@@ -111,7 +111,7 @@ async def agent_run(rooms: str, budget: float, movein: str, rail: str = "card", 
             order["x402"] = {"price_usd": price}; save_order(order); _middlewares[oid] = (price, None)
             trace = {}
             try:
-                status, data, trace = await agent_pay.pay(f"http://127.0.0.1:8766/merchant/order/{oid}", {"order_id": oid}, trace)
+                status, data, trace = await agent_pay.pay(f"http://127.0.0.1:8766/merchant/order/{oid}", {"order_id": oid}, trace, max_usd=budget)
                 yield step("x402_challenge", text=f"Merchant answered HTTP {trace.get('challenge_status')} with payment requirements.", challenge=trace.get("challenge")); await asyncio.sleep(0.3)
                 yield step("x402_paid_header", text=f"Agent wallet {trace.get('payer')} signed an EIP-3009 USDC authorization and retried with the {trace.get('payment_header')} header.", payment=trace.get("payment")); await asyncio.sleep(0.3)
                 settle = trace.get("settlement") or {}
@@ -137,7 +137,9 @@ async def merchant_order(oid: str, request: Request):
         mw = payment_middleware(routes, X402, sync_facilitator_on_start=True); _middlewares[oid] = (price, mw)
     async def fulfil(req):
         o = load_order(oid); o["merchant_ack"] = {"accepted": True, "order_id": oid, "items": len(o["items"]), "delivery": o["schedule"]["delivery_date"], "t": time.time()}; save_order(o)
-        return JSONResponse({"accepted": True, "order_id": oid, "items": len(o["items"]), "delivery_date": o["schedule"]["delivery_date"], "assembly_date": o["schedule"]["assembly_date"]})
+        body = json.dumps({"accepted": True, "order_id": oid, "items": len(o["items"]), "delivery_date": o["schedule"]["delivery_date"], "assembly_date": o["schedule"]["assembly_date"]}).encode()
+        async def one(): yield body
+        return StreamingResponse(one(), media_type="application/json")   # the x402 middleware reads response.body_iterator (Starlette call_next semantics)
     return await mw(request, fulfil)
 
 # ---------------------------------------------------------------- orders -------------------------------------------------

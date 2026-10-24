@@ -57,8 +57,9 @@ export class MaterialLib {
     if (rgb && !Array.isArray(rgb) && typeof rgb === 'object') rgb = Object.values(rgb).find(v => Array.isArray(v)) || null;   // per-room dict passed whole: take any entry
     if (!Array.isArray(rgb) || rgb.length < 3 || rgb.some(v => typeof v !== 'number')) return base;
     const k = `${base.uuid}|${key}`; if (this.cache.has(k)) return this.cache.get(k);
-    const m = base.clone(); const mx = Math.max(...rgb, 1); const f = Math.min(1.6, 235 / mx); m.color = new THREE.Color(rgb[0] * f / 255, rgb[1] * f / 255, rgb[2] * f / 255);
-    if (m.map) m.color.multiplyScalar(1.0);   // the texture carries the detail; the tint carries the hue
+    const m = base.clone(); const mx = Math.max(...rgb, 1); const f = Math.min(1.7, 238 / mx); let c = new THREE.Color(rgb[0] * f / 255, rgb[1] * f / 255, rgb[2] * f / 255);
+    const hsl = {}; c.getHSL(hsl); c.setHSL(hsl.h, Math.min(hsl.s * 0.45, 0.18), Math.max(hsl.l, 0.86));   // keep the hue, drop most of the photo's warm cast
+    m.color = c;
     m.userData = { ...base.userData, tint: rgb }; this.cache.set(k, m); return m;
   }
   plain(kind) { const key = `plain|${kind}`; if (!this.cache.has(key)) { const m = new THREE.MeshStandardMaterial(DEFAULTS[kind]); this.cache.set(key, m); } return this.cache.get(key); }
@@ -124,7 +125,10 @@ export class Apartment {
     for (const p of pieces) { const m = this.placeAlong(fr, p.s + p.len / 2, p.y, p.h, p.len, t, 0, p.s + wallOff, p.y); m.userData = { kind: 'wall', wall: w.id, exterior: !!w.exterior, mid: m.position.clone() }; this.group.add(m); this.wallMeshes.push(m); }
     for (const o of ops) { if (o.type === 'window') this.buildWindow(fr, o); else if (o.type === 'door' || o.type === 'closet_door') this.buildDoor(fr, o); else this.buildOpeningTrim(fr, o); }
   }
-  trimMat() { if (!this._trim) { const base = this.lib.get(null, 'trim'); let rgb = (this.layout.materials || {}).trim_rgb; if (rgb && !Array.isArray(rgb)) rgb = Object.values(rgb).find(v => Array.isArray(v)) || null; this._trim = this.lib.tinted(base, rgb, 'trim'); } return this._trim; }
+  trimMat() { if (!this._trim) { const base = this.lib.get(null, 'trim'); let rgb = (this.layout.materials || {}).trim_rgb; if (rgb && !Array.isArray(rgb)) rgb = Object.values(rgb).find(v => Array.isArray(v)) || null;
+      // trim is white unless the photos show a clearly coloured trim (saturated and darker than a light paint)
+      const c = rgb ? new THREE.Color(rgb[0] / 255, rgb[1] / 255, rgb[2] / 255) : null; const hsl = {}; if (c) c.getHSL(hsl);
+      this._trim = (c && hsl.s > 0.35 && hsl.l < 0.5) ? this.lib.tinted(base, rgb, 'trim') : base; } return this._trim; }
   buildOpeningTrim(fr, o) {   // cased opening: thin jambs
     const trim = this.trimMat(); const h = o.height_m ?? 2.2; const t = fr.t + 0.02;
     for (const s of [o.s0 + 0.03, o.s1 - 0.03]) { const m = new THREE.Mesh(metricBox(0.06, h, t), trim); const c = fr.a.clone().add(fr.d.clone().multiplyScalar(s)); m.position.set(c.x, h / 2, c.y); m.rotation.y = fr.angle; this.group.add(m); }
@@ -180,7 +184,7 @@ export class Apartment {
       for (let i = 0; i < uv.count; i++) { const u = uv.getX(i), v = uv.getY(i); uv.setXY(i, ca * u - sa * v + ox, sa * u + ca * v + oz); } uv.needsUpdate = true; }
     const floor = new THREE.Mesh(geo, floorMat); floor.receiveShadow = true; floor.position.y = 0.001; floor.name = 'pfloor_' + r.id; floor.userData = { kind: 'floor', room: r.id }; this.group.add(floor);
     const perRoom = (v) => (v && !Array.isArray(v) && typeof v === 'object') ? v[r.id] : v;   // fields may be per-room dicts or unit-level arrays
-    const crgb = perRoom(mats.ceiling_rgb) || r.ceiling_rgb; const ceilBase = this.lib.get(mats.ceiling || null, 'ceiling'); const ceilMat = this.lib.tinted(ceilBase, crgb ? [Math.max(crgb[0], 225), Math.max(crgb[1], 225), Math.max(crgb[2], 222)] : null, 'ceil' + r.id).clone(); ceilMat.side = THREE.BackSide;
+    const ceilBase = this.lib.get(mats.ceiling || null, 'ceiling'); const ceilMat = ceilBase.clone(); ceilMat.side = THREE.BackSide;   // ceilings: white (photo ceiling colours are exposure, not paint)
     const ceil = new THREE.Mesh(geo.clone(), ceilMat); ceil.position.y = this.ceil; ceil.name = 'pceil_' + r.id; ceil.userData = { kind: 'ceiling', room: r.id }; this.group.add(ceil); this.ceilingMeshes.push(ceil);
     const wrgb = perRoom(mats.wall_rgb) || r.wall_rgb; const wallId = (mats.wall || {})[r.id] || null;
     const wallMat = this.lib.tinted(this.lib.get(wallId, 'wall'), wrgb, 'wall' + r.id);
@@ -214,7 +218,9 @@ export class Apartment {
   box(w, h, d, mat, x = 0, y = 0, z = 0, g = null) { const m = new THREE.Mesh(metricBox(w, h, d), mat); m.position.set(x, y + h / 2, z); m.castShadow = m.receiveShadow = true; if (g) g.add(m); return m; }
   buildFixture(f) {
     const R = f.rect, w = R.w, d = R.d, H = f.height_m; const mats = this.layout.materials || {}; const g = this.fixtureGroup(f);
-    const cab = this.lib.get(mats.cabinet || null, 'cabinet'), top = this.lib.get(mats.counter || null, 'counter'), steel = this.lib.plain('steel'), dark = this.lib.plain('dark_glass'), porc = this.lib.plain('porcelain');
+    const catOf = (id) => (id && this.lib.index && this.lib.index.get(id)) ? this.lib.index.get(id).category : null;
+    const cabId = ['laminate', 'wood_floor', 'paint', 'plaster'].includes(catOf(mats.cabinet)) ? mats.cabinet : null; const topId = ['stone', 'concrete', 'tile'].includes(catOf(mats.counter)) ? mats.counter : null;
+    const cab = this.lib.get(cabId, 'cabinet'), top = this.lib.get(topId, 'counter'), steel = this.lib.plain('steel'), dark = this.lib.plain('dark_glass'), porc = this.lib.plain('porcelain');
     switch (f.type) {
       case 'counter': case 'island': case 'vanity': {
         const h = (H || 0.9) - 0.04; this.box(w - 0.02, 0.1, d - 0.07, dark, 0, 0, 0.03, g);              // toe kick (recessed)

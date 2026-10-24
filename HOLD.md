@@ -20,3 +20,12 @@
    (solo founder; doc link in the PDF needs your login to read). Capital One Nessie (mock banking API) could back the
    budget input with a real "account balance" call if you want a second fintech sponsor; say so.
 6. **Google Maps out of the windows:** parked by your instruction until you are back.
+
+## Added by the checkout worker (Oct 24 ~13:30)
+7. **x402 goes live only with your CDP account.** Everything runs now against a local mock facilitator (real SDK, real
+   EIP-3009 signatures, settlement faked). To settle for real on Base Sepolia: create a CDP API key + wallet secret at
+   https://portal.cdp.coinbase.com, export `CDP_API_KEY_ID`, `CDP_API_KEY_SECRET`, `CDP_WALLET_SECRET`, fund the agent
+   wallet (address printed by `agent_pay.py`, see app/checkout/README.md) with Base Sepolia USDC + ETH from the CDP
+   faucet, restart `app/checkout/server.py`. Per-order real-testnet amount is capped at $1 (X402_REAL_CAP_USD).
+8. **Visa track sandbox.** The card rail is a sandbox mock behind one adapter; once the Visa starter pack names its
+   sandbox (Cybersource?), the keys needed are: merchant id, REST key id + shared secret, 3-D Secure (Payer Auth) creds.

@@ -104,9 +104,9 @@ async function furnishRoom(roomId) {
       else if (e.event === 'skip') log(`<span class="dim">skipped ${e.slot}: ${e.reason}</span>`);
       else if (e.event === 'error') log(`error: ${e.message}`, 'bad');
       else if (e.event === 'summary') { $('aiCard').innerHTML = `<div class="card"><b>${e.n_items} items · $${(e.total_usd || 0).toFixed(0)}</b> <span class="dim">(${e.saved_usd >= 0 ? '$' + e.saved_usd.toFixed(0) + ' under budget' : '$' + (-e.saved_usd).toFixed(0) + ' over'})</span><br><span class="dim">${e.palette || ''}</span><br>${e.notes || ''}</div>`; }
-      else if (e.event === 'end') { es.close(); es = null; await f.loadPlan(); $('aiGo').disabled = false; $('aiAll').disabled = false; $('aiStop').style.display = 'none'; window.furnishOnChange && window.furnishOnChange(); resolve(); }
+      else if (e.event === 'end') { es && es.close(); es = null; await f.loadPlan(); $('aiGo').disabled = false; $('aiAll').disabled = false; $('aiStop').style.display = 'none'; window.furnishOnChange && window.furnishOnChange(); resolve(); }
     }); };
-    es.onerror = () => { log('stream closed', 'dim'); es && es.close(); es = null; $('aiGo').disabled = false; $('aiAll').disabled = false; $('aiStop').style.display = 'none'; resolve(); };
+    es.onerror = () => { if (!es) return; log('stream closed', 'dim'); es.close(); es = null; $('aiGo').disabled = false; $('aiAll').disabled = false; $('aiStop').style.display = 'none'; resolve(); };
   });
 }
 $('aiGo').onclick = () => furnishRoom(activeRoomId());

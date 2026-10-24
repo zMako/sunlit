@@ -25,8 +25,9 @@ def _b64json(s):
     try: return json.loads(base64.b64decode(s + "=" * (-len(s) % 4)).decode())
     except Exception: return s
 
-async def pay(url: str, body: dict | None = None, trace=None):
-    """POST to a paid endpoint, paying the 402. Returns (status, response json, trace dict with challenge/header/settlement)."""
+async def pay(url: str, body: dict | None = None, trace=None, max_usd: float | None = None):
+    """POST to a paid endpoint, paying the 402. `max_usd` is the agent wallet's spend control (the user's budget): the SDK refuses
+    any requirement above it. Returns (status, response json, trace dict with challenge/header/settlement)."""
     trace = trace if trace is not None else {}
     async with httpx.AsyncClient(timeout=30) as plain:   # 1) unpaid request to capture the challenge for the UI
         r0 = await plain.post(url, json=body or {})
@@ -34,11 +35,15 @@ async def pay(url: str, body: dict | None = None, trace=None):
         hdr = r0.headers.get("PAYMENT-REQUIRED") or r0.headers.get("X-PAYMENT-REQUIRED")
         trace["challenge"] = _b64json(hdr) if hdr else (r0.json() if r0.headers.get("content-type", "").startswith("application/json") else r0.text[:500])
     acct = buyer_account(); client = x402Client().register(NETWORK, ExactEvmScheme(acct))
+    client.set_spend_controls({"max_amount_per_payment": f"${max_usd:.2f}"} if max_usd else False); trace["spend_limit_usd"] = max_usd
     captured = {}
-    async def on_request(req):
-        for h in ("PAYMENT-SIGNATURE", "X-PAYMENT"):
-            if h in req.headers: captured["payment_header"] = h; captured["payment"] = _b64json(req.headers[h])
-    async with x402HttpxClient(client, timeout=60, event_hooks={"request": [on_request]}) as http:   # 2) paid request
+    def dump(m): return m.model_dump(by_alias=True) if hasattr(m, "model_dump") else m
+    async def on_response(ctx):   # SDK hook: the signed payload the transport sent and the settlement the server returned
+        captured["payment_header"] = "PAYMENT-SIGNATURE"; captured["payment"] = dump(ctx.payment_payload); captured["requirements"] = dump(ctx.requirements)
+        if ctx.settle_response is not None: captured["settlement_hook"] = dump(ctx.settle_response)
+        if ctx.error is not None: captured["error"] = str(ctx.error)
+    client.on_payment_response(on_response)
+    async with x402HttpxClient(client, timeout=60) as http:   # 2) paid request (the transport retries with the payment header)
         r = await http.post(url, json=body or {})
     trace.update(captured); trace["status"] = r.status_code
     resp_hdr = r.headers.get("PAYMENT-RESPONSE") or r.headers.get("X-PAYMENT-RESPONSE")
