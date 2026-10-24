@@ -30,3 +30,16 @@ your budget, move things around or ask for changes, and order everything so it a
 ## Honest limits to volunteer if asked
 Plans in 3D-render style are out of scope; thin closet walls and faint door arcs sometimes mis-read; undimensioned plans
 are scaled from Claude's size estimates (±15%); materials are matched, not measured; fixtures are parametric.
+
+## Track one-liners (for the submission form)
+- **Visa, Reimagining Shopping.** Shopping that starts from the space, not the catalogue: the agent furnishes a real
+  apartment within a budget, every pick explained, every rejection shown, and checkout stops at a human confirmation.
+  Trust: budget is a hard limit, full audit log, tokenised test card only, no card data stored.
+- **Coinbase, Best Use of x402.** The merchant endpoint is x402-protected; the buyer agent pays the 402 with a signed USDC
+  transfer on Base Sepolia, verified and settled by the facilitator, inside the same request flow. Spend cap = budget.
+- **Microsoft, Built for the Real World.** A production-minded agent for a real, costly moment (moving in): measurable
+  usefulness (fits, budget, delivery before move-in), path to production (plan reader + procedural builder run on every
+  listing we scraped), responsible design (limits, logging, confirmation), end to end from listing to order.
+- **Anthropic.** Community: people moving into an unfurnished SF rental. Problem: furnishing a place you have never stood
+  in. It works on 289 real unit types from 22 buildings; Claude reads plans, names rooms, places fixtures, picks products.
+- **Best Solo Hack / Creao One-Person Company.** One person, one weekend, one pipeline from scraped listing to paid order.

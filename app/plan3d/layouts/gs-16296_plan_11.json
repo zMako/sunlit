@@ -3,124 +3,129 @@
  "listing": "gs-16296",
  "plan_image": "/Users/maciejkopiec/sunlit/feasibility/listings/gs-16296/plans/plan_11.jpg",
  "scale": {
-  "m_per_px": 0.03011,
+  "m_per_px": 0.03259,
   "from": [
-   "area:prior 0 bedroom(s)"
+   "area:printed sqft 516.0",
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width",
+   "sqft"
   ],
-  "sqft_listed": null,
-  "agreement": null,
-  "door_ref_px": null,
+  "sqft_listed": 516.0,
+  "agreement": 0.19,
+  "door_ref_px": 128.0,
   "origin_px": [
    351.0,
    311.0
   ],
   "image_scale": 0.9696969696969697,
-  "rescale_k": 1.0
+  "door_vs_reader": 0.534,
+  "rescale_k": 2.905
  },
  "ceiling_m": 2.6,
  "walls": [
   {
    "id": "w0",
    "a": [
-    0.03,
-    0.286
+    0.035,
+    0.311
    ],
    "b": [
-    12.014,
-    0.286
+    13.001,
+    0.311
    ],
-   "thickness_m": 0.572,
+   "thickness_m": 0.622,
    "exterior": true
   },
   {
    "id": "w1",
    "a": [
-    0.813,
-    6.594
+    0.877,
+    7.134
    ],
    "b": [
-    2.379,
-    6.594
+    2.573,
+    7.134
    ],
-   "thickness_m": 0.217,
+   "thickness_m": 0.232,
    "exterior": false
   },
   {
    "id": "w2",
    "a": [
-    0.03,
-    6.865
+    0.035,
+    7.43
    ],
    "b": [
-    12.616,
-    6.865
+    13.651,
+    7.43
    ],
-   "thickness_m": 0.217,
+   "thickness_m": 0.232,
    "exterior": true
   },
   {
    "id": "w3",
    "a": [
-    0.03,
-    9.199
+    0.035,
+    9.957
    ],
    "b": [
-    1.656,
-    9.199
+    1.795,
+    9.957
    ],
-   "thickness_m": 0.217,
+   "thickness_m": 0.232,
    "exterior": true
   },
   {
    "id": "w4",
    "a": [
-    4.878,
-    9.289
+    5.278,
+    10.053
    ],
    "b": [
-    9.274,
-    9.289
+    10.035,
+    10.053
    ],
-   "thickness_m": 0.217,
+   "thickness_m": 0.232,
    "exterior": true
   },
   {
    "id": "w5",
    "a": [
-    0.12,
-    0.03
+    0.131,
+    0.035
    ],
    "b": [
-    0.12,
-    29.629
+    0.131,
+    32.06
    ],
-   "thickness_m": 0.241,
+   "thickness_m": 0.261,
    "exterior": true
   },
   {
    "id": "w6",
    "a": [
-    3.041,
-    1.415
+    3.294,
+    1.534
    ],
    "b": [
-    3.041,
-    6.956
+    3.294,
+    7.529
    ],
-   "thickness_m": 0.217,
+   "thickness_m": 0.232,
    "exterior": true
   },
   {
    "id": "w7",
    "a": [
-    9.184,
-    6.835
+    9.936,
+    7.395
    ],
    "b": [
-    9.184,
-    16.35
+    9.936,
+    17.691
    ],
-   "thickness_m": 0.217,
+   "thickness_m": 0.232,
    "exterior": true
   }
  ],
@@ -129,37 +134,58 @@
    "id": "o0",
    "wall": "w3",
    "type": "window",
-   "s0": 1.626,
-   "s1": 4.848,
-   "width_m": 3.222,
+   "s0": 1.76,
+   "s1": 5.246,
+   "width_m": 3.488,
    "sill_m": 0.9,
    "height_m": 1.3
+  },
+  {
+   "id": "o1",
+   "wall": "w7",
+   "type": "door",
+   "s0": -3.976,
+   "s1": 0.195,
+   "width_m": 4.171,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "swing": "in_right"
+  },
+  {
+   "id": "o2",
+   "wall": "w3",
+   "type": "opening",
+   "s0": 1.795,
+   "s1": 8.667,
+   "width_m": 6.878,
+   "sill_m": 0.0,
+   "height_m": 2.1
   }
  ],
  "rooms": [
   {
    "id": "r0",
-   "name": "Room 1",
-   "type": "other",
+   "name": "Bath (tub area)",
+   "type": "bathroom",
    "polygon": [
     [
-     2.981,
-     0.602
+     3.224,
+     0.651
     ],
     [
-     2.981,
-     6.534
+     3.224,
+     7.073
     ],
     [
-     0.271,
-     6.534
+     0.29,
+     7.073
     ],
     [
-     0.271,
-     0.602
+     0.29,
+     0.651
     ]
    ],
-   "area_m2": 16.34,
+   "area_m2": 19.07,
    "walls": [],
    "centre_px": [
     405.0,
@@ -168,136 +194,225 @@
   },
   {
    "id": "r1",
-   "name": "Room 2",
-   "type": "other",
+   "name": "Closet",
+   "type": "closet",
    "polygon": [
     [
-     9.093,
-     6.956
+     9.841,
+     7.529
     ],
     [
-     9.093,
-     9.124
+     9.841,
+     9.968
     ],
     [
-     0.271,
-     9.124
+     8.702,
+     9.968
     ],
     [
-     0.271,
-     6.956
+     8.702,
+     9.872
+    ],
+    [
+     0.29,
+     9.872
+    ],
+    [
+     0.29,
+     7.529
     ]
    ],
-   "area_m2": 19.36,
+   "area_m2": 21.68,
    "walls": [],
    "centre_px": [
-    506.5,
-    578.0
+    543.6666666666666,
+    591.0
    ]
   }
  ],
  "fixtures": [
   {
    "id": "f0",
-   "type": "block",
+   "type": "tub",
    "rect": {
-    "x": 1.581,
-    "z": 0.617,
-    "w": 3.101,
-    "d": 1.174,
-    "rot_deg": 0
+    "x": 1.6,
+    "z": 4.307,
+    "w": 2.617,
+    "d": 5.736,
+    "rot_deg": 90
    },
-   "room": null,
-   "against_wall": null,
-   "height_m": 1.0
+   "room": "r0",
+   "against_wall": "W",
+   "height_m": 0.55
   },
   {
    "id": "f1",
-   "type": "block",
+   "type": "toilet",
    "rect": {
-    "x": 7.498,
-    "z": 1.129,
-    "w": 1.144,
-    "d": 2.198,
+    "x": 5.237,
+    "z": 1.859,
+    "w": 1.69,
+    "d": 2.608,
     "rot_deg": 0
    },
    "room": null,
-   "against_wall": null,
-   "height_m": 1.0
+   "against_wall": "N",
+   "height_m": 0.75
   },
   {
    "id": "f2",
-   "type": "block",
+   "type": "vanity",
    "rect": {
-    "x": 9.605,
-    "z": 1.129,
-    "w": 1.144,
-    "d": 2.198,
+    "x": 9.204,
+    "z": 1.467,
+    "w": 3.584,
+    "d": 1.824,
     "rot_deg": 0
    },
    "room": null,
-   "against_wall": null,
-   "height_m": 1.0
+   "against_wall": "N",
+   "height_m": 0.85
   },
   {
    "id": "f3",
-   "type": "block",
+   "type": "closet_rod",
    "rect": {
-    "x": 14.559,
-    "z": 18.187,
-    "w": 2.499,
-    "d": 4.396,
+    "x": 4.874,
+    "z": 8.897,
+    "w": 9.265,
+    "d": 0.314,
     "rot_deg": 0
    },
-   "room": null,
+   "room": "r1",
    "against_wall": null,
-   "height_m": 1.0
+   "height_m": 1.7
   },
   {
    "id": "f4",
-   "type": "block",
+   "type": "washer",
    "rect": {
-    "x": 14.634,
-    "z": 23.607,
-    "w": 2.409,
-    "d": 1.626,
+    "x": 11.682,
+    "z": 9.236,
+    "w": 2.739,
+    "d": 2.762,
     "rot_deg": 0
    },
    "room": null,
    "against_wall": null,
-   "height_m": 1.0
+   "height_m": 0.9
   },
   {
    "id": "f5",
-   "type": "block",
+   "type": "fridge",
    "rect": {
-    "x": 14.258,
-    "z": 27.025,
-    "w": 0.813,
-    "d": 1.295,
-    "rot_deg": 0
+    "x": 15.711,
+    "z": 18.908,
+    "w": 2.739,
+    "d": 3.233,
+    "rot_deg": 270
    },
    "room": null,
-   "against_wall": null,
-   "height_m": 1.0
+   "against_wall": "E",
+   "height_m": 1.8
   },
   {
    "id": "f6",
-   "type": "block",
+   "type": "counter",
    "rect": {
-    "x": 14.649,
-    "z": 28.575,
-    "w": 2.379,
-    "d": 1.265,
+    "x": 15.789,
+    "z": 21.308,
+    "w": 2.579,
+    "d": 1.566,
+    "rot_deg": 270
+   },
+   "room": null,
+   "against_wall": "E",
+   "height_m": 0.9
+  },
+  {
+   "id": "f7",
+   "type": "stove",
+   "rect": {
+    "x": 15.629,
+    "z": 23.315,
+    "w": 2.579,
+    "d": 2.451,
+    "rot_deg": 270
+   },
+   "room": null,
+   "against_wall": "E",
+   "height_m": 0.9
+  },
+  {
+   "id": "f8",
+   "type": "counter",
+   "rect": {
+    "x": 15.789,
+    "z": 27.799,
+    "w": 2.579,
+    "d": 6.518,
+    "rot_deg": 270
+   },
+   "room": null,
+   "against_wall": "E",
+   "height_m": 0.9
+  },
+  {
+   "id": "f9",
+   "type": "sink",
+   "rect": {
+    "x": 15.789,
+    "z": 27.407,
+    "w": 1.934,
+    "d": 2.085,
+    "rot_deg": 270
+   },
+   "room": null,
+   "against_wall": "E",
+   "height_m": 0.9
+  },
+  {
+   "id": "f10",
+   "type": "dishwasher",
+   "rect": {
+    "x": 15.429,
+    "z": 30.143,
+    "w": 1.853,
+    "d": 1.824,
+    "rot_deg": 270
+   },
+   "room": null,
+   "against_wall": "E",
+   "height_m": 0.86
+  },
+  {
+   "id": "f11",
+   "type": "closet_rod",
+   "rect": {
+    "x": 11.621,
+    "z": 12.338,
+    "w": 3.424,
+    "d": 0.105,
     "rot_deg": 0
    },
    "room": null,
    "against_wall": null,
-   "height_m": 1.0
+   "height_m": 1.7
   }
  ],
  "materials": {},
  "review": {
-  "rounds": 0
+  "rounds": 1,
+  "issues": [
+   "Only the tub area and the bedroom-side closet were detected; the bath proper, entry, bedroom, living/dining/kitchen and other closet are not separate regions",
+   "Bath region is cut off at the tub; the bath wall is open at the toilet",
+   "Red door line drawn at x~0.53 y~0.26-0.34 is on the bath wall, not on the actual door swing",
+   "Bath door, entry door, WD door and closet door are missing",
+   "Bedroom is open to living area; there is a wall gap at the bedroom/living divider",
+   "Entry door at the top right is not marked",
+   "Large window at the bottom is not marked",
+   "Sliding closet doors are only partly marked"
+  ],
+  "usd": 0.025
  }
 }
