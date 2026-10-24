@@ -82,10 +82,17 @@ def shortlist(info, budget, style, by, wanted, hint=""):
     j, usd = claude_json(system, text, SHORTLIST_SCHEMA, HAIKU, 6000, f"agent shortlist {info['type']}")
     return j, usd, {c["id"]: c for cat in by.values() for c in cat}
 
-def run_furnish(room, budget, style):
+def run_furnish(room, budget, style, drama=False):
     R = load_room(room); info = room_info(R); by = catalog(); wanted = [s for s in SLOTS.get(info["type"], SLOTS["other"]) if s in by]
     emit("start", room=room, type=info["type"], budget=budget, style=style, slots=wanted, door_w=info["door_w"])
     sl, usd, by_id = shortlist(info, budget, style, by, wanted)
+    if drama and sl.get("slots"):   # demo mode: the agent first reaches for the showpiece of the main slot (the bulkiest or priciest real product);
+        # the real door / fit / budget checks then decide, so the rejection the audience sees is genuine
+        main = sl["slots"][0]; cat = main.get("category") or wanted[0]; opts = list(by.get(cat, []))
+        doorfail = [c for c in opts if not passes_door(c, info["door_w"])]; pricey = [c for c in opts if budget and (c.get("price_usd") or 0) > budget]
+        bulky = (max(doorfail, key=lambda c: c.get("price_usd") or 0) if doorfail else max(pricey, key=lambda c: c.get("price_usd") or 0) if pricey
+                 else max(opts, key=lambda c: (sorted([c["width_m"], c["depth_m"], c["height_m"]])[0], c.get("price_usd") or 0), default=None))
+        if bulky and all(p.get("id") != bulky["id"] for p in main.get("picks", [])): main["picks"] = [{"id": bulky["id"], "why": "the statement piece for this room"}] + main.get("picks", [])
     emit("shortlist", palette=sl.get("palette"), wood=sl.get("wood"), accent=sl.get("accent"), notes=sl.get("notes"), n_slots=len(sl.get("slots", [])), usd=round(usd, 4))
     placed = []; spent = 0.0; k = 0; log = []
     for slot in sl.get("slots", []):
@@ -168,10 +175,10 @@ def run_chat(room, message, plan, budget, style):
     return {"reply": j.get("reply", "Done."), "ops": ops, "notes": notes, "plan": plan, "usd": round(usd, 4)}
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(); ap.add_argument("mode", choices=["furnish", "chat"]); ap.add_argument("room"); ap.add_argument("--budget", type=float); ap.add_argument("--style", default="")
+    ap = argparse.ArgumentParser(); ap.add_argument("mode", choices=["furnish", "chat"]); ap.add_argument("room"); ap.add_argument("--budget", type=float); ap.add_argument("--style", default=""); ap.add_argument("--drama", action="store_true")
     a = ap.parse_args()
     if a.mode == "furnish":
-        try: run_furnish(a.room, a.budget, a.style)
+        try: run_furnish(a.room, a.budget, a.style, drama=a.drama)
         except Exception as e: emit("error", message=f"{type(e).__name__}: {e}")
     else:
         req = json.loads(sys.stdin.read() or "{}")

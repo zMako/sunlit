@@ -25,6 +25,7 @@ const $ = id => document.getElementById(id);
 function ready() { return window.apartment && window.furnishByRoom && Object.keys(window.furnishByRoom).length; }
 await new Promise(r => { const t = setInterval(() => { if (ready()) { clearInterval(t); r(); } }, 200); });
 const A = window.apartment; const layout = A.layout; const camera = A.camera, renderer = A.renderer, scene = A.scene;
+const Q = new URLSearchParams(location.search);
 
 // ---------- room selection ----------
 function activeRoomId() {   // the Furnish with the panel, else nearest to the camera, else first non-service room
@@ -95,7 +96,7 @@ async function furnishRoom(roomId) {
   f.clear(); topDown(roomId); $('aiLog').innerHTML = ''; $('aiCard').innerHTML = ''; setSpent(0); $('aiGo').disabled = true; $('aiAll').disabled = true; $('aiStop').style.display = '';
   const from = doorPoint(f); let queue = Promise.resolve();
   return new Promise(resolve => {
-    es = new EventSource(`/api/agent/furnish?room=${encodeURIComponent(f.room)}&budget=${budget}&style=${encodeURIComponent(styleTxt)}`);
+    es = new EventSource(`/api/agent/furnish?room=${encodeURIComponent(f.room)}&budget=${budget}&style=${encodeURIComponent(styleTxt)}${Q.has('drama') ? '&drama=1' : ''}`);
     es.onmessage = ev => { const e = JSON.parse(ev.data); queue = queue.catch(() => {}).then(async () => {
       if (e.event === 'shortlist') log(`<b>Palette:</b> ${e.palette || ''} · wood: ${e.wood || ''} · accent: ${e.accent || ''}`);
       else if (e.event === 'consider') log(`<span class="dim">considering</span> ${e.item.name} <span class="dim">$${e.item.price_usd}</span>`);
@@ -132,6 +133,5 @@ $('aiSend').onclick = async () => {
 };
 
 // ---------- auto-start from the URL (headless demos): ?agent=r0&budget=3500&style=... ----------
-const Q = new URLSearchParams(location.search);
 if (Q.has('budget')) $('aiBudget').value = Q.get('budget'); if (Q.has('style')) $('aiStyle').value = Q.get('style');
 if (Q.has('agent')) setTimeout(() => furnishRoom(Q.get('agent')), 1500);
