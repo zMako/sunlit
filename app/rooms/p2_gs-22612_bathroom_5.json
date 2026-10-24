@@ -1,0 +1,195 @@
+{
+ "name": "p2_gs-22612_bathroom_5",
+ "source": "wallwrap",
+ "listing": "gs-22612",
+ "plan": null,
+ "plan_room": "Bathroom (vanity)",
+ "type": "bathroom",
+ "ceiling_m": 2.4,
+ "width_m": 2.4,
+ "depth_m": 1.7,
+ "area_m2": 4.08,
+ "polygon": [
+  [
+   0.0,
+   0.0
+  ],
+  [
+   2.4,
+   0.0
+  ],
+  [
+   2.4,
+   1.7
+  ],
+  [
+   0.0,
+   1.7
+  ]
+ ],
+ "edges": [
+  {
+   "a": [
+    0.0,
+    0.0
+   ],
+   "b": [
+    2.4,
+    0.0
+   ],
+   "dir": [
+    1.0,
+    0.0
+   ],
+   "n": [
+    0.0,
+    -1.0
+   ],
+   "offset": 0.0,
+   "len": 2.4,
+   "inferred": false,
+   "axis": 1
+  },
+  {
+   "a": [
+    2.4,
+    0.0
+   ],
+   "b": [
+    2.4,
+    1.7
+   ],
+   "dir": [
+    0.0,
+    1.0
+   ],
+   "n": [
+    1.0,
+    -0.0
+   ],
+   "offset": 2.4,
+   "len": 1.7,
+   "inferred": false,
+   "axis": 0
+  },
+  {
+   "a": [
+    2.4,
+    1.7
+   ],
+   "b": [
+    0.0,
+    1.7
+   ],
+   "dir": [
+    -1.0,
+    0.0
+   ],
+   "n": [
+    0.0,
+    1.0
+   ],
+   "offset": 1.7,
+   "len": 2.4,
+   "inferred": false,
+   "axis": 1
+  },
+  {
+   "a": [
+    0.0,
+    1.7
+   ],
+   "b": [
+    0.0,
+    0.0
+   ],
+   "dir": [
+    0.0,
+    -1.0
+   ],
+   "n": [
+    -1.0,
+    -0.0
+   ],
+   "offset": 0.0,
+   "len": 1.7,
+   "inferred": false,
+   "axis": 0
+  }
+ ],
+ "windows": [],
+ "doors": [
+  {
+   "kind": "door",
+   "edge": 2,
+   "s0": 0.799,
+   "s1": 1.601,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "width_m": 0.802,
+   "center": [
+    1.2,
+    1.015,
+    1.7
+   ],
+   "normal": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "src": "plan",
+   "wall": "S"
+  }
+ ],
+ "openings_other": [],
+ "bounds": [
+  [
+   0.0,
+   0.0,
+   0.0
+  ],
+  [
+   2.4,
+   2.4,
+   1.7
+  ]
+ ],
+ "cameras": [],
+ "photos": [
+  6,
+  7
+ ],
+ "texture_provenance": {
+  "N": [],
+  "E": [],
+  "S": [],
+  "W": []
+ },
+ "flat_walls": [
+  "N",
+  "E",
+  "S",
+  "W"
+ ],
+ "paint_rgb": [
+  146,
+  117,
+  90
+ ],
+ "floor_rgb": [
+  150,
+  110,
+  70
+ ],
+ "ceil_rgb": [
+  235,
+  235,
+  235
+ ],
+ "build_s": 0.4,
+ "log": [
+  "photo 6: no wall/floor boundary found",
+  "photo 7: exposure gain 1.11",
+  "photo 7: no wall/floor boundary found"
+ ]
+}

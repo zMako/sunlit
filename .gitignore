@@ -1,0 +1,49 @@
+.env
+*.key
+feasibility/.venv/
+feasibility/weights/
+feasibility/vggt/
+feasibility/map-anything/
+feasibility/listings/*/
+feasibility/listings_sub/
+feasibility/out/
+app/rooms/*.glb
+app/rooms/*.ply
+app/rooms/*/
+__pycache__/
+.DS_Store
+cache/
+app/spend.json
+
+# --- added Oct 24 2026 for the first GitHub push ---
+# secrets / local state
+.env.*
+!.env.example
+*.log
+.chrome-profile/
+chrome-profile/
+# generated geometry / model outputs (rebuildable, hundreds of MB)
+*.glb
+*.ply
+*.npy
+*.npz
+app/rooms/*.png
+app/rooms/*.jpg
+app/rooms/_bg_try1/
+app/harness/*/sheet*.png
+app/plan3d/test_*.png
+app/plan3d/sweep/*.jpg
+# downloaded caches (CC0 textures, IKEA models, images)
+app/furnish/materials/
+app/furnish/modelcache/
+app/furnish/imgcache/
+app/furnish/models/
+# scraped listing photos / old phase outputs (kept locally only)
+archive/listings-craigslist/
+archive/rooms-craigslist/
+archive/rooms_v1/
+archive/feasibility_scripts/out/
+archive/feasibility_scripts/listings_sub/
+archive/sites/cache/
+# third-party hackathon guide (10 MB PDF)
+13.0 Hacker Guide.pdf

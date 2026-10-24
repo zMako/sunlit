@@ -1,0 +1,409 @@
+{
+ "name": "p2_gs-20665_kitchen_0",
+ "ceiling_m": 3.66,
+ "cameras": [
+  {
+   "pos": [
+    -0.0018,
+    1.8032,
+    -0.0035
+   ],
+   "right": [
+    -0.9165,
+    0.0005,
+    0.4001
+   ],
+   "up": [
+    0.0001,
+    1.0,
+    -0.0008
+   ],
+   "fwd": [
+    0.4001,
+    0.0008,
+    0.9165
+   ],
+   "fov_v": 78.4998550415039,
+   "fov_h": 110.1468505859375
+  },
+  {
+   "pos": [
+    -0.0027,
+    1.8036,
+    -0.0019
+   ],
+   "right": [
+    -0.916,
+    0.001,
+    0.4011
+   ],
+   "up": [
+    0.0008,
+    1.0,
+    -0.0008
+   ],
+   "fwd": [
+    0.4011,
+    0.0004,
+    0.916
+   ],
+   "fov_v": 78.52046203613281,
+   "fov_h": 110.17572021484375
+  }
+ ],
+ "planes": [
+  {
+   "kind": "floor",
+   "n": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "offset": 0.0,
+   "extent": {
+    "x": [
+     -0.3848630438840706,
+     1.384003038560454
+    ],
+    "z": [
+     2.0012383163811323,
+     2.8609974747605964
+    ],
+    "n_px": 7683
+   }
+  },
+  {
+   "kind": "ceiling",
+   "n": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "offset": -3.66,
+   "extent": {
+    "x": [
+     -1.6373160411698704,
+     2.1915448539973914
+    ],
+    "z": [
+     1.7716426734411004,
+     3.6781446268483973
+    ],
+    "n_px": 19662
+   }
+  },
+  {
+   "kind": "wall",
+   "n": [
+    0.9990482215818578,
+    0.0,
+    0.043619387365336
+   ],
+   "offset": 2.245858480250933,
+   "az_deg": 2.5,
+   "extent": {
+    "a": [
+     2.2276435659947738,
+     0.4661949319752873
+    ],
+    "b": [
+     2.165865832299927,
+     1.8811376606354775
+    ],
+    "len": 1.4162907236047322,
+    "n_px": 47137
+   }
+  },
+  {
+   "kind": "wall",
+   "n": [
+    0.5372996083468239,
+    0.0,
+    0.8433914458128856
+   ],
+   "offset": 1.8481297786976998,
+   "az_deg": 57.5,
+   "extent": {
+    "a": [
+     2.218432524018005,
+     0.7780098501788056
+    ],
+    "b": [
+     -2.1888246228550092,
+     3.585742310182886
+    ],
+    "len": 5.225636528273262,
+    "n_px": 3852
+   }
+  },
+  {
+   "kind": "wall",
+   "n": [
+    -0.04361938736533589,
+    0.0,
+    0.9990482215818578
+   ],
+   "offset": 3.6250992660108468,
+   "az_deg": 92.5,
+   "extent": {
+    "a": [
+     2.1034675617196115,
+     3.7203922214192846
+    ],
+    "b": [
+     -2.1168943843183774,
+     3.5361272394400634
+    ],
+    "len": 4.22438262224782,
+    "n_px": 10349
+   }
+  }
+ ],
+ "stats": {
+  "floor_h_units": -0.6141725182533264,
+  "ceil_h_m": 3.66,
+  "scale_units_per_m": 0.3405382887261813,
+  "manhattan_deg": 23.5,
+  "cam_heights_m": [
+   1.803,
+   1.804
+  ],
+  "label_frac": {
+   "floor": 0.029062590287080085,
+   "ceil": 0.0730537388700654,
+   "wall": 0.25589328395450844,
+   "other": 0.6419903868883461
+  },
+  "n_wall_planes": 3,
+  "wall_dirs_deg": [
+   2,
+   58,
+   92
+  ],
+  "wall_resid_m_before": 0.015919359207314798,
+  "wall_resid_m_after": 0.0
+ },
+ "bounds": [
+  [
+   -1.47,
+   0.0,
+   0.49
+  ],
+  [
+   2.26,
+   3.68,
+   3.63
+  ]
+ ],
+ "photos": [
+  "/Users/maciejkopiec/sunlit/feasibility/listings/gs-20665/00.jpg",
+  "/Users/maciejkopiec/sunlit/feasibility/listings/gs-20665/05.jpg"
+ ],
+ "windows": [],
+ "vlm": {
+  "shape": "L",
+  "width_m": 3.2,
+  "depth_m": 2.6,
+  "ceiling_m": 3.0,
+  "size_confidence": 0.3,
+  "wall_colour": "white",
+  "wall_colour_rgb": [
+   245,
+   245,
+   242
+  ],
+  "floor_material": "light grey laminate wood-look vinyl",
+  "floor_colour_rgb": [
+   200,
+   198,
+   192
+  ],
+  "notes": "Photos show only the cabinet and appliance wall, the door wall to the left, and the refrigerator wall at right. The wall holding the skylight and cedar-plank ceiling is sloped. The main window is not visible, so the wall order is an estimate. The room is most likely an L-shaped galley kitchen. Dimensions are estimated from cabinet and appliance scale, not measured. The skylight sits above the upper wall run. The ceiling_m value is a rough estimate: the cedar ceiling slopes, so 3.0 is the average height. The exterior flag is uncertain for all walls. The 0.8 m door width and 2.03 m height are standard-size assumptions. The door is at the left end of the photographed wall, so its position_frac is approximate.",
+  "walls": [
+   {
+    "label": "range and sink wall",
+    "length_m": 3.2,
+    "exterior": false,
+    "seen_in_photos": [
+     0,
+     1
+    ],
+    "openings": []
+   },
+   {
+    "label": "left of range (wall with outlet and door)",
+    "length_m": 2.6,
+    "exterior": false,
+    "seen_in_photos": [
+     0,
+     1
+    ],
+    "openings": [
+     {
+      "kind": "door",
+      "position_frac": 0.05,
+      "width_m": 0.8,
+      "height_m": 2.03,
+      "sill_m": 0.0
+     }
+    ]
+   },
+   {
+    "label": "refrigerator wall",
+    "length_m": 2.6,
+    "exterior": false,
+    "seen_in_photos": [
+     0,
+     1
+    ],
+    "openings": []
+   }
+  ],
+  "source": null
+ },
+ "vlm_area_ratio": 1.56,
+ "polygon": [
+  [
+   -1.258,
+   -0.557
+  ],
+  [
+   2.294,
+   -0.402
+  ],
+  [
+   2.138,
+   3.243
+  ],
+  [
+   -1.447,
+   3.069
+  ]
+ ],
+ "edges": [
+  {
+   "a": [
+    -1.2581684008184493,
+    -0.5568111365223215
+   ],
+   "b": [
+    2.293970491124748,
+    -0.4017214031580841
+   ],
+   "n": [
+    0.043619387365336056,
+    -0.9990482215818577
+   ],
+   "offset": 0.5014006408534729,
+   "dir": [
+    0.9990482215818577,
+    0.043619387365336056
+   ],
+   "len": 3.5555229619636033,
+   "inferred": true,
+   "axis": 2
+  },
+  {
+   "a": [
+    2.293970491124748,
+    -0.4017214031580841
+   ],
+   "b": [
+    2.1384424492501437,
+    3.2431271962076083
+   ],
+   "n": [
+    0.9990908493504402,
+    0.042631851287691556
+   ],
+   "offset": 2.274758799244153,
+   "dir": [
+    -0.042631851287691556,
+    0.9990908493504402
+   ],
+   "len": 3.6481653312462963,
+   "inferred": false,
+   "axis": 0
+  },
+  {
+   "a": [
+    2.1384424492501437,
+    3.2431271962076083
+   ],
+   "b": [
+    -1.4470419245226545,
+    3.0686637912053714
+   ],
+   "n": [
+    -0.04860075260370457,
+    0.9988182851982405
+   ],
+   "offset": 3.1353648323625944,
+   "dir": [
+    -0.9988182851982405,
+    -0.04860075260370457
+   ],
+   "len": 3.5897264066017467,
+   "inferred": true,
+   "axis": 2
+  },
+  {
+   "a": [
+    -1.4470419245226545,
+    3.0686637912053714
+   ],
+   "b": [
+    -1.2581684008184493,
+    -0.5568111365223215
+   ],
+   "n": [
+    -0.9986457481299669,
+    -0.05202566426235012
+   ],
+   "offset": 1.285432993155072,
+   "dir": [
+    0.05202566426235012,
+    -0.9986457481299669
+   ],
+   "len": 3.6303913920593414,
+   "inferred": true,
+   "axis": 0
+  }
+ ],
+ "area_m2": 13.0,
+ "doors": [
+  {
+   "kind": "door",
+   "edge": 1,
+   "img": 1,
+   "s0": 0.855,
+   "s1": 1.163,
+   "sill_m": 0.693,
+   "height_m": 2.038,
+   "width_m": 0.307,
+   "px": 16921,
+   "n_views": 2,
+   "center": [
+    2.251,
+    1.712,
+    0.606
+   ],
+   "normal": [
+    0.999,
+    0.0,
+    0.043
+   ],
+   "score": 1.0
+  }
+ ],
+ "inferred_edges": [
+  0,
+  2,
+  3
+ ],
+ "door_height_check_m": [
+  2.04
+ ],
+ "build_s": 147.8,
+ "pipeline": 2
+}

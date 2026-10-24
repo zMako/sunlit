@@ -1,0 +1,58 @@
+{
+ "name": "p2_gs-20667_bedroom_5",
+ "path": "B-free",
+ "listing": "gs-20667",
+ "photos": [
+  "12.jpg",
+  "13.jpg",
+  "17.jpg"
+ ],
+ "chosen_photo": "12.jpg",
+ "hfov_deg": 93.19999694824219,
+ "pitch_deg": 7.9,
+ "prompt": "interior photo of an empty unfurnished bedroom, white painted walls, grey-brown vinyl plank floor, white ceiling, natural daylight, real estate photography, wide angle, continuous room, photorealistic",
+ "area_m2": 12.23,
+ "width_m": 3.44,
+ "depth_m": 3.55,
+ "ceiling_m": 2.6,
+ "layout": {
+  "corners": [
+   [
+    0.33969701203943975,
+    -2.224342560751506
+   ],
+   [
+    2.6204685154304617,
+    0.3536006661052216
+   ],
+   [
+    -0.040876838361232716,
+    2.7081601383133105
+   ],
+   [
+    -2.3216483417522547,
+    0.13021691145658282
+   ]
+  ],
+  "width_m": 3.4420502511696456,
+  "depth_m": 3.553408138718866,
+  "ceiling_m": 2.6,
+  "cam_h": 0.9,
+  "axis_deg": 48.5,
+  "area_m2": 12.231009376385535,
+  "n_boundary": 2048,
+  "area_m2_at_cam_h_1p5": 34.0,
+  "ceiling_m_from_pano": 2.2,
+  "vlm_width_m": 3.6,
+  "vlm_depth_m": 3.3,
+  "vlm_area_m2": 11.9,
+  "area_ratio_vs_vlm": 1.03
+ },
+ "log": [
+  "photo 12.jpg hfov 93 floor 27% pitch +7.9 roll +0.2 cam_h_units 0.26590832832088585",
+  "pano reused",
+  "layout 11s",
+  "scale: cam_h 0.90 m to match VLM area 11.9 m2"
+ ],
+ "s": 31
+}

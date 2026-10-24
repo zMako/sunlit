@@ -1,0 +1,273 @@
+{
+ "name": "p2_gs-22612_living_plan08-living-room",
+ "source": "wallwrap",
+ "listing": "gs-22612",
+ "plan": "plan_08.jpg",
+ "plan_room": "Living Room",
+ "type": "living",
+ "ceiling_m": 2.6,
+ "width_m": 9.144,
+ "depth_m": 4.267,
+ "area_m2": 39.02,
+ "polygon": [
+  [
+   0.0,
+   0.0
+  ],
+  [
+   9.144,
+   0.0
+  ],
+  [
+   9.144,
+   4.267
+  ],
+  [
+   0.0,
+   4.267
+  ]
+ ],
+ "edges": [
+  {
+   "a": [
+    0.0,
+    0.0
+   ],
+   "b": [
+    9.144,
+    0.0
+   ],
+   "dir": [
+    1.0,
+    0.0
+   ],
+   "n": [
+    0.0,
+    -1.0
+   ],
+   "offset": 0.0,
+   "len": 9.144,
+   "inferred": false,
+   "axis": 1
+  },
+  {
+   "a": [
+    9.144,
+    0.0
+   ],
+   "b": [
+    9.144,
+    4.267
+   ],
+   "dir": [
+    0.0,
+    1.0
+   ],
+   "n": [
+    1.0,
+    -0.0
+   ],
+   "offset": 9.144,
+   "len": 4.267,
+   "inferred": false,
+   "axis": 0
+  },
+  {
+   "a": [
+    9.144,
+    4.267
+   ],
+   "b": [
+    0.0,
+    4.267
+   ],
+   "dir": [
+    -1.0,
+    0.0
+   ],
+   "n": [
+    0.0,
+    1.0
+   ],
+   "offset": 4.267,
+   "len": 9.144,
+   "inferred": false,
+   "axis": 1
+  },
+  {
+   "a": [
+    0.0,
+    4.267
+   ],
+   "b": [
+    0.0,
+    0.0
+   ],
+   "dir": [
+    0.0,
+    -1.0
+   ],
+   "n": [
+    -1.0,
+    -0.0
+   ],
+   "offset": 0.0,
+   "len": 4.267,
+   "inferred": false,
+   "axis": 0
+  }
+ ],
+ "windows": [
+  {
+   "kind": "window",
+   "edge": 0,
+   "s0": 0.0,
+   "s1": 1.829,
+   "sill_m": 0.9,
+   "height_m": 1.3,
+   "width_m": 1.829,
+   "center": [
+    0.914,
+    1.55,
+    0.0
+   ],
+   "normal": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "src": "plan",
+   "wall": "N"
+  },
+  {
+   "kind": "window",
+   "edge": 0,
+   "s0": 5.492,
+   "s1": 8.608,
+   "sill_m": 0.66,
+   "height_m": 1.79,
+   "width_m": 3.117,
+   "center": [
+    7.05,
+    1.555,
+    0.0
+   ],
+   "normal": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "src": "photo 3",
+   "wall": "N"
+  },
+  {
+   "kind": "window",
+   "edge": 1,
+   "s0": 0.427,
+   "s1": 3.84,
+   "sill_m": 0.9,
+   "height_m": 1.3,
+   "width_m": 3.414,
+   "center": [
+    9.144,
+    1.55,
+    2.134
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "src": "plan",
+   "wall": "E"
+  }
+ ],
+ "doors": [],
+ "openings_other": [
+  {
+   "kind": "opening",
+   "edge": 3,
+   "s0": 1.692,
+   "s1": 3.658,
+   "sill_m": 0.13,
+   "height_m": 2.18,
+   "width_m": 1.967,
+   "center": [
+    0.0,
+    1.22,
+    1.592
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "src": "photo 3",
+   "wall": "W"
+  }
+ ],
+ "bounds": [
+  [
+   0.0,
+   0.0,
+   0.0
+  ],
+  [
+   9.144,
+   2.6,
+   4.267
+  ]
+ ],
+ "cameras": [],
+ "photos": [
+  3
+ ],
+ "texture_provenance": {
+  "N": [
+   {
+    "photo": 3,
+    "u0": 5.49,
+    "u1": 9.14,
+    "px_per_m": 73.2,
+    "partial": true
+   }
+  ],
+  "E": [],
+  "S": [],
+  "W": [
+   {
+    "photo": 3,
+    "u0": 0.0,
+    "u1": 4.27,
+    "px_per_m": 87.8,
+    "partial": true
+   }
+  ]
+ },
+ "flat_walls": [
+  "E",
+  "S"
+ ],
+ "paint_rgb": [
+  197,
+  174,
+  142
+ ],
+ "floor_rgb": [
+  163,
+  124,
+  82
+ ],
+ "ceil_rgb": [
+  211,
+  184,
+  142
+ ],
+ "build_s": 6.4,
+ "log": [
+  "photo 3: exposure gain 1.45",
+  "photo 3: scale from the corner vertical (H=2.6), far wall seen 3.65 m from its right corner",
+  "photo 3 face 1->W: metric 5.28 m",
+  "photo 3: 2 faces, K vggt, far=N"
+ ]
+}

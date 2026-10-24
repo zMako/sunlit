@@ -1,0 +1,1151 @@
+[
+ {
+  "name": "p2_rUT9Hy_kitchen_0",
+  "ok": true,
+  "n_photos": 3,
+  "area_m2": 13.86,
+  "n_walls": 4,
+  "n_inferred": 1,
+  "n_windows": 1,
+  "n_doors": 0,
+  "door_h": [],
+  "wall_dirs": [
+   2,
+   92
+  ],
+  "cam_h": [
+   1.435,
+   1.25,
+   1.368
+  ],
+  "s": 9.7,
+  "log": [
+   "fit depth err 0.025->0.025"
+  ],
+  "listing": "rUT9HydKXnhnGruUjHsvrd",
+  "title": "1260 Broadway #302 - Stunning 1x1 - Incr",
+  "room": "Kitchen / living area",
+  "claude_windows": true,
+  "n_photos_graph": 3
+ },
+ {
+  "name": "p2_rUT9Hy_office_3",
+  "ok": false,
+  "n_photos": 1,
+  "area_m2": 10.58,
+  "n_walls": 7,
+  "n_inferred": 5,
+  "n_windows": 1,
+  "n_doors": 1,
+  "door_h": [
+   1.21
+  ],
+  "wall_dirs": [
+   28,
+   92,
+   178
+  ],
+  "cam_h": [
+   1.008
+  ],
+  "s": 2.5,
+  "log": [
+   "split: kept photos ['08.jpg'], dropped ['07.jpg'] (no mutual overlap)",
+   "fit depth err 0.015->0.014"
+  ],
+  "error": "only one photo survived the overlap check",
+  "listing": "rUT9HydKXnhnGruUjHsvrd",
+  "title": "1260 Broadway #302 - Stunning 1x1 - Incr",
+  "room": "Small sunny room / den",
+  "claude_windows": true,
+  "n_photos_graph": 2
+ },
+ {
+  "name": "p2_nGyoHm_living_0",
+  "ok": true,
+  "n_photos": 2,
+  "area_m2": 18.56,
+  "n_walls": 8,
+  "n_inferred": 4,
+  "n_windows": 1,
+  "n_doors": 1,
+  "door_h": [
+   0.72
+  ],
+  "wall_dirs": [
+   92,
+   168
+  ],
+  "cam_h": [
+   1.091,
+   0.922
+  ],
+  "s": 8.7,
+  "log": [
+   "fit depth err 0.201->0.054"
+  ],
+  "listing": "nGyoHm8Z2T1QhtSZhoU164",
+  "title": "Quintessential Noe Valley | Victorian wi",
+  "room": "Living room",
+  "claude_windows": true,
+  "n_photos_graph": 2
+ },
+ {
+  "name": "p2_rHczg5_living_0",
+  "ok": true,
+  "n_photos": 2,
+  "area_m2": 24.15,
+  "n_walls": 7,
+  "n_inferred": 4,
+  "n_windows": 2,
+  "n_doors": 1,
+  "door_h": [
+   1.91
+  ],
+  "wall_dirs": [
+   2,
+   48,
+   88,
+   142
+  ],
+  "cam_h": [
+   1.334,
+   1.369
+  ],
+  "s": 5.0,
+  "log": [
+   "split: kept photos ['00.jpg', '02.jpg'], dropped ['01.jpg'] (no mutual overlap)",
+   "fit depth err 0.051->0.037"
+  ],
+  "listing": "rHczg5PQb3SV5nxoUuqZFr",
+  "title": "OPEN SUN 3:15pm-3:35pm 2-1BR, Shared lau",
+  "room": "Living room with bay window",
+  "claude_windows": true,
+  "n_photos_graph": 3
+ },
+ {
+  "name": "p2_rHczg5_kitchen_2",
+  "ok": true,
+  "n_photos": 2,
+  "area_m2": 10.95,
+  "n_walls": 5,
+  "n_inferred": 2,
+  "n_windows": 1,
+  "n_doors": 1,
+  "door_h": [
+   2.05
+  ],
+  "wall_dirs": [
+   2,
+   92
+  ],
+  "cam_h": [
+   1.554,
+   1.609
+  ],
+  "s": 4.6,
+  "log": [
+   "scale from 1 door(s): ceiling 2.93 m",
+   "fit depth err 0.011->0.012"
+  ],
+  "listing": "rHczg5PQb3SV5nxoUuqZFr",
+  "title": "OPEN SUN 3:15pm-3:35pm 2-1BR, Shared lau",
+  "room": "Galley kitchen",
+  "claude_windows": true,
+  "n_photos_graph": 2
+ },
+ {
+  "name": "p2_rHczg5_bedroom_3",
+  "ok": false,
+  "n_photos": 1,
+  "area_m2": 21.13,
+  "n_walls": 6,
+  "n_inferred": 4,
+  "n_windows": 0,
+  "n_doors": 2,
+  "door_h": [
+   2.09,
+   2.0
+  ],
+  "wall_dirs": [
+   2,
+   88
+  ],
+  "cam_h": [
+   1.597
+  ],
+  "s": 3.1,
+  "log": [
+   "split: kept photos ['07.jpg'], dropped ['06.jpg'] (no mutual overlap)",
+   "scale from 2 door(s): ceiling 3.12 m",
+   "fit depth err 0.011->0.012"
+  ],
+  "error": "only one photo survived the overlap check",
+  "listing": "rHczg5PQb3SV5nxoUuqZFr",
+  "title": "OPEN SUN 3:15pm-3:35pm 2-1BR, Shared lau",
+  "room": "Bedroom",
+  "claude_windows": true,
+  "n_photos_graph": 2
+ },
+ {
+  "name": "p2_rHczg5_bathroom_4",
+  "ok": false,
+  "n_photos": 1,
+  "area_m2": 10.2,
+  "n_walls": 4,
+  "n_inferred": 3,
+  "n_windows": 0,
+  "n_doors": 0,
+  "door_h": [],
+  "wall_dirs": [
+   2,
+   92
+  ],
+  "cam_h": [
+   1.342
+  ],
+  "s": 2.5,
+  "log": [
+   "split: kept photos ['09.jpg'], dropped ['08.jpg'] (no mutual overlap)",
+   "fit depth err 1.099->0.316"
+  ],
+  "error": "only one photo survived the overlap check",
+  "listing": "rHczg5PQb3SV5nxoUuqZFr",
+  "title": "OPEN SUN 3:15pm-3:35pm 2-1BR, Shared lau",
+  "room": "Bathroom",
+  "claude_windows": true,
+  "n_photos_graph": 2
+ },
+ {
+  "name": "p2_5ZQ1Ey_living_0",
+  "ok": true,
+  "n_photos": 5,
+  "area_m2": 18.28,
+  "n_walls": 9,
+  "n_inferred": 5,
+  "n_windows": 1,
+  "n_doors": 2,
+  "door_h": [
+   1.69,
+   1.78
+  ],
+  "wall_dirs": [
+   2,
+   32,
+   63,
+   92,
+   118
+  ],
+  "cam_h": [
+   1.418,
+   1.409,
+   1.334,
+   1.635,
+   1.237
+  ],
+  "s": 10.4,
+  "log": [
+   "fit depth err 0.296->0.126"
+  ],
+  "listing": "5ZQ1EywWAobQAT8GzNbhjn",
+  "title": "1472 Filbert #602 - Beautiful 1x1 - Top ",
+  "room": "Living room",
+  "claude_windows": true,
+  "n_photos_graph": 5
+ },
+ {
+  "name": "p2_5ZQ1Ey_kitchen_1",
+  "ok": true,
+  "n_photos": 2,
+  "area_m2": 16.4,
+  "n_walls": 8,
+  "n_inferred": 5,
+  "n_windows": 0,
+  "n_doors": 0,
+  "door_h": [],
+  "wall_dirs": [
+   92,
+   178
+  ],
+  "cam_h": [
+   1.134,
+   1.261
+  ],
+  "s": 4.5,
+  "log": [
+   "fit depth err 0.060->0.040"
+  ],
+  "listing": "5ZQ1EywWAobQAT8GzNbhjn",
+  "title": "1472 Filbert #602 - Beautiful 1x1 - Top ",
+  "room": "Kitchen",
+  "claude_windows": false,
+  "n_photos_graph": 2
+ },
+ {
+  "name": "p2_5ZQ1Ey_bathroom_3",
+  "ok": false,
+  "n_photos": 1,
+  "area_m2": 8.28,
+  "n_walls": 6,
+  "n_inferred": 4,
+  "n_windows": 0,
+  "n_doors": 0,
+  "door_h": [],
+  "wall_dirs": [
+   92,
+   178
+  ],
+  "cam_h": [
+   1.434
+  ],
+  "s": 2.2,
+  "log": [
+   "split: kept photos ['07.jpg'], dropped ['08.jpg'] (no mutual overlap)",
+   "fit depth err 0.249->0.018"
+  ],
+  "error": "only one photo survived the overlap check",
+  "listing": "5ZQ1EywWAobQAT8GzNbhjn",
+  "title": "1472 Filbert #602 - Beautiful 1x1 - Top ",
+  "room": "Bathroom",
+  "claude_windows": true,
+  "n_photos_graph": 2
+ },
+ {
+  "name": "p2_5ZQ1Ey_laundry_4",
+  "ok": false,
+  "n_photos": 1,
+  "area_m2": 4.6,
+  "n_walls": 6,
+  "n_inferred": 4,
+  "n_windows": 0,
+  "n_doors": 1,
+  "door_h": [
+   1.25
+  ],
+  "wall_dirs": [
+   88,
+   178
+  ],
+  "cam_h": [
+   1.39
+  ],
+  "s": 2.7,
+  "log": [
+   "split: kept photos ['09.jpg'], dropped ['10.jpg'] (no mutual overlap)",
+   "fit depth err 0.114->0.119"
+  ],
+  "error": "only one photo survived the overlap check",
+  "listing": "5ZQ1EywWAobQAT8GzNbhjn",
+  "title": "1472 Filbert #602 - Beautiful 1x1 - Top ",
+  "room": "Laundry closet",
+  "claude_windows": false,
+  "n_photos_graph": 2
+ },
+ {
+  "name": "p2_fzALh5_living_0",
+  "ok": true,
+  "n_photos": 3,
+  "area_m2": 84.44,
+  "n_walls": 19,
+  "n_inferred": 13,
+  "n_windows": 1,
+  "n_doors": 0,
+  "door_h": [],
+  "wall_dirs": [
+   2,
+   53,
+   92,
+   118
+  ],
+  "cam_h": [
+   1.447,
+   1.382,
+   1.445
+  ],
+  "s": 11.7,
+  "log": [
+   "fit depth err 0.032->0.026"
+  ],
+  "listing": "fzALh5BdoaLPW3UCsqXbNB",
+  "title": "1370 Taylor #10 - Penthouse 4x3 - Ocean ",
+  "room": "Living room and kitchen (open plan)",
+  "claude_windows": true,
+  "n_photos_graph": 3
+ },
+ {
+  "name": "p2_fzALh5_bedroom_2",
+  "ok": false,
+  "n_photos": 1,
+  "area_m2": 14.63,
+  "n_walls": 9,
+  "n_inferred": 4,
+  "n_windows": 1,
+  "n_doors": 1,
+  "door_h": [
+   1.82
+  ],
+  "wall_dirs": [
+   63,
+   98,
+   118,
+   178
+  ],
+  "cam_h": [
+   1.353
+  ],
+  "s": 3.4,
+  "log": [
+   "split: kept photos ['09.jpg'], dropped ['03.jpg'] (no mutual overlap)",
+   "fit depth err 0.011->0.009"
+  ],
+  "error": "only one photo survived the overlap check",
+  "listing": "fzALh5BdoaLPW3UCsqXbNB",
+  "title": "1370 Taylor #10 - Penthouse 4x3 - Ocean ",
+  "room": "Bedroom with closet overlooking neighbouring building",
+  "claude_windows": true,
+  "n_photos_graph": 2
+ },
+ {
+  "name": "p2_cA8p54_living_0",
+  "ok": true,
+  "n_photos": 2,
+  "area_m2": 26.54,
+  "n_walls": 11,
+  "n_inferred": 4,
+  "n_windows": 0,
+  "n_doors": 1,
+  "door_h": [
+   2.0
+  ],
+  "wall_dirs": [
+   92,
+   178
+  ],
+  "cam_h": [
+   1.541,
+   1.565
+  ],
+  "s": 6.9,
+  "log": [
+   "split: kept photos ['00.jpg', '01.jpg'], dropped ['03.jpg'] (no mutual overlap)",
+   "scale from 1 door(s): ceiling 3.05 m",
+   "fit depth err 0.022->0.015"
+  ],
+  "listing": "cA8p54Kn3Ehz1a1AsDJzsn",
+  "title": "1472 Filbert #206 - Gorgeous 1x1 - WD in",
+  "room": "Living/dining with kitchen peninsula",
+  "claude_windows": false,
+  "n_photos_graph": 3
+ },
+ {
+  "name": "p2_cA8p54_living_1",
+  "ok": false,
+  "n_photos": 1,
+  "area_m2": 7.34,
+  "n_walls": 6,
+  "n_inferred": 4,
+  "n_windows": 0,
+  "n_doors": 0,
+  "door_h": [],
+  "wall_dirs": [
+   92,
+   178
+  ],
+  "cam_h": [
+   1.162
+  ],
+  "s": 2.9,
+  "log": [
+   "split: kept photos ['04.jpg'], dropped ['02.jpg'] (no mutual overlap)",
+   "fit depth err 0.368->0.035"
+  ],
+  "error": "only one photo survived the overlap check",
+  "listing": "cA8p54Kn3Ehz1a1AsDJzsn",
+  "title": "1472 Filbert #206 - Gorgeous 1x1 - WD in",
+  "room": "Living room with bay windows",
+  "claude_windows": true,
+  "n_photos_graph": 2
+ },
+ {
+  "name": "p2_cA8p54_kitchen_2",
+  "ok": true,
+  "n_photos": 2,
+  "area_m2": 26.54,
+  "n_walls": 11,
+  "n_inferred": 4,
+  "n_windows": 0,
+  "n_doors": 1,
+  "door_h": [
+   2.0
+  ],
+  "wall_dirs": [
+   92,
+   178
+  ],
+  "cam_h": [
+   1.541,
+   1.565
+  ],
+  "s": 7.4,
+  "log": [
+   "split: kept photos ['00.jpg', '01.jpg'], dropped ['04.jpg'] (no mutual overlap)",
+   "scale from 1 door(s): ceiling 3.05 m",
+   "fit depth err 0.022->0.015"
+  ],
+  "listing": "cA8p54Kn3Ehz1a1AsDJzsn",
+  "title": "1472 Filbert #206 - Gorgeous 1x1 - WD in",
+  "room": "Kitchen",
+  "claude_windows": false,
+  "n_photos_graph": 3
+ },
+ {
+  "name": "p2_cA8p54_bathroom_6",
+  "ok": false,
+  "n_photos": 1,
+  "area_m2": 12.22,
+  "n_walls": 4,
+  "n_inferred": 3,
+  "n_windows": 0,
+  "n_doors": 0,
+  "door_h": [],
+  "wall_dirs": [
+   58,
+   88,
+   178
+  ],
+  "cam_h": [
+   1.073
+  ],
+  "s": 2.5,
+  "log": [
+   "split: kept photos ['09.jpg'], dropped ['08.jpg'] (no mutual overlap)",
+   "fit depth err 1.025->0.043"
+  ],
+  "error": "only one photo survived the overlap check",
+  "listing": "cA8p54Kn3Ehz1a1AsDJzsn",
+  "title": "1472 Filbert #206 - Gorgeous 1x1 - WD in",
+  "room": "Bathroom",
+  "claude_windows": true,
+  "n_photos_graph": 2
+ },
+ {
+  "name": "p2_6XnQYH_kitchen_0",
+  "ok": true,
+  "n_photos": 3,
+  "area_m2": 12.57,
+  "n_walls": 8,
+  "n_inferred": 3,
+  "n_windows": 1,
+  "n_doors": 2,
+  "door_h": [
+   1.99,
+   2.06
+  ],
+  "wall_dirs": [
+   88,
+   178
+  ],
+  "cam_h": [
+   1.328,
+   1.46,
+   1.323
+  ],
+  "s": 9.1,
+  "log": [
+   "scale from 2 door(s): ceiling 2.94 m",
+   "fit depth err 0.177->0.053"
+  ],
+  "listing": "6XnQYHyH5MbPGuUTRYmChY",
+  "title": "Remodeled 2 Bedroom in Nob Hill, Great L",
+  "room": "Kitchen",
+  "claude_windows": true,
+  "n_photos_graph": 3
+ },
+ {
+  "name": "p2_6XnQYH_living_1",
+  "ok": false,
+  "n_photos": 1,
+  "area_m2": 28.41,
+  "n_walls": 6,
+  "n_inferred": 4,
+  "n_windows": 1,
+  "n_doors": 1,
+  "door_h": [
+   2.03
+  ],
+  "wall_dirs": [
+   53,
+   92,
+   178
+  ],
+  "cam_h": [
+   1.178
+  ],
+  "s": 3.0,
+  "log": [
+   "split: kept photos ['06.jpg'], dropped ['03.jpg', '04.jpg', '05.jpg'] (no mutual overlap)",
+   "scale from 1 door(s): ceiling 3.0 m",
+   "fit depth err 0.010->0.010"
+  ],
+  "error": "only one photo survived the overlap check",
+  "listing": "6XnQYHyH5MbPGuUTRYmChY",
+  "title": "Remodeled 2 Bedroom in Nob Hill, Great L",
+  "room": "Living room (beamed ceiling)",
+  "claude_windows": true,
+  "n_photos_graph": 4
+ },
+ {
+  "name": "p2_6XnQYH_bedroom_2",
+  "ok": false,
+  "n_photos": 1,
+  "area_m2": 21.41,
+  "n_walls": 11,
+  "n_inferred": 6,
+  "n_windows": 2,
+  "n_doors": 0,
+  "door_h": [],
+  "wall_dirs": [
+   58,
+   88,
+   123,
+   178
+  ],
+  "cam_h": [
+   1.113
+  ],
+  "s": 3.2,
+  "log": [
+   "split: kept photos ['07.jpg'], dropped ['09.jpg'] (no mutual overlap)",
+   "fit depth err 0.019->0.019"
+  ],
+  "error": "only one photo survived the overlap check",
+  "listing": "6XnQYHyH5MbPGuUTRYmChY",
+  "title": "Remodeled 2 Bedroom in Nob Hill, Great L",
+  "room": "Bedroom 1 (bay)",
+  "claude_windows": true,
+  "n_photos_graph": 2
+ },
+ {
+  "name": "p2_6XnQYH_bedroom_3",
+  "ok": false,
+  "n_photos": 1,
+  "area_m2": 19.36,
+  "n_walls": 8,
+  "n_inferred": 4,
+  "n_windows": 1,
+  "n_doors": 0,
+  "door_h": [],
+  "wall_dirs": [
+   2,
+   38,
+   92,
+   142
+  ],
+  "cam_h": [
+   1.13
+  ],
+  "s": 2.7,
+  "log": [
+   "split: kept photos ['08.jpg'], dropped ['10.jpg'] (no mutual overlap)",
+   "fit depth err 0.035->0.035"
+  ],
+  "error": "only one photo survived the overlap check",
+  "listing": "6XnQYHyH5MbPGuUTRYmChY",
+  "title": "Remodeled 2 Bedroom in Nob Hill, Great L",
+  "room": "Bedroom 2 (bay)",
+  "claude_windows": true,
+  "n_photos_graph": 2
+ },
+ {
+  "name": "p2_6XnQYH_bathroom_5",
+  "ok": true,
+  "n_photos": 2,
+  "area_m2": 5.77,
+  "n_walls": 7,
+  "n_inferred": 4,
+  "n_windows": 1,
+  "n_doors": 0,
+  "door_h": [],
+  "wall_dirs": [
+   88,
+   118,
+   178
+  ],
+  "cam_h": [
+   1.143,
+   1.262
+  ],
+  "s": 5.2,
+  "log": [
+   "fit depth err 0.824->0.192"
+  ],
+  "listing": "6XnQYHyH5MbPGuUTRYmChY",
+  "title": "Remodeled 2 Bedroom in Nob Hill, Great L",
+  "room": "Bathroom",
+  "claude_windows": true,
+  "n_photos_graph": 2
+ },
+ {
+  "name": "p2_v4dBK6_living_0",
+  "ok": false,
+  "n_photos": 1,
+  "area_m2": 12.59,
+  "n_walls": 10,
+  "n_inferred": 4,
+  "n_windows": 1,
+  "n_doors": 0,
+  "door_h": [],
+  "wall_dirs": [
+   2,
+   92
+  ],
+  "cam_h": [
+   1.053
+  ],
+  "s": 6.4,
+  "log": [
+   "split: kept photos ['01.jpg'], dropped ['00.jpg'] (no mutual overlap)",
+   "fit depth err 0.300->0.038"
+  ],
+  "error": "only one photo survived the overlap check",
+  "listing": "v4dBK6d3G1YhjtMJHdbh4S",
+  "title": "Furnished Pacific Heights 2BR/2BA Corner",
+  "room": "Living room",
+  "claude_windows": true,
+  "n_photos_graph": 2
+ },
+ {
+  "name": "p2_dFeacz_living_0",
+  "ok": true,
+  "n_photos": 6,
+  "area_m2": 53.87,
+  "n_walls": 15,
+  "n_inferred": 11,
+  "n_windows": 4,
+  "n_doors": 1,
+  "door_h": [
+   1.59
+  ],
+  "wall_dirs": [
+   92,
+   178
+  ],
+  "cam_h": [
+   1.29,
+   1.545,
+   1.305,
+   1.411,
+   1.314,
+   1.058
+  ],
+  "s": 17.2,
+  "log": [
+   "fit depth err 0.077->0.046"
+  ],
+  "listing": "dFeacz7doeHJyiJHf7sr3b",
+  "title": "1040 Ashbury #1 - Gorgeous 2x2 - WD in U",
+  "room": "Living room",
+  "claude_windows": true,
+  "n_photos_graph": 6
+ },
+ {
+  "name": "p2_dFeacz_kitchen_1",
+  "ok": true,
+  "n_photos": 3,
+  "area_m2": 15.34,
+  "n_walls": 6,
+  "n_inferred": 4,
+  "n_windows": 0,
+  "n_doors": 0,
+  "door_h": [],
+  "wall_dirs": [
+   88,
+   178
+  ],
+  "cam_h": [
+   1.45,
+   1.445,
+   1.363
+  ],
+  "s": 5.6,
+  "log": [
+   "fit depth err 0.040->0.045"
+  ],
+  "listing": "dFeacz7doeHJyiJHf7sr3b",
+  "title": "1040 Ashbury #1 - Gorgeous 2x2 - WD in U",
+  "room": "Kitchen",
+  "claude_windows": false,
+  "n_photos_graph": 3
+ },
+ {
+  "name": "p2_dFeacz_bedroom_3",
+  "ok": true,
+  "n_photos": 2,
+  "area_m2": 40.83,
+  "n_walls": 8,
+  "n_inferred": 5,
+  "n_windows": 0,
+  "n_doors": 2,
+  "door_h": [
+   2.15,
+   1.98
+  ],
+  "wall_dirs": [
+   2,
+   92
+  ],
+  "cam_h": [
+   1.568,
+   1.575
+  ],
+  "s": 5.0,
+  "log": [
+   "fit depth err 0.587->0.027"
+  ],
+  "listing": "dFeacz7doeHJyiJHf7sr3b",
+  "title": "1040 Ashbury #1 - Gorgeous 2x2 - WD in U",
+  "room": "Bedroom 1",
+  "claude_windows": false,
+  "n_photos_graph": 2
+ },
+ {
+  "name": "p2_dFeacz_bedroom_4",
+  "ok": true,
+  "n_photos": 2,
+  "area_m2": 15.43,
+  "n_walls": 6,
+  "n_inferred": 2,
+  "n_windows": 1,
+  "n_doors": 1,
+  "door_h": [
+   1.59
+  ],
+  "wall_dirs": [
+   92,
+   178
+  ],
+  "cam_h": [
+   1.407,
+   1.364
+  ],
+  "s": 5.1,
+  "log": [
+   "split: kept photos ['16.jpg', '20.jpg'], dropped ['11.jpg'] (no mutual overlap)",
+   "fit depth err 0.018->0.015"
+  ],
+  "listing": "dFeacz7doeHJyiJHf7sr3b",
+  "title": "1040 Ashbury #1 - Gorgeous 2x2 - WD in U",
+  "room": "Bedroom 2",
+  "claude_windows": true,
+  "n_photos_graph": 3
+ },
+ {
+  "name": "p2_dFeacz_bathroom_5",
+  "ok": true,
+  "n_photos": 2,
+  "area_m2": 7.47,
+  "n_walls": 6,
+  "n_inferred": 3,
+  "n_windows": 1,
+  "n_doors": 0,
+  "door_h": [],
+  "wall_dirs": [
+   88,
+   178
+  ],
+  "cam_h": [
+   1.302,
+   1.291
+  ],
+  "s": 4.2,
+  "log": [
+   "split: kept photos ['13.jpg', '19.jpg'], dropped ['12.jpg'] (no mutual overlap)",
+   "fit depth err 0.021->0.019"
+  ],
+  "listing": "dFeacz7doeHJyiJHf7sr3b",
+  "title": "1040 Ashbury #1 - Gorgeous 2x2 - WD in U",
+  "room": "Bathroom",
+  "claude_windows": true,
+  "n_photos_graph": 3
+ },
+ {
+  "name": "p2_dFeacz_hallway_7",
+  "ok": true,
+  "n_photos": 2,
+  "area_m2": 36.71,
+  "n_walls": 12,
+  "n_inferred": 8,
+  "n_windows": 1,
+  "n_doors": 3,
+  "door_h": [
+   2.02,
+   2.11,
+   2.45
+  ],
+  "wall_dirs": [
+   48,
+   92,
+   178
+  ],
+  "cam_h": [
+   1.747,
+   1.729
+  ],
+  "s": 4.8,
+  "log": [
+   "fit depth err 0.016->0.019"
+  ],
+  "listing": "dFeacz7doeHJyiJHf7sr3b",
+  "title": "1040 Ashbury #1 - Gorgeous 2x2 - WD in U",
+  "room": "Hallway",
+  "claude_windows": false,
+  "n_photos_graph": 2
+ },
+ {
+  "name": "p2_iGSsD2_kitchen_0",
+  "ok": false,
+  "n_photos": 1,
+  "area_m2": 13.18,
+  "n_walls": 7,
+  "n_inferred": 4,
+  "n_windows": 0,
+  "n_doors": 0,
+  "door_h": [],
+  "wall_dirs": [
+   88,
+   178
+  ],
+  "cam_h": [
+   1.073
+  ],
+  "s": 3.1,
+  "log": [
+   "split: kept photos ['00.jpg'], dropped ['01.jpg'] (no mutual overlap)",
+   "fit depth err 0.018->0.016"
+  ],
+  "error": "only one photo survived the overlap check",
+  "listing": "iGSsD2iGBTWwSdiAZ8fzgv",
+  "title": "1260 Broadway #303 - Gorgeous 1x1 - WD i",
+  "room": "Kitchen",
+  "claude_windows": false,
+  "n_photos_graph": 2
+ },
+ {
+  "name": "p2_iGSsD2_living_1",
+  "ok": true,
+  "n_photos": 4,
+  "area_m2": 42.27,
+  "n_walls": 13,
+  "n_inferred": 9,
+  "n_windows": 1,
+  "n_doors": 0,
+  "door_h": [],
+  "wall_dirs": [
+   2,
+   38,
+   92
+  ],
+  "cam_h": [
+   1.274,
+   1.389,
+   1.231,
+   1.242
+  ],
+  "s": 8.6,
+  "log": [
+   "fit depth err 0.048->0.044"
+  ],
+  "listing": "iGSsD2iGBTWwSdiAZ8fzgv",
+  "title": "1260 Broadway #303 - Gorgeous 1x1 - WD i",
+  "room": "Living room",
+  "claude_windows": true,
+  "n_photos_graph": 4
+ },
+ {
+  "name": "p2_iGSsD2_bathroom_2",
+  "ok": false,
+  "n_photos": 1,
+  "area_m2": 7.21,
+  "n_walls": 6,
+  "n_inferred": 4,
+  "n_windows": 0,
+  "n_doors": 0,
+  "door_h": [],
+  "wall_dirs": [
+   2,
+   92
+  ],
+  "cam_h": [
+   1.312
+  ],
+  "s": 2.5,
+  "log": [
+   "split: kept photos ['07.jpg'], dropped ['06.jpg'] (no mutual overlap)",
+   "fit depth err 0.145->0.022"
+  ],
+  "error": "only one photo survived the overlap check",
+  "listing": "iGSsD2iGBTWwSdiAZ8fzgv",
+  "title": "1260 Broadway #303 - Gorgeous 1x1 - WD i",
+  "room": "Bathroom",
+  "claude_windows": true,
+  "n_photos_graph": 2
+ },
+ {
+  "name": "p2_iGSsD2_bedroom_3",
+  "ok": false,
+  "n_photos": 1,
+  "area_m2": 14.18,
+  "n_walls": 5,
+  "n_inferred": 3,
+  "n_windows": 1,
+  "n_doors": 0,
+  "door_h": [],
+  "wall_dirs": [
+   92,
+   178
+  ],
+  "cam_h": [
+   1.062
+  ],
+  "s": 2.5,
+  "log": [
+   "split: kept photos ['09.jpg'], dropped ['08.jpg'] (no mutual overlap)",
+   "fit depth err 0.016->0.015"
+  ],
+  "error": "only one photo survived the overlap check",
+  "listing": "iGSsD2iGBTWwSdiAZ8fzgv",
+  "title": "1260 Broadway #303 - Gorgeous 1x1 - WD i",
+  "room": "Bedroom",
+  "claude_windows": true,
+  "n_photos_graph": 2
+ },
+ {
+  "name": "p2_iXSnvb_bedroom_0",
+  "ok": false,
+  "n_photos": 1,
+  "area_m2": 23.88,
+  "n_walls": 11,
+  "n_inferred": 7,
+  "n_windows": 1,
+  "n_doors": 1,
+  "door_h": [
+   1.92
+  ],
+  "wall_dirs": [
+   48,
+   88,
+   123,
+   148,
+   168
+  ],
+  "cam_h": [
+   1.205
+  ],
+  "s": 4.4,
+  "log": [
+   "split: kept photos ['05.jpg'], dropped ['00.jpg'] (no mutual overlap)",
+   "scale from 1 door(s): ceiling 2.89 m",
+   "fit depth err 0.028->0.030"
+  ],
+  "error": "only one photo survived the overlap check",
+  "listing": "iXSnvbZ6WSkfgrfEx1bEPT",
+  "title": "1401 Jones #202 - Gorgeous 1x1 - Natural",
+  "room": "Bay bedroom (front)",
+  "claude_windows": true,
+  "n_photos_graph": 2
+ },
+ {
+  "name": "p2_iXSnvb_bedroom_1",
+  "ok": false,
+  "n_photos": 1,
+  "area_m2": 24.62,
+  "n_walls": 7,
+  "n_inferred": 4,
+  "n_windows": 2,
+  "n_doors": 1,
+  "door_h": [
+   2.03
+  ],
+  "wall_dirs": [
+   92,
+   123,
+   178
+  ],
+  "cam_h": [
+   1.395
+  ],
+  "s": 3.7,
+  "log": [
+   "split: kept photos ['04.jpg'], dropped ['01.jpg'] (no mutual overlap)",
+   "scale from 1 door(s): ceiling 3.34 m",
+   "fit depth err 0.013->0.013"
+  ],
+  "error": "only one photo survived the overlap check",
+  "listing": "iXSnvbZ6WSkfgrfEx1bEPT",
+  "title": "1401 Jones #202 - Gorgeous 1x1 - Natural",
+  "room": "Bedroom with bay and closet",
+  "claude_windows": true,
+  "n_photos_graph": 2
+ },
+ {
+  "name": "p2_sACauK_living_0",
+  "ok": true,
+  "n_photos": 2,
+  "area_m2": 34.72,
+  "n_walls": 12,
+  "n_inferred": 6,
+  "n_windows": 3,
+  "n_doors": 1,
+  "door_h": [
+   2.07
+  ],
+  "wall_dirs": [
+   88,
+   142,
+   178
+  ],
+  "cam_h": [
+   1.403,
+   1.396
+  ],
+  "s": 6.1,
+  "log": [
+   "scale from 1 door(s): ceiling 3.0 m",
+   "fit depth err 0.022->0.023"
+  ],
+  "listing": "sACauKtt1cpUdMBoXE2vWK",
+  "title": "2844 Lyon #204 - Awesome 2x1 - Great Are",
+  "room": "Front living room with curved bay",
+  "claude_windows": true,
+  "n_photos_graph": 2
+ },
+ {
+  "name": "p2_sACauK_kitchen_3",
+  "ok": false,
+  "n_photos": 1,
+  "area_m2": 5.54,
+  "n_walls": 6,
+  "n_inferred": 3,
+  "n_windows": 0,
+  "n_doors": 0,
+  "door_h": [],
+  "wall_dirs": [
+   88,
+   178
+  ],
+  "cam_h": [
+   1.298
+  ],
+  "s": 2.5,
+  "log": [
+   "split: kept photos ['02.jpg'], dropped ['03.jpg'] (no mutual overlap)",
+   "fit depth err 0.068->0.039"
+  ],
+  "error": "only one photo survived the overlap check",
+  "listing": "sACauKtt1cpUdMBoXE2vWK",
+  "title": "2844 Lyon #204 - Awesome 2x1 - Great Are",
+  "room": "Kitchen",
+  "claude_windows": true,
+  "n_photos_graph": 2
+ }
+]

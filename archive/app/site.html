@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Sunlit site viewer</title>
+<style>body{margin:0;background:#0b0f16;color:#e8ecf2;font:13px system-ui}#ui{position:fixed;left:12px;top:12px;background:rgba(10,14,22,.88);padding:10px 14px;border-radius:8px;width:360px}input[type=range]{width:100%}#info{opacity:.85;line-height:1.5}button{margin:2px 2px 2px 0}</style>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.170.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.170.0/examples/jsm/","3d-tiles-renderer":"https://unpkg.com/3d-tiles-renderer@0.5.3/build/index.three.js","3d-tiles-renderer/plugins":"https://unpkg.com/3d-tiles-renderer@0.5.3/build/index.plugins.js"}}</script>
+</head><body>
+<div id="ui"><b>Sunlit</b> · site<br><select id="site"></select>
+<label>Day of year <span id="dv"></span></label><input id="day" type="range" min="1" max="365" value="355">
+<label>Hour (PT) <span id="hv"></span></label><input id="hour" type="range" min="5" max="21" step="0.25" value="14">
+<button id="play">▶ a year in 10 s</button> <button id="tiles">Load Google 3D Tiles (1 counted root request)</button> <label><input id="fp" type="checkbox" checked> footprints</label>
+<div id="info"></div></div>
+<script>window.addEventListener("error",e=>{const el=document.getElementById("info"); if(el) el.innerHTML+="<span style=\"color:#f66\">ERROR: "+(e.message||e)+"</span><br>";}); window.addEventListener("unhandledrejection",e=>{const el=document.getElementById("info"); if(el) el.innerHTML+="<span style=\"color:#f66\">REJECTED: "+(e.reason&&e.reason.message||e.reason)+" "+String(e.reason&&e.reason.stack||"").slice(0,400)+"</span><br>";});</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { TilesRenderer } from '3d-tiles-renderer';
+import { GLTFExtensionsPlugin, ReorientationPlugin, TilesFadePlugin } from '3d-tiles-renderer/plugins';
+const Q=new URLSearchParams(location.search);
+const sites=await (await fetch('sites/index.json')).json(); const sel=document.getElementById('site');
+for(const s of sites){const o=document.createElement('option');o.value=s.listing;o.textContent=s.title;sel.appendChild(o);}
+sel.value=Q.get('site')&&sites.find(s=>s.listing===Q.get('site'))?Q.get('site'):sites[0].listing;
+function sunPos(lat, lon, date){
+  const jd = date.getTime()/86400000 + 2440587.5, jc=(jd-2451545)/36525, r=Math.PI/180;
+  const L0=(280.46646+jc*(36000.76983+jc*0.0003032))%360, M=357.52911+jc*(35999.05029-0.0001537*jc), e=0.016708634-jc*(0.000042037+0.0000001267*jc);
+  const C=Math.sin(M*r)*(1.914602-jc*(0.004817+0.000014*jc))+Math.sin(2*M*r)*(0.019993-0.000101*jc)+Math.sin(3*M*r)*0.000289;
+  const om=125.04-1934.136*jc, lam=L0+C-0.00569-0.00478*Math.sin(om*r);
+  const eps=23+(26+(21.448-jc*(46.815+jc*(0.00059-jc*0.001813)))/60)/60+0.00256*Math.cos(om*r);
+  const decl=Math.asin(Math.sin(eps*r)*Math.sin(lam*r)); const y=Math.tan(eps*r/2)**2;
+  const eqt=4/r*(y*Math.sin(2*L0*r)-2*e*Math.sin(M*r)+4*e*y*Math.sin(M*r)*Math.cos(2*L0*r)-0.5*y*y*Math.sin(4*L0*r)-1.25*e*e*Math.sin(2*M*r));
+  const mins=date.getUTCHours()*60+date.getUTCMinutes()+date.getUTCSeconds()/60; const tst=((mins+eqt+4*lon)%1440+1440)%1440;
+  let ha=tst/4<0?tst/4+180:tst/4-180; const cz=Math.sin(lat*r)*Math.sin(decl)+Math.cos(lat*r)*Math.cos(decl)*Math.cos(ha*r);
+  const zen=Math.acos(Math.max(-1,Math.min(1,cz))); let az=Math.acos(Math.max(-1,Math.min(1,(Math.sin(lat*r)*cz-Math.sin(decl))/(Math.cos(lat*r)*Math.sin(zen)))))/r;
+  az = ha>0 ? (az+180)%360 : (540-az)%360; return {az, el:90-zen/r};
+}
+function ptDate(doy, hour){ const d=new Date(Date.UTC(2026,0,1)); d.setUTCDate(doy); const m=d.getUTCMonth()+1, dd=d.getUTCDate(); const dst=(m>3&&m<11)||(m===3&&dd>=8); return new Date(Date.UTC(2026,0,doy,0,0,0)+(hour+(dst?7:8))*3600000); }
+const scene=new THREE.Scene(); scene.background=new THREE.Color(0x0b0f16);
+const renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setSize(innerWidth,innerHeight); renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap; document.body.appendChild(renderer.domElement);
+const camera=new THREE.PerspectiveCamera(50,innerWidth/innerHeight,0.5,5000); camera.position.set(90,110,130); const controls=new OrbitControls(camera,renderer.domElement);
+scene.add(new THREE.HemisphereLight(0xaac4ff,0x303040,0.6)); scene.add(new THREE.AmbientLight(0xffffff,0.55));
+const sun=new THREE.DirectionalLight(0xfff2d6,2.2); sun.castShadow=true; sun.shadow.mapSize.set(4096,4096); const sc=sun.shadow.camera; sc.left=-250; sc.right=250; sc.top=250; sc.bottom=-250; sc.near=1; sc.far=1500; scene.add(sun); scene.add(sun.target);
+let ground=null; const far=new THREE.Mesh(new THREE.PlaneGeometry(4000,4000), new THREE.MeshStandardMaterial({color:0x1b1f28})); far.rotation.x=-Math.PI/2; far.position.y=-40; scene.add(far);
+let site=null, fpGroup=new THREE.Group(), roomGroup=new THREE.Group(), tiles=null; scene.add(fpGroup); scene.add(roomGroup);
+// ENU (e,n,up) -> three (x=e, y=up, z=-n)
+const T=(e,n,u)=>new THREE.Vector3(e,u,-n);
+async function load(listing){
+  scene.remove(fpGroup); fpGroup=new THREE.Group(); scene.add(fpGroup); scene.remove(roomGroup); roomGroup=new THREE.Group(); scene.add(roomGroup);
+  site=await (await fetch(`sites/${listing}/site.json`)).json(); const entry=sites.find(s=>s.listing===listing);
+  // terrain heightfield (ENU grid, heights relative to block median)
+  if(ground) scene.remove(ground);
+  const tr=site.terrain; const geo=new THREE.PlaneGeometry(tr.cell*(tr.nx-1), tr.cell*(tr.nn-1), tr.nx-1, tr.nn-1); geo.rotateX(-Math.PI/2);
+  const pos=geo.attributes.position; // after rotation: x east, z = -north; vertices ordered rows by (original y) descending
+  for(let i=0;i<pos.count;i++){ const x=pos.getX(i), z=pos.getZ(i); const j=Math.round((x-tr.x0)/tr.cell), k=Math.round((-z-tr.n0)/tr.cell); const h=tr.heights[Math.max(0,Math.min(tr.nn-1,k))][Math.max(0,Math.min(tr.nx-1,j))]; pos.setY(i,h); }
+  geo.computeVertexNormals(); ground=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:0x2a2f3a,roughness:1})); ground.receiveShadow=true; ground.position.set((tr.x0+tr.cell*(tr.nx-1)/2),0,-(tr.n0+tr.cell*(tr.nn-1)/2)); scene.add(ground);
+  const matB=new THREE.MeshStandardMaterial({color:0xcfd6e0,roughness:.9}), matT=new THREE.MeshStandardMaterial({color:0xffb347});
+  const matX=new THREE.MeshStandardMaterial({color:0xffb347,transparent:true,opacity:0.18,depthWrite:false});
+  for(const b of site.buildings){ const shp=new THREE.Shape(b.ring.map(p=>new THREE.Vector2(p[0],-p[1]))); const isT=b.id===site.building.id; const geo=new THREE.ExtrudeGeometry(shp,{depth:b.height+25,bevelEnabled:false}); geo.rotateX(-Math.PI/2); geo.translate(0,b.ground-25,0);
+    const m=new THREE.Mesh(geo,isT?matX:matB); m.castShadow=!isT; m.receiveShadow=true; fpGroup.add(m);
+    if(isT){ const e=new THREE.LineSegments(new THREE.EdgesGeometry(geo),new THREE.LineBasicMaterial({color:0xffb347})); fpGroup.add(e); } }
+  for(const f of site.facades_street){ const a=T(f.a[0],f.a[1],site.building.ground+0.2), b=T(f.b[0],f.b[1],site.building.ground+0.2); const l=new THREE.Line(new THREE.BufferGeometry().setFromPoints([a,b]),new THREE.LineBasicMaterial({color:0x00e5ff})); fpGroup.add(l); }
+  // rooms placed in world
+  let html=`<b>${site.address}</b><br>building ${site.building.height} m, ~${site.storeys_est} storeys, floor ${site.floor}<br>street facades: ${site.facades_street.map(f=>f.bearing+'° '+f.street).join(', ')}<br>`;
+  let roomNames=entry.rooms||[]; try{ const apt=await (await fetch(`apartments/${listing}.json`)).json(); roomNames=[...new Set([...apt.rooms.filter(r=>r.per_month_hours).map(r=>r.name), ...roomNames])]; }catch(e){}
+  if(Q.get('room')) roomNames=[Q.get('room'), ...roomNames.filter(n=>n!==Q.get('room'))];
+  for(const rn of roomNames){
+    try{ const w=await (await fetch(`rooms/${rn}_world.json`)).json();
+      let glbUrl=`rooms/${rn}.glb`; try{ const h=await fetch(`rooms/${rn}_polished.glb`,{method:'HEAD'}); if(h.ok) glbUrl=`rooms/${rn}_polished.glb`; }catch(e){}
+      const glb=await new GLTFLoader().loadAsync(glbUrl); const rg=new THREE.Group();
+      glb.scene.traverse(o=>{ if(!o.isMesh) return; const nm=(o.name||'')+(o.parent?.name||'');
+        if(nm.startsWith('pglass')){ const m=o.clone(); m.geometry=o.geometry.clone(); m.material=new THREE.MeshPhysicalMaterial({color:0xdfeefa,transparent:true,opacity:0.12,roughness:0.05,metalness:0,side:THREE.DoubleSide,depthWrite:false}); rg.add(m); }
+        else if(nm.startsWith('poutside')){ /* billboards are not used in the city: the real exterior is outside */ }
+        else if(nm.startsWith('pwall')||nm.startsWith('pfloor')||nm.startsWith('preveal')||nm.startsWith('pframe')||nm.startsWith('pbase')){ const m=o.clone(); m.geometry=o.geometry.clone(); m.geometry.computeVertexNormals(); m.material=o.material.map?new THREE.MeshStandardMaterial({map:o.material.map,side:THREE.DoubleSide,roughness:0.95}):new THREE.MeshStandardMaterial({color:o.material.color,side:THREE.DoubleSide,roughness:0.9}); m.castShadow=true; m.receiveShadow=true; rg.add(m); }
+        else if(nm.startsWith('pceiling')){ const m=o.clone(); m.geometry=o.geometry.clone(); m.geometry.computeVertexNormals(); m.material=new THREE.MeshStandardMaterial({color:o.material.color,side:THREE.DoubleSide}); m.castShadow=true; rg.add(m); }
+        else if(nm.startsWith('lwall')||nm.startsWith('lfloor')){ const m=o.clone(); m.geometry=o.geometry.clone(); m.geometry.computeVertexNormals(); m.material=o.material.map?new THREE.MeshStandardMaterial({map:o.material.map,side:THREE.DoubleSide,roughness:0.95}):new THREE.MeshStandardMaterial({color:0xddd,side:THREE.DoubleSide}); m.castShadow=true; m.receiveShadow=true; rg.add(m); }
+        else if(nm.startsWith('lceiling')){ const m=o.clone(); m.geometry=o.geometry.clone(); m.geometry.computeVertexNormals(); m.material=new THREE.MeshStandardMaterial({colorWrite:false,side:THREE.DoubleSide}); m.castShadow=true; rg.add(m); } });
+      rg.rotation.y=-w.yaw_deg*Math.PI/180; rg.position.set(w.shift_en[0], w.z0_m, -w.shift_en[1]); roomGroup.add(rg); if(!roomGroup.userData.first || Q.get('room')===rn) roomGroup.userData.first=w;
+      if(Q.get('debug')==='1'){ rg.updateMatrixWorld(true); const bb=new THREE.Box3().setFromObject(rg); let nm=0, nmap=0; rg.traverse(o=>{ if(o.isMesh){ nm++; if(o.material.map) nmap++; } });
+        html+=`<span style="color:#ff0">debug ${rn}: ${nm} meshes, ${nmap} with textures, bbox x ${bb.min.x.toFixed(1)}..${bb.max.x.toFixed(1)} y ${bb.min.y.toFixed(1)}..${bb.max.y.toFixed(1)} z ${bb.min.z.toFixed(1)}..${bb.max.z.toFixed(1)}; yaw ${w.yaw_deg} shift ${w.shift_en} z0 ${w.z0_m}; window0 ${w.windows[0].world_en} z ${w.windows[0].z_m}</span><br>`; }
+      for(const win of w.windows){ const c=T(win.world_en[0],win.world_en[1],win.z_m); const n=T(win.normal_en[0],win.normal_en[1],0); const rect=new THREE.Mesh(new THREE.PlaneGeometry(win.width_m,win.height_m),new THREE.MeshBasicMaterial({color:0x00e5ff,side:THREE.DoubleSide,transparent:true,opacity:0.25})); rect.position.copy(c.clone().add(n.clone().multiplyScalar(0.3))); rect.lookAt(c.clone().add(n)); roomGroup.add(rect); roomGroup.add(new THREE.ArrowHelper(n,c,3,0x00e5ff)); }
+      html+=`<b>${rn}</b>: facing ${w.facade.bearing}° (${w.facade.street}), yaw ${w.yaw_deg}°, ${w.how}<br>`+w.sun.map(s=>`&nbsp;window ${s.width_m}×${s.height_m} m facing ${s.bearing}°: Dec ${s.per_month_hours[12]} h/day, Jun ${s.per_month_hours[6]} h/day, ${s.annual_hours} h/yr`).join('<br>')+'<br>';
+    }catch(e){ html+=`${rn}: not placed<br>`; }
+  }
+  const tb=site.building; const cx=tb.ring.reduce((a,p)=>a+p[0],0)/tb.ring.length, cy=tb.ring.reduce((a,p)=>a+p[1],0)/tb.ring.length;
+  if(Q.get('view')==='room' && roomGroup.children.length){ const rg=roomGroup.children[0]; const w=roomGroup.userData.first; const pc=w.polygon_world.reduce((a,p)=>[a[0]+p[0]/w.polygon_world.length, a[1]+p[1]/w.polygon_world.length],[0,0]); const c=new THREE.Vector3(pc[0], w.z0_m+1.5, -pc[1]); const wc=w.windows[0]; const t=new THREE.Vector3(wc.world_en[0], wc.z_m, -wc.world_en[1]); const dir=t.clone().sub(c); dir.y=0; dir.normalize(); camera.position.copy(c.clone().sub(dir.clone().multiplyScalar(1.5))); controls.target.copy(t); camera.fov=70; camera.updateProjectionMatrix(); }
+  else if(Q.get('close')==='1'){ camera.position.set(cx+35, tb.ground+tb.height+30, -cy+45); controls.target.set(cx, tb.ground+8, -cy); } else { controls.target.set(cx, tb.ground, -cy); }
+  if(Q.get('debug')==='1'){ html+=`<span style="color:#ff0">camera ${camera.position.x.toFixed(1)},${camera.position.y.toFixed(1)},${camera.position.z.toFixed(1)} target ${controls.target.x.toFixed(1)},${controls.target.y.toFixed(1)},${controls.target.z.toFixed(1)}</span>`; }
+  document.getElementById('info').innerHTML=html; update();
+}
+document.getElementById('tiles').onclick=async()=>{
+  if(tiles) return; const t=new TilesRenderer('/v1/3dtiles/root.json'); tiles=t;
+  const draco=new DRACOLoader(); draco.setDecoderPath('https://unpkg.com/three@0.170.0/examples/jsm/libs/draco/gltf/');
+  t.registerPlugin(new GLTFExtensionsPlugin({dracoLoader:draco})); t.registerPlugin(new TilesFadePlugin());
+  t.registerPlugin(new ReorientationPlugin({lat:site.lat*Math.PI/180, lon:site.lon*Math.PI/180, height:site.ground0_m, up:'+y', recenter:true}));
+  t.setCamera(camera); t.setResolutionFromRenderer(camera,renderer); t.errorTarget=6;
+  t.addEventListener('load-model',e=>{ e.scene.traverse(o=>{ if(o.isMesh){ o.castShadow=true; o.receiveShadow=true; } }); });
+  scene.add(t.group); document.getElementById('tiles').textContent='3D Tiles loading…'; document.getElementById('fp').checked=false; fpGroup.visible=false;
+};
+document.getElementById('fp').onchange=e=>fpGroup.visible=e.target.checked;
+const dayEl=document.getElementById('day'), hourEl=document.getElementById('hour');
+function update(){ if(!site) return; const doy=+dayEl.value, hour=+hourEl.value; const date=ptDate(doy,hour); const {az,el}=sunPos(site.lat,site.lon,date); const r=Math.PI/180;
+  const e=Math.cos(el*r)*Math.sin(az*r), n=Math.cos(el*r)*Math.cos(az*r), u=Math.sin(el*r); sun.position.set(e*800,u*800,-n*800); sun.intensity=el>0?2.2:0; scene.background.setHSL(0.6,0.5,Math.max(0.03,Math.min(0.55,0.05+el/120)));
+  document.getElementById('dv').textContent=date.toISOString().slice(5,10); document.getElementById('hv').textContent=hour.toFixed(2); }
+dayEl.oninput=hourEl.oninput=update;
+let playing=null; document.getElementById('play').onclick=()=>{ if(playing){ cancelAnimationFrame(playing); playing=null; return; } const t0=performance.now(); const step=()=>{ const t=(performance.now()-t0)/10000; dayEl.value=1+Math.floor((t%1)*364); update(); playing=requestAnimationFrame(step); }; step(); }; sel.onchange=()=>load(sel.value); await load(sel.value);
+if(Q.get('tiles')==='1'){ document.getElementById('tiles').click(); if(Q.get('fp')==='1'){ document.getElementById('fp').checked=true; fpGroup.visible=true; } }
+window.__tileStatus=()=>tiles?{loaded:tiles.stats?.visible??'?', group:tiles.group.children.length}:null;
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+(function loop(){requestAnimationFrame(loop);controls.update(); if(tiles){ camera.updateMatrixWorld(); tiles.update(); } renderer.render(scene,camera)})();
+</script></body></html>

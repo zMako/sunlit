@@ -1,0 +1,180 @@
+{
+ "name": "p2_gs-22612_kitchen_0",
+ "source": "wallwrap",
+ "listing": "gs-22612",
+ "plan": null,
+ "plan_room": "Kitchen (dark parquet floor)",
+ "type": "kitchen",
+ "ceiling_m": 2.6,
+ "width_m": 3.8,
+ "depth_m": 4.2,
+ "area_m2": 15.96,
+ "polygon": [
+  [
+   0.0,
+   0.0
+  ],
+  [
+   3.8,
+   0.0
+  ],
+  [
+   3.8,
+   4.2
+  ],
+  [
+   0.0,
+   4.2
+  ]
+ ],
+ "edges": [
+  {
+   "a": [
+    0.0,
+    0.0
+   ],
+   "b": [
+    3.8,
+    0.0
+   ],
+   "dir": [
+    1.0,
+    0.0
+   ],
+   "n": [
+    0.0,
+    -1.0
+   ],
+   "offset": 0.0,
+   "len": 3.8,
+   "inferred": false,
+   "axis": 1
+  },
+  {
+   "a": [
+    3.8,
+    0.0
+   ],
+   "b": [
+    3.8,
+    4.2
+   ],
+   "dir": [
+    0.0,
+    1.0
+   ],
+   "n": [
+    1.0,
+    -0.0
+   ],
+   "offset": 3.8,
+   "len": 4.2,
+   "inferred": false,
+   "axis": 0
+  },
+  {
+   "a": [
+    3.8,
+    4.2
+   ],
+   "b": [
+    0.0,
+    4.2
+   ],
+   "dir": [
+    -1.0,
+    0.0
+   ],
+   "n": [
+    0.0,
+    1.0
+   ],
+   "offset": 4.2,
+   "len": 3.8,
+   "inferred": false,
+   "axis": 1
+  },
+  {
+   "a": [
+    0.0,
+    4.2
+   ],
+   "b": [
+    0.0,
+    0.0
+   ],
+   "dir": [
+    0.0,
+    -1.0
+   ],
+   "n": [
+    -1.0,
+    -0.0
+   ],
+   "offset": 0.0,
+   "len": 4.2,
+   "inferred": false,
+   "axis": 0
+  }
+ ],
+ "windows": [],
+ "doors": [],
+ "openings_other": [],
+ "bounds": [
+  [
+   0.0,
+   0.0,
+   0.0
+  ],
+  [
+   3.8,
+   2.6,
+   4.2
+  ]
+ ],
+ "cameras": [],
+ "photos": [
+  0
+ ],
+ "texture_provenance": {
+  "N": [
+   {
+    "photo": 0,
+    "u0": 0.0,
+    "u1": 3.8,
+    "px_per_m": 120.0,
+    "partial": true
+   }
+  ],
+  "E": [],
+  "S": [],
+  "W": []
+ },
+ "flat_walls": [
+  "E",
+  "S",
+  "W"
+ ],
+ "paint_rgb": [
+  255,
+  218,
+  168
+ ],
+ "floor_rgb": [
+  76,
+  58,
+  49
+ ],
+ "ceil_rgb": [
+  255,
+  218,
+  203
+ ],
+ "build_s": 6.3,
+ "log": [
+  "photo 0: exposure gain 1.45",
+  "photo 0: scale from the corner vertical (H=2.6), far wall seen 4.11 m from its left corner",
+  "photo 0: 2 faces, K vggt, far=N",
+  "wall N: plan door at 0.31-1.21 m dropped, the photo shows wall there"
+ ]
+}

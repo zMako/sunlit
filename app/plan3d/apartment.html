@@ -1,0 +1,136 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Apartment · procedural from plan</title>
+<style>
+html,body{margin:0;height:100%;background:#0b0f16;color:#e8ecf2;font:13px/1.4 system-ui,-apple-system,Segoe UI,sans-serif;overflow:hidden}
+canvas{display:block}
+#ui{position:fixed;left:12px;top:12px;background:rgba(14,18,26,.86);padding:12px 14px;border-radius:12px;max-width:360px;backdrop-filter:blur(6px)}
+#ui b{color:#fff} button{background:#1f2937;color:#e8ecf2;border:1px solid #334155;border-radius:7px;padding:4px 10px;margin:2px 2px 2px 0;cursor:pointer} button.on{background:#2563eb;border-color:#3b82f6}
+.rooms button{font-size:12px} .dim{color:#9aa4b2;font-size:12px} input[type=range]{width:160px;vertical-align:middle}
+#hint{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:rgba(14,18,26,.8);padding:6px 12px;border-radius:9px;color:#cbd5e1;font-size:12px;display:none}
+#furn{position:fixed;right:12px;top:12px;width:340px;max-height:80vh;overflow:auto;background:rgba(14,18,26,.88);padding:10px 12px;border-radius:12px;backdrop-filter:blur(6px);display:none}
+.frow{margin:4px 0} .fitem{padding:4px 6px;border-left:3px solid #2dd4bf;margin:3px 0;background:rgba(255,255,255,.04);border-radius:4px;cursor:pointer} .fitem.sel{background:rgba(59,130,246,.25)} .fitem.bad{border-color:#ef4444} .fitem.warn{border-color:#f59e0b}
+.fname{font-weight:600} .fdim{color:#9aa4b2;font-size:12px} .fprice{float:right} .fprob{color:#fca5a5;font-size:12px} .ok{color:#86efac} .bad{color:#fca5a5} #furn a{color:#93c5fd}
+#toast{position:fixed;left:50%;top:14px;transform:translateX(-50%);background:rgba(14,18,26,.9);padding:6px 12px;border-radius:9px;opacity:0;transition:opacity .3s;pointer-events:none}
+#total{margin-top:6px}
+#cross{position:fixed;left:50%;top:50%;width:6px;height:6px;margin:-3px;border-radius:3px;background:rgba(255,255,255,.7);display:none}
+</style>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.170.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.170.0/examples/jsm/"}}</script>
+</head><body>
+<div id="ui"><b>Apartment</b> <span id="unit" class="dim"></span><br>
+<div style="margin:6px 0"><button id="bDoll" class="on">dollhouse</button><button id="bWalk">walk</button> <span class="dim">section height</span> <input id="clip" type="range" min="0.6" max="2.8" step="0.05" value="1.55"> <span id="clipv" class="dim">1.55 m</span></div>
+<div class="rooms" id="rooms"></div>
+<div id="info" class="dim"></div>
+<div id="total" class="dim"></div><div><button id="bAutoAll">Auto-furnish all rooms</button> <button id="bClearSel">Hide furniture panel</button></div></div>
+<div id="hint">WASD move · mouse look · Esc leaves · click a room name to jump</div><div id="cross"></div>
+<div id="furn"></div><div id="toast"></div>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { Sky } from 'three/addons/objects/Sky.js';
+import { Apartment, MaterialLib } from './build.js';
+import { Furnish } from '../furnish/furnish.js';
+
+const Q = new URLSearchParams(location.search); const unit = Q.get('unit') || 'test_unit';
+const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(innerWidth, innerHeight); renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05; renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.localClippingEnabled = true;
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.05, 300);
+const orbit = new OrbitControls(camera, renderer.domElement); orbit.enableDamping = true; orbit.dampingFactor = 0.08; orbit.maxPolarAngle = Math.PI * 0.49;
+const walk = new PointerLockControls(camera, renderer.domElement);
+
+// sky + environment
+const sky = new Sky(); sky.scale.setScalar(2000); scene.add(sky);
+const sunDir = new THREE.Vector3().setFromSphericalCoords(1, THREE.MathUtils.degToRad(52), THREE.MathUtils.degToRad(-35));
+Object.assign(sky.material.uniforms.turbidity, { value: 4 }); sky.material.uniforms.rayleigh.value = 1.6; sky.material.uniforms.mieCoefficient.value = 0.004; sky.material.uniforms.mieDirectionalG.value = 0.8; sky.material.uniforms.sunPosition.value.copy(sunDir);
+const pmrem = new THREE.PMREMGenerator(renderer); scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture; scene.environmentIntensity = 0.55;
+const hemi = new THREE.HemisphereLight(0xcfe3ff, 0x6b5a48, 0.35); scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xfff3e0, 2.6); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.02; sun.shadow.radius = 4; scene.add(sun); scene.add(sun.target);
+
+// ground outside
+const ground = new THREE.Mesh(new THREE.CircleGeometry(80, 48), new THREE.MeshStandardMaterial({ color: 0x9aa39a, roughness: 1 })); ground.rotation.x = -Math.PI / 2; ground.position.y = -0.02; ground.receiveShadow = true; scene.add(ground);
+
+const lib = await new MaterialLib('../furnish/materials/').load();
+const layout = await (await fetch(`layouts/${unit}.json`)).json();
+const apt = new Apartment(layout, lib); scene.add(apt.group);
+const bb = apt.bounds; const center = bb.getCenter(new THREE.Vector3()); const size = bb.getSize(new THREE.Vector3()); const ext = Math.max(size.x, size.z);
+sun.position.copy(center).add(sunDir.clone().multiplyScalar(ext * 2.5)); sun.target.position.copy(center); const sc = sun.shadow.camera; sc.left = sc.bottom = -ext; sc.right = sc.top = ext; sc.near = 0.5; sc.far = ext * 6; sc.updateProjectionMatrix();
+const floorPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+window.apartment = { layout, roomMeshes: apt.roomMeshes, floorPlane, scene, camera, renderer, apt };
+
+// ---------- furnishing: one Furnish per room, one panel, the active room gets input and the panel ----------
+const furnEl = document.getElementById('furn'), toastEl = document.getElementById('toast'); const furn = {}; let activeRoom = null;
+function unitTotal() { let total = 0, n = 0, prob = 0; for (const f of Object.values(furn)) { for (const it of f.items) { total += +it.spec.price_usd || 0; n++; prob += it.problems.length; } }
+  document.getElementById('total').textContent = n ? `Furniture: ${n} items · $${total.toFixed(0)}${prob ? ` · ${prob} fit problem${prob > 1 ? 's' : ''}` : ' · all fit'}` : 'No furniture yet'; }
+for (const r of layout.rooms) {
+  try { const res = await fetch(`../rooms/${layout.unit}__${r.id}.json`); if (!res.ok) continue; const meta = await res.json();
+    const f = new Furnish({ scene, camera, renderer, controls: orbit, panelEl: null, toastEl, active: false, onChange: unitTotal, title: `${r.name} · furniture` });
+    furn[r.id] = f; f.setRoom(`${layout.unit}__${r.id}`, meta).then(unitTotal);
+  } catch (e) { console.warn('furnish', r.id, e); }
+}
+function activateRoom(id) {
+  if (activeRoom && furn[activeRoom]) { furn[activeRoom].setActive(false); furn[activeRoom].panelEl = null; }
+  activeRoom = id; const f = furn[id]; if (!f) { furnEl.style.display = 'none'; return; }
+  f.panelEl = furnEl; f.setActive(true); f._panel(); furnEl.style.display = 'block';
+}
+function setFurnClip(planes) { for (const f of Object.values(furn)) f.setClipping(planes); }
+document.getElementById('bClearSel').onclick = () => { if (activeRoom && furn[activeRoom]) { furn[activeRoom].setActive(false); furn[activeRoom].panelEl = null; } activeRoom = null; furnEl.style.display = 'none'; };
+document.getElementById('bAutoAll').onclick = async () => { const b = document.getElementById('bAutoAll'); b.disabled = true; for (const r of layout.rooms) { if (!furn[r.id] || ['hallway', 'closet', 'bathroom'].includes(r.type)) continue; b.textContent = `arranging ${r.name}…`; await furn[r.id].auto(); } b.textContent = 'Auto-furnish all rooms'; b.disabled = false; unitTotal(); };
+// click a room label or floor in dollhouse view to activate it (only when not dragging furniture)
+const pickRay = new THREE.Raycaster(); let downAt = null;
+renderer.domElement.addEventListener('pointerdown', e => { downAt = [e.clientX, e.clientY]; });
+renderer.domElement.addEventListener('pointerup', e => { if (!downAt || mode !== 'doll') return; const moved = Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]); downAt = null; if (moved > 4) return;
+  const m = new THREE.Vector2((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); pickRay.setFromCamera(m, camera);
+  const furnHit = pickRay.intersectObjects(Object.values(furn).map(f => f.group), true).length > 0; if (furnHit) return;   // furniture handles its own clicks
+  const targets = []; for (const [id, r] of Object.entries(apt.roomMeshes)) { r.floor.userData.roomId = id; r.label.userData.roomId = id; targets.push(r.floor, r.label); }
+  const hit = pickRay.intersectObjects(targets, false)[0]; if (hit) activateRoom(hit.object.userData.roomId); });
+
+// ---------- views ----------
+let mode = 'doll'; const clipPlane = new THREE.Plane(new THREE.Vector3(0, -1, 0), 1.55);
+function applyClip(on) { const planes = on ? [clipPlane] : []; apt.group.traverse(o => { if (o.isMesh && o.material) { const ms = Array.isArray(o.material) ? o.material : [o.material]; ms.forEach(m => { m.clippingPlanes = planes; m.clipShadows = true; }); } }); }
+function setDoll() {
+  mode = 'doll'; if (walk.isLocked) walk.unlock(); document.getElementById('bDoll').classList.add('on'); document.getElementById('bWalk').classList.remove('on'); document.getElementById('hint').style.display = 'none'; document.getElementById('cross').style.display = 'none';
+  apt.ceilingMeshes.forEach(m => m.visible = false); apt.labels.forEach(l => l.visible = true); applyClip(true); setFurnClip([clipPlane]); orbit.enabled = true;
+  camera.fov = 45; camera.position.set(center.x + ext * 0.75, ext * 0.95 + 2, center.z + ext * 0.9); orbit.target.set(center.x, 0.6, center.z); camera.updateProjectionMatrix(); orbit.update();
+}
+function setWalk(roomId, yawDeg) {
+  mode = 'walk'; document.getElementById('bWalk').classList.add('on'); document.getElementById('bDoll').classList.remove('on'); document.getElementById('hint').style.display = 'block'; document.getElementById('cross').style.display = 'block';
+  apt.ceilingMeshes.forEach(m => m.visible = true); apt.labels.forEach(l => l.visible = false); applyClip(false); setFurnClip([]); orbit.enabled = false;
+  if (roomId && furn[roomId]) activateRoom(roomId);
+  const r = apt.roomMeshes[roomId] || Object.values(apt.roomMeshes)[0]; const c = r.center; camera.fov = 70; camera.updateProjectionMatrix();
+  camera.position.set(c.x, 1.6, c.z); const yaw = THREE.MathUtils.degToRad(yawDeg ?? 35); camera.rotation.set(0, 0, 0); camera.lookAt(c.x + Math.sin(yaw), 1.5, c.z + Math.cos(yaw));
+  if (!Q.has('nolock')) renderer.domElement.requestPointerLock?.();
+}
+document.getElementById('bDoll').onclick = setDoll; document.getElementById('bWalk').onclick = () => setWalk(currentRoom());
+document.getElementById('clip').oninput = e => { clipPlane.constant = +e.target.value; document.getElementById('clipv').textContent = (+e.target.value).toFixed(2) + ' m'; };
+renderer.domElement.addEventListener('click', () => { if (mode === 'walk' && !walk.isLocked && !Q.has('nolock')) walk.lock(); });
+function currentRoom() { let best = null, bd = Infinity; for (const [id, r] of Object.entries(apt.roomMeshes)) { const d = r.center.distanceTo(new THREE.Vector3(camera.position.x, 0, camera.position.z)); if (d < bd) { bd = d; best = id; } } return best; }
+
+// room buttons + info
+document.getElementById('unit').textContent = `${layout.unit} · ${layout.rooms.length} rooms · ceiling ${apt.ceil.toFixed(2)} m · scale ${layout.scale?.from?.join('+') || '?'}`;
+document.getElementById('rooms').innerHTML = layout.rooms.map(r => `<button data-r="${r.id}">${r.name} <span class="dim">${(r.area_m2 || 0).toFixed(1)} m²</span></button>`).join('');
+document.getElementById('rooms').querySelectorAll('button').forEach(b => b.onclick = () => setWalk(b.dataset.r));
+const matIds = new Set(); apt.group.traverse(o => { if (o.isMesh && o.material?.userData?.materialId) matIds.add(o.material.userData.materialId); });
+document.getElementById('info').textContent = `${layout.walls.length} walls · ${layout.openings.length} openings · ${(layout.fixtures || []).length} fixtures · materials: ${[...matIds].join(', ')}`;
+
+// walking
+const keys = {}; addEventListener('keydown', e => { keys[e.code] = true; if (e.code === 'Escape' && mode === 'walk') setDoll(); }); addEventListener('keyup', e => keys[e.code] = false);
+const vel = new THREE.Vector3(); const clock = new THREE.Clock();
+function stepWalk(dt) {
+  const f = (keys.KeyW ? 1 : 0) - (keys.KeyS ? 1 : 0), s = (keys.KeyD ? 1 : 0) - (keys.KeyA ? 1 : 0); const speed = keys.ShiftLeft ? 3.2 : 1.7;
+  const fwd = new THREE.Vector3(); camera.getWorldDirection(fwd); fwd.y = 0; fwd.normalize(); const right = new THREE.Vector3().crossVectors(fwd, new THREE.Vector3(0, 1, 0));
+  vel.copy(fwd).multiplyScalar(f).add(right.multiplyScalar(s)); if (vel.lengthSq() > 0) vel.normalize().multiplyScalar(speed * dt);
+  const nx = camera.position.x + vel.x, nz = camera.position.z + vel.z; const m = 0.3;
+  if (nx > bb.min.x + m && nx < bb.max.x - m) camera.position.x = nx; if (nz > bb.min.z + m && nz < bb.max.z - m) camera.position.z = nz; camera.position.y = 1.6;
+}
+const v0 = Q.get('view'); if (v0 === 'walk') setWalk(Q.get('room'), Q.has('yaw') ? +Q.get('yaw') : undefined); else setDoll();
+setTimeout(() => { if (mode === 'doll') setFurnClip([clipPlane]); }, 1500);
+if (Q.has('clip')) { clipPlane.constant = +Q.get('clip'); document.getElementById('clip').value = Q.get('clip'); document.getElementById('clipv').textContent = (+Q.get('clip')).toFixed(2) + ' m'; }
+addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+let roomTick = 0;
+(function loop() { requestAnimationFrame(loop); const dt = Math.min(clock.getDelta(), 0.05); if (mode === 'walk') { stepWalk(dt); if ((roomTick += dt) > 0.5) { roomTick = 0; const r = currentRoom(); if (r && r !== activeRoom && furn[r]) activateRoom(r); } } else orbit.update(); renderer.render(scene, camera); })();
+if (Q.has('furn')) activateRoom(Q.get('furn'));
+window.setWalk = setWalk; window.setDoll = setDoll;
+</script></body></html>

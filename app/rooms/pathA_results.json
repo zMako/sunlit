@@ -1,0 +1,70 @@
+[
+ {
+  "name": "p2_gs-20667_bedroom_5_A",
+  "area_m2": 16.57,
+  "vlm": [
+   3.4,
+   4.2,
+   null
+  ],
+  "ratio": 1.16,
+  "windows": 1,
+  "doors": 1,
+  "wall_cov": 0.39,
+  "build_s": 12,
+  "complete_s": 23,
+  "ok": true,
+  "log": "(3 inferred), 16.57 m2, 1 windows, 1 doors (heights [1.99]), dirs [42, 88, 178], 9.7s vlm rectangle_with_bay 3.4x4.2 m ceil 2.6 conf 0.35; h_scale 0.55 (pairs [0.56], camera bound 0.50); plan: no bedroom candidates with dimensions; fit skipped (h_scale); pano seen px:0.85 nx:0.00 py:0.23 ny:0.56 pz:0.59 nz:0.00"
+ },
+ {
+  "name": "p2_gs-20666_living_5_A",
+  "area_m2": 26.25,
+  "vlm": [
+   4.2,
+   5.6,
+   null
+  ],
+  "ratio": 1.12,
+  "windows": 2,
+  "doors": 4,
+  "wall_cov": 0.66,
+  "build_s": 14,
+  "complete_s": 22,
+  "ok": true,
+  "log": "(3 inferred), 26.25 m2, 2 windows, 4 doors (heights [1.51, 1.16, 1.28, 1.11]), dirs [2, 38, 92, 118], 11.6s vlm rectangle_with_bay 4.2x5.6 m ceil 2.6 conf 0.35; h_scale 0.73 (pairs [], camera bound 0.73); plan: no living candidates with dimensions; fit skipped (h_scale); pano seen px:0.35 nx:0.74 py:0.72 ny:0.68 pz:0.86 nz:0.45"
+ },
+ {
+  "name": "p2_gs-20665_kitchen_0_A",
+  "area_m2": 9.96,
+  "vlm": [
+   3.2,
+   2.6,
+   null
+  ],
+  "ratio": 1.2,
+  "windows": 1,
+  "doors": 1,
+  "wall_cov": 0.42,
+  "build_s": 14,
+  "complete_s": 23,
+  "ok": true,
+  "log": "(3 inferred), 9.96 m2, 1 windows, 1 doors (heights [2.03]), dirs [2, 58, 92], 11.3s vlm L 3.2x2.6 m ceil 3.0 conf 0.3; plan: no kitchen candidates with dimensions; scale from 1 door(s): ceiling 3.63 m; fit walls clamped to +-10% of VLM size; fit depth err 0.036->0.020; pano seen px:0.59 nx:0.13 py:0.12 ny:0.10 pz:0.95 nz:0.00"
+ },
+ {
+  "name": "p2_gs-22612_living_2_A",
+  "area_m2": 23.54,
+  "vlm": [
+   4.877,
+   3.962,
+   "floor_plan_candidate"
+  ],
+  "ratio": 1.22,
+  "windows": 0,
+  "doors": 2,
+  "wall_cov": 0.26,
+  "build_s": 12,
+  "complete_s": 19,
+  "ok": true,
+  "log": "(4 inferred), 23.54 m2, 0 windows, 2 doors (heights [1.28, 1.77]), dirs [178], 9.6s vlm rectangle_with_bay 5.5x6.0 m ceil 2.6 conf 0.3; plan plan_06.jpg 'Dining Room' 4.877x3.962 m (floor_plan_candidate, 19 cands, score 0.187); fit walls clamped to +-10% of VLM size; fit depth err 0.116->0.081; pano seen px:0.70 nx:0.00 py:0.32 ny:0.74 pz:0.56 nz:0.00"
+ }
+]

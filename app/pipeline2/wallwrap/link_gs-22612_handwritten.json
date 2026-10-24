@@ -1,0 +1,18 @@
+{"listing": "gs-22612",
+ "plans": {},
+ "photos": [
+  {"index": 3, "plan": "plans/plan_02.jpg", "room": "Living Room", "facing_walls": ["S", "W", "N"], "primary_wall": "W", "confidence": 0.5, "evidence": "corner living room, windows on the far (W) and right (N) walls; plans put the living room's exterior on N and W"},
+  {"index": 4, "plan": "plans/plan_01.jpg", "room": "Bedroom", "facing_walls": ["N", "E", "S"], "primary_wall": "E", "confidence": 0.4, "evidence": "one window on the far wall, louvered closet door on the left wall"},
+  {"index": 5, "plan": "plans/plan_02.jpg", "room": "Bedroom", "facing_walls": ["W", "N", "E"], "primary_wall": "N", "confidence": 0.3, "evidence": "bedroom with built-in closets and a sunlit window"}
+ ],
+ "rooms": [
+  {"plan": "plans/plan_02.jpg", "room": "Living Room", "type": "living", "photos": [3], "width_m": 6.858, "depth_m": 4.572, "ceiling_m": 2.6,
+   "walls": {"N": {"exterior": true, "openings": [{"kind": "window", "from_frac": 0.15, "to_frac": 0.55}]}, "W": {"exterior": true, "openings": [{"kind": "window", "from_frac": 0.2, "to_frac": 0.8}]}, "E": {"exterior": false, "openings": [{"kind": "opening", "from_frac": 0.3, "to_frac": 0.7}]}, "S": {"exterior": false, "openings": []}},
+   "name": "p2_gs-22612_living_wrap"},
+  {"plan": "plans/plan_01.jpg", "room": "Bedroom", "type": "bedroom", "photos": [4], "width_m": 4.572, "depth_m": 3.353, "ceiling_m": 2.6,
+   "walls": {"N": {"exterior": true, "openings": []}, "E": {"exterior": true, "openings": [{"kind": "window", "from_frac": 0.3, "to_frac": 0.7}]}, "S": {"exterior": false, "openings": [{"kind": "door", "from_frac": 0.05, "to_frac": 0.25}, {"kind": "closet", "from_frac": 0.6, "to_frac": 0.9}]}, "W": {"exterior": false, "openings": []}},
+   "name": "p2_gs-22612_bedroom_wrap"},
+  {"plan": "plans/plan_02.jpg", "room": "Bedroom", "type": "bedroom", "photos": [5], "width_m": 3.861, "depth_m": 4.42, "ceiling_m": 2.6,
+   "walls": {"N": {"exterior": true, "openings": [{"kind": "window", "from_frac": 0.3, "to_frac": 0.7}]}, "E": {"exterior": true, "openings": []}, "S": {"exterior": false, "openings": []}, "W": {"exterior": false, "openings": [{"kind": "door", "from_frac": 0.1, "to_frac": 0.3}]}},
+   "name": "p2_gs-22612_bedroom2_wrap"}
+ ]}

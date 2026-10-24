@@ -1,0 +1,231 @@
+{
+ "name": "p2_gs-22612_bedroom2_wrap",
+ "source": "wallwrap",
+ "listing": "gs-22612",
+ "plan": "plans/plan_02.jpg",
+ "plan_room": "Bedroom",
+ "type": "bedroom",
+ "ceiling_m": 2.6,
+ "width_m": 3.861,
+ "depth_m": 4.42,
+ "area_m2": 17.07,
+ "polygon": [
+  [
+   0.0,
+   0.0
+  ],
+  [
+   3.861,
+   0.0
+  ],
+  [
+   3.861,
+   4.42
+  ],
+  [
+   0.0,
+   4.42
+  ]
+ ],
+ "edges": [
+  {
+   "a": [
+    0.0,
+    0.0
+   ],
+   "b": [
+    3.861,
+    0.0
+   ],
+   "dir": [
+    1.0,
+    0.0
+   ],
+   "n": [
+    0.0,
+    -1.0
+   ],
+   "offset": 0.0,
+   "len": 3.861,
+   "inferred": false,
+   "axis": 1
+  },
+  {
+   "a": [
+    3.861,
+    0.0
+   ],
+   "b": [
+    3.861,
+    4.42
+   ],
+   "dir": [
+    0.0,
+    1.0
+   ],
+   "n": [
+    1.0,
+    -0.0
+   ],
+   "offset": 3.861,
+   "len": 4.42,
+   "inferred": false,
+   "axis": 0
+  },
+  {
+   "a": [
+    3.861,
+    4.42
+   ],
+   "b": [
+    0.0,
+    4.42
+   ],
+   "dir": [
+    -1.0,
+    0.0
+   ],
+   "n": [
+    0.0,
+    1.0
+   ],
+   "offset": 4.42,
+   "len": 3.861,
+   "inferred": false,
+   "axis": 1
+  },
+  {
+   "a": [
+    0.0,
+    4.42
+   ],
+   "b": [
+    0.0,
+    0.0
+   ],
+   "dir": [
+    0.0,
+    -1.0
+   ],
+   "n": [
+    -1.0,
+    -0.0
+   ],
+   "offset": 0.0,
+   "len": 4.42,
+   "inferred": false,
+   "axis": 0
+  }
+ ],
+ "windows": [
+  {
+   "kind": "window",
+   "edge": 1,
+   "s0": 0.25,
+   "s1": 2.442,
+   "sill_m": 0.66,
+   "height_m": 1.68,
+   "width_m": 2.192,
+   "center": [
+    3.861,
+    1.5,
+    1.346
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "src": "photo 5",
+   "wall": "E"
+  }
+ ],
+ "doors": [
+  {
+   "kind": "door",
+   "edge": 3,
+   "s0": 3.094,
+   "s1": 3.978,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "width_m": 0.884,
+   "center": [
+    0.0,
+    1.015,
+    0.884
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "src": "plan",
+   "wall": "W"
+  }
+ ],
+ "openings_other": [],
+ "bounds": [
+  [
+   0.0,
+   0.0,
+   0.0
+  ],
+  [
+   3.861,
+   2.6,
+   4.42
+  ]
+ ],
+ "cameras": [],
+ "photos": [
+  5
+ ],
+ "texture_provenance": {
+  "N": [
+   {
+    "photo": 5,
+    "u0": 0.0,
+    "u1": 3.86,
+    "px_per_m": 100.6,
+    "partial": false
+   }
+  ],
+  "E": [
+   {
+    "photo": 5,
+    "u0": 0.0,
+    "u1": 2.45,
+    "px_per_m": 94.9,
+    "partial": true
+   }
+  ],
+  "S": [],
+  "W": []
+ },
+ "flat_walls": [
+  "S",
+  "W"
+ ],
+ "paint_rgb": [
+  252,
+  250,
+  222
+ ],
+ "floor_rgb": [
+  88,
+  71,
+  56
+ ],
+ "ceil_rgb": [
+  252,
+  250,
+  222
+ ],
+ "build_s": 6.6,
+ "log": [
+  "photo 5: exposure gain 1.19",
+  "photo 5 face 1->E: metric 2.45 m",
+  "photo 5: 2 faces, K vggt, far=N",
+  "wall N: plan window at 1.16-2.70 m dropped, the photo shows wall there"
+ ]
+}

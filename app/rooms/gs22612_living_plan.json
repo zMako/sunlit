@@ -1,0 +1,454 @@
+{
+ "name": "gs22612_living_plan",
+ "ceiling_m": 2.6,
+ "cameras": [
+  {
+   "pos": [
+    -0.0024,
+    1.1634,
+    -0.0021
+   ],
+   "right": [
+    -0.6076,
+    -0.031,
+    0.7936
+   ],
+   "up": [
+    0.0032,
+    0.9991,
+    0.0415
+   ],
+   "fwd": [
+    0.7942,
+    -0.0278,
+    0.6071
+   ],
+   "fov_v": 52.79732131958008,
+   "fov_h": 115.14485168457031
+  },
+  {
+   "pos": [
+    -0.1805,
+    1.1052,
+    -2.0154
+   ],
+   "right": [
+    -0.193,
+    0.0374,
+    0.9805
+   ],
+   "up": [
+    0.0056,
+    0.9993,
+    -0.0371
+   ],
+   "fwd": [
+    0.9812,
+    0.0017,
+    0.1931
+   ],
+   "fov_v": 45.74269485473633,
+   "fov_h": 109.73859405517578
+  }
+ ],
+ "planes": [
+  {
+   "kind": "floor",
+   "n": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "offset": 0.0,
+   "extent": {
+    "x": [
+     1.1639699219983493,
+     4.798039236337363
+    ],
+    "z": [
+     -2.9061411601835685,
+     3.587446549423001
+    ],
+    "n_px": 11109
+   }
+  },
+  {
+   "kind": "ceiling",
+   "n": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "offset": -2.6,
+   "extent": {
+    "x": [
+     1.5643544493190917,
+     5.569979277011424
+    ],
+    "z": [
+     -3.2018502969004468,
+     3.7038680265474904
+    ],
+    "n_px": 4730
+   }
+  },
+  {
+   "kind": "wall",
+   "n": [
+    0.9990482215818578,
+    0.0,
+    0.043619387365336
+   ],
+   "offset": 6.124008858173783,
+   "az_deg": 2.5,
+   "extent": {
+    "a": [
+     6.27144071004126,
+     -3.243118220899655
+    ],
+    "b": [
+     6.141892386954179,
+     -0.27597380172074926
+    ],
+    "len": 2.969971173644485,
+    "n_px": 2926
+   }
+  },
+  {
+   "kind": "wall",
+   "n": [
+    -0.04361938736533589,
+    0.0,
+    0.9990482215818578
+   ],
+   "offset": -0.004127416559493113,
+   "az_deg": 92.5,
+   "extent": {
+    "a": [
+     5.788423935762925,
+     0.24859669830159695
+    ],
+    "b": [
+     2.658474357145859,
+     0.11194014844307618
+    ],
+    "len": 3.132931435142554,
+    "n_px": 5475
+   }
+  },
+  {
+   "kind": "wall",
+   "n": [
+    -0.04361938736533589,
+    0.0,
+    0.9990482215818578
+   ],
+   "offset": 4.057069199355104,
+   "az_deg": 92.5,
+   "extent": {
+    "a": [
+     5.767560562985182,
+     4.312751441449773
+    ],
+    "b": [
+     1.666130367708658,
+     4.133679131850558
+    ],
+    "len": 4.105337566971956,
+    "n_px": 2415
+   }
+  }
+ ],
+ "stats": {
+  "floor_h_units": -0.2351231873035431,
+  "ceil_h_m": 2.6,
+  "scale_units_per_m": 0.2015222723667438,
+  "manhattan_deg": 52.5,
+  "cam_heights_m": [
+   1.163,
+   1.105
+  ],
+  "label_frac": {
+   "floor": 0.12215439001153287,
+   "ceil": 0.05998972070400642,
+   "wall": 0.1414656771799629,
+   "other": 0.6763902121044978
+  },
+  "n_wall_planes": 3,
+  "wall_dirs_deg": [
+   2,
+   92
+  ],
+  "wall_resid_m_before": 0.04149689818847041,
+  "wall_resid_m_after": 0.0
+ },
+ "bounds": [
+  [
+   1.34,
+   -0.09,
+   -3.33
+  ],
+  [
+   6.4,
+   2.82,
+   4.86
+  ]
+ ],
+ "photos": [
+  "../../feasibility/listings/gs-22612/03.jpg",
+  "../../feasibility/listings/gs-22612/04.jpg"
+ ],
+ "windows": [
+  {
+   "kind": "window",
+   "edge": 0,
+   "img": 1,
+   "s0": 0.587,
+   "s1": 2.83,
+   "sill_m": 1.09,
+   "height_m": 1.51,
+   "width_m": 2.244,
+   "px": 3319,
+   "n_views": 1,
+   "center": [
+    6.187,
+    1.845,
+    -1.315
+   ],
+   "normal": [
+    0.999,
+    0.0,
+    0.043
+   ],
+   "score": 1.0
+  }
+ ],
+ "vlm": {
+  "shape": "L",
+  "width_m": 4.877,
+  "depth_m": 7.315,
+  "ceiling_m": null,
+  "size_confidence": 0.7,
+  "wall_colour": "off-white",
+  "wall_colour_rgb": [
+   240,
+   236,
+   226
+  ],
+  "floor_material": "parquet wood (herringbone)",
+  "floor_colour_rgb": [
+   176,
+   122,
+   70
+  ],
+  "notes": "Room sizes are rough estimates from photo perspective, not measured. Window wall faces a view over water and city, likely exterior on that side. Wall lengths for the side walls and the far wall are estimated; the side wall opposite the window was not clearly photographed and is inferred. Window dimensions assumed from double-hung standard (~0.9 m wide per sash, two sashes per frame). Ceiling height estimated from proportion to window and door. Floor is glossy parquet with a visible light fixture on the ceiling in photo 1.",
+  "walls": [
+   {
+    "label": "window wall",
+    "length_m": 6.0,
+    "exterior": true,
+    "seen_in_photos": [
+     0,
+     1
+    ],
+    "openings": [
+     {
+      "kind": "window",
+      "position_frac": 0.3,
+      "width_m": 1.8,
+      "height_m": 1.4,
+      "sill_m": 0.9
+     },
+     {
+      "kind": "window",
+      "position_frac": 0.7,
+      "width_m": 1.8,
+      "height_m": 1.4,
+      "sill_m": 0.9
+     }
+    ]
+   },
+   {
+    "label": "right of window",
+    "length_m": 2.0,
+    "exterior": false,
+    "seen_in_photos": [
+     0
+    ],
+    "openings": []
+   },
+   {
+    "label": "opposite window",
+    "length_m": 5.5,
+    "exterior": false,
+    "seen_in_photos": [
+     1
+    ],
+    "openings": [
+     {
+      "kind": "closet",
+      "position_frac": 0.1,
+      "width_m": 0.8,
+      "height_m": 2.03,
+      "sill_m": 0.0
+     }
+    ]
+   },
+   {
+    "label": "left of window",
+    "length_m": 2.0,
+    "exterior": false,
+    "seen_in_photos": [
+     0,
+     1
+    ],
+    "openings": []
+   }
+  ],
+  "source": "floor_plan_candidate"
+ },
+ "vlm_area_ratio": 1.49,
+ "polygon": [
+  [
+   6.261,
+   -3.022
+  ],
+  [
+   5.941,
+   4.34
+  ],
+  [
+   -1.367,
+   4.015
+  ],
+  [
+   -1.055,
+   -3.145
+  ]
+ ],
+ "edges": [
+  {
+   "a": [
+    6.261140003536711,
+    -3.022417449505393
+   ],
+   "b": [
+    5.941425213524987,
+    4.339801220783382
+   ],
+   "n": [
+    0.999058404656837,
+    0.04338552851511267
+   ],
+   "offset": 6.124115364826398,
+   "dir": [
+    -0.04338552851511267,
+    0.999058404656837
+   ],
+   "len": 7.369157434612241,
+   "inferred": false,
+   "axis": 0
+  },
+  {
+   "a": [
+    5.941425213524987,
+    4.339801220783382
+   ],
+   "b": [
+    -1.367423038910668,
+    4.014967314229416
+   ],
+   "n": [
+    -0.04440009611894526,
+    0.9990138294661532
+   ],
+   "offset": 4.07172158613266,
+   "dir": [
+    -0.9990138294661532,
+    -0.04440009611894526
+   ],
+   "len": 7.3160631383264345,
+   "inferred": false,
+   "axis": 2
+  },
+  {
+   "a": [
+    -1.367423038910668,
+    4.014967314229416
+   ],
+   "b": [
+    -1.0547906782694303,
+    -3.145490976750073
+   ],
+   "n": [
+    -0.9990482215818577,
+    -0.04361938736533606
+   ],
+   "offset": 1.1909911406352265,
+   "dir": [
+    0.04361938736533606,
+    -0.9990482215818577
+   ],
+   "len": 7.1672799533558775,
+   "inferred": true,
+   "axis": 0
+  },
+  {
+   "a": [
+    -1.0547906782694303,
+    -3.145490976750073
+   ],
+   "b": [
+    6.261140003536711,
+    -3.022417449505393
+   ],
+   "n": [
+    0.016820295494859007,
+    -0.9998585288226859
+   ],
+   "offset": 3.127304089544647,
+   "dir": [
+    0.9998585288226859,
+    0.016820295494859007
+   ],
+   "len": 7.316965821575287,
+   "inferred": true,
+   "axis": 2
+  }
+ ],
+ "area_m2": 53.17,
+ "doors": [
+  {
+   "kind": "door",
+   "edge": 1,
+   "img": 0,
+   "s0": 1.118,
+   "s1": 3.404,
+   "sill_m": 0.618,
+   "height_m": 1.896,
+   "width_m": 2.286,
+   "px": 3224,
+   "n_views": 1,
+   "center": [
+    3.683,
+    1.566,
+    4.239
+   ],
+   "normal": [
+    -0.044,
+    0.0,
+    0.999
+   ],
+   "score": 1.0
+  }
+ ],
+ "inferred_edges": [
+  2,
+  3
+ ],
+ "door_height_check_m": [
+  1.9
+ ],
+ "build_s": 14.4,
+ "pipeline": 2
+}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Sunlit</title>
+<style>
+:root{--bg:#0b0f16;--surface:#141a24;--ink:#e8ecf2;--ink2:#9aa4b2;--muted:#5d6775;--sun:#c98500;--sunhi:#eda100;--grid:#232b37}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui;padding:24px 28px}
+h1{font-weight:600;font-size:22px;margin:0 0 4px}.sub{color:var(--ink2);margin-bottom:18px}
+.row{display:flex;gap:16px;flex-wrap:wrap}.card{background:var(--surface);border-radius:12px;padding:16px 18px;width:360px}
+.hero{font-size:40px;font-weight:600;line-height:1}.hero small{font-size:14px;color:var(--ink2);font-weight:400;margin-left:6px}
+.label{color:var(--ink2);font-size:13px}.verdict{margin:8px 0 10px}.bars{display:flex;align-items:flex-end;gap:2px;height:70px;margin:6px 0 2px}
+.bar{flex:1;background:var(--sun);border-radius:4px 4px 0 0;position:relative;min-height:2px}.bar:hover{background:var(--sunhi)}.bar .tip{display:none;position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:#000c;color:var(--ink);font-size:12px;padding:2px 6px;border-radius:4px;white-space:nowrap}.bar:hover .tip{display:block}
+.months{display:flex;gap:2px}.months span{flex:1;text-align:center;font-size:10px;color:var(--muted)}
+select,input,button{font:inherit;background:#1c2430;color:var(--ink);border:1px solid #2c3644;border-radius:8px;padding:6px 10px}button{cursor:pointer}
+a{color:#7fb3ff}.meta{font-size:12px;color:var(--muted);margin-top:6px}
+</style></head><body>
+<h1>Sunlit</h1><div class="sub">Paste a rental listing, see how many hours of direct sun each room gets, every month of the year, before you sign.</div>
+<div style="margin-bottom:14px"><select id="listing"></select> <a id="siteLink" href="#" target="_blank">open 3D site view ↗</a> <span id="cost" class="meta"></span></div>
+<div class="row" id="rooms"></div>
+<h2 style="font-size:17px;margin-top:28px">Your address</h2>
+<div class="sub">No photos needed: the block, the facade and the floor, from city data. One geocode per new address.</div>
+<div><input id="addr" size="40" placeholder="1260 Broadway, San Francisco"> <button id="go">Look up</button></div>
+<div id="live" class="row" style="margin-top:12px"></div>
+<script type="module">
+const M=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const sites=await (await fetch('sites/index.json')).json(); const sel=document.getElementById('listing');
+for(const s of sites){const o=document.createElement('option');o.value=s.listing;o.textContent=s.title;sel.appendChild(o);}
+function bars(pm){ const h=M.map((_,i)=>pm[String(i+1)]??0); const mx=Math.max(1,...h);
+  return `<div class="bars">${h.map((v,i)=>`<div class="bar" style="height:${Math.max(2,v/mx*70)}px"><span class="tip">${M[i]}: ${v.toFixed(1)} h/day</span></div>`).join('')}</div><div class="months">${M.map(m=>`<span>${m[0]}</span>`).join('')}</div>`; }
+async function load(id){
+  const a=await (await fetch(`apartments/${id}.json`)).json(); const el=document.getElementById('rooms'); el.innerHTML='';
+  document.getElementById('siteLink').href=`site.html?site=${id}&close=1`; document.getElementById('cost').textContent=`${a.address} · floor ${a.floor??'?'} · room graph by ${a.graph_model} ($${a.graph_usd})`;
+  for(const r of a.rooms){ const dec=r.per_month_hours?.["12"]??null;
+    el.innerHTML+=`<div class="card"><div class="label">${r.type} · ${r.label}</div>
+      <div class="hero">${dec===null?'–':dec.toFixed(1)}<small>h direct sun / day in December</small></div>
+      <div class="verdict">${r.verdict??'no placement'}</div>${r.per_month_hours?bars(r.per_month_hours):''}
+      <div class="meta">${r.facing!==undefined?`faces ${r.facing}°${r.facade_street?' ('+r.facade_street+')':''} · ${r.how}`:''}${r.windows?` · ${r.windows.length} window${r.windows.length>1?'s':''}`:''}<br>${r.window_description||''}</div>
+      <div class="meta"><a href="site.html?site=${id}&view=room&room=${r.name}" target="_blank">stand in this room ↗</a> · <a href="room.html?room=${r.name}" target="_blank">room model ↗</a></div></div>`; }
+}
+sel.onchange=()=>load(sel.value); await load(sel.value);
+document.getElementById('go').onclick=async()=>{ const live=document.getElementById('live'); live.innerHTML='<div class="card">looking up…</div>';
+  const r=await fetch(`/api/site?address=${encodeURIComponent(document.getElementById('addr').value)}`); if(!r.ok){ live.innerHTML=`<div class="card">${await r.text()}</div>`; return; }
+  const s=await r.json(); live.innerHTML=`<div class="card"><b>${s.address}</b><div class="meta">building ${s.building.height} m, ~${s.storeys_est} storeys; floor ${s.floor??'?'}</div>
+    <div style="margin:8px 0">facade <select id="fac">${s.facades_street.map((f,i)=>`<option value="${i}">${f.bearing}° ${f.street||''} ${f.street_facing?'(street)':'(back/side)'}</option>`).join('')}</select>
+    floor <input id="fl" type="number" value="${s.floor||2}" style="width:60px"> <button id="sun">sun hours</button></div><div id="sunout"></div><div class="meta"><a href="site.html?site=${s.site_id}&close=1" target="_blank">3D block ↗</a></div></div>`;
+  document.getElementById('sun').onclick=async()=>{ const q=`/api/sun?site=${s.site_id}&facade=${document.getElementById('fac').value}&floor=${document.getElementById('fl').value}`; const d=await (await fetch(q)).json();
+    document.getElementById('sunout').innerHTML=`<div class="hero">${d.per_month_hours["12"].toFixed(1)}<small>h / day in December</small></div>${bars(d.per_month_hours)}<div class="meta">${d.annual_hours} h/yr through a ${d.window.w}×${d.window.h} m window facing ${d.window.bearing}°</div>`; };
+};
+</script></body></html>

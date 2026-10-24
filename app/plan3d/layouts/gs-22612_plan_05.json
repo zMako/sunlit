@@ -1,0 +1,882 @@
+{
+ "unit": "gs-22612_plan_05",
+ "listing": "gs-22612",
+ "plan_image": "/Users/maciejkopiec/sunlit/feasibility/listings/gs-22612/plans/plan_05.jpg",
+ "scale": {
+  "m_per_px": 0.01111,
+  "from": [
+   "reader_dims+printed",
+   "door_width"
+  ],
+  "sqft_listed": null,
+  "agreement": null,
+  "door_ref_px": 87.0,
+  "origin_px": [
+   70.0,
+   184.0
+  ],
+  "image_scale": 0.8333333333333334,
+  "door_vs_reader": 0.89
+ },
+ "ceiling_m": 2.6,
+ "walls": [
+  {
+   "id": "w0",
+   "a": [
+    0.011,
+    0.128
+   ],
+   "b": [
+    1.62,
+    0.128
+   ],
+   "thickness_m": 0.255,
+   "exterior": true
+  },
+  {
+   "id": "w1",
+   "a": [
+    4.951,
+    0.128
+   ],
+   "b": [
+    7.126,
+    0.128
+   ],
+   "thickness_m": 0.255,
+   "exterior": true
+  },
+  {
+   "id": "w2",
+   "a": [
+    8.048,
+    0.128
+   ],
+   "b": [
+    9.691,
+    0.128
+   ],
+   "thickness_m": 0.255,
+   "exterior": true
+  },
+  {
+   "id": "w3",
+   "a": [
+    11.9,
+    0.128
+   ],
+   "b": [
+    13.121,
+    0.128
+   ],
+   "thickness_m": 0.255,
+   "exterior": true
+  },
+  {
+   "id": "w4",
+   "a": [
+    15.486,
+    0.128
+   ],
+   "b": [
+    16.263,
+    0.128
+   ],
+   "thickness_m": 0.255,
+   "exterior": true
+  },
+  {
+   "id": "w5",
+   "a": [
+    8.969,
+    4.535
+   ],
+   "b": [
+    10.246,
+    4.535
+   ],
+   "thickness_m": 0.166,
+   "exterior": false
+  },
+  {
+   "id": "w6",
+   "a": [
+    4.995,
+    4.962
+   ],
+   "b": [
+    6.86,
+    4.962
+   ],
+   "thickness_m": 0.159,
+   "exterior": false
+  },
+  {
+   "id": "w7",
+   "a": [
+    7.826,
+    4.962
+   ],
+   "b": [
+    9.125,
+    4.962
+   ],
+   "thickness_m": 0.159,
+   "exterior": false
+  },
+  {
+   "id": "w8",
+   "a": [
+    11.145,
+    5.461
+   ],
+   "b": [
+    12.521,
+    5.461
+   ],
+   "thickness_m": 0.159,
+   "exterior": false
+  },
+  {
+   "id": "w9",
+   "a": [
+    13.609,
+    5.461
+   ],
+   "b": [
+    15.03,
+    5.461
+   ],
+   "thickness_m": 0.159,
+   "exterior": false
+  },
+  {
+   "id": "w10",
+   "a": [
+    8.958,
+    7.015
+   ],
+   "b": [
+    9.624,
+    7.015
+   ],
+   "thickness_m": 0.244,
+   "exterior": true
+  },
+  {
+   "id": "w11",
+   "a": [
+    4.429,
+    7.021
+   ],
+   "b": [
+    7.804,
+    7.021
+   ],
+   "thickness_m": 0.255,
+   "exterior": true
+  },
+  {
+   "id": "w12",
+   "a": [
+    0.011,
+    7.432
+   ],
+   "b": [
+    4.684,
+    7.432
+   ],
+   "thickness_m": 0.255,
+   "exterior": true
+  },
+  {
+   "id": "w13",
+   "a": [
+    0.128,
+    0.011
+   ],
+   "b": [
+    0.128,
+    2.143
+   ],
+   "thickness_m": 0.255,
+   "exterior": true
+  },
+  {
+   "id": "w14",
+   "a": [
+    0.128,
+    5.461
+   ],
+   "b": [
+    0.128,
+    7.571
+   ],
+   "thickness_m": 0.255,
+   "exterior": true
+  },
+  {
+   "id": "w15",
+   "a": [
+    4.546,
+    6.905
+   ],
+   "b": [
+    4.546,
+    7.571
+   ],
+   "thickness_m": 0.255,
+   "exterior": true
+  },
+  {
+   "id": "w16",
+   "a": [
+    6.344,
+    0.011
+   ],
+   "b": [
+    6.344,
+    1.998
+   ],
+   "thickness_m": 0.166,
+   "exterior": false
+  },
+  {
+   "id": "w17",
+   "a": [
+    6.344,
+    2.964
+   ],
+   "b": [
+    6.344,
+    5.051
+   ],
+   "thickness_m": 0.166,
+   "exterior": false
+  },
+  {
+   "id": "w18",
+   "a": [
+    9.03,
+    0.011
+   ],
+   "b": [
+    9.03,
+    5.551
+   ],
+   "thickness_m": 0.166,
+   "exterior": false
+  },
+  {
+   "id": "w19",
+   "a": [
+    9.486,
+    6.505
+   ],
+   "b": [
+    9.486,
+    9.291
+   ],
+   "thickness_m": 0.255,
+   "exterior": true
+  },
+  {
+   "id": "w20",
+   "a": [
+    10.152,
+    4.463
+   ],
+   "b": [
+    10.152,
+    5.551
+   ],
+   "thickness_m": 0.166,
+   "exterior": false
+  },
+  {
+   "id": "w21",
+   "a": [
+    10.368,
+    6.505
+   ],
+   "b": [
+    10.368,
+    7.637
+   ],
+   "thickness_m": 0.159,
+   "exterior": false
+  },
+  {
+   "id": "w22",
+   "a": [
+    11.3,
+    4.463
+   ],
+   "b": [
+    11.3,
+    5.551
+   ],
+   "thickness_m": 0.159,
+   "exterior": false
+  },
+  {
+   "id": "w23",
+   "a": [
+    12.432,
+    0.011
+   ],
+   "b": [
+    12.432,
+    5.64
+   ],
+   "thickness_m": 0.159,
+   "exterior": false
+  },
+  {
+   "id": "w24",
+   "a": [
+    13.67,
+    5.395
+   ],
+   "b": [
+    13.67,
+    6.672
+   ],
+   "thickness_m": 0.166,
+   "exterior": false
+  },
+  {
+   "id": "w25",
+   "a": [
+    16.124,
+    0.011
+   ],
+   "b": [
+    16.124,
+    7.293
+   ],
+   "thickness_m": 0.255,
+   "exterior": true
+  }
+ ],
+ "openings": [
+  {
+   "id": "o0",
+   "wall": "w0",
+   "type": "window",
+   "s0": 1.609,
+   "s1": 4.94,
+   "width_m": 3.331,
+   "sill_m": 0.9,
+   "height_m": 1.3
+  },
+  {
+   "id": "o1",
+   "wall": "w1",
+   "type": "window",
+   "s0": 2.175,
+   "s1": 3.097,
+   "width_m": 0.921,
+   "sill_m": 0.9,
+   "height_m": 1.3
+  },
+  {
+   "id": "o2",
+   "wall": "w2",
+   "type": "window",
+   "s0": 1.643,
+   "s1": 3.852,
+   "width_m": 2.209,
+   "sill_m": 0.9,
+   "height_m": 1.3
+  },
+  {
+   "id": "o3",
+   "wall": "w3",
+   "type": "window",
+   "s0": 1.221,
+   "s1": 3.586,
+   "width_m": 2.365,
+   "sill_m": 0.9,
+   "height_m": 1.3
+  },
+  {
+   "id": "o4",
+   "wall": "w6",
+   "type": "door",
+   "s0": 1.865,
+   "s1": 2.831,
+   "width_m": 0.966,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "swing": "out_right"
+  },
+  {
+   "id": "o5",
+   "wall": "w7",
+   "type": "door",
+   "s0": 1.299,
+   "s1": 2.243,
+   "width_m": 0.943,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "swing": "in_right"
+  },
+  {
+   "id": "o6",
+   "wall": "w8",
+   "type": "window",
+   "s0": -2.031,
+   "s1": 0.0,
+   "width_m": 2.031,
+   "sill_m": 0.9,
+   "height_m": 1.3
+  },
+  {
+   "id": "o7",
+   "wall": "w8",
+   "type": "opening",
+   "s0": 1.377,
+   "s1": 2.464,
+   "width_m": 1.088,
+   "sill_m": 0.0,
+   "height_m": 2.1
+  },
+  {
+   "id": "o8",
+   "wall": "w9",
+   "type": "door",
+   "s0": 1.421,
+   "s1": 2.386,
+   "width_m": 0.966,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "swing": "in_right"
+  },
+  {
+   "id": "o9",
+   "wall": "w10",
+   "type": "door",
+   "s0": -1.154,
+   "s1": 0.0,
+   "width_m": 1.154,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "swing": "out_right"
+  },
+  {
+   "id": "o10",
+   "wall": "w13",
+   "type": "window",
+   "s0": 2.131,
+   "s1": 5.451,
+   "width_m": 3.32,
+   "sill_m": 0.9,
+   "height_m": 1.3
+  },
+  {
+   "id": "o11",
+   "wall": "w16",
+   "type": "door",
+   "s0": 1.987,
+   "s1": 2.952,
+   "width_m": 0.966,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "swing": "out_left"
+  },
+  {
+   "id": "o12",
+   "wall": "w21",
+   "type": "window",
+   "s0": -1.887,
+   "s1": 0.0,
+   "width_m": 1.887,
+   "sill_m": 0.9,
+   "height_m": 1.3
+  }
+ ],
+ "rooms": [
+  {
+   "id": "r0",
+   "name": "Living/Dining Room",
+   "type": "living",
+   "polygon": [
+    [
+     6.249,
+     0.266
+    ],
+    [
+     6.249,
+     4.874
+    ],
+    [
+     4.984,
+     4.874
+    ],
+    [
+     4.984,
+     5.051
+    ],
+    [
+     8.947,
+     5.051
+    ],
+    [
+     8.947,
+     5.606
+    ],
+    [
+     10.001,
+     5.606
+    ],
+    [
+     10.001,
+     6.494
+    ],
+    [
+     9.346,
+     6.494
+    ],
+    [
+     9.346,
+     6.883
+    ],
+    [
+     4.407,
+     6.883
+    ],
+    [
+     4.407,
+     7.293
+    ],
+    [
+     0.266,
+     7.293
+    ],
+    [
+     0.266,
+     0.266
+    ]
+   ],
+   "area_m2": 47.16,
+   "walls": [],
+   "centre_px": [
+    638.8571428571429,
+    653.2857142857143
+   ],
+   "material_source": "building dry"
+  },
+  {
+   "id": "r1",
+   "name": "Kitchen",
+   "type": "kitchen",
+   "polygon": [
+    [
+     8.935,
+     0.266
+    ],
+    [
+     8.935,
+     4.818
+    ],
+    [
+     6.438,
+     4.818
+    ],
+    [
+     6.438,
+     0.266
+    ]
+   ],
+   "area_m2": 11.46,
+   "walls": [],
+   "centre_px": [
+    762.5,
+    413.0
+   ],
+   "material_source": "building wet"
+  },
+  {
+   "id": "r2",
+   "name": "Bedroom 2",
+   "type": "bedroom",
+   "polygon": [
+    [
+     12.344,
+     0.266
+    ],
+    [
+     12.344,
+     5.372
+    ],
+    [
+     11.378,
+     5.372
+    ],
+    [
+     11.378,
+     4.463
+    ],
+    [
+     11.212,
+     4.463
+    ],
+    [
+     11.212,
+     5.317
+    ],
+    [
+     10.512,
+     5.317
+    ],
+    [
+     10.512,
+     4.44
+    ],
+    [
+     9.125,
+     4.44
+    ],
+    [
+     9.125,
+     0.266
+    ]
+   ],
+   "area_m2": 15.08,
+   "walls": [],
+   "centre_px": [
+    1053.2,
+    541.8
+   ],
+   "material_source": "building dry"
+  },
+  {
+   "id": "r3",
+   "name": "Primary Bedroom",
+   "type": "bedroom",
+   "polygon": [
+    [
+     15.984,
+     0.266
+    ],
+    [
+     15.984,
+     5.317
+    ],
+    [
+     12.521,
+     5.317
+    ],
+    [
+     12.521,
+     0.266
+    ]
+   ],
+   "area_m2": 17.67,
+   "walls": [],
+   "centre_px": [
+    1354.0,
+    435.5
+   ],
+   "material_source": "building dry"
+  }
+ ],
+ "fixtures": [
+  {
+   "id": "f0",
+   "type": "stove",
+   "rect": {
+    "x": 8.553,
+    "z": 1.255,
+    "w": 0.764,
+    "d": 0.92,
+    "rot_deg": 270
+   },
+   "room": "r1",
+   "against_wall": "E",
+   "height_m": 0.9
+  },
+  {
+   "id": "f1",
+   "type": "sink",
+   "rect": {
+    "x": 8.597,
+    "z": 2.455,
+    "w": 0.675,
+    "d": 1.0,
+    "rot_deg": 270
+   },
+   "room": "r1",
+   "against_wall": "E",
+   "height_m": 0.9
+  },
+  {
+   "id": "f2",
+   "type": "dishwasher",
+   "rect": {
+    "x": 8.553,
+    "z": 3.422,
+    "w": 0.764,
+    "d": 0.8,
+    "rot_deg": 270
+   },
+   "room": "r1",
+   "against_wall": "E",
+   "height_m": 0.86
+  },
+  {
+   "id": "f3",
+   "type": "fridge",
+   "rect": {
+    "x": 8.468,
+    "z": 4.422,
+    "w": 0.933,
+    "d": 0.933,
+    "rot_deg": 270
+   },
+   "room": "r1",
+   "against_wall": "E",
+   "height_m": 1.8
+  },
+  {
+   "id": "f4",
+   "type": "counter",
+   "rect": {
+    "x": 8.535,
+    "z": 2.555,
+    "w": 0.8,
+    "d": 4.666,
+    "rot_deg": 270
+   },
+   "room": "r1",
+   "against_wall": "E",
+   "height_m": 0.9
+  },
+  {
+   "id": "f5",
+   "type": "closet_rod",
+   "rect": {
+    "x": 15.443,
+    "z": 6.088,
+    "w": 2.044,
+    "d": 1.067,
+    "rot_deg": 0
+   },
+   "room": null,
+   "against_wall": null,
+   "height_m": 1.7
+  },
+  {
+   "id": "f6",
+   "type": "toilet",
+   "rect": {
+    "x": 10.048,
+    "z": 7.988,
+    "w": 0.675,
+    "d": 0.6,
+    "rot_deg": 0
+   },
+   "room": null,
+   "against_wall": null,
+   "height_m": 0.75
+  },
+  {
+   "id": "f7",
+   "type": "vanity",
+   "rect": {
+    "x": 11.399,
+    "z": 7.688,
+    "w": 0.533,
+    "d": 0.8,
+    "rot_deg": 0
+   },
+   "room": null,
+   "against_wall": null,
+   "height_m": 0.85
+  },
+  {
+   "id": "f8",
+   "type": "tub",
+   "rect": {
+    "x": 10.51,
+    "z": 8.721,
+    "w": 1.6,
+    "d": 0.6,
+    "rot_deg": 0
+   },
+   "room": null,
+   "against_wall": null,
+   "height_m": 0.55
+  },
+  {
+   "id": "f9",
+   "type": "tub",
+   "rect": {
+    "x": 12.243,
+    "z": 7.621,
+    "w": 0.8,
+    "d": 1.733,
+    "rot_deg": 0
+   },
+   "room": null,
+   "against_wall": null,
+   "height_m": 0.55
+  },
+  {
+   "id": "f10",
+   "type": "toilet",
+   "rect": {
+    "x": 14.287,
+    "z": 8.055,
+    "w": 0.8,
+    "d": 0.6,
+    "rot_deg": 0
+   },
+   "room": null,
+   "against_wall": null,
+   "height_m": 0.75
+  },
+  {
+   "id": "f11",
+   "type": "vanity",
+   "rect": {
+    "x": 14.421,
+    "z": 7.122,
+    "w": 0.711,
+    "d": 0.867,
+    "rot_deg": 0
+   },
+   "room": null,
+   "against_wall": null,
+   "height_m": 0.85
+  }
+ ],
+ "materials": {
+  "floor": {
+   "r0": "WoodFloor054",
+   "r1": "WoodFloor008",
+   "r2": "WoodFloor054",
+   "r3": "WoodFloor054"
+  },
+  "wall": {
+   "r0": null,
+   "r1": null,
+   "r2": null,
+   "r3": null
+  },
+  "cabinet": "WoodFloor041"
+ },
+ "review": {
+  "rounds": 1,
+  "issues": [
+   "Entry/hallway is not a separate region; merged into Living/Dining Room (1)",
+   "Both bathrooms, walk-in closet, linen closets and bedroom 2 closet are not detected as rooms",
+   "Bedroom 2 region (3) leaks into the hallway/closet area at the bottom",
+   "Primary Bedroom door on the south wall is shown as a yellow opening and the bedroom door swing is missing",
+   "Spurious window lines drawn across the hallway near x=0.63",
+   "Region 1 extends past the entry door into the hallway"
+  ],
+  "usd": 0.0216
+ }
+}

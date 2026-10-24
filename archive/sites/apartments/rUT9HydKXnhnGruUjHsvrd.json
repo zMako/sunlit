@@ -1,0 +1,216 @@
+{
+ "listing": "rUT9HydKXnhnGruUjHsvrd",
+ "title": "1260 Broadway #302 - Stunning 1x1 - Incredible Area - Fully Renovated",
+ "address": "1260 Broadway, San Francisco, CA",
+ "lat": 37.7967196,
+ "lon": -122.4178786,
+ "floor": 3,
+ "rooms": [
+  {
+   "name": "rUT9Hy_kitchen_0",
+   "label": "Kitchen / living area",
+   "type": "kitchen",
+   "photos": [
+    0,
+    1,
+    3
+   ],
+   "claude_side": "street",
+   "claude_sun": false,
+   "window_description": "Single double-hung window with blind at the end of the peninsula, radiator below; looks out at Victorian-style buildings and trees across the way"
+  },
+  {
+   "name": "rUT9Hy_living_2",
+   "label": "Living room",
+   "type": "living",
+   "photos": [
+    4
+   ],
+   "claude_side": "street",
+   "claude_sun": true,
+   "window_description": "Pair of large double-hung windows with roller blinds and an old radiator nearby; view of trees, balconies and neighbouring buildings",
+   "facing": 171.1,
+   "facade_street": "Broadway",
+   "how": "no sun patches; Claude says street side",
+   "windows": [
+    {
+     "w": 0.92,
+     "h": 2.15,
+     "sill": 0.35,
+     "bearing": 171.1,
+     "annual_hours": 3117
+    },
+    {
+     "w": 1.11,
+     "h": 2.24,
+     "sill": 0.44,
+     "bearing": 171.1,
+     "annual_hours": 3118
+    }
+   ],
+   "per_month_hours": {
+    "1": 8.6,
+    "2": 9.7,
+    "3": 9.9,
+    "4": 9.1,
+    "5": 7.3,
+    "6": 6.2,
+    "7": 6.8,
+    "8": 8.5,
+    "9": 9.8,
+    "10": 9.9,
+    "11": 8.9,
+    "12": 8.1
+   },
+   "annual_hours": 3118,
+   "verdict": "direct sun every month; 6.2 to 9.9 h/day",
+   "scores": [
+    {
+     "edge": 3,
+     "bearing": 171.1,
+     "feasible": null,
+     "of": 0
+    },
+    {
+     "edge": 0,
+     "bearing": 261.1,
+     "feasible": null,
+     "of": 0
+    },
+    {
+     "edge": 1,
+     "bearing": 351.1,
+     "feasible": null,
+     "of": 0
+    }
+   ]
+  },
+  {
+   "name": "rUT9Hy_office_3",
+   "label": "Small sunny room / den",
+   "type": "office",
+   "photos": [
+    7,
+    8
+   ],
+   "claude_side": "unknown",
+   "claude_sun": true,
+   "window_description": "Wide double window pair (two double-hung sashes) with blinds, overlooking dense tree canopy and buildings",
+   "facing": 171.1,
+   "facade_street": "Broadway",
+   "how": "sun-patch cue",
+   "windows": [
+    {
+     "w": 0.87,
+     "h": 2.45,
+     "sill": 0.12,
+     "bearing": 171.1,
+     "annual_hours": 3116
+    },
+    {
+     "w": 0.89,
+     "h": 1.81,
+     "sill": 0.47,
+     "bearing": 171.1,
+     "annual_hours": 3117
+    },
+    {
+     "w": 0.94,
+     "h": 2.08,
+     "sill": 0.26,
+     "bearing": 171.1,
+     "annual_hours": 3114
+    }
+   ],
+   "per_month_hours": {
+    "1": 8.6,
+    "2": 9.6,
+    "3": 9.9,
+    "4": 9.1,
+    "5": 7.3,
+    "6": 6.2,
+    "7": 6.8,
+    "8": 8.5,
+    "9": 9.8,
+    "10": 9.8,
+    "11": 8.9,
+    "12": 8.2
+   },
+   "annual_hours": 3117,
+   "verdict": "direct sun every month; 6.2 to 9.9 h/day",
+   "scores": [
+    {
+     "edge": 3,
+     "bearing": 171.1,
+     "street": "Broadway",
+     "feasible": 1,
+     "of": 1,
+     "details": [
+      {
+       "az": 213.4,
+       "el": 39.0,
+       "max_el_there": 73.5,
+       "ok": true
+      }
+     ]
+    },
+    {
+     "edge": 0,
+     "bearing": 261.1,
+     "street": "Broadway",
+     "feasible": 0,
+     "of": 1,
+     "details": [
+      {
+       "az": 303.4,
+       "el": 39.0,
+       "max_el_there": 0.5,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "edge": 1,
+     "bearing": 351.1,
+     "street": "Waldo Alley",
+     "feasible": 0,
+     "of": 1,
+     "details": [
+      {
+       "az": 33.4,
+       "el": 39.0,
+       "max_el_there": -20.6,
+       "ok": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "rUT9Hy_bedroom_4",
+   "label": "Bedroom",
+   "type": "bedroom",
+   "photos": [
+    6
+   ],
+   "claude_side": "unknown",
+   "claude_sun": true,
+   "window_description": "Window behind camera not directly shown; mirrored closet door reflects a double-hung window with tree view; wall-mounted electric heater"
+  },
+  {
+   "name": "rUT9Hy_bathroom_5",
+   "label": "Bathroom",
+   "type": "bathroom",
+   "photos": [
+    5
+   ],
+   "claude_side": "side_lightwell",
+   "claude_sun": false,
+   "window_description": "Obscured textured-glass window above towel bar, likely onto a lightwell",
+   "how": "no sun patches; side side_lightwell: orientation not determined",
+   "verdict": "orientation not determined from photos (no sun patch, side room)"
+  }
+ ],
+ "graph_model": "claude-opus-5-5",
+ "graph_usd": 0.06446
+}

@@ -1,0 +1,57 @@
+{
+ "name": "p2_gs-20665_kitchen_0",
+ "path": "B-free",
+ "listing": "gs-20665",
+ "photos": [
+  "00.jpg",
+  "05.jpg"
+ ],
+ "chosen_photo": "00.jpg",
+ "hfov_deg": 110.0999984741211,
+ "pitch_deg": 0.0,
+ "prompt": "interior photo of an empty unfurnished kitchen, white painted walls, light laminate or vinyl plank floor, white ceiling, natural daylight, real estate photography, wide angle, continuous room, photorealistic",
+ "area_m2": 7.5,
+ "width_m": 2.58,
+ "depth_m": 2.91,
+ "ceiling_m": 2.7,
+ "layout": {
+  "corners": [
+   [
+    1.7072932635480875,
+    -1.1209369570646357
+   ],
+   [
+    1.7298186268957172,
+    1.460214022612483
+   ],
+   [
+    -1.1756405716880813,
+    1.4855695809099676
+   ],
+   [
+    -1.198165935035711,
+    -1.095581398767151
+   ]
+  ],
+  "width_m": 2.581249265739768,
+  "depth_m": 2.9055698337799054,
+  "ceiling_m": 2.7,
+  "cam_h": 1.163236501648638,
+  "axis_deg": 89.5,
+  "area_m2": 7.500000000000001,
+  "n_boundary": 2048,
+  "area_m2_at_cam_h_1p5": 12.5,
+  "ceiling_m_from_pano": 2.2,
+  "vlm_width_m": 3.0,
+  "vlm_depth_m": 2.5,
+  "vlm_area_m2": 7.5,
+  "area_ratio_vs_vlm": 1.0
+ },
+ "log": [
+  "photo 00.jpg hfov 110 floor 3% pitch +0.0 roll +0.2 cam_h_units 0.6143448994384609",
+  "outpaint 187s",
+  "layout 5s",
+  "scale: cam_h 1.16 m to match VLM area 7.5 m2"
+ ],
+ "s": 203
+}

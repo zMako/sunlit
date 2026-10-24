@@ -1,0 +1,20 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Path B box viewer</title>
+<style>body{margin:0;background:#1a2030}#info{position:fixed;left:10px;top:10px;color:#fff;font:13px system-ui;background:rgba(0,0,0,.5);padding:6px 10px;border-radius:6px}</style>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.170.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.170.0/examples/jsm/"}}</script>
+</head><body><div id="info"></div>
+<script type="module">
+import * as THREE from 'three'; import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'; import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+const Q=new URLSearchParams(location.search); const name=Q.get('room'); const mode=Q.get('view')||'inside'; const yaw=parseFloat(Q.get('yaw')||'0');
+const meta=await (await fetch(`../../rooms/${name}.json`)).json();
+const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true}); renderer.setSize(innerWidth,innerHeight); document.body.appendChild(renderer.domElement);
+const scene=new THREE.Scene(); scene.background=new THREE.Color(0x1a2030);
+const cam=new THREE.PerspectiveCamera(mode==='inside'?80:50,innerWidth/innerHeight,0.05,100);
+const glb=await new GLTFLoader().loadAsync(`../../rooms/${name}_polished.glb`);
+glb.scene.traverse(o=>{ if(o.isMesh){ o.material=new THREE.MeshBasicMaterial({map:o.material.map,side:THREE.DoubleSide}); } });
+scene.add(glb.scene);
+const ch=meta.layout?.cam_h??1.4, H=meta.ceiling_m??2.5;
+if(mode==='inside'){ cam.position.set(0,ch,0); cam.lookAt(Math.sin(yaw),ch-0.1,Math.cos(yaw)); }
+else { cam.position.set(6,7,6); cam.lookAt(0,H/2,0); }
+document.getElementById('info').textContent=`${name} · ${meta.width_m} x ${meta.depth_m} m · ceil ${meta.ceiling_m} · ${mode}`;
+(function loop(){ renderer.render(scene,cam); requestAnimationFrame(loop); })();
+</script></body></html>

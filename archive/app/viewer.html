@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Sunlit block viewer</title>
+<style>body{margin:0;background:#0b0f16;color:#e8ecf2;font:13px system-ui}#ui{position:fixed;left:12px;top:12px;background:rgba(10,14,22,.85);padding:10px 14px;border-radius:8px;width:300px}input[type=range]{width:100%}#info{opacity:.8}</style>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.170.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.170.0/examples/jsm/"}}</script>
+</head><body>
+<div id="ui"><b>Sunlit</b> · 1260 Broadway, SF<br>
+<label>Day of year <span id="dv"></span></label><input id="day" type="range" min="1" max="365" value="355">
+<label>Hour (PT) <span id="hv"></span></label><input id="hour" type="range" min="5" max="21" step="0.25" value="14">
+<div id="info"></div></div>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+const Q = new URLSearchParams(location.search); const BLOCK = Q.get('block') || 'block.json';
+const data = await (await fetch(BLOCK)).json();
+const LAT = data.lat, LON = data.lon;
+// --- solar position (NOAA), returns {az (deg from N, cw), el (deg)} ---
+function sunPos(lat, lon, date){
+  const jd = date.getTime()/86400000 + 2440587.5, jc=(jd-2451545)/36525, r=Math.PI/180;
+  const L0=(280.46646+jc*(36000.76983+jc*0.0003032))%360, M=357.52911+jc*(35999.05029-0.0001537*jc), e=0.016708634-jc*(0.000042037+0.0000001267*jc);
+  const C=Math.sin(M*r)*(1.914602-jc*(0.004817+0.000014*jc))+Math.sin(2*M*r)*(0.019993-0.000101*jc)+Math.sin(3*M*r)*0.000289;
+  const om=125.04-1934.136*jc, lam=L0+C-0.00569-0.00478*Math.sin(om*r);
+  const eps=23+(26+(21.448-jc*(46.815+jc*(0.00059-jc*0.001813)))/60)/60+0.00256*Math.cos(om*r);
+  const decl=Math.asin(Math.sin(eps*r)*Math.sin(lam*r)); const y=Math.tan(eps*r/2)**2;
+  const eqt=4/r*(y*Math.sin(2*L0*r)-2*e*Math.sin(M*r)+4*e*y*Math.sin(M*r)*Math.cos(2*L0*r)-0.5*y*y*Math.sin(4*L0*r)-1.25*e*e*Math.sin(2*M*r));
+  const mins=date.getUTCHours()*60+date.getUTCMinutes()+date.getUTCSeconds()/60; const tst=((mins+eqt+4*lon)%1440+1440)%1440;
+  let ha=tst/4<0?tst/4+180:tst/4-180; const cz=Math.sin(lat*r)*Math.sin(decl)+Math.cos(lat*r)*Math.cos(decl)*Math.cos(ha*r);
+  const zen=Math.acos(Math.max(-1,Math.min(1,cz))); let az=Math.acos(Math.max(-1,Math.min(1,(Math.sin(lat*r)*cz-Math.sin(decl))/(Math.cos(lat*r)*Math.sin(zen)))))/r;
+  az = ha>0 ? (az+180)%360 : (540-az)%360; return {az, el:90-zen/r};
+}
+function ptDate(doy, hour){ // Pacific time -> Date (handles DST roughly via offset table)
+  const d=new Date(Date.UTC(2026,0,1)); d.setUTCDate(doy); const m=d.getUTCMonth()+1, dd=d.getUTCDate();
+  const dst=(m>3&&m<11)||(m===3&&dd>=8)||(m===11&&dd<1); const off=dst?7:8;
+  return new Date(Date.UTC(2026,0,doy,0,0,0)+ (hour+off)*3600000);
+}
+// --- scene ---
+const scene=new THREE.Scene(); scene.background=new THREE.Color(0x0b0f16);
+const renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setSize(innerWidth,innerHeight); renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap; document.body.appendChild(renderer.domElement);
+const camera=new THREE.PerspectiveCamera(50,innerWidth/innerHeight,1,3000); camera.position.set(120,140,160);
+const controls=new OrbitControls(camera,renderer.domElement);
+scene.add(new THREE.HemisphereLight(0xaac4ff,0x303040,0.5));
+const sun=new THREE.DirectionalLight(0xfff2d6,2.2); sun.castShadow=true; sun.shadow.mapSize.set(4096,4096);
+const sc=sun.shadow.camera; sc.left=-250; sc.right=250; sc.top=250; sc.bottom=-250; sc.near=1; sc.far=1200; scene.add(sun); scene.add(sun.target);
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(2000,2000), new THREE.MeshStandardMaterial({color:0x2a2f3a})); ground.rotation.x=-Math.PI/2; ground.receiveShadow=true; scene.add(ground);
+// ENU (x east, y north, z up) -> three (x east, y up, z south = -north)
+const matB=new THREE.MeshStandardMaterial({color:0xcfd6e0, roughness:.9}); const matT=new THREE.MeshStandardMaterial({color:0xffb347, roughness:.8});
+let target=null, best=1e9;
+for(const b of data.buildings){
+  const shp=new THREE.Shape(b.ring.map(p=>new THREE.Vector2(p[0],-p[1])));
+  const geo=new THREE.ExtrudeGeometry(shp,{depth:b.height,bevelEnabled:false}); geo.rotateX(-Math.PI/2); geo.translate(0,b.ground,0);
+  const cx=b.ring.reduce((s,p)=>s+p[0],0)/b.ring.length, cy=b.ring.reduce((s,p)=>s+p[1],0)/b.ring.length; const dist=Math.hypot(cx,cy);
+  const m=new THREE.Mesh(geo,matB); m.castShadow=true; m.receiveShadow=true; scene.add(m);
+  if(dist<best){best=dist;target=m;}
+}
+if(target) target.material=matT;
+const dayEl=document.getElementById('day'), hourEl=document.getElementById('hour');
+function update(){
+  const doy=+dayEl.value, hour=+hourEl.value; const date=ptDate(doy,hour); const {az,el}=sunPos(LAT,LON,date);
+  const r=Math.PI/180; const e=Math.cos(el*r)*Math.sin(az*r), n=Math.cos(el*r)*Math.cos(az*r), u=Math.sin(el*r);
+  sun.position.set(e*600,u*600,-n*600); sun.target.position.set(0,0,0); sun.intensity=el>0?2.2:0; sun.visible=el>-1;
+  scene.background.setHSL(0.6, 0.5, Math.max(0.03, Math.min(0.55, 0.05+el/120)));
+  document.getElementById('dv').textContent=date.toISOString().slice(5,10); document.getElementById('hv').textContent=hour.toFixed(2);
+  document.getElementById('info').textContent=`sun az ${az.toFixed(1)}° el ${el.toFixed(1)}° · ${data.buildings.length} buildings · orange = target`;
+}
+dayEl.oninput=hourEl.oninput=update; update();
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+(function loop(){requestAnimationFrame(loop);controls.update();renderer.render(scene,camera)})();
+window.__ready=true;
+</script></body></html>

@@ -1,0 +1,509 @@
+{
+ "unit": "gs-20665_plan_09",
+ "listing": "gs-20665",
+ "plan_image": "/Users/maciejkopiec/sunlit/feasibility/listings/gs-20665/plans/plan_09.jpg",
+ "scale": {
+  "m_per_px": 0.02242,
+  "from": [
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width"
+  ],
+  "sqft_listed": null,
+  "agreement": null,
+  "door_ref_px": 31.5,
+  "origin_px": [
+   16.0,
+   158.0
+  ],
+  "image_scale": 1.0,
+  "door_vs_reader": 1.218
+ },
+ "ceiling_m": 2.6,
+ "walls": [
+  {
+   "id": "w0",
+   "a": [
+    0.067,
+    0.079
+   ],
+   "b": [
+    1.278,
+    0.079
+   ],
+   "thickness_m": 0.157,
+   "exterior": true
+  },
+  {
+   "id": "w1",
+   "a": [
+    2.847,
+    0.09
+   ],
+   "b": [
+    3.139,
+    0.09
+   ],
+   "thickness_m": 0.135,
+   "exterior": true
+  },
+  {
+   "id": "w2",
+   "a": [
+    1.726,
+    4.575
+   ],
+   "b": [
+    1.996,
+    4.575
+   ],
+   "thickness_m": 0.09,
+   "exterior": false
+  },
+  {
+   "id": "w3",
+   "a": [
+    1.772,
+    5.224
+   ],
+   "b": [
+    2.938,
+    5.224
+   ],
+   "thickness_m": 0.09,
+   "exterior": false
+  },
+  {
+   "id": "w4",
+   "a": [
+    0.067,
+    5.236
+   ],
+   "b": [
+    1.054,
+    5.236
+   ],
+   "thickness_m": 0.113,
+   "exterior": false
+  },
+  {
+   "id": "w5",
+   "a": [
+    2.332,
+    7.849
+   ],
+   "b": [
+    3.027,
+    7.849
+   ],
+   "thickness_m": 0.09,
+   "exterior": true
+  },
+  {
+   "id": "w6",
+   "a": [
+    0.022,
+    9.553
+   ],
+   "b": [
+    1.143,
+    9.553
+   ],
+   "thickness_m": 0.135,
+   "exterior": true
+  },
+  {
+   "id": "w7",
+   "a": [
+    2.309,
+    9.553
+   ],
+   "b": [
+    3.386,
+    9.553
+   ],
+   "thickness_m": 0.135,
+   "exterior": true
+  },
+  {
+   "id": "w8",
+   "a": [
+    0.101,
+    0.022
+   ],
+   "b": [
+    0.101,
+    9.643
+   ],
+   "thickness_m": 0.202,
+   "exterior": true
+  },
+  {
+   "id": "w9",
+   "a": [
+    0.986,
+    4.529
+   ],
+   "b": [
+    0.986,
+    5.314
+   ],
+   "thickness_m": 0.09,
+   "exterior": false
+  },
+  {
+   "id": "w10",
+   "a": [
+    1.794,
+    4.529
+   ],
+   "b": [
+    1.794,
+    5.292
+   ],
+   "thickness_m": 0.09,
+   "exterior": false
+  },
+  {
+   "id": "w11",
+   "a": [
+    2.355,
+    5.202
+   ],
+   "b": [
+    2.355,
+    7.916
+   ],
+   "thickness_m": 0.09,
+   "exterior": true
+  },
+  {
+   "id": "w12",
+   "a": [
+    2.881,
+    4.35
+   ],
+   "b": [
+    2.881,
+    5.292
+   ],
+   "thickness_m": 0.08,
+   "exterior": true
+  },
+  {
+   "id": "w13",
+   "a": [
+    2.96,
+    0.022
+   ],
+   "b": [
+    2.96,
+    3.498
+   ],
+   "thickness_m": 0.09,
+   "exterior": true
+  },
+  {
+   "id": "w14",
+   "a": [
+    2.96,
+    7.467
+   ],
+   "b": [
+    2.96,
+    7.916
+   ],
+   "thickness_m": 0.09,
+   "exterior": true
+  }
+ ],
+ "openings": [
+  {
+   "id": "o0",
+   "wall": "w0",
+   "type": "window",
+   "s0": 1.211,
+   "s1": 2.78,
+   "width_m": 1.57,
+   "sill_m": 0.9,
+   "height_m": 1.3
+  },
+  {
+   "id": "o1",
+   "wall": "w2",
+   "type": "door",
+   "s0": -0.695,
+   "s1": 0.0,
+   "width_m": 0.695,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "swing": "in_left"
+  },
+  {
+   "id": "o2",
+   "wall": "w2",
+   "type": "window",
+   "s0": 0.269,
+   "s1": 1.121,
+   "width_m": 0.852,
+   "sill_m": 0.9,
+   "height_m": 1.3
+  },
+  {
+   "id": "o3",
+   "wall": "w3",
+   "type": "door",
+   "s0": -0.718,
+   "s1": 0.0,
+   "width_m": 0.718,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "swing": "in_left"
+  },
+  {
+   "id": "o4",
+   "wall": "w6",
+   "type": "window",
+   "s0": 1.121,
+   "s1": 2.287,
+   "width_m": 1.166,
+   "sill_m": 0.9,
+   "height_m": 1.3
+  },
+  {
+   "id": "o5",
+   "wall": "w13",
+   "type": "window",
+   "s0": 3.476,
+   "s1": 5.157,
+   "width_m": 1.682,
+   "sill_m": 0.9,
+   "height_m": 1.3
+  },
+  {
+   "id": "o6",
+   "wall": "w14",
+   "type": "window",
+   "s0": 0.448,
+   "s1": 2.018,
+   "width_m": 1.57,
+   "sill_m": 0.9,
+   "height_m": 1.3
+  }
+ ],
+ "rooms": [
+  {
+   "id": "r0",
+   "name": "Bedroom",
+   "type": "bedroom",
+   "polygon": [
+    [
+     2.825,
+     0.179
+    ],
+    [
+     2.825,
+     4.507
+    ],
+    [
+     0.919,
+     4.507
+    ],
+    [
+     0.919,
+     5.157
+    ],
+    [
+     0.224,
+     5.157
+    ],
+    [
+     0.224,
+     0.179
+    ]
+   ],
+   "area_m2": 12.11,
+   "walls": [],
+   "centre_px": [
+    75.0,
+    304.3333333333333
+   ],
+   "material_source": "building dry"
+  },
+  {
+   "id": "r1",
+   "name": "Bath/Kitchen",
+   "type": "other",
+   "polygon": [
+    [
+     2.287,
+     7.916
+    ],
+    [
+     2.87,
+     7.916
+    ],
+    [
+     2.87,
+     9.463
+    ],
+    [
+     0.224,
+     9.463
+    ],
+    [
+     0.224,
+     5.292
+    ],
+    [
+     2.287,
+     5.292
+    ]
+   ],
+   "area_m2": 9.62,
+   "walls": [],
+   "centre_px": [
+    96.0,
+    495.0
+   ],
+   "material_source": "building dry"
+  }
+ ],
+ "fixtures": [
+  {
+   "id": "f0",
+   "type": "tub",
+   "rect": {
+    "x": 0.614,
+    "z": 6.104,
+    "w": 0.78,
+    "d": 1.63,
+    "rot_deg": 90
+   },
+   "room": "r1",
+   "against_wall": "W",
+   "height_m": 0.55
+  },
+  {
+   "id": "f1",
+   "type": "toilet",
+   "rect": {
+    "x": 1.364,
+    "z": 6.715,
+    "w": 0.585,
+    "d": 0.408,
+    "rot_deg": 0
+   },
+   "room": "r1",
+   "against_wall": "N",
+   "height_m": 0.75
+  },
+  {
+   "id": "f2",
+   "type": "vanity",
+   "rect": {
+    "x": 2.61,
+    "z": 5.764,
+    "w": 0.52,
+    "d": 0.951,
+    "rot_deg": 270
+   },
+   "room": "r1",
+   "against_wall": "E",
+   "height_m": 0.85
+  },
+  {
+   "id": "f3",
+   "type": "stove",
+   "rect": {
+    "x": 1.462,
+    "z": 5.564,
+    "w": 0.65,
+    "d": 0.543,
+    "rot_deg": 0
+   },
+   "room": "r1",
+   "against_wall": "N",
+   "height_m": 0.9
+  },
+  {
+   "id": "f4",
+   "type": "sink",
+   "rect": {
+    "x": 0.517,
+    "z": 8.346,
+    "w": 0.585,
+    "d": 0.679,
+    "rot_deg": 90
+   },
+   "room": "r1",
+   "against_wall": "W",
+   "height_m": 0.9
+  },
+  {
+   "id": "f5",
+   "type": "counter",
+   "rect": {
+    "x": 0.647,
+    "z": 8.686,
+    "w": 0.845,
+    "d": 1.63,
+    "rot_deg": 90
+   },
+   "room": "r1",
+   "against_wall": "W",
+   "height_m": 0.9
+  },
+  {
+   "id": "f6",
+   "type": "counter",
+   "rect": {
+    "x": 1.819,
+    "z": 5.428,
+    "w": 2.146,
+    "d": 0.272,
+    "rot_deg": 0
+   },
+   "room": "r1",
+   "against_wall": "N",
+   "height_m": 0.9
+  },
+  {
+   "id": "f7",
+   "type": "fireplace",
+   "rect": {
+    "x": 3.542,
+    "z": 2.504,
+    "w": 1.17,
+    "d": 1.223,
+    "rot_deg": 90
+   },
+   "room": null,
+   "against_wall": "W",
+   "height_m": 1.1
+  }
+ ],
+ "materials": {
+  "floor": {
+   "r0": "WoodFloor003",
+   "r1": "WoodFloor003"
+  },
+  "wall": {
+   "r0": null,
+   "r1": null
+  },
+  "cabinet": "WoodFloor003"
+ },
+ "review": {
+  "rounds": 1,
+  "issues": [
+   "Living room and foyer are not detected as a region; they are the large open area on the right and the overlay misses them",
+   "Patio is not detected (likely fine, as it is exterior)",
+   "Bath and kitchen are merged into one region (2) and should be separate rooms",
+   "The east wall of the living room is missing from the overlay, so it is not enclosed",
+   "Small closet/entry area near the bath door is not a separate region",
+   "Bedroom door on the south wall is shown in red, but it opens into the bath/closet nook, not the living room"
+  ],
+  "usd": 0.0115
+ }
+}

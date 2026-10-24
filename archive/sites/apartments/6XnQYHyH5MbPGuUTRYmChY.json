@@ -1,0 +1,340 @@
+{
+ "listing": "6XnQYHyH5MbPGuUTRYmChY",
+ "title": "Remodeled 2 Bedroom in Nob Hill, Great Location!",
+ "address": "1461 California Street near Larkin, San Francisco, CA",
+ "lat": 37.7906072,
+ "lon": -122.4183768,
+ "floor": null,
+ "rooms": [
+  {
+   "name": "6XnQYH_kitchen_0",
+   "label": "Kitchen",
+   "type": "kitchen",
+   "photos": [
+    0,
+    1,
+    2
+   ],
+   "claude_side": "back",
+   "claude_sun": false,
+   "window_description": "Double-hung pair over the sink with mini-blinds, looking onto a brick neighbouring building at close range. A side window by the dishwasher is also visible in image 0.",
+   "facing": 351.0,
+   "facade_street": "California Street",
+   "how": "no sun patches; address street",
+   "windows": [
+    {
+     "w": 0.72,
+     "h": 0.46,
+     "sill": 1.0,
+     "bearing": 351.0,
+     "annual_hours": 503
+    },
+    {
+     "w": 0.65,
+     "h": 0.46,
+     "sill": 1.06,
+     "bearing": 351.0,
+     "annual_hours": 503
+    }
+   ],
+   "per_month_hours": {
+    "1": 0.0,
+    "2": 0.0,
+    "3": 0.2,
+    "4": 1.6,
+    "5": 3.4,
+    "6": 4.6,
+    "7": 4.0,
+    "8": 2.1,
+    "9": 0.6,
+    "10": 0.0,
+    "11": 0.0,
+    "12": 0.0
+   },
+   "annual_hours": 503,
+   "verdict": "0.0 h/day in Dec, 4.6 h/day in Jun; 0 h Oct to Mar",
+   "scores": [
+    {
+     "edge": 2,
+     "bearing": 351.0,
+     "feasible": null,
+     "of": 0
+    },
+    {
+     "edge": 0,
+     "bearing": 171.0,
+     "feasible": null,
+     "of": 0
+    }
+   ]
+  },
+  {
+   "name": "6XnQYH_living_1",
+   "label": "Living room (beamed ceiling)",
+   "type": "living",
+   "photos": [
+    3,
+    4,
+    5,
+    6
+   ],
+   "claude_side": "back",
+   "claude_sun": true,
+   "window_description": "Pair of tall double-hung windows with roller shades, looking at the rear facades of neighbouring buildings, fire escapes and balconies. There is also an interior pass-through window to the hallway. Image 3 likely shows the same room from the opposite corner; a stone building and sky are visible.",
+   "facing": 171.0,
+   "facade_street": "Pine Street",
+   "how": "sun-patch cue",
+   "windows": [
+    {
+     "w": 0.95,
+     "h": 1.95,
+     "sill": 0.5,
+     "bearing": 171.0,
+     "annual_hours": 2691
+    },
+    {
+     "w": 0.85,
+     "h": 1.87,
+     "sill": 0.54,
+     "bearing": 171.0,
+     "annual_hours": 2897
+    },
+    {
+     "w": 1.23,
+     "h": 1.49,
+     "sill": 1.1,
+     "bearing": 350.9,
+     "annual_hours": 381
+    }
+   ],
+   "per_month_hours": {
+    "1": 8.0,
+    "2": 8.7,
+    "3": 8.8,
+    "4": 8.2,
+    "5": 7.3,
+    "6": 6.2,
+    "7": 6.8,
+    "8": 8.0,
+    "9": 8.6,
+    "10": 8.9,
+    "11": 8.1,
+    "12": 7.7
+   },
+   "annual_hours": 2897,
+   "verdict": "direct sun every month; 6.2 to 8.9 h/day",
+   "scores": [
+    {
+     "edge": 2,
+     "bearing": 351.0,
+     "street": "California Street",
+     "feasible": 0,
+     "of": 4,
+     "details": [
+      {
+       "az": 318.9,
+       "el": 41.5,
+       "max_el_there": -13.9,
+       "ok": false
+      },
+      {
+       "az": 310.4,
+       "el": 40.1,
+       "max_el_there": -9.7,
+       "ok": false
+      },
+      {
+       "az": 336.3,
+       "el": 42.0,
+       "max_el_there": -25.1,
+       "ok": false
+      },
+      {
+       "az": 308.7,
+       "el": 65.5,
+       "max_el_there": -5.0,
+       "ok": false
+      }
+     ]
+    },
+    {
+     "edge": 0,
+     "bearing": 171.0,
+     "street": "Pine Street",
+     "feasible": 4,
+     "of": 4,
+     "details": [
+      {
+       "az": 138.9,
+       "el": 41.5,
+       "max_el_there": 72.0,
+       "ok": true
+      },
+      {
+       "az": 130.4,
+       "el": 40.1,
+       "max_el_there": 70.6,
+       "ok": true
+      },
+      {
+       "az": 156.3,
+       "el": 42.0,
+       "max_el_there": 74.8,
+       "ok": true
+      },
+      {
+       "az": 128.7,
+       "el": 65.5,
+       "max_el_there": 69.2,
+       "ok": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "6XnQYH_bedroom_2",
+   "label": "Bedroom 1 (bay)",
+   "type": "bedroom",
+   "photos": [
+    7,
+    9
+   ],
+   "claude_side": "street",
+   "claude_sun": false,
+   "window_description": "Three-sided bay with three windows; a tree and a shingled building are visible outside. Pairing image 9 to this room is uncertain.",
+   "facing": 351.0,
+   "facade_street": "California Street",
+   "how": "no sun patches; Claude says street side",
+   "windows": [
+    {
+     "w": 0.67,
+     "h": 1.11,
+     "sill": 0.98,
+     "bearing": 351.0,
+     "annual_hours": 503
+    },
+    {
+     "w": 0.39,
+     "h": 1.28,
+     "sill": 0.93,
+     "bearing": 291.0,
+     "annual_hours": 1100
+    }
+   ],
+   "per_month_hours": {
+    "1": 0.7,
+    "2": 1.5,
+    "3": 2.1,
+    "4": 3.5,
+    "5": 5.8,
+    "6": 6.3,
+    "7": 6.0,
+    "8": 4.3,
+    "9": 2.5,
+    "10": 1.6,
+    "11": 1.0,
+    "12": 0.7
+   },
+   "annual_hours": 1100,
+   "verdict": "direct sun every month; 0.7 to 6.3 h/day",
+   "scores": [
+    {
+     "edge": 2,
+     "bearing": 351.0,
+     "feasible": null,
+     "of": 0
+    },
+    {
+     "edge": 0,
+     "bearing": 171.0,
+     "feasible": null,
+     "of": 0
+    }
+   ]
+  },
+  {
+   "name": "6XnQYH_bedroom_3",
+   "label": "Bedroom 2 (bay)",
+   "type": "bedroom",
+   "photos": [
+    8,
+    10
+   ],
+   "claude_side": "side_lightwell",
+   "claude_sun": false,
+   "window_description": "Three-window bay facing a close wood-sided neighbouring wall, likely across a lightwell. The room has a mirrored closet. Pairing image 10 to this room is uncertain.",
+   "how": "no sun patches; side side_lightwell: orientation not determined",
+   "verdict": "orientation not determined from photos (no sun patch, side room)"
+  },
+  {
+   "name": "6XnQYH_bathroom_5",
+   "label": "Bathroom",
+   "type": "bathroom",
+   "photos": [
+    12,
+    13
+   ],
+   "claude_side": "side_lightwell",
+   "claude_sun": false,
+   "window_description": "Narrow double-hung window with frosted or obscured glass, likely onto a lightwell.",
+   "how": "no sun patches; side side_lightwell: orientation not determined",
+   "verdict": "orientation not determined from photos (no sun patch, side room)"
+  },
+  {
+   "name": "6XnQYH_other_6",
+   "label": "Utility room",
+   "type": "other",
+   "photos": [
+    14
+   ],
+   "claude_side": "back",
+   "claude_sun": true,
+   "window_description": "Single double-hung window facing a nearby stucco wall. The room contains the electrical panel and a small service hatch.",
+   "facing": 351.0,
+   "facade_street": "California Street",
+   "how": "no sun patches; address street",
+   "windows": [
+    {
+     "w": 0.51,
+     "h": 1.62,
+     "sill": 1.28,
+     "bearing": 351.0,
+     "annual_hours": 503
+    }
+   ],
+   "per_month_hours": {
+    "1": 0.0,
+    "2": 0.0,
+    "3": 0.2,
+    "4": 1.6,
+    "5": 3.4,
+    "6": 4.6,
+    "7": 4.0,
+    "8": 2.1,
+    "9": 0.6,
+    "10": 0.0,
+    "11": 0.0,
+    "12": 0.0
+   },
+   "annual_hours": 503,
+   "verdict": "0.0 h/day in Dec, 4.6 h/day in Jun; 0 h Oct to Mar",
+   "scores": [
+    {
+     "edge": 2,
+     "bearing": 351.0,
+     "feasible": null,
+     "of": 0
+    },
+    {
+     "edge": 0,
+     "bearing": 171.0,
+     "feasible": null,
+     "of": 0
+    }
+   ]
+  }
+ ],
+ "graph_model": "claude-opus-5-5",
+ "graph_usd": 0.08758
+}

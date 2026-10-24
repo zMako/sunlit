@@ -1,0 +1,57 @@
+{
+ "name": "p2_gs-22612_living_2",
+ "path": "B-free",
+ "listing": "gs-22612",
+ "photos": [
+  "03.jpg"
+ ],
+ "chosen_photo": "03.jpg",
+ "hfov_deg": 115.0999984741211,
+ "pitch_deg": 9.7,
+ "prompt": "interior photo of an empty unfurnished living, off-white painted walls, parquet wood floor, white ceiling, natural daylight, real estate photography, wide angle, continuous room, photorealistic",
+ "area_m2": 33.59,
+ "width_m": 5.63,
+ "depth_m": 5.97,
+ "ceiling_m": 2.7,
+ "layout": {
+  "corners": [
+   [
+    0.31486682493127266,
+    -4.165282834831956
+   ],
+   [
+    3.893483037887285,
+    0.17592577190337966
+   ],
+   [
+    -0.7139122697202518,
+    3.9739693678090657
+   ],
+   [
+    -4.292528482676264,
+    -0.3672392389262697
+   ]
+  ],
+  "width_m": 5.626063114365548,
+  "depth_m": 5.971032295756249,
+  "ceiling_m": 2.7,
+  "cam_h": 0.9,
+  "axis_deg": 50.5,
+  "area_m2": 33.59340455383967,
+  "n_boundary": 2048,
+  "area_m2_at_cam_h_1p5": 93.3,
+  "ceiling_m_from_pano": 2.2,
+  "vlm_width_m": 5.5,
+  "vlm_depth_m": 6.0,
+  "vlm_area_m2": 33.0,
+  "area_ratio_vs_vlm": 1.02
+ },
+ "log": [
+  "photo 03.jpg hfov 115 floor 16% pitch +9.7 roll +1.2 cam_h_units 0.34046201727164094",
+  "cropped letterbox 480px x 0px per side",
+  "outpaint 118s",
+  "layout 5s",
+  "scale: cam_h 0.90 m to match VLM area 33.0 m2"
+ ],
+ "s": 132
+}

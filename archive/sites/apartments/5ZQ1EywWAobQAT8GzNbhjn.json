@@ -1,0 +1,193 @@
+{
+ "listing": "5ZQ1EywWAobQAT8GzNbhjn",
+ "title": "1472 Filbert #602 - Beautiful 1x1 - Top Floor - WD in Unit - Pets OK",
+ "address": "1472 Filbert, San Francisco, CA",
+ "lat": 37.799839,
+ "lon": -122.4234988,
+ "floor": 6,
+ "rooms": [
+  {
+   "name": "5ZQ1Ey_living_0",
+   "label": "Living room",
+   "type": "living",
+   "photos": [
+    0,
+    1,
+    2,
+    3,
+    6
+   ],
+   "claude_side": "street",
+   "claude_sun": true,
+   "window_description": "Three-panel bay window of double-hung sashes with roller shades, giving an elevated view over neighbouring rooftops and the city.",
+   "facing": 170.5,
+   "facade_street": "Filbert Street",
+   "how": "no sun patches; Claude says street side",
+   "windows": [
+    {
+     "w": 0.61,
+     "h": 1.53,
+     "sill": 0.54,
+     "bearing": 281.9,
+     "annual_hours": 1796
+    },
+    {
+     "w": 0.84,
+     "h": 1.38,
+     "sill": 0.62,
+     "bearing": 259.1,
+     "annual_hours": 2137
+    },
+    {
+     "w": 2.08,
+     "h": 2.45,
+     "sill": 0.02,
+     "bearing": 168.5,
+     "annual_hours": 3124
+    },
+    {
+     "w": 0.47,
+     "h": 0.65,
+     "sill": 1.18,
+     "bearing": 168.5,
+     "annual_hours": 3124
+    },
+    {
+     "w": 0.83,
+     "h": 0.81,
+     "sill": 0.57,
+     "bearing": 261.6,
+     "annual_hours": 2009
+    },
+    {
+     "w": 0.42,
+     "h": 0.53,
+     "sill": 1.31,
+     "bearing": 72.0,
+     "annual_hours": 1506
+    }
+   ],
+   "per_month_hours": {
+    "1": 8.9,
+    "2": 9.6,
+    "3": 9.5,
+    "4": 8.9,
+    "5": 7.4,
+    "6": 6.8,
+    "7": 6.9,
+    "8": 8.5,
+    "9": 9.4,
+    "10": 9.6,
+    "11": 9.2,
+    "12": 8.5
+   },
+   "annual_hours": 3124,
+   "verdict": "direct sun every month; 6.8 to 9.6 h/day",
+   "scores": [
+    {
+     "edge": 0,
+     "bearing": 170.5,
+     "feasible": null,
+     "of": 0
+    },
+    {
+     "edge": 3,
+     "bearing": 80.5,
+     "feasible": null,
+     "of": 0
+    },
+    {
+     "edge": 1,
+     "bearing": 260.5,
+     "feasible": null,
+     "of": 0
+    },
+    {
+     "edge": 2,
+     "bearing": 350.5,
+     "feasible": null,
+     "of": 0
+    }
+   ]
+  },
+  {
+   "name": "5ZQ1Ey_bedroom_2",
+   "label": "Bedroom",
+   "type": "bedroom",
+   "photos": [
+    11
+   ],
+   "claude_side": "street",
+   "claude_sun": true,
+   "window_description": "Single double-hung window with blinds, looking out at neighbouring buildings; seen through the pocket door next to the bay in photo 1.",
+   "facing": 170.5,
+   "facade_street": "Filbert Street",
+   "how": "no sun patches; Claude says street side",
+   "windows": [
+    {
+     "w": 0.97,
+     "h": 0.9,
+     "sill": 0.61,
+     "bearing": 178.5,
+     "annual_hours": 3155
+    }
+   ],
+   "per_month_hours": {
+    "1": 8.8,
+    "2": 9.7,
+    "3": 10.5,
+    "4": 9.1,
+    "5": 7.1,
+    "6": 6.0,
+    "7": 6.6,
+    "8": 8.4,
+    "9": 10.2,
+    "10": 10.0,
+    "11": 9.0,
+    "12": 8.4
+   },
+   "annual_hours": 3155,
+   "verdict": "direct sun every month; 6.0 to 10.5 h/day",
+   "scores": [
+    {
+     "edge": 0,
+     "bearing": 170.5,
+     "feasible": null,
+     "of": 0
+    },
+    {
+     "edge": 3,
+     "bearing": 80.5,
+     "feasible": null,
+     "of": 0
+    },
+    {
+     "edge": 1,
+     "bearing": 260.5,
+     "feasible": null,
+     "of": 0
+    },
+    {
+     "edge": 2,
+     "bearing": 350.5,
+     "feasible": null,
+     "of": 0
+    }
+   ]
+  },
+  {
+   "name": "5ZQ1Ey_bathroom_3",
+   "label": "Bathroom",
+   "type": "bathroom",
+   "photos": [
+    7,
+    8
+   ],
+   "claude_side": "side_lightwell",
+   "claude_sun": false,
+   "window_description": "Small frosted/obscured window in the tub/shower wall, likely onto a lightwell."
+  }
+ ],
+ "graph_model": "claude-opus-5-5",
+ "graph_usd": 0.0492
+}

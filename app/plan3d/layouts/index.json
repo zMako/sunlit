@@ -1,0 +1,1688 @@
+[
+ {
+  "unit": "gs-18149_plan_00",
+  "listing": "gs-18149",
+  "building": "1333 Gough Apartments at Cathedral Hill",
+  "plan_image": "/listings/gs-18149/plans/plan_00.jpg",
+  "plan_name": "A",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Bedroom (fragment)",
+    "type": "bedroom",
+    "area_m2": 2.6
+   },
+   {
+    "id": "r1",
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 18.77
+   },
+   {
+    "id": "r2",
+    "name": "Bedroom (fragment)",
+    "type": "bedroom",
+    "area_m2": 2.13
+   },
+   {
+    "id": "r3",
+    "name": "Bedroom (fragment)",
+    "type": "bedroom",
+    "area_m2": 2.1
+   },
+   {
+    "id": "r4",
+    "name": "Bedroom (fragment)",
+    "type": "bedroom",
+    "area_m2": 2.59
+   },
+   {
+    "id": "r5",
+    "name": "Den (fragment)",
+    "type": "office",
+    "area_m2": 2.97
+   },
+   {
+    "id": "r6",
+    "name": "Hall",
+    "type": "hallway",
+    "area_m2": 2.97
+   },
+   {
+    "id": "r7",
+    "name": "Bedroom (fragment)",
+    "type": "bedroom",
+    "area_m2": 1.98
+   },
+   {
+    "id": "r8",
+    "name": "Bedroom (fragment)",
+    "type": "bedroom",
+    "area_m2": 5.91
+   },
+   {
+    "id": "r9",
+    "name": "Logo artifact",
+    "type": "other",
+    "area_m2": 2.65
+   }
+  ],
+  "area_m2": 44.7,
+  "scale_from": [
+   "reader_dims+printed",
+   "door_width",
+   "sqft"
+  ],
+  "n_fixtures": 12,
+  "issues": [
+   "Bedroom is shattered into many fragments (regions 1-5, 8, 9) due to the textured carpet",
+   "Den, living room, kitchen, hall, both bathrooms, closets and balcony are not detected as rooms",
+   "Many doors and windows are missing, including the entry door, bathroom doors and balcony door",
+   "Region 10 is a logo artifact, not a room"
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-18149_plan_02",
+  "listing": "gs-18149",
+  "building": "1333 Gough Apartments at Cathedral Hill",
+  "plan_image": "/listings/gs-18149/plans/plan_02.jpg",
+  "plan_name": "C",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Logo letter C (not a room)",
+    "type": "other",
+    "area_m2": 3.16
+   },
+   {
+    "id": "r1",
+    "name": "Logo 13 (not a room)",
+    "type": "other",
+    "area_m2": 4.84
+   },
+   {
+    "id": "r2",
+    "name": "Building key plan elevator (not a room)",
+    "type": "other",
+    "area_m2": 3.86
+   }
+  ],
+  "area_m2": 11.9,
+  "scale_from": [
+   "door_width",
+   "sqft"
+  ],
+  "n_fixtures": 12,
+  "issues": [
+   "Overlay found only spurious regions in the logo and key plan; none of the actual apartment rooms were detected",
+   "Apartment walls are not closed, so primary bedroom, bedroom, living room, kitchen, dining, hall, bathrooms, closets and balcony are all missing",
+   "Interior doors and windows are not marked"
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-18149_plan_03",
+  "listing": "gs-18149",
+  "building": "1333 Gough Apartments at Cathedral Hill",
+  "plan_image": "/listings/gs-18149/plans/plan_03.jpg",
+  "plan_name": "D",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 0.97
+   },
+   {
+    "id": "r1",
+    "name": "Room 2",
+    "type": "other",
+    "area_m2": 1.14
+   },
+   {
+    "id": "r2",
+    "name": "Primary Bedroom",
+    "type": "bedroom",
+    "area_m2": 3.7
+   },
+   {
+    "id": "r3",
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 16.4
+   },
+   {
+    "id": "r4",
+    "name": "Room 5",
+    "type": "other",
+    "area_m2": 4.88
+   },
+   {
+    "id": "r5",
+    "name": "Room 6",
+    "type": "other",
+    "area_m2": 0.64
+   },
+   {
+    "id": "r6",
+    "name": "Room 7",
+    "type": "other",
+    "area_m2": 0.87
+   },
+   {
+    "id": "r7",
+    "name": "Room 8",
+    "type": "other",
+    "area_m2": 0.67
+   },
+   {
+    "id": "r8",
+    "name": "Primary Bedroom",
+    "type": "bedroom",
+    "area_m2": 15.19
+   },
+   {
+    "id": "r9",
+    "name": "Room 10",
+    "type": "other",
+    "area_m2": 0.65
+   },
+   {
+    "id": "r10",
+    "name": "Room 11",
+    "type": "other",
+    "area_m2": 1.01
+   },
+   {
+    "id": "r11",
+    "name": "Room 12",
+    "type": "other",
+    "area_m2": 0.75
+   },
+   {
+    "id": "r12",
+    "name": "Room 13",
+    "type": "other",
+    "area_m2": 1.31
+   },
+   {
+    "id": "r13",
+    "name": "Room 14",
+    "type": "other",
+    "area_m2": 2.94
+   },
+   {
+    "id": "r14",
+    "name": "Room 15",
+    "type": "other",
+    "area_m2": 0.79
+   },
+   {
+    "id": "r15",
+    "name": "Den",
+    "type": "office",
+    "area_m2": 0.71
+   },
+   {
+    "id": "r16",
+    "name": "Room 17",
+    "type": "other",
+    "area_m2": 0.9
+   },
+   {
+    "id": "r17",
+    "name": "Room 18",
+    "type": "other",
+    "area_m2": 0.66
+   },
+   {
+    "id": "r18",
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 0.96
+   },
+   {
+    "id": "r19",
+    "name": "Room 20",
+    "type": "other",
+    "area_m2": 1.7
+   },
+   {
+    "id": "r20",
+    "name": "Room 21",
+    "type": "other",
+    "area_m2": 1.35
+   },
+   {
+    "id": "r21",
+    "name": "Room 22",
+    "type": "other",
+    "area_m2": 1.32
+   },
+   {
+    "id": "r22",
+    "name": "Hall",
+    "type": "hallway",
+    "area_m2": 4.09
+   },
+   {
+    "id": "r23",
+    "name": "Room 24",
+    "type": "other",
+    "area_m2": 3.65
+   },
+   {
+    "id": "r24",
+    "name": "Pantry",
+    "type": "closet",
+    "area_m2": 3.55
+   },
+   {
+    "id": "r25",
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.88
+   },
+   {
+    "id": "r26",
+    "name": "Bathroom",
+    "type": "bathroom",
+    "area_m2": 14.43
+   },
+   {
+    "id": "r27",
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 2.75
+   },
+   {
+    "id": "r28",
+    "name": "Room 29",
+    "type": "other",
+    "area_m2": 4.31
+   },
+   {
+    "id": "r29",
+    "name": "Living Room",
+    "type": "living",
+    "area_m2": 0.92
+   },
+   {
+    "id": "r30",
+    "name": "Room 31",
+    "type": "other",
+    "area_m2": 2.57
+   },
+   {
+    "id": "r31",
+    "name": "Room 32",
+    "type": "other",
+    "area_m2": 1.64
+   },
+   {
+    "id": "r32",
+    "name": "Room 33",
+    "type": "other",
+    "area_m2": 0.8
+   },
+   {
+    "id": "r33",
+    "name": "Primary Bath",
+    "type": "bathroom",
+    "area_m2": 8.26
+   },
+   {
+    "id": "r34",
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 13.08
+   },
+   {
+    "id": "r35",
+    "name": "Room 36",
+    "type": "other",
+    "area_m2": 1.03
+   },
+   {
+    "id": "r36",
+    "name": "Dining Area",
+    "type": "dining",
+    "area_m2": 2.05
+   },
+   {
+    "id": "r37",
+    "name": "Room 38",
+    "type": "other",
+    "area_m2": 1.01
+   },
+   {
+    "id": "r38",
+    "name": "Room 39",
+    "type": "other",
+    "area_m2": 0.78
+   },
+   {
+    "id": "r39",
+    "name": "Room 40",
+    "type": "other",
+    "area_m2": 0.78
+   },
+   {
+    "id": "r40",
+    "name": "Room 41",
+    "type": "other",
+    "area_m2": 2.11
+   },
+   {
+    "id": "r41",
+    "name": "Room 42",
+    "type": "other",
+    "area_m2": 1.21
+   },
+   {
+    "id": "r42",
+    "name": "Room 43",
+    "type": "other",
+    "area_m2": 4.85
+   },
+   {
+    "id": "r43",
+    "name": "Room 44",
+    "type": "other",
+    "area_m2": 0.69
+   },
+   {
+    "id": "r44",
+    "name": "Room 45",
+    "type": "other",
+    "area_m2": 1.68
+   },
+   {
+    "id": "r45",
+    "name": "Room 46",
+    "type": "other",
+    "area_m2": 0.9
+   },
+   {
+    "id": "r46",
+    "name": "Room 47",
+    "type": "other",
+    "area_m2": 4.69
+   }
+  ],
+  "area_m2": 143.2,
+  "scale_from": [
+   "reader_dims+printed",
+   "door_width",
+   "sqft"
+  ],
+  "n_fixtures": 14,
+  "issues": [
+   "Bedroom, primary bedroom regions are fragmented into many small regions (1-22) by furniture text",
+   "Living room, den, balcony, and hallways are not detected as rooms (open gray area)",
+   "Regions 43-47 are the key map and logo, not rooms",
+   "Kitchen split into 30-32, 35; dining split 37-38",
+   "Primary bedroom door and living room doors missing",
+   "Balcony door and windows not marked"
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-18149_plan_05",
+  "listing": "gs-18149",
+  "building": "1333 Gough Apartments at Cathedral Hill",
+  "plan_image": "/listings/gs-18149/plans/plan_05.jpg",
+  "plan_name": "F",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Bedroom (fragment)",
+    "type": "bedroom",
+    "area_m2": 3.25
+   },
+   {
+    "id": "r1",
+    "name": "Bedroom (fragment)",
+    "type": "bedroom",
+    "area_m2": 1.34
+   },
+   {
+    "id": "r2",
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 7.38
+   },
+   {
+    "id": "r3",
+    "name": "Living room (fragment)",
+    "type": "living",
+    "area_m2": 1.6
+   },
+   {
+    "id": "r4",
+    "name": "Living room (fragment)",
+    "type": "living",
+    "area_m2": 1.2
+   },
+   {
+    "id": "r5",
+    "name": "Living room",
+    "type": "living",
+    "area_m2": 19.72
+   },
+   {
+    "id": "r6",
+    "name": "Bedroom closet",
+    "type": "closet",
+    "area_m2": 0.85
+   },
+   {
+    "id": "r7",
+    "name": "Living room (fragment)",
+    "type": "living",
+    "area_m2": 1.98
+   },
+   {
+    "id": "r8",
+    "name": "Kitchen sink (fragment)",
+    "type": "kitchen",
+    "area_m2": 2.36
+   },
+   {
+    "id": "r9",
+    "name": "Logo artifact",
+    "type": "other",
+    "area_m2": 1.08
+   }
+  ],
+  "area_m2": 40.8,
+  "scale_from": [
+   "reader_dims+printed",
+   "door_width",
+   "sqft"
+  ],
+  "n_fixtures": 9,
+  "issues": [
+   "Living room and kitchen are shattered into fragments 4,5,6,8,9 by wall-like black artifacts",
+   "Bedroom is shattered into 1,2,3 and 7",
+   "Bathroom, hall and linen closet are not detected as rooms",
+   "Balcony is not detected as a room",
+   "Entry closet not detected",
+   "Front door not marked",
+   "Logo region 10 is spurious"
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-20665_plan_00",
+  "listing": "gs-20665",
+  "building": "2133 Stockton Apartments",
+  "plan_image": "/listings/gs-20665/plans/plan_00.jpg",
+  "plan_name": "1 Bed, 1 Bath A",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 20.43
+   },
+   {
+    "id": "r1",
+    "name": "Living Room / Kitchen",
+    "type": "living",
+    "area_m2": 25.51
+   },
+   {
+    "id": "r2",
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 1.74
+   }
+  ],
+  "area_m2": 47.7,
+  "scale_from": [
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width"
+  ],
+  "n_fixtures": 8,
+  "issues": [
+   "Bath region 3 appears to include the closet/utility area and the bath; the bath entry door swing near the bedroom is not closed off",
+   "Small closet above the kitchen/bath (x 0.53-0.7, y 0.62-0.72) is not a separate room",
+   "Bedroom door opening into living room is only partially marked",
+   "Kitchen is merged with living room in region 2"
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-20665_plan_01",
+  "listing": "gs-20665",
+  "building": "2133 Stockton Apartments",
+  "plan_image": "/listings/gs-20665/plans/plan_01.jpg",
+  "plan_name": "Renovated 1 Bed, 1 Bath A",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 15.59
+   },
+   {
+    "id": "r1",
+    "name": "Bath and Kitchen",
+    "type": "other",
+    "area_m2": 11.37
+   }
+  ],
+  "area_m2": 27.0,
+  "scale_from": [
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width"
+  ],
+  "n_fixtures": 8,
+  "issues": [
+   "Living room and foyer are not detected as a region; the overlay misses the large open space on the right.",
+   "Bath and kitchen are merged into one region (2) and should be separate rooms.",
+   "The patio is not detected, though it is probably not needed.",
+   "Bedroom closet at the lower left is not separated.",
+   "The bedroom door opening to the bath hall is marked red but the bedroom's right wall has a blue window mark where the wall is solid."
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-20665_plan_03",
+  "listing": "gs-20665",
+  "building": "2133 Stockton Apartments",
+  "plan_image": "/listings/gs-20665/plans/plan_03.jpg",
+  "plan_name": "1 Bed, 1 Bath",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 18.41
+   },
+   {
+    "id": "r1",
+    "name": "Foyer",
+    "type": "entry",
+    "area_m2": 2.0
+   }
+  ],
+  "area_m2": 20.4,
+  "scale_from": [
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width"
+  ],
+  "n_fixtures": 8,
+  "issues": [
+   "Only the bedroom and foyer were detected; the living room, dining, kitchen, bath and patio are missing as rooms.",
+   "The bathroom is only partly covered, with a red door line cutting through it.",
+   "The open living/dining/kitchen area is not enclosed, so it was not detected.",
+   "The bedroom region includes the small closet/alcove at its bottom-right.",
+   "The foyer is boxed in by door lines and may be extra."
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-20665_plan_04",
+  "listing": "gs-20665",
+  "building": "2133 Stockton Apartments",
+  "plan_image": "/listings/gs-20665/plans/plan_04.jpg",
+  "plan_name": "Renovated 1 Bed, 1 Bath",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 12.87
+   },
+   {
+    "id": "r1",
+    "name": "Foyer",
+    "type": "entry",
+    "area_m2": 2.3
+   }
+  ],
+  "area_m2": 15.2,
+  "scale_from": [
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width"
+  ],
+  "n_fixtures": 9,
+  "issues": [
+   "Living room, dining and kitchen are not detected as rooms; they are open to each other and the patio, with no walls closing them",
+   "Bath is not detected as its own room; it is merged with the dark wall area and partly lost",
+   "Closet and bath hallway areas near the bottom are missing",
+   "Region 2 (foyer) is tinted partially and overlaps the black wall blocks",
+   "The bedroom's south edge has a closet alcove included in the bedroom region",
+   "Patio is not detected, as it is open space with no walls"
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-20665_plan_06",
+  "listing": "gs-20665",
+  "building": "2133 Stockton Apartments",
+  "plan_image": "/listings/gs-20665/plans/plan_06.jpg",
+  "plan_name": "1 Bed, 1 Bath",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 12.92
+   },
+   {
+    "id": "r1",
+    "name": "Foyer",
+    "type": "entry",
+    "area_m2": 1.4
+   }
+  ],
+  "area_m2": 14.3,
+  "scale_from": [
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width"
+  ],
+  "n_fixtures": 8,
+  "issues": [
+   "Only bedroom and foyer detected; living room, dining, kitchen, bath and patio are missing as regions because the open living/dining/kitchen area is not enclosed.",
+   "Bath is not detected as its own region and the bathroom door is unclear; the red-outlined strip near the bath is odd.",
+   "Foyer region appears to include only the entry alcove, with its walls partially open to the kitchen.",
+   "Bedroom region may be missing the closet, which is part of the bedroom area at the bottom.",
+   "Patio is open with no walls so it was not detected."
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-20665_plan_07",
+  "listing": "gs-20665",
+  "building": "2133 Stockton Apartments",
+  "plan_image": "/listings/gs-20665/plans/plan_07.jpg",
+  "plan_name": "1 Bed, 1 Bath A",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 16.24
+   },
+   {
+    "id": "r1",
+    "name": "Living Room / Kitchen",
+    "type": "living",
+    "area_m2": 19.65
+   },
+   {
+    "id": "r2",
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 1.32
+   }
+  ],
+  "area_m2": 37.2,
+  "scale_from": [
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width"
+  ],
+  "n_fixtures": 7,
+  "issues": [
+   "The kitchen is merged into the living room (region 2) with no separation.",
+   "The small closet or vestibule region near the bedroom door (x about 0.55-0.7, y 0.64-0.75) is not detected as a separate room.",
+   "The bath is detected as one region but the tub and the toilet/vanity area may be separate spaces.",
+   "The fireplace alcove is tinted darker and the dark wall block is treated as part of the living room.",
+   "The bedroom door swing is shown as a door in the overlay, but the door to the bath is red and the bedroom/bath door may be missing.",
+   "The door at the bottom of the kitchen is marked as red, but the bottom wall has an odd segment."
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-20665_plan_08",
+  "listing": "gs-20665",
+  "building": "2133 Stockton Apartments",
+  "plan_image": "/listings/gs-20665/plans/plan_08.jpg",
+  "plan_name": "Renovated 1 Bed, 1 Bath",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 15.2
+   },
+   {
+    "id": "r1",
+    "name": "Foyer",
+    "type": "entry",
+    "area_m2": 1.65
+   }
+  ],
+  "area_m2": 16.8,
+  "scale_from": [
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width"
+  ],
+  "n_fixtures": 8,
+  "issues": [
+   "Living room, dining and kitchen form one open area and were not detected as a room",
+   "Bathroom (tub, toilet, vanity) was not detected as a numbered room",
+   "Patio is not detected (acceptable as it is outdoor)",
+   "Foyer region 2 is small and may be only part of the foyer; its boundaries are uncertain",
+   "Bedroom closet nook at the lower left may be merged into the bedroom region",
+   "Bedroom wall on the east side has a gap near the bathroom door area"
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-20665_plan_09",
+  "listing": "gs-20665",
+  "building": "2133 Stockton Apartments",
+  "plan_image": "/listings/gs-20665/plans/plan_09.jpg",
+  "plan_name": "Renovated 1 Bed, 1 Bath A",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 12.11
+   },
+   {
+    "id": "r1",
+    "name": "Bath/Kitchen",
+    "type": "other",
+    "area_m2": 9.62
+   }
+  ],
+  "area_m2": 21.7,
+  "scale_from": [
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width"
+  ],
+  "n_fixtures": 8,
+  "issues": [
+   "Living room and foyer are not detected as a region; they are the large open area on the right and the overlay misses them",
+   "Patio is not detected (likely fine, as it is exterior)",
+   "Bath and kitchen are merged into one region (2) and should be separate rooms",
+   "The east wall of the living room is missing from the overlay, so it is not enclosed",
+   "Small closet/entry area near the bath door is not a separate region",
+   "Bedroom door on the south wall is shown in red, but it opens into the bath/closet nook, not the living room"
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-20667_plan_00",
+  "listing": "gs-20667",
+  "building": "240 Dolores",
+  "plan_image": "/listings/gs-20667/plans/plan_00.jpg",
+  "plan_name": "1 Bed, 1 Bath A",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Bedroom closet/alcove",
+    "type": "closet",
+    "area_m2": 2.0
+   },
+   {
+    "id": "r1",
+    "name": "Foyer (upper)",
+    "type": "entry",
+    "area_m2": 3.06
+   },
+   {
+    "id": "r2",
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 12.47
+   },
+   {
+    "id": "r3",
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 5.48
+   },
+   {
+    "id": "r4",
+    "name": "Foyer (lower)",
+    "type": "entry",
+    "area_m2": 2.53
+   }
+  ],
+  "area_m2": 25.5,
+  "scale_from": [
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width"
+  ],
+  "n_fixtures": 8,
+  "issues": [
+   "Kitchen/living room is not detected as a region; the large open area is missing",
+   "Foyer is split into regions 2 and 5 by a false window line",
+   "Region 1 is a bedroom alcove and probably belongs with the bedroom",
+   "Wall segment at the top of the foyer drawn as an opening (yellow) leads to the living area",
+   "Narrow closet/pantry beside the kitchen is not detected"
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-20667_plan_02",
+  "listing": "gs-20667",
+  "building": "240 Dolores",
+  "plan_image": "/listings/gs-20667/plans/plan_02.jpg",
+  "plan_name": "Renovated 1 Bed, 1 Bath D",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Bedroom closet/alcove",
+    "type": "closet",
+    "area_m2": 2.02
+   },
+   {
+    "id": "r1",
+    "name": "Foyer (upper)",
+    "type": "hallway",
+    "area_m2": 3.08
+   },
+   {
+    "id": "r2",
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 12.67
+   },
+   {
+    "id": "r3",
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 5.65
+   },
+   {
+    "id": "r4",
+    "name": "Foyer (lower)",
+    "type": "entry",
+    "area_m2": 2.6
+   }
+  ],
+  "area_m2": 26.0,
+  "scale_from": [
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width"
+  ],
+  "n_fixtures": 8,
+  "issues": [
+   "Foyer split into two regions (2 and 5); should be one room",
+   "Living room/kitchen not detected as a region; open area missing",
+   "Wall opening at the top of region 2 (yellow) leads to the living area",
+   "Region 1 is the bedroom window alcove, likely part of the bedroom",
+   "Bath window at the bottom is marked but the bath door is red at the bottom"
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-22612_plan_00",
+  "listing": "gs-22612",
+  "building": "1000 Green",
+  "plan_image": "/listings/gs-22612/plans/plan_00.jpg",
+  "plan_name": "Macondray",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Living/Dining Room",
+    "type": "living",
+    "area_m2": 32.28
+   },
+   {
+    "id": "r1",
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 17.14
+   },
+   {
+    "id": "r2",
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 10.59
+   },
+   {
+    "id": "r3",
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 2.26
+   }
+  ],
+  "area_m2": 62.3,
+  "scale_from": [
+   "annotation_dims",
+   "door_width"
+  ],
+  "n_fixtures": 9,
+  "issues": [
+   "Bath is split: overlay region 4 covers only the tub/toilet part, while the shower and vanity area is merged into the Living/Dining region 1",
+   "Entry is merged into Living/Dining (region 1) with no separate region",
+   "Closet/linen at the bottom right of the entry is not detected as a room",
+   "Small alcove below bedroom (window area) and bottom closet near the bath are merged into other regions or missed",
+   "Yellow line at kitchen west opening and entry door at bottom are open boundaries rather than walls; the kitchen is open to living",
+   "Bath window and door markings are misplaced: blue lines inside bath are not windows"
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-22612_plan_01",
+  "listing": "gs-22612",
+  "building": "1000 Green",
+  "plan_image": "/listings/gs-22612/plans/plan_01.jpg",
+  "plan_name": "Coit Tower",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Living Room / Dining Room / Entry",
+    "type": "living",
+    "area_m2": 42.06
+   },
+   {
+    "id": "r1",
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 8.44
+   },
+   {
+    "id": "r2",
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 13.86
+   },
+   {
+    "id": "r3",
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 3.62
+   },
+   {
+    "id": "r4",
+    "name": "Walk-In Closet",
+    "type": "closet",
+    "area_m2": 1.84
+   },
+   {
+    "id": "r5",
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.69
+   }
+  ],
+  "area_m2": 71.5,
+  "scale_from": [
+   "annotation_dims",
+   "door_width"
+  ],
+  "n_fixtures": 10,
+  "issues": [
+   "Living, dining and entry merged into one region (1); the dining area is open to the living room, entry is also merged",
+   "Linen closet is not a numbered region",
+   "Hallway area between kitchen and bath is not tinted and no room is assigned to it",
+   "Kitchen door on the west wall is shown as a door although it is an opening",
+   "Doors at the bedroom to hallway and bedroom to closet are marked on the wall; extra door marks are drawn outside the walls near the hallway",
+   "Window on the west bump-out is marked as yellow (opening) rather than a window",
+   "Dark filled block at the bottom of the kitchen is a wall piece, tinted incorrectly"
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-22612_plan_02",
+  "listing": "gs-22612",
+  "building": "1000 Green",
+  "plan_image": "/listings/gs-22612/plans/plan_02.jpg",
+  "plan_name": "Sutro",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Living Room",
+    "type": "living",
+    "area_m2": 33.69
+   },
+   {
+    "id": "r1",
+    "name": "Closet (off living room)",
+    "type": "closet",
+    "area_m2": 3.26
+   },
+   {
+    "id": "r2",
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 17.14
+   },
+   {
+    "id": "r3",
+    "name": "Hallway/Entry (open area between living room and bedroom)",
+    "type": "hallway",
+    "area_m2": 7.13
+   },
+   {
+    "id": "r4",
+    "name": "Dining Room",
+    "type": "dining",
+    "area_m2": 11.72
+   },
+   {
+    "id": "r5",
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 12.1
+   }
+  ],
+  "area_m2": 85.0,
+  "scale_from": [
+   "reader_dims+printed",
+   "door_width"
+  ],
+  "n_fixtures": 11,
+  "issues": [
+   "Region 4 is the open hall/entry area merged with the living room edge; it is not a closed room and the entry corridor to the south is not tinted",
+   "Bathroom (with tub, vanity, toilet) is not detected as a room; it is untinted",
+   "Walk-in closet and linen closet are not detected as rooms",
+   "Closet 2 is a closet with a door to the hall, correctly detected but its door is on the south wall",
+   "Entry hall south of the bath is not tinted",
+   "Pantry is merged into the kitchen (region 6)",
+   "Patio/Balcony not detected",
+   "Window marked blue on the kitchen west wall is actually a door; the kitchen east door is actually a window; the wall between the hall and living room at x=0.54 is shown as a window but is open",
+   "Blue line across the bath/dining boundary is a false window"
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-22612_plan_03",
+  "listing": "gs-22612",
+  "building": "1000 Green",
+  "plan_image": "/listings/gs-22612/plans/plan_03.jpg",
+  "plan_name": "Sutro",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Living Room",
+    "type": "living",
+    "area_m2": 37.48
+   },
+   {
+    "id": "r1",
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 3.63
+   },
+   {
+    "id": "r2",
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 18.83
+   },
+   {
+    "id": "r3",
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 4.72
+   },
+   {
+    "id": "r4",
+    "name": "Dining Room",
+    "type": "dining",
+    "area_m2": 13.05
+   },
+   {
+    "id": "r5",
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 13.28
+   }
+  ],
+  "area_m2": 91.0,
+  "scale_from": [
+   "reader_dims+printed",
+   "door_width"
+  ],
+  "n_fixtures": 9,
+  "issues": [
+   "Entry/hallway not detected as a room",
+   "Walk-in closet and linen closet not detected",
+   "Second small closet near entry and shower stall not detected",
+   "Bath door region leaks into hallway",
+   "Pantry merged into kitchen",
+   "Kitchen west door marked as window",
+   "Entry door unmarked"
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-22612_plan_04",
+  "listing": "gs-22612",
+  "building": "1000 Green",
+  "plan_image": "/listings/gs-22612/plans/plan_04.jpg",
+  "plan_name": "Sutro 2x1",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 3.83
+   },
+   {
+    "id": "r1",
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 20.15
+   },
+   {
+    "id": "r2",
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 13.65
+   },
+   {
+    "id": "r3",
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 14.36
+   }
+  ],
+  "area_m2": 52.0,
+  "scale_from": [
+   "reader_dims+printed",
+   "door_width"
+  ],
+  "n_fixtures": 11,
+  "issues": [
+   "Living room, entry hallway, bath, and patio are not detected as rooms; the open living/entry area is missing",
+   "Walk-in closet and linen closet are not separate numbered regions",
+   "Region 3 includes the bedroom closet alcove, with a wall stub drawn",
+   "The door at the kitchen entrance is marked as a window (blue) on the kitchen's west side",
+   "Pantry in the kitchen is cut off from the kitchen by an extra wall",
+   "Kitchen bottom-left door appears as an extra door"
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-22612_plan_05",
+  "listing": "gs-22612",
+  "building": "1000 Green",
+  "plan_image": "/listings/gs-22612/plans/plan_05.jpg",
+  "plan_name": "Nob Hill",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Living/Dining Room",
+    "type": "living",
+    "area_m2": 47.16
+   },
+   {
+    "id": "r1",
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 11.46
+   },
+   {
+    "id": "r2",
+    "name": "Bedroom 2",
+    "type": "bedroom",
+    "area_m2": 15.08
+   },
+   {
+    "id": "r3",
+    "name": "Primary Bedroom",
+    "type": "bedroom",
+    "area_m2": 17.67
+   }
+  ],
+  "area_m2": 91.4,
+  "scale_from": [
+   "reader_dims+printed",
+   "door_width"
+  ],
+  "n_fixtures": 12,
+  "issues": [
+   "Entry/hallway is not a separate region; merged into Living/Dining Room (1)",
+   "Both bathrooms, walk-in closet, linen closets and bedroom 2 closet are not detected as rooms",
+   "Bedroom 2 region (3) leaks into the hallway/closet area at the bottom",
+   "Primary Bedroom door on the south wall is shown as a yellow opening and the bedroom door swing is missing",
+   "Spurious window lines drawn across the hallway near x=0.63",
+   "Region 1 extends past the entry door into the hallway"
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-22612_plan_06",
+  "listing": "gs-22612",
+  "building": "1000 Green",
+  "plan_image": "/listings/gs-22612/plans/plan_06.jpg",
+  "plan_name": "Alcatraz",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 16.38
+   },
+   {
+    "id": "r1",
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.75
+   },
+   {
+    "id": "r2",
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 6.11
+   },
+   {
+    "id": "r3",
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 3.24
+   },
+   {
+    "id": "r4",
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 2.03
+   },
+   {
+    "id": "r5",
+    "name": "Primary Bedroom",
+    "type": "bedroom",
+    "area_m2": 19.71
+   },
+   {
+    "id": "r6",
+    "name": "Linen/Closet",
+    "type": "closet",
+    "area_m2": 2.87
+   },
+   {
+    "id": "r7",
+    "name": "Hallway",
+    "type": "hallway",
+    "area_m2": 3.92
+   },
+   {
+    "id": "r8",
+    "name": "Dining Room",
+    "type": "dining",
+    "area_m2": 16.51
+   },
+   {
+    "id": "r9",
+    "name": "Living Room",
+    "type": "living",
+    "area_m2": 40.35
+   },
+   {
+    "id": "r10",
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 10.99
+   }
+  ],
+  "area_m2": 123.9,
+  "scale_from": [
+   "reader_dims+printed",
+   "door_width"
+  ],
+  "n_fixtures": 17,
+  "issues": [
+   "Room 8 hallway incorrectly includes the small closet near x=0.43 (should be separate)",
+   "Closet at upper middle (x 0.4-0.47, y 0.4-0.43) merged into hallway 8",
+   "Entry is merged into Living Room 10; entry and hallway should be a separate region",
+   "Closets near the entry (x 0.41-0.47, y 0.65-0.87) are not tinted and not numbered",
+   "Dining Room 9 is open to Living Room 10 (yellow line) so the boundary is arbitrary",
+   "Windows falsely drawn on the black wall band near the living room top and on the closet openings",
+   "Bath 3 and 4 boundary wall is absent, so the split is a guess",
+   "Region 7 spills across the linen closet and bath 4 vanity area"
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-22612_plan_07",
+  "listing": "gs-22612",
+  "building": "1000 Green",
+  "plan_image": "/listings/gs-22612/plans/plan_07.jpg",
+  "plan_name": "Golden Gate",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Living Room / Entry",
+    "type": "living",
+    "area_m2": 39.17
+   },
+   {
+    "id": "r1",
+    "name": "Primary Bedroom",
+    "type": "bedroom",
+    "area_m2": 16.61
+   },
+   {
+    "id": "r2",
+    "name": "Bedroom 2",
+    "type": "bedroom",
+    "area_m2": 17.57
+   },
+   {
+    "id": "r3",
+    "name": "Bath (primary)",
+    "type": "bathroom",
+    "area_m2": 4.47
+   },
+   {
+    "id": "r4",
+    "name": "Dining Room",
+    "type": "dining",
+    "area_m2": 15.36
+   },
+   {
+    "id": "r5",
+    "name": "Bath 2",
+    "type": "bathroom",
+    "area_m2": 4.82
+   },
+   {
+    "id": "r6",
+    "name": "Hallway",
+    "type": "hallway",
+    "area_m2": 3.94
+   },
+   {
+    "id": "r7",
+    "name": "Walk-In Closet",
+    "type": "closet",
+    "area_m2": 2.3
+   },
+   {
+    "id": "r8",
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 10.52
+   },
+   {
+    "id": "r9",
+    "name": "Walk-In Closet (kitchen)",
+    "type": "closet",
+    "area_m2": 2.06
+   }
+  ],
+  "area_m2": 116.8,
+  "scale_from": [
+   "reader_dims+printed",
+   "door_width"
+  ],
+  "n_fixtures": 15,
+  "issues": [
+   "Primary bedroom closet (west of bath, near mark 2) is merged into the primary bedroom, no separate region",
+   "Entry closet below the entry is merged into the living/entry region 1",
+   "Region 4 and region 7 are separate but the hallway 7 is merged wrongly with the area east of the primary bath; doors between 7 and bedroom 2 hallway look spurious",
+   "A window is drawn on the wall between kitchen and walk-in closet 10, which is actually a door opening",
+   "A blue window is drawn on the east wall of walk-in closet 8 which is not a window",
+   "Linen closet is merged into bath 6",
+   "Living room and entry are one region; the dining room soffit area is shaded dark as wall",
+   "Patio/balcony is not detected as a region"
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-22612_plan_08",
+  "listing": "gs-22612",
+  "building": "1000 Green",
+  "plan_image": "/listings/gs-22612/plans/plan_08.jpg",
+  "plan_name": "Penthouse 1",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Entry (hall area west of entry)",
+    "type": "entry",
+    "area_m2": 28.55
+   },
+   {
+    "id": "r1",
+    "name": "Entry",
+    "type": "entry",
+    "area_m2": 1.56
+   },
+   {
+    "id": "r2",
+    "name": "Bedroom 2",
+    "type": "bedroom",
+    "area_m2": 15.38
+   },
+   {
+    "id": "r3",
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.6
+   },
+   {
+    "id": "r4",
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 4.46
+   },
+   {
+    "id": "r5",
+    "name": "Den",
+    "type": "office",
+    "area_m2": 15.3
+   },
+   {
+    "id": "r6",
+    "name": "Hallway",
+    "type": "hallway",
+    "area_m2": 4.91
+   },
+   {
+    "id": "r7",
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 1.82
+   },
+   {
+    "id": "r8",
+    "name": "Shower",
+    "type": "bathroom",
+    "area_m2": 1.55
+   },
+   {
+    "id": "r9",
+    "name": "Bedroom 1",
+    "type": "bedroom",
+    "area_m2": 29.27
+   },
+   {
+    "id": "r10",
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.82
+   },
+   {
+    "id": "r11",
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 6.95
+   }
+  ],
+  "area_m2": 113.2,
+  "scale_from": [
+   "reader_dims+printed",
+   "door_width"
+  ],
+  "n_fixtures": 18,
+  "issues": [
+   "Region 1 covers a large hallway/open area west of Entry and is not clearly a separate room; it likely merges with the Entry",
+   "Living Room, Dining Room, Kitchen and Balcony were not detected as rooms (open boundaries, no tint)",
+   "Regions 8 and 9 split a single bath (tub plus shower); region 5 also splits off its shower",
+   "Region 11 is a closet/dressing area belonging to the Bedroom 1 bath suite",
+   "Walk-in closet by Bedroom 2 and Storage near Roof Garden missing",
+   "Bedroom 2 has a spurious door/window at the left bottom corner, and blue windows were placed on the Entry walls where none exist"
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-22612_plan_09",
+  "listing": "gs-22612",
+  "building": "1000 Green",
+  "plan_image": "/listings/gs-22612/plans/plan_09.jpg",
+  "plan_name": "Penthouse 2",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Bedroom 3",
+    "type": "bedroom",
+    "area_m2": 15.15
+   },
+   {
+    "id": "r1",
+    "name": "Sun Deck",
+    "type": "other",
+    "area_m2": 42.84
+   },
+   {
+    "id": "r2",
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 4.44
+   },
+   {
+    "id": "r3",
+    "name": "Den",
+    "type": "office",
+    "area_m2": 8.65
+   },
+   {
+    "id": "r4",
+    "name": "Walk-In Closet",
+    "type": "closet",
+    "area_m2": 4.14
+   },
+   {
+    "id": "r5",
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 3.51
+   },
+   {
+    "id": "r6",
+    "name": "Hallway",
+    "type": "hallway",
+    "area_m2": 6.46
+   },
+   {
+    "id": "r7",
+    "name": "Hallway",
+    "type": "hallway",
+    "area_m2": 3.72
+   },
+   {
+    "id": "r8",
+    "name": "Bedroom 1",
+    "type": "bedroom",
+    "area_m2": 29.04
+   },
+   {
+    "id": "r9",
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 12.67
+   },
+   {
+    "id": "r10",
+    "name": "Bedroom 2",
+    "type": "bedroom",
+    "area_m2": 19.0
+   }
+  ],
+  "area_m2": 149.6,
+  "scale_from": [
+   "reader_dims+printed",
+   "door_width"
+  ],
+  "n_fixtures": 17,
+  "issues": [
+   "Entry, Living Room, Dining Room and Roof Garden are not detected as rooms (open/unclosed region, no overlay)",
+   "Bath at left (W/D, tub, toilet) is split: mark 6 covers only the tub area; W/D area, linen closet and the central bath with vanity and tub are not separate regions",
+   "Central bath with vanity and tub is not tinted, and the right bath mark 3 omits its lower part with linen and vanity",
+   "Hallway split into marks 7 and 8 by a spurious wall (yellow line)",
+   "Bedroom 2 closet alcove merged into Bedroom 2",
+   "Bedroom 1 / Bedroom 2 border has stray blue window marks on the wall",
+   "Bedroom 3 opening at top left of the plan only partially covered; Bedroom 3 door at left shown correctly"
+  ],
+  "materials": true
+ },
+ {
+  "unit": "gs-22612_plan_10",
+  "listing": "gs-22612",
+  "building": "1000 Green",
+  "plan_image": "/listings/gs-22612/plans/plan_10.jpg",
+  "plan_name": "Larsen",
+  "rooms": [
+   {
+    "id": "r0",
+    "name": "Living Room / Entry / Walk-In Closet (merged)",
+    "type": "living",
+    "area_m2": 45.71
+   },
+   {
+    "id": "r1",
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 23.04
+   },
+   {
+    "id": "r2",
+    "name": "Dining Room",
+    "type": "dining",
+    "area_m2": 18.25
+   },
+   {
+    "id": "r3",
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 4.57
+   },
+   {
+    "id": "r4",
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 2.38
+   },
+   {
+    "id": "r5",
+    "name": "Entry Closet",
+    "type": "closet",
+    "area_m2": 2.49
+   },
+   {
+    "id": "r6",
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 12.69
+   }
+  ],
+  "area_m2": 109.1,
+  "scale_from": [
+   "reader_dims+printed",
+   "door_width"
+  ],
+  "n_fixtures": 12,
+  "issues": [
+   "Region 1 merges living room, entry hallway and walk-in closet; the walk-in closet and entry should be separate regions",
+   "Dining room doorway to the hall is marked as a door but the opening leads into merged region 1",
+   "Bedroom closet (alcove near the bath, with sliding door) is not separated from the bedroom",
+   "Window marked at the bottom of the walk-in closet wall is actually a wall gap, not a window",
+   "Closets 5 and 6 are tinted but their doors are drawn at the edges; the bath door and closet door overlap near the bedroom door",
+   "Entry has no tinted region of its own"
+  ],
+  "materials": true
+ }
+]

@@ -1,0 +1,454 @@
+{
+ "name": "gs22612_living_dbg",
+ "ceiling_m": 2.6,
+ "cameras": [
+  {
+   "pos": [
+    -0.002,
+    1.1633,
+    -0.0014
+   ],
+   "right": [
+    -0.6089,
+    -0.0347,
+    0.7925
+   ],
+   "up": [
+    -0.0061,
+    0.9992,
+    0.0391
+   ],
+   "fwd": [
+    0.7932,
+    -0.019,
+    0.6087
+   ],
+   "fov_v": 52.79732131958008,
+   "fov_h": 115.14485168457031
+  },
+  {
+   "pos": [
+    -0.1809,
+    1.1039,
+    -2.0185
+   ],
+   "right": [
+    -0.1802,
+    0.0395,
+    0.9828
+   ],
+   "up": [
+    0.0061,
+    0.9992,
+    -0.0391
+   ],
+   "fwd": [
+    0.9836,
+    0.0011,
+    0.1803
+   ],
+   "fov_v": 45.74269485473633,
+   "fov_h": 109.73859405517578
+  }
+ ],
+ "planes": [
+  {
+   "kind": "floor",
+   "n": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "offset": 0.0,
+   "extent": {
+    "x": [
+     1.1639699219983493,
+     4.798039236337363
+    ],
+    "z": [
+     -2.9061411601835685,
+     3.587446549423001
+    ],
+    "n_px": 11109
+   }
+  },
+  {
+   "kind": "ceiling",
+   "n": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "offset": -2.6,
+   "extent": {
+    "x": [
+     1.5643544493190917,
+     5.569979277011424
+    ],
+    "z": [
+     -3.2018502969004468,
+     3.7038680265474904
+    ],
+    "n_px": 4730
+   }
+  },
+  {
+   "kind": "wall",
+   "n": [
+    0.9990482215818578,
+    0.0,
+    0.043619387365336
+   ],
+   "offset": 6.124008858173783,
+   "az_deg": 2.5,
+   "extent": {
+    "a": [
+     6.27144071004126,
+     -3.243118220899655
+    ],
+    "b": [
+     6.141892386954179,
+     -0.27597380172074926
+    ],
+    "len": 2.969971173644485,
+    "n_px": 2926
+   }
+  },
+  {
+   "kind": "wall",
+   "n": [
+    -0.04361938736533589,
+    0.0,
+    0.9990482215818578
+   ],
+   "offset": -0.004127416559493113,
+   "az_deg": 92.5,
+   "extent": {
+    "a": [
+     5.788423935762925,
+     0.24859669830159695
+    ],
+    "b": [
+     2.658474357145859,
+     0.11194014844307618
+    ],
+    "len": 3.132931435142554,
+    "n_px": 5475
+   }
+  },
+  {
+   "kind": "wall",
+   "n": [
+    -0.04361938736533589,
+    0.0,
+    0.9990482215818578
+   ],
+   "offset": 4.057069199355104,
+   "az_deg": 92.5,
+   "extent": {
+    "a": [
+     5.767560562985182,
+     4.312751441449773
+    ],
+    "b": [
+     1.666130367708658,
+     4.133679131850558
+    ],
+    "len": 4.105337566971956,
+    "n_px": 2415
+   }
+  }
+ ],
+ "stats": {
+  "floor_h_units": -0.2351231873035431,
+  "ceil_h_m": 2.6,
+  "scale_units_per_m": 0.2015222723667438,
+  "manhattan_deg": 52.5,
+  "cam_heights_m": [
+   1.163,
+   1.104
+  ],
+  "label_frac": {
+   "floor": 0.12215439001153287,
+   "ceil": 0.05998972070400642,
+   "wall": 0.1414656771799629,
+   "other": 0.6763902121044978
+  },
+  "n_wall_planes": 3,
+  "wall_dirs_deg": [
+   2,
+   92
+  ],
+  "wall_resid_m_before": 0.04149689818847041,
+  "wall_resid_m_after": 0.0
+ },
+ "bounds": [
+  [
+   1.32,
+   -0.06,
+   -3.4
+  ],
+  [
+   6.39,
+   2.88,
+   4.86
+  ]
+ ],
+ "photos": [
+  "/Users/maciejkopiec/sunlit/feasibility/listings/gs-22612/03.jpg",
+  "/Users/maciejkopiec/sunlit/feasibility/listings/gs-22612/04.jpg"
+ ],
+ "windows": [
+  {
+   "kind": "window",
+   "edge": 0,
+   "img": 1,
+   "s0": 0.006,
+   "s1": 1.967,
+   "sill_m": 1.093,
+   "height_m": 1.507,
+   "width_m": 1.961,
+   "px": 3319,
+   "n_views": 1,
+   "center": [
+    6.185,
+    1.847,
+    -1.253
+   ],
+   "normal": [
+    0.999,
+    0.0,
+    0.044
+   ],
+   "score": 1.0
+  }
+ ],
+ "vlm": {
+  "shape": "rectangle",
+  "width_m": 4.877,
+  "depth_m": 7.315,
+  "ceiling_m": null,
+  "size_confidence": 0.7,
+  "wall_colour": "off-white",
+  "wall_colour_rgb": [
+   240,
+   236,
+   226
+  ],
+  "floor_material": "parquet hardwood",
+  "floor_colour_rgb": [
+   160,
+   110,
+   60
+  ],
+  "notes": "Living room with large windows overlooking water and city; the window wall appears to be an exterior bay with side walls set at an angle, so the shape is approximate. Only two photos, so the opposite wall, the left and right side walls, and the closet placement are estimated from the room type and the single views. Ceiling height estimated from door proportions and the ceiling-mounted fixture. Wall length estimates are approximate and should be verified with a measurement.",
+  "walls": [
+   {
+    "label": "window wall",
+    "length_m": 5.5,
+    "exterior": true,
+    "seen_in_photos": [
+     0,
+     1
+    ],
+    "openings": [
+     {
+      "kind": "window",
+      "position_frac": 0.3,
+      "width_m": 1.8,
+      "height_m": 1.4,
+      "sill_m": 0.9
+     },
+     {
+      "kind": "window",
+      "position_frac": 0.75,
+      "width_m": 1.8,
+      "height_m": 1.4,
+      "sill_m": 0.9
+     }
+    ]
+   },
+   {
+    "label": "right of window",
+    "length_m": 3.0,
+    "exterior": false,
+    "seen_in_photos": [
+     1
+    ],
+    "openings": []
+   },
+   {
+    "label": "opposite window",
+    "length_m": 5.5,
+    "exterior": false,
+    "seen_in_photos": [
+     0
+    ],
+    "openings": []
+   },
+   {
+    "label": "left of window",
+    "length_m": 3.0,
+    "exterior": false,
+    "seen_in_photos": [
+     1
+    ],
+    "openings": [
+     {
+      "kind": "closet",
+      "position_frac": 0.1,
+      "width_m": 0.8,
+      "height_m": 2.03,
+      "sill_m": 0.0
+     }
+    ]
+   }
+  ],
+  "source": "floor_plan_candidate"
+ },
+ "vlm_area_ratio": 1.05,
+ "polygon": [
+  [
+   6.228,
+   -2.239
+  ],
+  [
+   6.004,
+   2.877
+  ],
+  [
+   -1.304,
+   2.558
+  ],
+  [
+   -1.08,
+   -2.558
+  ]
+ ],
+ "edges": [
+  {
+   "a": [
+    6.227608979103183,
+    -2.23920667230851
+   ],
+   "b": [
+    6.0042406395367705,
+    2.8767694080629695
+   ],
+   "n": [
+    0.9990482215818578,
+    0.043619387365335924
+   ],
+   "offset": 6.124008852049774,
+   "dir": [
+    -0.043619387365335924,
+    0.9990482215818578
+   ],
+   "len": 5.1208499948791495,
+   "inferred": false,
+   "axis": 0
+  },
+  {
+   "a": [
+    6.0042406395367705,
+    2.8767694080629695
+   ],
+   "b": [
+    -1.3037970940264816,
+    2.557693589804613
+   ],
+   "n": [
+    -0.04361938736533592,
+    0.9990482215818578
+   ],
+   "offset": 2.6121300627357567,
+   "dir": [
+    -0.9990482215818578,
+    -0.04361938736533592
+   ],
+   "len": 7.314999992684999,
+   "inferred": true,
+   "axis": 2
+  },
+  {
+   "a": [
+    -1.3037970940264816,
+    2.557693589804613
+   ],
+   "b": [
+    -1.0804287544600697,
+    -2.5582824905668664
+   ],
+   "n": [
+    -0.9990482215818578,
+    -0.04361938736533588
+   ],
+   "offset": 1.1909911406352267,
+   "dir": [
+    0.04361938736533588,
+    -0.9990482215818578
+   ],
+   "len": 5.1208499948791495,
+   "inferred": true,
+   "axis": 0
+  },
+  {
+   "a": [
+    -1.0804287544600697,
+    -2.5582824905668664
+   ],
+   "b": [
+    6.227608979103183,
+    -2.23920667230851
+   ],
+   "n": [
+    0.04361938736533592,
+    -0.9990482215818578
+   ],
+   "offset": 2.5087199321433924,
+   "dir": [
+    0.9990482215818578,
+    0.04361938736533592
+   ],
+   "len": 7.314999992685,
+   "inferred": true,
+   "axis": 2
+  }
+ ],
+ "area_m2": 37.46,
+ "doors": [
+  {
+   "kind": "door",
+   "edge": 0,
+   "img": 0,
+   "s0": 2.925,
+   "s1": 5.074,
+   "sill_m": 1.25,
+   "height_m": 1.35,
+   "width_m": 2.148,
+   "px": 3243,
+   "n_views": 1,
+   "center": [
+    6.053,
+    1.925,
+    1.757
+   ],
+   "normal": [
+    0.999,
+    0.0,
+    0.044
+   ],
+   "score": 1.0
+  }
+ ],
+ "inferred_edges": [
+  1,
+  2,
+  3
+ ],
+ "door_height_check_m": [
+  1.35
+ ],
+ "build_s": 9.2,
+ "pipeline": 2
+}

@@ -1,0 +1,380 @@
+{
+ "name": "gs22612_livingA",
+ "ceiling_m": 2.6,
+ "cameras": [
+  {
+   "pos": [
+    -0.0008,
+    1.0491,
+    0.0008
+   ],
+   "right": [
+    -0.5664,
+    -0.0,
+    0.8241
+   ],
+   "up": [
+    -0.0,
+    1.0,
+    -0.0
+   ],
+   "fwd": [
+    0.8241,
+    -0.0,
+    0.5664
+   ],
+   "fov_v": 52.90336227416992,
+   "fov_h": 115.0979995727539
+  }
+ ],
+ "planes": [
+  {
+   "kind": "floor",
+   "n": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "offset": 0.0,
+   "extent": {
+    "x": [
+     1.2034694758226059,
+     3.970683579153476
+    ],
+    "z": [
+     0.46199819499430334,
+     3.3624791881148908
+    ],
+    "n_px": 6209
+   }
+  },
+  {
+   "kind": "ceiling",
+   "n": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "offset": -2.6,
+   "extent": {
+    "x": [
+     1.7080730474115047,
+     5.217978917632054
+    ],
+    "z": [
+     0.31613601497250304,
+     3.5381721988996415
+    ],
+    "n_px": 2237
+   }
+  },
+  {
+   "kind": "wall",
+   "n": [
+    -0.9990482215818578,
+    0.0,
+    0.04361938736533607
+   ],
+   "offset": -6.224026936420877,
+   "az_deg": 177.5,
+   "extent": {
+    "a": [
+     6.389469080519331,
+     3.653439329385695
+    ],
+    "b": [
+     6.263218573925273,
+     0.7618273259847157
+    ],
+    "len": 2.894366799254697,
+    "n_px": 1935
+   }
+  }
+ ],
+ "stats": {
+  "floor_h_units": -0.23620741069316864,
+  "ceil_h_m": 2.6,
+  "scale_units_per_m": 0.2245926226560886,
+  "manhattan_deg": 55.5,
+  "cam_heights_m": [
+   1.049
+  ],
+  "label_frac": {
+   "floor": 0.1462793962793963,
+   "ceil": 0.0651983151983152,
+   "wall": 0.13739156596299454,
+   "other": 0.6511307225592939
+  },
+  "n_wall_planes": 1,
+  "wall_dirs_deg": [
+   178
+  ],
+  "wall_resid_m_before": 0.03881654515862465,
+  "wall_resid_m_after": 0.0
+ },
+ "bounds": [
+  [
+   1.22,
+   -0.06,
+   0.44
+  ],
+  [
+   6.36,
+   2.88,
+   4.53
+  ]
+ ],
+ "photos": [
+  "/Users/maciejkopiec/sunlit/feasibility/listings/gs-22612/03.jpg"
+ ],
+ "windows": [],
+ "vlm": {
+  "shape": "rectangle",
+  "width_m": 4.877,
+  "depth_m": 7.315,
+  "ceiling_m": null,
+  "size_confidence": 0.7,
+  "wall_colour": "off-white",
+  "wall_colour_rgb": [
+   240,
+   236,
+   226
+  ],
+  "floor_material": "parquet wood",
+  "floor_colour_rgb": [
+   160,
+   110,
+   60
+  ],
+  "notes": "Single photo, wide-angle, so dimensions are rough estimates. Large windows overlook water and a city. The opposite wall and the wall on the far left were not clearly photographed and are estimated from room type. The right wall is a narrow return beside the bay. Ceiling height is estimated.",
+  "walls": [
+   {
+    "label": "window wall",
+    "length_m": 5.5,
+    "exterior": true,
+    "seen_in_photos": [
+     0
+    ],
+    "openings": [
+     {
+      "kind": "window",
+      "position_frac": 0.25,
+      "width_m": 1.2,
+      "height_m": 1.3,
+      "sill_m": 0.9
+     },
+     {
+      "kind": "window",
+      "position_frac": 0.8,
+      "width_m": 1.2,
+      "height_m": 1.3,
+      "sill_m": 0.9
+     }
+    ]
+   },
+   {
+    "label": "right of window (bay return)",
+    "length_m": 1.2,
+    "exterior": true,
+    "seen_in_photos": [
+     0
+    ],
+    "openings": [
+     {
+      "kind": "window",
+      "position_frac": 0.5,
+      "width_m": 0.9,
+      "height_m": 1.3,
+      "sill_m": 0.9
+     }
+    ]
+   },
+   {
+    "label": "opposite window",
+    "length_m": 5.5,
+    "exterior": false,
+    "seen_in_photos": [],
+    "openings": []
+   },
+   {
+    "label": "left of window",
+    "length_m": 6.0,
+    "exterior": false,
+    "seen_in_photos": [
+     0
+    ],
+    "openings": []
+   }
+  ],
+  "source": "floor_plan_candidate"
+ },
+ "vlm_area_ratio": 1.0,
+ "polygon": [
+  [
+   6.409,
+   4.102
+  ],
+  [
+   -0.899,
+   4.421
+  ],
+  [
+   -1.112,
+   -0.451
+  ],
+  [
+   6.196,
+   -0.77
+  ]
+ ],
+ "edges": [
+  {
+   "a": [
+    6.409060113071727,
+    4.102147888506932
+   ],
+   "b": [
+    -0.8989776204915246,
+    4.421223706765288
+   ],
+   "n": [
+    0.04361938736533598,
+    0.9990482215818578
+   ],
+   "offset": 4.377802828398423,
+   "dir": [
+    -0.9990482215818578,
+    0.04361938736533598
+   ],
+   "len": 7.314999992684999,
+   "inferred": true,
+   "axis": 2
+  },
+  {
+   "a": [
+    -0.8989776204915246,
+    4.421223706765288
+   ],
+   "b": [
+    -1.1117093724595368,
+    -0.45113446501707216
+   ],
+   "n": [
+    -0.9990482215818578,
+    0.04361938736533607
+   ],
+   "offset": 1.0909730624881502,
+   "dir": [
+    -0.04361938736533607,
+    -0.9990482215818578
+   ],
+   "len": 4.876999995122999,
+   "inferred": true,
+   "axis": 0
+  },
+  {
+   "a": [
+    -1.1117093724595368,
+    -0.45113446501707216
+   ],
+   "b": [
+    6.196328361103715,
+    -0.7702102832754297
+   ],
+   "n": [
+    -0.043619387365336076,
+    -0.9990482215818578
+   ],
+   "offset": 0.499197166724576,
+   "dir": [
+    0.9990482215818578,
+    -0.043619387365336076
+   ],
+   "len": 7.314999992684999,
+   "inferred": true,
+   "axis": 2
+  },
+  {
+   "a": [
+    6.196328361103715,
+    -0.7702102832754297
+   ],
+   "b": [
+    6.409060113071727,
+    4.102147888506932
+   ],
+   "n": [
+    0.9990482215818578,
+    -0.04361938736533604
+   ],
+   "offset": 6.2240269301968505,
+   "dir": [
+    0.04361938736533604,
+    0.9990482215818578
+   ],
+   "len": 4.876999995122999,
+   "inferred": false,
+   "axis": 0
+  }
+ ],
+ "area_m2": 35.68,
+ "doors": [
+  {
+   "kind": "door",
+   "edge": 3,
+   "img": 0,
+   "s0": 1.125,
+   "s1": 3.674,
+   "sill_m": 1.159,
+   "height_m": 1.441,
+   "width_m": 2.549,
+   "px": 3243,
+   "n_views": 1,
+   "center": [
+    6.301,
+    1.88,
+    1.627
+   ],
+   "normal": [
+    0.999,
+    0.0,
+    -0.044
+   ],
+   "score": 1.0
+  },
+  {
+   "kind": "door",
+   "edge": 0,
+   "img": 0,
+   "s0": 1.219,
+   "s1": 3.515,
+   "sill_m": 0.672,
+   "height_m": 1.905,
+   "width_m": 2.296,
+   "px": 3224,
+   "n_views": 1,
+   "center": [
+    4.044,
+    1.624,
+    4.205
+   ],
+   "normal": [
+    0.044,
+    0.0,
+    0.999
+   ],
+   "score": 1.0
+  }
+ ],
+ "inferred_edges": [
+  0,
+  1,
+  2
+ ],
+ "door_height_check_m": [
+  1.44,
+  1.91
+ ],
+ "build_s": 5.6,
+ "pipeline": 2
+}
