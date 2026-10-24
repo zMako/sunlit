@@ -13,13 +13,13 @@ let ALL = [], SHOWN = [], MARK = new Map(), BYID = new Map(), CMP = [], map;
 const bedTxt = (a, b) => a == null ? null : (a === b || b == null ? (a === 0 ? 'studio' : `${a} bd`) : `${a === 0 ? 'studio' : a}–${b} bd`);
 const bathTxt = (a, b) => a == null ? null : (a === b || b == null ? `${a} ba` : `${a}–${b} ba`);
 const sqftTxt = l => l.sqft_min == null ? null : (l.sqft_min === l.sqft_max ? `${fmtN(l.sqft_min)} sqft` : `${fmtN(l.sqft_min)}–${fmtN(l.sqft_max)} sqft`) + (l.sqft_from === '3D model' ? ' (from plan)' : '');
-const priceHtml = l => l.price ? `<span class="price">${fmt$(l.price)}<span class="meta">/mo</span></span>` : `<span class="price req">pricing on request</span>`;
+const priceHtml = l => l.price ? `<span class="price" title="${esc(l.price_note || '')}">${l.price_note && l.price_note.startsWith('from') ? '<span class="meta">from </span>' : ''}${fmt$(l.price)}<span class="meta">/mo</span></span>` : `<span class="price req">pricing on request</span>`;
 function badges(l) {
   const b = [];
   if (l.can_rebuild) b.push(['ok', `3D ready · ${l.units.length} unit type${l.units.length > 1 ? 's' : ''}`]);
   if (l.has_plan) b.push(['acc', `floor plan${l.plans.length > 1 ? 's' : ''} · ${l.plans.length}`]);
   if (l.n_photos) b.push(['', `photos · ${l.n_photos}`]);
-  if (l.source === 'greystar') b.push(['', 'Greystar']); else if (l.source === 'rentsfnow') b.push(['', 'RentSFNow']);
+  const SRC = { greystar: 'Greystar', rentsfnow: 'RentSFNow', udr: 'UDR', avalonbay: 'AvalonBay' }; if (SRC[l.source]) b.push(['', SRC[l.source]]);
   return b.map(([c, t]) => `<span class="bd ${c}">${esc(t)}</span>`).join('');
 }
 function unitLinks(u) {
@@ -125,12 +125,31 @@ function unitRow(l, u) {
   return `<div class="unit" id="u-${esc(u.unit)}"><img src="${esc(u.plan_image)}" loading="lazy" alt="plan" data-zoom="${esc(u.plan_image)}"><div class="ub">
     <div class="crow"><div class="ctitle">${esc(u.plan_name || u.unit)}</div><span class="meta">${esc(u.unit)}</span></div>
     <div class="facts">${[bd != null ? (bd === 0 ? 'studio' : bd + ' bd') : null, u.baths != null ? u.baths + ' ba' : null, sz, u.n_rooms + ' rooms'].filter(Boolean).map(t => `<span>${esc(t)}</span>`).join('')}</div>
-    <div class="badges"><span class="bd ok">3D ready</span>${u.size_source ? `<span class="bd ${u.size_typical ? 'warn' : u.size_source.startsWith('plan dim') ? 'ok' : (u.size_source.startsWith('Claude') ? 'acc' : '')}">size: ${esc(u.size_source)}</span>` : ''}${u.annotated ? '<span class="bd acc">rooms named by Claude</span>' : ''}${u.materials ? '<span class="bd acc">materials from photos</span>' : ''}${u.n_fixtures ? `<span class="bd">${u.n_fixtures} fixtures</span>` : ''}</div>
+    <div class="badges"><span class="bd ok">3D ready</span>${u.size_source ? `<span class="bd ${u.size_typical ? 'warn' : u.size_source.startsWith('plan dim') ? 'ok' : (u.size_source.startsWith('Claude') ? 'acc' : '')}">size: ${esc(u.size_source)}</span>` : ''}${u.annotated ? '<span class="bd acc">annotated · rooms named by Claude</span>' : ''}${u.materials ? '<span class="bd acc">materials from photos</span>' : ''}${u.n_fixtures ? `<span class="bd">${u.n_fixtures} fixtures</span>` : ''}</div>
     <div class="rooms">${rooms}</div>
     <div class="row"><a class="btn" href="${L.open}" target="_blank">Open 3D</a><a class="btn sec" href="${L.walk}" target="_blank">Walk</a><a class="btn sec" href="${L.furnish}" target="_blank">Furnish</a>
       <a class="btn go ${co ? '' : 'off'}" data-co="${esc(u.unit)}" href="${co || '#'}" target="_blank" title="${co ? u.furnished_rooms.length + ' furnished room(s)' : 'furnish a room first'}">Checkout</a>
-      <button class="btn ${inCmp ? 'on' : 'ghost'}" data-cmp="${esc(u.unit)}">${inCmp ? '✓ comparing' : '+ compare'}</button></div></div></div>`;
+      <button class="btn ${inCmp ? 'on' : 'ghost'}" data-cmp="${esc(u.unit)}">${inCmp ? '✓ comparing' : '+ compare'}</button>${annBtn(u)}</div></div></div>`;
 }
+// ---------- on-demand annotation (POST /api/annotate -> plan3d/annotate_on_demand.py, spend through the ledger) ----------
+const ANN = {};
+function annBtn(u) { if (u.annotated) return '';
+  const st = ANN[u.unit];
+  if (st === 'running') return `<button class="btn ann" data-ann="${esc(u.unit)}" disabled><span class="spin"></span>Claude is reading the plan…</button>`;
+  if (st) return `<button class="btn ann err" data-ann="${esc(u.unit)}" title="${esc(st)}">${esc(st)}</button>`;
+  return `<button class="btn ann" data-ann="${esc(u.unit)}" title="Claude names the rooms and places kitchen/bath fixtures (~5 cents, within the spend cap)">Name rooms &amp; fixtures with Claude</button>`; }
+function redrawUnit(l, u) { const el = document.getElementById('u-' + u.unit); if (el && CUR === l) el.outerHTML = unitRow(l, u); }
+async function annotateUnit(unit) {
+  const l = CUR, u = l && l.units.find(x => x.unit === unit); if (!u || ANN[unit] === 'running') return;
+  ANN[unit] = 'running'; redrawUnit(l, u);
+  let res; try { res = await (await fetch(`/api/annotate?unit=${encodeURIComponent(unit)}`, { method: 'POST' })).json(); } catch (e) { res = { error: 'server unreachable' }; }
+  if (res.ok) { delete ANN[unit];
+    try { const idx = await (await fetch('../plan3d/layouts/index.json', { cache: 'no-store' })).json(); const n = idx.find(x => x.unit === unit);
+      if (n) { u.rooms = n.rooms.map(r => ({ id: r.id, name: r.name, type: r.type, area_m2: r.area_m2 })); u.n_fixtures = n.n_fixtures; u.area_m2 = n.area_m2; u.n_rooms = n.rooms.filter(r => r.area_m2 > 2).length;
+        const liv = u.rooms.find(r => r.type === 'living'); if (liv) u.agent_room = liv.id; } } catch (e) {}
+    u.annotated = true; }
+  else ANN[unit] = res.error === 'budget cap reached' ? 'Claude budget cap reached' : res.error === 'busy' ? 'busy: another unit is being annotated, retry' : (res.error || 'failed');
+  redrawUnit(l, u); }
 function openDrawer(id, focusUnit) {
   const l = BYID.get(id); if (!l) return; CUR = l;
   if (SEL && SEL !== id) { const o = BYID.get(SEL), om = MARK.get(SEL); if (o && om) om.setStyle(pinStyle(o, false)); }
@@ -140,7 +159,7 @@ function openDrawer(id, focusUnit) {
     const shift = Math.max(0, (dw - side) / 2); const pt = map.project([l.lat, l.lon], z).add([shift, 0]); map.setView(map.unproject(pt, z), z, { animate: true }); }
   const name = l.building || l.title.split(':')[0];
   const facts = [bedTxt(l.beds_min, l.beds_max), bathTxt(l.baths_min, l.baths_max), sqftTxt(l)].filter(Boolean).join(' · ');
-  $('dhead').innerHTML = `<div><div class="meta">${esc(l.source === 'greystar' ? 'Greystar building' : 'RentSFNow unit')}${l.neighborhood ? ' · ' + esc(l.neighborhood) : ''}</div><h2>${esc(l.title)}</h2>
+  $('dhead').innerHTML = `<div><div class="meta">${esc({ greystar: 'Greystar building', udr: 'UDR building · true sizes from the landlord', avalonbay: 'AvalonBay building' }[l.source] || 'RentSFNow unit')}${l.neighborhood ? ' · ' + esc(l.neighborhood) : ''}</div><h2>${esc(l.title)}</h2>
     <div class="meta">${esc(l.address)}</div><div class="badges" style="margin-top:6px">${badges(l)}</div></div>
     <div style="text-align:right;margin-left:auto;white-space:nowrap">${priceHtml(l)}<div class="meta">${esc(facts)}</div>${l.url ? `<a class="meta" href="${esc(l.url)}" target="_blank" rel="noopener">landlord's listing ↗</a>` : ''}</div>
     <button class="x" id="dx" title="close (Esc)">×</button>`;
@@ -174,6 +193,7 @@ $('drawer').addEventListener('click', e => {
   if (e.target.id === 'dx') return closeDrawer();
   const ph = e.target.closest('[data-ph]'); if (ph) { const m = $('gmain'); m.src = ph.dataset.ph; m.dataset.zoom = ph.dataset.ph; document.querySelectorAll('.thumbs img').forEach(i => i.classList.toggle('on', i === ph)); return; }
   const cb = e.target.closest('[data-cmp]'); if (cb) { toggleCompare(cb.dataset.cmp); return; }
+  const ab = e.target.closest('[data-ann]'); if (ab) { if (!ab.disabled && !(ANN[ab.dataset.ann] || '').startsWith('Claude budget')) { delete ANN[ab.dataset.ann]; annotateUnit(ab.dataset.ann); } return; }
   const pl = e.target.closest('[data-plan]'); if (pl && pl.dataset.plan) { flashUnit(pl.dataset.plan); return; }
   const z = e.target.closest('[data-zoom]'); if (z) { $('lbimg').src = z.dataset.zoom; $('lb').classList.add('open'); }
 });

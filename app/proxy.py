@@ -51,6 +51,7 @@ def worker():
             import glob; names = sorted(os.path.basename(p)[:-5] for p in glob.glob(str(ROOT / "rooms" / "*.json")) if not p.endswith("index.json") and os.path.exists(p[:-5] + ".glb")); json.dump(names, open(ROOT / "rooms" / "index.json", "w"))
         except Exception: pass
 
+ANN_LOCK = threading.Lock(); ANN = {"unit": None}   # on-demand annotation: one subprocess at a time
 class H(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *a, **k): super().__init__(*a, directory=str(ROOT), **k)
     def log_message(self, fmt, *args):
@@ -133,6 +134,28 @@ class H(http.server.SimpleHTTPRequestHandler):
             r = subprocess.run([PY, str(ROOT / "furnish" / "agent.py"), "chat", name], input=json.dumps(req), capture_output=True, text=True, cwd=str(ROOT.parent), env=dict(os.environ), timeout=300)
             out = (r.stdout.strip().splitlines() or ["{}"])[-1]
             return self.reply(out.encode() if out.startswith("{") else json.dumps({"error": (r.stderr or r.stdout)[-800:]}).encode())
+        # --- on-demand annotation (plan3d/annotate_on_demand.py): one unit at a time, spend through app/spend.py ---
+        if rel in ("/api/annotate", "/api/annotate/status"):
+            unit = dict(urllib.parse.parse_qsl(u.query)).get("unit", "")
+            if not unit or not all(c.isalnum() or c in "-_" for c in unit): return self.send_error(400)
+            lf = ROOT / "plan3d" / "layouts" / f"{unit}.json"
+            def annotated():
+                try: return bool((json.load(open(lf)).get("review") or {}).get("usd"))
+                except Exception: return False
+            if rel == "/api/annotate/status" or self.command != "POST":
+                st = "running" if ANN["unit"] == unit else ("annotated" if annotated() else "not")
+                return self.reply(json.dumps({"unit": unit, "status": st, "busy": ANN["unit"]}).encode())
+            if annotated(): return self.reply(json.dumps({"ok": True, "already": True, "unit": unit}).encode())
+            if not ANN_LOCK.acquire(blocking=False): return self.reply(json.dumps({"error": "busy", "running": ANN["unit"]}).encode())
+            try:
+                ANN["unit"] = unit
+                r = subprocess.run([PY, str(ROOT / "plan3d" / "annotate_on_demand.py"), unit], capture_output=True, text=True, cwd=str(ROOT.parent), env=dict(os.environ), timeout=900)
+                out = (r.stdout.strip().splitlines() or ["{}"])[-1]
+                try: res = json.loads(out)
+                except Exception: res = {"error": "annotation failed", "log": (r.stderr or r.stdout)[-600:]}
+            except subprocess.TimeoutExpired: res = {"error": "annotation timed out"}
+            finally: ANN["unit"] = None; ANN_LOCK.release()
+            return self.reply(json.dumps(res).encode())
         # --- map front door (app/map/): OSM raster tile cache + listings index ---
         if rel.startswith("/tiles/") and rel.endswith(".png"):   # /tiles/{z}/{x}/{y}.png, cached to map/tiles/; OSM tile policy: identifying UA, cache, no bulk
             try: z, x, y = (int(v) for v in rel[len("/tiles/"):-4].split("/"))

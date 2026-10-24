@@ -1,0 +1,106 @@
+[
+ {
+  "key": "plans_processed",
+  "value": 444,
+  "unit": "plans",
+  "label": "floor plans processed",
+  "n": 26,
+  "method": "plan images scraped from 26 Greystar SF buildings, every one run through the classical reader (sweep/sweep.json): 372 readable, 67 unreadable, 5 not a plan"
+ },
+ {
+  "key": "walkable_units",
+  "value": 359,
+  "unit": "apartments",
+  "label": "apartments rebuilt as walkable 3D",
+  "n": 23,
+  "method": "units in layouts/index.json (layout with >= 2 rooms, opens in apartment.html), from 23 buildings; 82% of the 439 plan images"
+ },
+ {
+  "key": "rooms_detected",
+  "value": 2523,
+  "unit": "rooms",
+  "label": "rooms detected",
+  "n": 359,
+  "method": "sum of rooms over the walkable layouts"
+ },
+ {
+  "key": "doors_detected",
+  "value": 4775,
+  "unit": "doors",
+  "label": "doors detected",
+  "n": 359,
+  "method": "openings of type door over the walkable layouts (plus 806 cased openings)"
+ },
+ {
+  "key": "windows_detected",
+  "value": 1420,
+  "unit": "windows",
+  "label": "windows detected",
+  "n": 359,
+  "method": "openings of type window over the walkable layouts"
+ },
+ {
+  "key": "plan_to_layout_s",
+  "value": 0.49,
+  "unit": "s",
+  "label": "floor plan to 3D-ready layout, median",
+  "n": 25,
+  "method": "wall clock of a fresh Python process per plan (imports + plan_engine geometry path = `layout --novlm` + rooms_export), 30 seeded random plans on an Apple-silicon laptop CPU, 5 of 30 rejected (not a plan / < 2 rooms) and excluded; excludes the optional cached VLM naming/fixture call"
+ },
+ {
+  "key": "first_frame_s",
+  "value": 3.79,
+  "unit": "s",
+  "label": "page load to first rendered 3D frame, median",
+  "n": 15,
+  "method": "headless Chrome (Playwright) on apartment.html?quality=low, navigation start to the first presented frame of the built scene; software GL (SwiftShader), so a real GPU is faster"
+ },
+ {
+  "key": "plan_to_walkable_s",
+  "value": 4.3,
+  "unit": "s",
+  "label": "floor plan to walkable 3D apartment, median",
+  "n": 15,
+  "method": "sum of the two medians above (plan_to_layout_s + first_frame_s); geometry path, no VLM call"
+ },
+ {
+  "key": "door_scale_error",
+  "value": 12.6,
+  "unit": "%",
+  "label": "scale error from door widths alone (no printed dims)",
+  "n": 41,
+  "method": "median |m_per_px(door width 0.86 m) / m_per_px(printed room dims) - 1| per plan, plans whose printed dimensions plan_reader transcribed"
+ },
+ {
+  "key": "printed_dims_room_error",
+  "value": 11.3,
+  "unit": "%",
+  "label": "room width/depth error vs printed dimensions",
+  "n": 80,
+  "method": "median abs % error of each rectangular room's detected width and depth vs its printed dimensions, scale fitted on the OTHER rooms of the plan (leave-one-room-out), 160 dimensions in 33 plans"
+ },
+ {
+  "key": "door_scale_unit_area_error",
+  "value": 36.2,
+  "unit": "%",
+  "label": "unit area error from door widths alone vs printed sq ft",
+  "n": 26,
+  "method": "median |sum of room areas at door scale / (0.85 x printed sq ft) - 1|, signed median -21.6%; before the area rule (after it the error is 0 by construction)"
+ },
+ {
+  "key": "cubicasa_rooms_iou50",
+  "value": 23.5,
+  "unit": "%",
+  "label": "CubiCasa5K rooms recovered (IoU >= 0.5), untrained",
+  "n": 971,
+  "method": "share of ground-truth indoor rooms in 96 seeded test-split plans whose best-overlapping detected room has IoU >= 0.5; classical vision, no training; the paper's trained CNN reports 57.5% room-class mIoU (different metric)"
+ },
+ {
+  "key": "cubicasa_door_recall",
+  "value": 20.1,
+  "unit": "%",
+  "label": "CubiCasa5K doors found, untrained",
+  "n": 931,
+  "method": "GT doors with a detected door on the same wall line, 96 plans; window recall 5.0%"
+ }
+]

@@ -17,13 +17,15 @@ main{padding:4px 28px 50px}.grid{display:grid;grid-template-columns:repeat(auto-
 .badges{display:flex;gap:5px;flex-wrap:wrap}.bd{font-size:11px;border-radius:999px;padding:1px 8px;border:1px solid #334155;color:var(--ink2)}.bd.ok{border-color:#2f6b55;color:var(--ok);background:rgba(127,224,180,.07)}.bd.acc{border-color:#2d4a7a;color:#a9c8ff;background:rgba(110,168,254,.08)}.bd.warn{border-color:#6b5a2f;color:var(--warn)}
 .row{display:flex;gap:6px;align-items:center;margin-top:auto;padding-top:4px;flex-wrap:wrap}.btn{background:var(--acc);color:#07111f;border:none;border-radius:8px;padding:5px 10px;font-weight:650;text-decoration:none;font-size:12.5px}
 .btn.sec{background:#243042;color:#dfe7f1}.btn.go{background:var(--ok)}.btn.off{opacity:.45;pointer-events:none}
-.issues{font-size:11px;color:#c9a36a}.empty{color:var(--ink2);padding:30px 0}
+.issues{font-size:11px;color:#c9a36a}button.btn{cursor:pointer;font-family:inherit}.btn.ann{background:#2a2142;color:#d9c9ff;border:1px solid #4b3a7a}.btn.ann:disabled{opacity:.7;cursor:wait}.btn.ann.err{background:#3a2424;color:#f3b0a0;border-color:#6b3a3a;cursor:default}
+.spin{display:inline-block;width:10px;height:10px;border:2px solid #d9c9ff;border-right-color:transparent;border-radius:50%;animation:sp .8s linear infinite;margin-right:6px;vertical-align:-1px}@keyframes sp{to{transform:rotate(360deg)}}
+.metrics{display:flex;gap:14px;margin-top:12px;flex-wrap:wrap}.metric{background:#121a28;border:1px solid #2d4a7a;border-radius:10px;padding:8px 12px;min-width:150px;max-width:300px}.metric b{display:block;font-size:20px;color:#a9c8ff}.metric span{color:var(--ink2);font-size:12px}.empty{color:var(--ink2);padding:30px 0}
 @media(max-width:1000px){.dgrid{grid-template-columns:1fr}}</style></head><body>
 <header><div class="kicker">Move-in · Cal Hacks 13.0</div>
 <h1>Pick a real SF rental, get its apartment rebuilt in 3D from the floor plan, let an agent furnish it with real products within your budget, and order everything so it arrives before move-in day.</h1>
-<div class="sub">Every card below is a unit type published by its landlord: we only use what the listing publishes, the floor plan and the photos. Walls, doors and windows are read from the plan by classical vision and scaled from its printed dimensions; Claude names the rooms and places the fixtures.</div>
+<div class="sub">Every card below is a unit type published by its landlord: we only use what the listing publishes, the floor plan and the photos. Walls, doors and windows are read from the plan by classical vision for every unit, sized from printed dimensions or the listed square footage when published; Claude names the rooms and places the fixtures, already done for the likely picks and one click away (on demand, within the spend cap) for the rest.</div>
 <div style="margin-top:12px"><a class="btn" href="../map/map.html" style="font-size:14px;padding:8px 14px">Find a rental on the map →</a> <span class="meta">real SF listings with photos, plans and prices, 3D-ready ones in green</span></div>
-<div class="stats" id="stats"></div></header>
+<div class="stats" id="stats"></div><div class="metrics" id="metrics"></div></header>
 <section class="demo"><h2>Demo path <span class="meta">open 3D, walk it, let the agent furnish the living room, check out</span></h2><div class="dgrid" id="demo"></div></section>
 <div class="bar"><label>search <input id="q" placeholder="building, unit, room…" style="width:220px"></label>
 <label>building <select id="fb"><option value="">all buildings</option></select></label>
@@ -35,14 +37,16 @@ const DEMO = ['gs-22612_plan_03', 'gs-20665_plan_00', 'gs-16296_plan_01'];
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const movein = new Date(Date.now() + 21 * 864e5).toISOString().slice(0, 10);
-function annotated(u) { return !!(u.materials || (u.issues && u.issues.length) || u.rooms.some(r => r.type && r.type !== 'other')); }
+function annotated(u) { if (u.annotated != null) return !!u.annotated; return !!(u.materials || (u.issues && u.issues.length) || u.rooms.some(r => r.type && r.type !== 'other')); }
 function bedrooms(u) { const n = u.rooms.filter(r => r.type === 'bedroom').length; if (annotated(u) && u.rooms.some(r => r.type !== 'other')) return n;
   const m = /prior (\d+) bedroom/.exec((u.scale_from || []).join(' ')); return m ? +m[1] : null; }
 function badges(u) { const f = u.scale_from || [], s0 = f[0] || ''; const b = [];
   if (s0.startsWith('reader_dims+printed')) b.push(['ok', 'plan dimensions printed']);
   else if (s0.startsWith('annotation_dims') || f.includes('annotation_dims')) b.push(['acc', 'Claude size estimates']);
   else if (s0.includes('printed sqft')) b.push(['ok', 'printed sqft']);
+  else if (s0.includes('listing sqft')) b.push(['ok', 'true size (listed sqft)']);
   else if (s0.startsWith('area:prior')) b.push(['', 'prior size']);
+  if (annotated(u)) b.push(['acc', 'annotated']);
   if (u.materials) b.push(['acc', 'from photos']);
   if (u.n_fixtures) b.push(['', `${u.n_fixtures} fixtures`]);
   const bd = bedrooms(u); if (bd != null) b.push(['', bd === 0 ? 'studio' : `${bd} bed`]);
@@ -61,7 +65,38 @@ function card(u) { const L = links(u); const rooms = u.rooms.filter(r => r.area_
   return `<div class="card"><img src="${esc(u.plan_image)}" loading="lazy" alt="plan"><div class="body"><div class="title">${esc(u.plan_name || u.unit)}</div>
    <div class="meta">${u.rooms.length} rooms · ${u.area_m2} m² · ${esc(u.unit)}</div><div class="badges">${badges(u)}</div><div class="rooms">${rooms}</div>
    ${u.issues && u.issues.length ? `<div class="issues" title="${esc(u.issues.join('\n'))}">review: ${u.issues.length} note${u.issues.length > 1 ? 's' : ''} (hover)</div>` : ''}
-   <div class="row"><a class="btn" href="${L.open}" target="_blank">Open 3D</a><a class="btn sec" href="${L.walk}" target="_blank">Walk</a><a class="btn sec" href="${L.furnish}" target="_blank">Furnish</a></div></div></div>`; }
+   <div class="row"><a class="btn" href="${L.open}" target="_blank">Open 3D</a><a class="btn sec" href="${L.walk}" target="_blank">Walk</a><a class="btn sec" href="${L.furnish}" target="_blank">Furnish</a>${annBtn(u)}</div></div></div>`; }
+function trueSize(u) { const s0 = (u.scale_from || [])[0] || ''; return s0.startsWith('reader_dims+printed') || s0.includes('listing sqft') || s0.includes('printed sqft'); }
+const ANN = {};   // unit -> 'running' | error text
+function annBtn(u) { if (annotated(u)) return '';
+  const st = ANN[u.unit];
+  if (st === 'running') return `<button class="btn ann" data-ann="${esc(u.unit)}" disabled><span class="spin"></span>Claude is reading the plan…</button>`;
+  if (st) return `<button class="btn ann err" data-ann="${esc(u.unit)}" title="${esc(st)}">${esc(st)}</button>`;
+  return `<button class="btn ann" data-ann="${esc(u.unit)}" title="Claude names the rooms and places kitchen/bath fixtures (~5 cents, within the spend cap)">Name rooms &amp; fixtures with Claude</button>`; }
+async function annotate(unit) {
+  if (ANN[unit] === 'running') return; ANN[unit] = 'running'; render();
+  let res; try { res = await (await fetch(`/api/annotate?unit=${encodeURIComponent(unit)}`, { method: 'POST' })).json(); } catch (e) { res = { error: 'server unreachable' }; }
+  if (res.ok) { delete ANN[unit];
+    try { const fresh = await (await fetch('layouts/index.json', { cache: 'no-store' })).json(); const nu = fresh.find(x => x.unit === unit);
+      if (nu) { const i = UNITS.findIndex(x => x.unit === unit); if (i >= 0) UNITS[i] = nu; } } catch (e) {}
+    const u = UNITS.find(x => x.unit === unit); if (u) u.annotated = true; drawStats(); }
+  else ANN[unit] = res.error === 'budget cap reached' ? 'Claude budget cap reached' : res.error === 'busy' ? `busy: another unit is being annotated, retry` : (res.error || 'failed');
+  render(); }
+document.addEventListener('click', e => { const b = e.target.closest('[data-ann]'); if (b && !b.disabled) { const st = ANN[b.dataset.ann]; if (st && st.startsWith('Claude budget')) return; delete ANN[b.dataset.ann]; annotate(b.dataset.ann); } });
+function drawStats() { const units = UNITS, blds = new Set(units.map(u => u.building || u.listing));
+  const printed = units.filter(u => (u.scale_from || [])[0]?.startsWith('reader_dims+printed')).length;
+  $('stats').innerHTML = `<div><b>${units.length}</b>unit types</div><div><b>${blds.size}</b>buildings</div><div><b>${units.filter(annotated).length}</b>annotated by Claude</div><div><b>${units.filter(trueSize).length}</b>true size (listed sqft or printed dimensions)</div><div><b>${printed}</b>scaled from printed dimensions</div><div><b>${units.filter(u => u.materials).length}</b>materials from photos</div>`; }
+function drawMetrics(s) {   // app/plan3d/metrics/summary.json (owned by the metrics worker): up to 3 headline numbers
+  let items = [];
+  if (Array.isArray(s.headline)) items = s.headline;
+  else if (Array.isArray(s.headlines)) items = s.headlines;
+  else { const doc = s.doc || s.docs || s.keys || s._doc || s.labels || {};
+    for (const [k, v] of Object.entries(s)) {
+      if (v && typeof v === 'object' && !Array.isArray(v) && v.value != null && (v.label || doc[k])) items.push({ label: v.label || doc[k], value: v.value, unit: v.unit, note: v.note });
+      else if (typeof v === 'number' && (doc[k] || s.headline_keys?.includes(k))) items.push({ label: typeof doc[k] === 'string' ? doc[k] : (doc[k]?.label || k), value: v, unit: doc[k]?.unit }); } }
+  items = items.filter(i => i && i.value != null && i.label).slice(0, 3);
+  const fmt = v => typeof v === 'number' ? (Math.abs(v) < 1 && v !== 0 ? (Math.round(v * 1000) / 10) + '%' : (Math.round(v * 10) / 10).toLocaleString('en-US')) : esc(v);
+  $('metrics').innerHTML = items.map(i => `<div class="metric" title="${esc(i.note || '')}"><b>${typeof i.value === 'number' && i.unit ? (Math.round(i.value * 10) / 10).toLocaleString('en-US') + ' ' + esc(i.unit) : fmt(i.value) + (i.unit ? ' ' + esc(i.unit) : '')}</b><span>${esc(i.label)}</span></div>`).join(''); }
 function render() { const q = $('q').value.trim().toLowerCase(), fb = $('fb').value, fr = $('fr').value, fa = $('fa').checked;
   const list = UNITS.filter(u => (!fb || u.building === fb) && (!fa || annotated(u)) && (fr === '' || (fr === '3' ? bedrooms(u) >= 3 : bedrooms(u) === +fr))
     && (!q || [u.building, u.unit, u.plan_name, u.listing, ...u.rooms.map(r => r.name)].join(' ').toLowerCase().includes(q)));
@@ -78,8 +113,7 @@ async function plansFor(u) { const ok = await Promise.all(u.rooms.map(async r =>
   PLANS[u.unit] = ok.filter(Boolean); }
 fetch('layouts/index.json').then(r => r.json()).then(units => { UNITS = units;
   const blds = [...new Set(units.map(u => u.building || u.listing))].sort(); $('fb').innerHTML += blds.map(b => `<option>${esc(b)}</option>`).join('');
-  const printed = units.filter(u => (u.scale_from || [])[0]?.startsWith('reader_dims+printed')).length;
-  $('stats').innerHTML = `<div><b>${units.length}</b>unit types</div><div><b>${blds.length}</b>buildings</div><div><b>${units.filter(annotated).length}</b>annotated by Claude</div><div><b>${printed}</b>scaled from printed dimensions</div><div><b>${units.filter(u => u.materials).length}</b>materials from photos</div>`;
+  drawStats(); fetch('metrics/summary.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(s => s && drawMetrics(s)).catch(() => {});
   const dm = DEMO.map(id => units.find(u => u.unit === id)).filter(Boolean);
   const drawDemo = () => $('demo').innerHTML = dm.map(demoCard).join(''); drawDemo(); Promise.all(dm.map(plansFor)).then(drawDemo); addEventListener('focus', () => Promise.all(dm.map(plansFor)).then(drawDemo));
   for (const id of ['q', 'fb', 'fr', 'fa']) $(id).addEventListener('input', render); render();

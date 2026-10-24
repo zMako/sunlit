@@ -75,12 +75,16 @@ def in_sf(g):
     return (g.get("locality") == "San Francisco" and street_ok and g.get("location_type") in ("ROOFTOP", "RANGE_INTERPOLATED")
             and lat0 <= g["lat"] <= lat1 and lon0 <= g["lon"] <= lon1)
 
-def annotated(u): return bool(u.get("materials") or u.get("issues") or any(r.get("type") and r["type"] != "other" for r in u["rooms"]))
+PLAN_SOURCES = ("gs-", "udr-", "avb-")   # building-level listings with floor plans and coordinates in meta (Greystar, UDR, AvalonBay)
+def annotated(u):
+    if u.get("annotated") is not None: return bool(u["annotated"])
+    return bool(u.get("materials") or u.get("issues") or any(r.get("type") and r["type"] != "other" for r in u["rooms"]))
 
 def size_source(u):
     s0 = (u.get("scale_from") or [""])[0]
     if s0.startswith("reader_dims+printed"): return "plan dimensions printed"
     if s0.startswith("annotation_dims") or "annotation_dims" in (u.get("scale_from") or []): return "Claude size estimates"
+    if "listing sqft" in s0: return "listed sqft (true size)"
     if "printed" in s0: return "printed sqft"
     if s0.startswith("area:prior"): return "prior size (typical unit)"
     return s0 or None
@@ -116,7 +120,7 @@ def main():
         if hit: clue.setdefault(s, hit.group(0))
     memo, out, missing = {}, [], {"no_photos": [], "no_plans_gs": [], "no_coords": [], "outside_sf": []}
     for lid, m in metas.items():
-        d = LIST / lid; photos = photos_of(d); gs = lid.startswith("gs-")
+        d = LIST / lid; photos = photos_of(d); gs = lid.startswith(PLAN_SOURCES)
         e = {"id": lid, "source": m.get("source"), "url": m.get("url"), "title": m.get("title") or lid,
              "address": (m.get("address") or "").replace("&apos;", "'"), "photos": photos[:12], "n_photos": len(photos)}
         if gs:
@@ -127,7 +131,7 @@ def main():
                 stem = pathlib.Path(fp["file"]).stem; uid = f"{lid}_{stem}"
                 if not (d / fp["file"]).exists(): continue
                 plans.append({"src": f"/listings/{lid}/{fp['file']}", "name": fp.get("name"), "beds": fp.get("bedrooms"), "baths": fp.get("bathrooms"),
-                              "sqft": num(fp.get("sqft"), int), "unit": uid if uid in units else None})
+                              "sqft": num(fp.get("sqft"), int), "unit": uid if uid in units else None, "units_available": fp.get("units_available")})
                 if uid in units: unit_list.append(unit_entry(units[uid], fp))
             for uid, u in units.items():   # units whose plan is not in meta.floorplans
                 if not any(x["unit"] == uid for x in unit_list): unit_list.append(unit_entry(u, None))
@@ -138,10 +142,13 @@ def main():
             e["baths_min"], e["baths_max"] = (min(baths), max(baths)) if baths else (None, None)
             e["sqft_min"], e["sqft_max"] = (min(sq), max(sq)) if sq else (None, None)
             e["sqft_from"] = "listing" if any(p["sqft"] for p in plans) else ("3D model" if sq else None)
-            e["price"] = None; e["price_note"] = "pricing on request"
+            rents = [num(fp.get("rent_min")) for fp in m.get("floorplans") or [] if num(fp.get("rent_min"))]
+            e["price"] = int(min(rents)) if rents else None; e["price_note"] = "from, cheapest listed unit" if rents else "pricing on request"
+            e["city"] = m.get("city")
             lat0, lat1, lon0, lon1 = SF_BOX
             e["in_sf"] = e["lat"] is not None and lat0 <= e["lat"] <= lat1 and lon0 <= e["lon"] <= lon1 and "South San Francisco" not in e["address"]
             if not plans: missing["no_plans_gs"].append(lid)
+            if not photos and plans: e["cover"] = plans[0]["src"]   # plan-only sources (UDR, AvalonBay): the first plan is the card image
         else:
             g = geocode(lid, m.get("address", ""), memo, allow_net) if m.get("address") else None
             e["lat"], e["lon"] = (g or {}).get("lat"), (g or {}).get("lon"); e["geo_source"] = (g or {}).get("source")

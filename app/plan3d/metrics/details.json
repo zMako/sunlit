@@ -1,0 +1,99 @@
+{
+ "A_breadth": {
+  "plan_images": 444,
+  "plan_buildings": 26,
+  "listing_dirs_gs": 35,
+  "sweep_rows": 444,
+  "not_plan": 5,
+  "readable": 372,
+  "unreadable": 67,
+  "walkable_units": 359,
+  "walkable_buildings": 23,
+  "rooms": 2523,
+  "doors": 4775,
+  "windows": 1420,
+  "openings": 806,
+  "scale_sources": {
+   "area:prior": 306,
+   "area:printed": 21,
+   "reader_dims+printed": 32
+  }
+ },
+ "B_speed": {
+  "layout": {
+   "n": 25,
+   "n_failed": 5,
+   "median_wall_s": 0.495,
+   "median_layout_s": 0.3479194169631228,
+   "median_rooms_export_s": 0.007091667037457228,
+   "max_wall_s": 1.348
+  },
+  "page": {
+   "n": 15,
+   "n_failed": 0,
+   "median_first_frame_s": 3.793,
+   "min": 1.526,
+   "max": 4.09,
+   "server": "http://127.0.0.1:8765"
+  }
+ },
+ "C_accuracy": {
+  "printed_plans": 41,
+  "door_scale_vs_printed_scale": {
+   "mape": 12.6,
+   "n_plans": 41,
+   "within_10pct": 46.3
+  },
+  "door_scale_room_dims": {
+   "mape": 16.1,
+   "n_dims": 172,
+   "n_rooms": 86,
+   "n_plans": 39,
+   "area_mape": 26.8
+  },
+  "printed_scale_room_dims_loo": {
+   "mape": 11.3,
+   "n_dims": 160,
+   "n_rooms": 80,
+   "n_plans": 33,
+   "area_mape": 22.3,
+   "within_10pct": 49.4
+  },
+  "door_scale_unit_area_vs_sqft": {
+   "mape": 36.2,
+   "signed_median": -21.6,
+   "n_units": 26,
+   "within_20pct": 34.6
+  },
+  "units_no_door_scale": 3
+ },
+ "D_cubicasa": {
+  "n_sample": 100,
+  "n_ran": 96,
+  "n_rejected": 4,
+  "room_count_exact": 4.2,
+  "room_count_within1": 18.8,
+  "room_count_mae": 4.74,
+  "room_count_ratio_median": 1.2,
+  "gt_rooms": 971,
+  "room_iou_mean": 26.7,
+  "room_iou_median": 16.2,
+  "rooms_iou50": 23.5,
+  "room_precision_iou50": 18.8,
+  "interior_iou_mean": 44.7,
+  "wall_iou_mean": 31.7,
+  "gt_doors": 931,
+  "gt_windows": 843,
+  "door_recall": 20.1,
+  "door_recall_any_gap": 26.9,
+  "window_recall": 5.0,
+  "window_recall_any_gap": 11.0,
+  "door_precision": 5.2,
+  "window_precision": 1.8,
+  "paper_rooms_miou_test": 57.5,
+  "paper_rooms_polygonized_miou_test": 49.3,
+  "paper_wall_iou_test": 73.0,
+  "paper_window_iou_test": 66.8,
+  "paper_door_iou_test": 53.6
+ }
+}
