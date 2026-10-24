@@ -111,10 +111,18 @@ def place(R, items):
             i, j = st.pop()
             for ii, jj in ((i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)):
                 if 0 <= ii < nx and 0 <= jj < nz and free[ii, jj] and not seen[ii, jj]: seen[ii, jj] = True; st.append((ii, jj))
+        # every item must be approachable: a reachable free cell within 0.9 m of its front point OR within 0.7 m of its footprint
+        # (a coffee table in front of a sofa is fine: you approach the sofa from the side)
         for o in occupied:
             if o["cat"] in ("rug", "fixture") or o["front"] is None: continue
-            f = o["front"]; i, j = int((f[0] - minx) / g), int((f[1] - minz) / g)
-            ok = any(0 <= i + di < nx and 0 <= j + dj < nz and seen[i + di, j + dj] for di in range(-5, 6) for dj in range(-5, 6))
+            f = o["front"]; i, j = int((f[0] - minx) / g), int((f[1] - minz) / g); R_ = 9
+            ok = any(0 <= i + di < nx and 0 <= j + dj < nz and seen[i + di, j + dj] for di in range(-R_, R_ + 1) for dj in range(-R_, R_ + 1))
+            if not ok:
+                near = prep(o["fp"].buffer(0.7)); bx0, bz0, bx1, bz1 = o["fp"].buffer(0.7).bounds
+                for ii in range(max(0, int((bx0 - minx) / g)), min(nx, int((bx1 - minx) / g) + 1)):
+                    for jj in range(max(0, int((bz0 - minz) / g)), min(nz, int((bz1 - minz) / g) + 1)):
+                        if seen[ii, jj] and near.contains(Point(minx + ii * g, minz + jj * g)): ok = True; break
+                    if ok: break
             if not ok: return False
         return True
     def commit(it, x, z, yaw, wall=None, t=None):

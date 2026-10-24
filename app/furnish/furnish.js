@@ -13,6 +13,7 @@ export class Furnish {
     this.group = new THREE.Group(); this.group.name = 'furniture'; scene.add(this.group);
     this.items = []; this.fixtures = []; this.selected = null; this.room = null; this.meta = null; this.plan = { items: [] }; this.clipPlanes = [];
     this.ray = new THREE.Raycaster(); this.floor = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+    (window.furnishInstances ||= []).push(this); window.furnishByRoom ||= {};
     this.drag = null; this.dirty = false; this.saveTimer = null; this.loader = new GLTFLoader(); const draco = new DRACOLoader(); draco.setDecoderPath('https://unpkg.com/three@0.170.0/examples/jsm/libs/draco/gltf/'); this.loader.setDRACOLoader(draco); /* IKEA GLBs are Draco-compressed */ this.texLoader = new THREE.TextureLoader();
     this.texLoader.setCrossOrigin('anonymous');
     this._bind();
@@ -20,7 +21,7 @@ export class Furnish {
 
   // ---------- room geometry ----------
   async setRoom(name, meta) {
-    this.room = name; this.meta = meta; this.clear();
+    this.room = name; this.meta = meta; this.clear(); window.furnishByRoom[name] = this;
     const poly = meta.polygon || []; this.poly = poly.map(p => new THREE.Vector2(p[0], p[1]));
     this.edges = (meta.edges || []).map((e, i) => ({ i, a: new THREE.Vector2(...e.a), b: new THREE.Vector2(...e.b), n: new THREE.Vector2(...e.n), len: e.len }));
     // door swings: quarter circle of the door width inside the room, hinge at s0 end
@@ -46,6 +47,9 @@ export class Furnish {
     for (const it of (plan.items || [])) await this.addItem(it, false);
     this._refresh();
   }
+
+  async setPlan(plan, save = false) { this.plan = plan; this.clear(); for (const it of (plan.items || [])) await this.addItem(it, false); this._refresh(); if (save) this.save(); }
+  itemById(id) { return this.items.find(it => it.spec.id === id); }
 
   // ---------- items ----------
   async addItem(spec, markDirty = true) {

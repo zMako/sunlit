@@ -107,6 +107,31 @@ class H(http.server.SimpleHTTPRequestHandler):
             r = subprocess.run(cmd, capture_output=True, text=True, cwd=str(ROOT.parent), env=dict(os.environ), timeout=600)
             if r.returncode != 0: self.send_response(500); self.send_header("Content-Type", "text/plain"); self.end_headers(); self.wfile.write((r.stderr or r.stdout)[-1200:].encode()); return
             return self.reply((r.stdout.strip().splitlines() or ["{}"])[-1].encode())
+        if rel == "/api/agent/furnish":   # server-sent events from agent.py furnish: one event per item placed/rejected
+            q = dict(urllib.parse.parse_qsl(u.query)); name = q.get("room", "")
+            if not name or "/" in name or ".." in name or not (ROOT / "rooms" / f"{name}.json").exists(): return self.send_error(404)
+            cmd = [PY, str(ROOT / "furnish" / "agent.py"), "furnish", name]
+            if q.get("budget"): cmd += ["--budget", q["budget"]]
+            if q.get("style"): cmd += ["--style", q["style"]]
+            self.send_response(200); self.send_header("Content-Type", "text/event-stream"); self.send_header("Cache-Control", "no-store"); self.send_header("Connection", "close"); self.end_headers()
+            proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, cwd=str(ROOT.parent), env=dict(os.environ), bufsize=1)
+            try:
+                for line in proc.stdout:
+                    line = line.strip()
+                    if not line.startswith("{"): continue
+                    self.wfile.write(f"data: {line}\n\n".encode()); self.wfile.flush()
+                self.wfile.write(b"data: {\"event\": \"end\"}\n\n"); self.wfile.flush()
+            except (BrokenPipeError, ConnectionResetError): proc.kill()
+            return
+        if rel == "/api/agent/chat":   # POST {room, message, plan, budget, style} -> agent.py chat -> {reply, ops, plan}
+            n = int(self.headers.get("Content-Length", "0") or 0); body = self.rfile.read(n) if n else b"{}"
+            try: req = json.loads(body or b"{}")
+            except Exception: return self.send_error(400)
+            name = req.get("room", "")
+            if not name or "/" in name or ".." in name or not (ROOT / "rooms" / f"{name}.json").exists(): return self.send_error(404)
+            r = subprocess.run([PY, str(ROOT / "furnish" / "agent.py"), "chat", name], input=json.dumps(req), capture_output=True, text=True, cwd=str(ROOT.parent), env=dict(os.environ), timeout=300)
+            out = (r.stdout.strip().splitlines() or ["{}"])[-1]
+            return self.reply(out.encode() if out.startswith("{") else json.dumps({"error": (r.stderr or r.stdout)[-800:]}).encode())
         if rel.startswith("/listings/") and rel.endswith(".jpg"):
             p = (LIST / rel[len("/listings/"):]).resolve()
             if LIST.resolve() in p.parents and p.exists(): return self.reply(p.read_bytes(), "image/jpeg")

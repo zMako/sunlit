@@ -20,7 +20,7 @@ def log(*a):
     with open(LOG, "a") as f: f.write(m + "\n")
 
 def get(url, **kw):
-    for i in range(3):
+    for i in range(3):  # 1 try + 2 retries
         try:
             t0 = time.time()
             r = S.get(url, timeout=(10, 20), stream=True, **kw)
@@ -74,6 +74,9 @@ PAINTS = {  # plain painted walls (generated, CC0)
     "off_white": (243, 241, 235), "white": (250, 250, 248), "warm_white": (238, 230, 214), "greige": (186, 176, 162),
     "light_grey": (206, 206, 204), "sage": (160, 174, 148), "navy": (40, 52, 82), "terracotta": (190, 110, 84),
     "beige": (208, 190, 160), "cream": (232, 220, 190), "charcoal": (64, 66, 70), "pale_blue": (178, 202, 218),
+    "mid_grey": (140, 142, 144), "taupe": (160, 142, 126), "ivory": (246, 240, 220), "soft_pink": (232, 206, 202),
+    "mint": (200, 224, 208), "olive": (128, 128, 82), "mustard": (212, 168, 60), "teal": (62, 118, 120),
+    "forest": (58, 84, 66), "burgundy": (112, 36, 48), "lavender": (200, 192, 216), "black": (34, 34, 36),
 }
 
 def process_cg_zip(z, d):
@@ -144,6 +147,11 @@ def build():
                 else: log("no color", aid)
             except Exception as e: log("fail", aid, e)
         json.dump(meta, open(mp, "w"), indent=1)
+    build_paints(meta)
+    json.dump(meta, open(mp, "w"), indent=1)
+    reindex()
+
+def build_paints(meta):
     # generated paints
     rng = np.random.RandomState(0)
     for nm, rgb in PAINTS.items():
@@ -159,8 +167,6 @@ def build():
         Image.fromarray(((nrm * 0.5 + 0.5) * 255).astype(np.uint8)).save(os.path.join(d, "normal.jpg"), quality=90)
         Image.new("RGB", (512, 512), (200, 200, 200)).save(os.path.join(d, "roughness.jpg"), quality=90)
         finish(d)
-    json.dump(meta, open(mp, "w"), indent=1)
-    reindex()
 
 def load_index():
     return json.load(open(INDEX))
@@ -181,5 +187,77 @@ def reindex():
     import collections
     log("index:", len(out), dict(collections.Counter(m["category"] for m in out)))
 
+
+
+CGMAP = {c: o for cats, o, n in CG_PLAN for c in cats}
+CGMAP.update({"Wood": "laminate", "Planks": "wood_floor", "Wood Siding": "other", "Wood Chips": "other"})
+PHPRI = [("carpet", "carpet"), ("tiles", "tile"), ("brick", "brick"), ("concrete", "concrete"), ("plaster", "plaster"),
+         ("plaster-concrete", "concrete"), ("fabric", "fabric"), ("leather", "fabric"), ("metal", "metal"), ("marble", "stone"),
+         ("granite", "stone"), ("rock", "stone"), ("wood", "wood_floor"), ("raw wood", "laminate")]
+
+def ph_cat(v):
+    c = v["categories"]
+    for tag, ours in PHPRI:
+        if tag in c: return ours
+    return "other"
+
+def build_all():
+    os.makedirs(MAT, exist_ok=True)
+    mp = os.path.join(MAT, "meta.json")
+    meta = json.load(open(mp)) if os.path.exists(mp) else {}
+    n_new = [0]
+    def tick():
+        n_new[0] += 1
+        if n_new[0] % 50 == 0:
+            json.dump(meta, open(mp, "w"), indent=1); reindex()
+    # paints first (cheap)
+    build_paints(meta); json.dump(meta, open(mp, "w"), indent=1); reindex()
+    assets = []
+    for off in range(0, 2100, 250):
+        r = get(f"https://ambientcg.com/api/v2/full_json?type=Material&include=downloadData,imageData&limit=250&offset={off}")
+        if r: assets += r.json().get("foundAssets", [])
+    log("ambientCG assets listed:", len(assets))
+    r = get("https://api.polyhaven.com/assets?t=textures"); ph = r.json() if r else {}
+    log("polyhaven assets:", len(ph))
+    # interleave so partial library is diverse
+    jobs = []
+    A = [a for a in assets if a["assetId"] not in BAD]; P = list(ph.items())
+    for i in range(max(len(A), len(P))):
+        if i < len(A): jobs.append(("cg", A[i]))
+        if i < len(P): jobs.append(("ph", P[i]))
+    for kind, x in jobs:
+        if time.strftime("%H%M") >= "1630": log("deadline reached"); break
+        try:
+            if kind == "cg":
+                a = x; aid = a["assetId"]; d = os.path.join(MAT, aid)
+                if os.path.exists(os.path.join(d, "thumb.jpg")): meta.setdefault(aid, dict(id=aid, name=a["displayName"], category=CGMAP.get(a["displayCategory"], "other"), source="ambientcg", license="CC0", url=a["shortLink"])); continue
+                meta[aid] = dict(id=aid, name=a["displayName"], category=CGMAP.get(a["displayCategory"], "other"), source="ambientcg", license="CC0", url=a["shortLink"])
+                dl = [y for y in a["downloadFolders"]["default"]["downloadFiletypeCategories"]["zip"]["downloads"] if y["attribute"] == "1K-JPG"]
+                if not dl: continue
+                os.makedirs(d, exist_ok=True)
+                r = get(dl[0]["downloadLink"])
+                if r and process_cg_zip(zipfile.ZipFile(io.BytesIO(r.content)), d): finish(d); log("ok", aid, meta[aid]["category"]); tick()
+                else: log("skip", aid); meta.pop(aid, None)
+            else:
+                k, v = x; aid = "ph_" + k; d = os.path.join(MAT, aid)
+                if os.path.exists(os.path.join(d, "thumb.jpg")): meta.setdefault(aid, dict(id=aid, name=v["name"], category=ph_cat(v), source="polyhaven", license="CC0", url=f"https://polyhaven.com/a/{k}")); continue
+                meta[aid] = dict(id=aid, name=v["name"], category=ph_cat(v), source="polyhaven", license="CC0", url=f"https://polyhaven.com/a/{k}")
+                r = get(f"https://api.polyhaven.com/files/{k}")
+                if not r: meta.pop(aid, None); continue
+                f = r.json(); os.makedirs(d, exist_ok=True)
+                for ok_, keys in (("color", ["Diffuse", "Color"]), ("normal", ["nor_gl"]), ("roughness", ["Rough"])):
+                    for kk in keys:
+                        u = f.get(kk, {}).get("1k", {}).get("jpg", {}).get("url")
+                        if u:
+                            rr = get(u)
+                            if rr: save_img(Image.open(io.BytesIO(rr.content)), os.path.join(d, ok_ + ".jpg"))
+                            break
+                if os.path.exists(os.path.join(d, "color.jpg")): finish(d); log("ok", aid, meta[aid]["category"]); tick()
+                else: log("skip", aid); meta.pop(aid, None)
+        except Exception as e:
+            log("fail", kind, e)
+    json.dump(meta, open(mp, "w"), indent=1); reindex()
+
+
 if __name__ == "__main__":
-    {"build": build, "reindex": reindex}[sys.argv[1]]()
+    {"build": build, "all": build_all, "reindex": reindex}[sys.argv[1]]()

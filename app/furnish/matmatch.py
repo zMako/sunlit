@@ -107,6 +107,26 @@ def match(listing_dir, idx, k=3, pool=15, lam=0.004):
     res["_patches"] = {n: list(map(int, b)) for n, b in boxes.items()}
     return res, P
 
+def contact_sheet(tests, out):
+    from PIL import ImageDraw
+    T = 200; rows = []
+    sheet = Image.new("RGB", (T * 5 + 10, (T + 20) * len(tests)), "white"); dr = ImageDraw.Draw(sheet)
+    for r, (ld, idx) in enumerate(tests):
+        res, P = match(ld, idx)
+        y = r * (T + 20)
+        photo = Image.open(os.path.join(ld, f"{int(idx):02d}.jpg")).convert("RGB"); photo.thumbnail((T, T))
+        sheet.paste(photo, (0, y + 20)); dr.text((2, y + 4), f"{os.path.basename(ld)}/{idx}", fill="black")
+        if "floor" in P:
+            sheet.paste(P["floor"][1].resize((T, T)), (T + 10, y + 20)); dr.text((T + 12, y + 4), "floor patch", fill="black")
+        for j, m in enumerate(res["floor"]):
+            x = (2 + j) * T + 10
+            sheet.paste(Image.open(os.path.join(matlib.MAT, m["id"], "thumb.jpg")).resize((T, T)), (x, y + 20))
+            dr.text((x + 2, y + 4), f"{m['id'][:22]} {m['score']:.2f}", fill="black")
+    sheet.save(out, quality=90)
+
 if __name__ == "__main__":
+    if sys.argv[1] == "--sheet":
+        L = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "feasibility", "listings")
+        contact_sheet([(f"{L}/gs-20665", 0), (f"{L}/gs-20665", 11), (f"{L}/gs-20665", 13), (f"{L}/gs-22612", 3)], os.path.join(matlib.MAT, "match_test.jpg")); sys.exit()
     r, _ = match(sys.argv[1], sys.argv[2])
     print(json.dumps(r, indent=1))

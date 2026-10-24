@@ -3,7 +3,7 @@
  "room_type": "dining",
  "items": [
   {
-   "id": "ikea-40593882",
+   "id": "ikea-40593882#1",
    "name": "TONSTAD Extendable table - oak veneer 55 1/8/77 1/8x33 1/2 \"",
    "category": "dining_table",
    "w_m": 0.851,
@@ -13,25 +13,13 @@
    "product_url": "https://www.ikea.com/us/en/p/tonstad-extendable-table-oak-veneer-40593882/",
    "image": null,
    "model_glb_url": "https://web-api.ikea.com/dimma/assets/1.2/40593882/LPT_S01_NV01/rqp3/glb_draco/8ec5aa87e0d1a545a6a4dfc9193587b0-40593882_LPT_S01_NV01_RQP3_4.0.glb?cn=pip",
-   "why": "Oak veneer matches the light oak brief. At 1.4 m closed and about 1.96 m extended, it seats four comfortably and leaves clearance in the 3.59 x 3.34 m room. At $379.99 it keeps the total well within budget.",
-   "x": 13.095,
-   "z": 6.834,
-   "rot_deg": 0.0
-  },
-  {
-   "id": "ikea-10594034",
-   "name": "TONSTAD Chair - oak effect/Fridtuna light beige",
-   "category": "dining_chair",
-   "w_m": 0.419,
-   "d_m": 0.479,
-   "h_m": 0.879,
-   "price_usd": 75.0,
-   "product_url": "https://www.ikea.com/us/en/p/tonstad-chair-oak-effect-fridtuna-light-beige-10594034/",
-   "image": null,
-   "model_glb_url": null,
-   "why": "Oak-effect frame with light beige upholstery suits the calm, airy, light oak palette. Slim footprint (0.419 x 0.479 m) avoids crowding the table.",
-   "x": 13.095,
-   "z": 5.845,
+   "model_glb": null,
+   "why": "Oak veneer extendable table suits warm Scandinavian style and seats four.",
+   "color": "brown",
+   "style_tags": null,
+   "slot": "dining_table",
+   "x": 14.181,
+   "z": 7.265,
    "rot_deg": 0.0
   },
   {
@@ -45,10 +33,14 @@
    "product_url": "https://www.ikea.com/us/en/p/tonstad-chair-oak-effect-fridtuna-light-beige-10594034/",
    "image": null,
    "model_glb_url": null,
-   "why": "Matching chair for a coherent set of four, same finish and dimensions as the other seats.",
-   "x": 13.81,
-   "z": 6.834,
-   "rot_deg": 270.0
+   "model_glb": null,
+   "why": "Oak-effect frame with washable light beige seat covers matches the table.",
+   "color": "beige, brown",
+   "style_tags": null,
+   "slot": "dining_chair",
+   "x": 14.181,
+   "z": 8.255,
+   "rot_deg": 180
   },
   {
    "id": "ikea-10594034#3",
@@ -61,35 +53,21 @@
    "product_url": "https://www.ikea.com/us/en/p/tonstad-chair-oak-effect-fridtuna-light-beige-10594034/",
    "image": null,
    "model_glb_url": null,
-   "why": "Matching chair for a coherent set of four, same finish and dimensions as the other seats.",
-   "unplaced": "no room next to its anchor"
-  },
-  {
-   "id": "ikea-10594034#4",
-   "name": "TONSTAD Chair - oak effect/Fridtuna light beige",
-   "category": "dining_chair",
-   "w_m": 0.419,
-   "d_m": 0.479,
-   "h_m": 0.879,
-   "price_usd": 75.0,
-   "product_url": "https://www.ikea.com/us/en/p/tonstad-chair-oak-effect-fridtuna-light-beige-10594034/",
-   "image": null,
-   "model_glb_url": null,
-   "why": "Matching chair for a coherent set of four, same finish and dimensions as the other seats.",
-   "unplaced": "no room next to its anchor"
+   "model_glb": null,
+   "why": "Same chair for a matching set of four.",
+   "color": "beige, brown",
+   "style_tags": null,
+   "slot": "dining_chair",
+   "x": 14.181,
+   "z": 6.275,
+   "rot_deg": 0
   }
  ],
  "total_usd": 529.99,
- "walkable": false,
- "picker": "claude claude-haiku-5-5 $0.0006; palette: Light oak with warm beige upholstery and soft neutral accents; keep walls and floor in pale, warm neutrals to stay airy.; Total is about $679.99 (table $379.99 plus four chairs at $75 each), well under the $3,500 budget, leaving room for pendant lighting or a rug. Wall colour and floor are unknown, so choose light, warm ",
- "room_info": {
-  "area_m2": 12.0,
-  "long_m": 3.59,
-  "short_m": 3.34,
-  "ceiling_m": 2.6,
-  "n_windows": 1,
-  "n_doors": 2,
-  "wall_colour": null,
-  "floor": null
- }
+ "budget": 1500.0,
+ "style": "warm scandinavian",
+ "palette": "warm oak, soft beige textiles, black accents",
+ "notes": "First picks total $749.98, well under the $1500 budget. The 1.4m table seats four comfortably in the 3.48m short side. Only one floor lamp suits the brief, so no alternative is listed.",
+ "walkable": true,
+ "picker": "agent haiku $0.0010"
 }

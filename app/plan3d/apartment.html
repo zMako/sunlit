@@ -40,7 +40,7 @@ const Q = new URLSearchParams(location.search); const unit = Q.get('unit') || 't
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(innerWidth, innerHeight); renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 const QUALITY = Q.get('q') || 'high';   // high: GTAO + bloom + 4k shadows; low: direct render (fast machines/headless)
-renderer.toneMapping = THREE.AgXToneMapping; renderer.toneMappingExposure = 1.18; renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.localClippingEnabled = true;
+renderer.toneMapping = THREE.AgXToneMapping; renderer.toneMappingExposure = 1.1; renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.localClippingEnabled = true;
 document.body.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.05, 300);
@@ -84,9 +84,9 @@ sun.position.copy(center).add(sunDir.clone().multiplyScalar(ext * 2.5)); sun.tar
 const composer = new EffectComposer(renderer); composer.addPass(new RenderPass(scene, camera));
 let gtao = null, bloom = null;
 if (QUALITY === 'high') {
-  gtao = new GTAOPass(scene, camera, innerWidth, innerHeight); gtao.output = GTAOPass.OUTPUT.Default; gtao.blendIntensity = 0.85;
+  gtao = new GTAOPass(scene, camera, innerWidth, innerHeight); gtao.output = GTAOPass.OUTPUT.Default; gtao.blendIntensity = 0.7;
   gtao.updateGtaoMaterial({ radius: 0.35, distanceExponent: 1.5, thickness: 0.6, scale: 1.4, samples: 16, distanceFallOff: 1.0, screenSpaceRadius: false }); gtao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 4, rings: 2, samples: 12 }); composer.addPass(gtao);
-  bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.18, 0.6, 0.92); composer.addPass(bloom);
+  bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.07, 0.5, 1.0); composer.addPass(bloom);   // only the brightest highlights (glass, sun patches) glow
 }
 composer.addPass(new OutputPass());
 const floorPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
@@ -124,12 +124,12 @@ let mode = 'doll'; const clipPlane = new THREE.Plane(new THREE.Vector3(0, -1, 0)
 function applyClip(on) { const planes = on ? [clipPlane] : []; apt.group.traverse(o => { if (o.isMesh && o.material) { const ms = Array.isArray(o.material) ? o.material : [o.material]; ms.forEach(m => { m.clippingPlanes = planes; m.clipShadows = true; }); } }); }
 function setDoll() {
   mode = 'doll'; if (walk.isLocked) walk.unlock(); document.getElementById('bDoll').classList.add('on'); document.getElementById('bWalk').classList.remove('on'); document.getElementById('hint').style.display = 'none'; document.getElementById('cross').style.display = 'none';
-  apt.ceilingMeshes.forEach(m => m.visible = false); apt.labels.forEach(l => l.visible = true); applyClip(true); setFurnClip([clipPlane]); orbit.enabled = true; labelOcclusion(false);
+  apt.ceilingMeshes.forEach(m => m.visible = false); apt.labels.forEach(l => l.visible = true); applyClip(true); setFurnClip([clipPlane]); orbit.enabled = true; labelOcclusion(false); renderer.toneMappingExposure = 0.95;
   camera.fov = 45; camera.position.set(center.x + ext * 0.75, ext * 0.95 + 2, center.z + ext * 0.9); orbit.target.set(center.x, 0.6, center.z); camera.updateProjectionMatrix(); orbit.update();
 }
 function setWalk(roomId, yawDeg) {
   mode = 'walk'; document.getElementById('bWalk').classList.add('on'); document.getElementById('bDoll').classList.remove('on'); document.getElementById('hint').style.display = 'block'; document.getElementById('cross').style.display = 'block';
-  apt.ceilingMeshes.forEach(m => m.visible = true); apt.labels.forEach(l => l.visible = false); applyClip(false); setFurnClip([]); orbit.enabled = false; labelOcclusion(true);
+  apt.ceilingMeshes.forEach(m => m.visible = true); apt.labels.forEach(l => l.visible = false); applyClip(false); setFurnClip([]); orbit.enabled = false; labelOcclusion(true); renderer.toneMappingExposure = 1.1;
   if (roomId && furn[roomId]) activateRoom(roomId);
   const r = apt.roomMeshes[roomId] || Object.values(apt.roomMeshes)[0]; const c = r.center; camera.fov = 70; camera.updateProjectionMatrix();
   camera.position.set(c.x, 1.6, c.z); const yaw = THREE.MathUtils.degToRad(yawDeg ?? 35); camera.rotation.set(0, 0, 0); camera.lookAt(c.x + Math.sin(yaw), 1.5, c.z + Math.cos(yaw));
@@ -167,4 +167,5 @@ let roomTick = 0;
 (function loop() { requestAnimationFrame(loop); const dt = Math.min(clock.getDelta(), 0.05); if (mode === 'walk') { stepWalk(dt); if ((roomTick += dt) > 0.5) { roomTick = 0; const r = currentRoom(); if (r && r !== activeRoom && furn[r]) activateRoom(r); } } else orbit.update(); composer.render(); })();
 if (Q.has('furn')) activateRoom(Q.get('furn'));
 window.setWalk = setWalk; window.setDoll = setDoll;
-</script></body></html>
+</script>
+<script type="module" src="../furnish/agent.js"></script></body></html>

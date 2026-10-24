@@ -3,7 +3,9 @@ import sys, json, glob, pathlib, traceback
 import numpy as np, cv2
 HERE = pathlib.Path(__file__).resolve().parent; ROOT = HERE.parents[1]; sys.path.insert(0, str(HERE)); import plan_engine as pe
 OUT = HERE / "sweep"; OUT.mkdir(exist_ok=True); rows = []
+only = set(sys.argv[1:])
 for lid_dir in sorted(glob.glob(str(ROOT / "feasibility/listings/gs-*"))):
+    if only and pathlib.Path(lid_dir).name not in only: continue
     lid = pathlib.Path(lid_dir).name; plans = sorted(p for p in glob.glob(lid_dir + "/plans/plan_*.[jp]*g")); tiles = []
     for p in plans:
         name = f"{lid}_{pathlib.Path(p).stem}"
@@ -32,6 +34,8 @@ for lid_dir in sorted(glob.glob(str(ROOT / "feasibility/listings/gs-*"))):
         for i, t in enumerate(tiles): y, x = (i // cols) * H, (i % cols) * W; sheet[y:y + H, x:x + t.shape[1]] = t
         cv2.imwrite(str(OUT / f"{lid}.jpg"), sheet, [cv2.IMWRITE_JPEG_QUALITY, 80])
     print(f"[sweep] {lid}: {len(plans)} plans, ok {sum(1 for r in rows if r['unit'].startswith(lid) and r['status']=='ok')}", flush=True)
+prev = json.load(open(OUT / "sweep.json")) if (OUT / "sweep.json").exists() and only else []
+rows = [r for r in prev if r["unit"].rsplit("_plan_", 1)[0] not in only] + rows
 json.dump(rows, open(OUT / "sweep.json", "w"), indent=1)
 ok = [r for r in rows if r["status"] == "ok"]
 print(f"[sweep] total {len(rows)} plans: ok {len(ok)}, not_plan {sum(1 for r in rows if r['status']=='not_plan')}, error {sum(1 for r in rows if r['status']=='error')}")

@@ -17,9 +17,26 @@ def wall_thickness(ink):
     """Stroke thickness of the long thick strokes: 2 x distance-transform value, sampled along the ink skeleton (length-weighted,
     so a filled block or a title does not dominate) and ignoring hairlines (dt <= 1.2)."""
     from skimage.morphology import skeletonize
-    dt = cv2.distanceTransform(ink, cv2.DIST_L2, 5); sk = skeletonize(ink.astype(bool)); v = dt[sk]; v = v[v > 1.2]
+    dt = cv2.distanceTransform(ink, cv2.DIST_L2, 5); sk = skeletonize(ink.astype(bool)).astype(np.uint8)
+    n, lab, st, _ = cv2.connectedComponentsWithStats(sk, 8); H, W = ink.shape
+    long_ids = [i for i in range(1, n) if st[i, cv2.CC_STAT_AREA] >= 0.08 * max(H, W)]   # strokes at least 8% of the image long: walls, not letters
+    sel = np.isin(lab, long_ids) if long_ids else sk.astype(bool)
+    v = dt[sel]; v = v[v > 1.2]
+    if v.size < 50: v = dt[sk.astype(bool)]; v = v[v > 1.2]
     if v.size < 50: return 3.0
     return float(2 * np.percentile(v, 60))
+
+def wall_thicknesses(ink):
+    """One or two stroke thicknesses present among the long strokes (bimodal when exterior walls are drawn much heavier)."""
+    from skimage.morphology import skeletonize
+    dt = cv2.distanceTransform(ink, cv2.DIST_L2, 5); sk = skeletonize(ink.astype(bool)).astype(np.uint8)
+    n, lab, st, _ = cv2.connectedComponentsWithStats(sk, 8); H, W = ink.shape
+    long_ids = [i for i in range(1, n) if st[i, cv2.CC_STAT_AREA] >= 0.08 * max(H, W)]
+    sel = np.isin(lab, long_ids) if long_ids else sk.astype(bool); v = dt[sel]; v = v[v > 1.2]
+    if v.size < 50: return [wall_thickness(ink)]
+    p25, p60, p75 = np.percentile(v, [25, 60, 75])
+    if p75 >= 1.4 * p25 and p25 >= 1.4: return [float(2 * p25), float(2 * p75)]   # two wall weights (interior / exterior)
+    return [float(2 * p60)]
 
 def walls_mask(ink, thick):
     k = max(2, int(round(thick * 0.45)))
@@ -36,11 +53,13 @@ def wall_rects(wmask, thick):
     # filled blocks (fireplaces, columns, counters) are much thicker than walls: take them out first so a block glued to a wall
     # does not swallow it
     kb = int(max(thick * 2.2, 5)); blockmask = cv2.morphologyEx(wmask, cv2.MORPH_OPEN, cv2.getStructuringElement(cv2.MORPH_RECT, (kb, kb)))
-    blocks = []
+    blocks = []; compact = np.zeros_like(blockmask)
     bn, blab, bstats, _ = cv2.connectedComponentsWithStats(blockmask, 8)
     for i in range(1, bn):
-        x, y, w, h, a = bstats[i]; blocks.append({"o": "h", "c": y + h / 2, "s0": int(x), "s1": int(x + w), "t": int(h), "x0": int(x), "y0": int(y), "x1": int(x + w), "y1": int(y + h), "block": True})
-    core = cv2.erode(blockmask, cv2.getStructuringElement(cv2.MORPH_RECT, (int(thick) + 2, int(thick) + 2)))   # keep the rim: a wall glued to a block must survive
+        x, y, w, h, a = bstats[i]
+        if max(w, h) >= 3.5 * min(w, h): continue   # elongated: a thick (exterior) wall, keep it as wall
+        blocks.append({"o": "h", "c": y + h / 2, "s0": int(x), "s1": int(x + w), "t": int(h), "x0": int(x), "y0": int(y), "x1": int(x + w), "y1": int(y + h), "block": True}); compact[blab == i] = 1
+    core = cv2.erode(compact, cv2.getStructuringElement(cv2.MORPH_RECT, (int(thick) + 2, int(thick) + 2)))   # keep the rim: a wall glued to a block must survive
     wonly = cv2.subtract(wmask, core)
     for o, ker in (("h", cv2.getStructuringElement(cv2.MORPH_RECT, (L, 1))), ("v", cv2.getStructuringElement(cv2.MORPH_RECT, (1, L)))):
         m = cv2.morphologyEx(wonly, cv2.MORPH_OPEN, ker); n, lab, stats, _ = cv2.connectedComponentsWithStats(m, 8)
@@ -69,13 +88,14 @@ def walls_two_tone(g):
     for lo, hi in ((0, 60), (60, 190), (190, 238)):   # black, dark grey, light grey (SightMap exterior walls can be grey)
         ink = ((g >= lo) & (g < hi)).astype(np.uint8)
         if ink.sum() < 0.0015 * ink.size: continue
-        t = wall_thickness(ink); m = walls_mask(ink, t)
-        if m.sum() >= 0.0005 * ink.size: cls.append((int(m.sum()), t, m))
+        for t in wall_thicknesses(ink):   # a tone class may hold two wall weights (thick exterior, thin interior): extract both
+            m = walls_mask(ink, t)
+            if m.sum() >= 0.0005 * ink.size: cls.append((int(m.sum()), t, m))
     if not cls:
         ink = (g < 190).astype(np.uint8); t = wall_thickness(ink); return walls_mask(ink, t), t
     cls.sort(key=lambda c: -c[0]); dom = cls[0]
-    masks = [c[2] for c in cls if c[0] >= 0.15 * dom[0] and 0.4 <= c[1] / dom[1] <= 2.5]   # minor classes join only when they look like walls of a similar weight
-    return np.clip(sum(masks), 0, 1).astype(np.uint8), float(dom[1])
+    masks = [c for c in cls if c[0] >= 0.10 * dom[0] and 0.25 <= c[1] / dom[1] <= 4.0]   # minor classes join when they are plausible walls (thin interior next to heavy exterior)
+    return np.clip(sum(c[2] for c in masks), 0, 1).astype(np.uint8), float(min(c[1] for c in masks))
 
 def ext_of(pc):   # piece extent as (x0, y0, x1, y1) in pixels
     t = max(pc["t"], 2) / 2
@@ -117,7 +137,7 @@ def classify_gap(thin, o, c, a, b, t, thick):
             sc = hits / n if n else 0
             if sc > best: best = sc; swing = f"{hinge}_{'pos' if side > 0 else 'neg'}"
     if win >= 0.55 and best < 0.5: return {"kind": "window", "score": round(win, 2)}
-    if best >= 0.3: return {"kind": "door", "score": round(best, 2), "swing_raw": swing}
+    if best >= 0.3 and gap >= 2.5 * thick: return {"kind": "door", "score": round(best, 2), "swing_raw": swing}
     if win >= 0.35 and gap <= 9 * thick: return {"kind": "window", "score": round(win, 2)}
     return {"kind": "opening", "score": round(max(win, best), 2)}
 
@@ -186,10 +206,11 @@ def extract(path, extra=None):
     closed, openings = bridge(pieces, g.shape, thick, ink=loose)
     # second pass: the typical door width is now known (confident arcs, plausible size); bridges much wider than a door that
     # are not windows are open space, not openings -> rebuild the closed image without them
-    sure = [o["b"] - o["a"] for o in openings if o["kind"] == "door" and o.get("score", 0) >= 0.5 and (o["b"] - o["a"]) <= 12 * thick]
+    dmin, dmax = 0.025 * min(g.shape), 0.12 * min(g.shape)   # a door is 2.5-12% of the plan image regardless of wall weight
+    sure = [o["b"] - o["a"] for o in openings if o["kind"] == "door" and o.get("score", 0) >= 0.5 and dmin <= (o["b"] - o["a"]) <= dmax]
     door_ref = float(np.median(sure)) if len(sure) >= 2 else None
     if door_ref:
-        keep_o = [o for o in openings if o["kind"] == "window" or (o["b"] - o["a"]) <= 1.6 * door_ref]
+        keep_o = [o for o in openings if o["kind"] == "window" or 0.6 * door_ref <= (o["b"] - o["a"]) <= 1.6 * door_ref]
         if len(keep_o) < len(openings):
             closed = np.zeros_like(closed)
             for pc in pieces:

@@ -1,0 +1,60 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Sunlit · checkout</title>
+<style>:root{--bg:#0f1319;--card:#171d26;--ink:#e8edf3;--ink2:#9aa6b5;--acc:#6ea8fe;--ok:#7fe0b4;--warn:#f3cf7a;--bad:#ff8a8a}
+body{margin:0;font:14px/1.45 -apple-system,Inter,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}header{padding:16px 24px;border-bottom:1px solid #243040;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+h1{margin:0;font-size:18px}main{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;padding:18px 24px}
+.card{background:var(--card);border:1px solid #243040;border-radius:12px;padding:14px}.item{display:grid;grid-template-columns:64px 1fr auto auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #223}
+.item img{width:64px;height:64px;object-fit:cover;border-radius:8px;background:#222}.item .n{font-weight:600}.item .m{color:var(--ink2);font-size:12px}.price{font-weight:600}.rm{background:none;border:1px solid #334;color:var(--ink2);border-radius:6px;padding:3px 8px;cursor:pointer}
+.bar{height:10px;background:#223;border-radius:6px;overflow:hidden;margin:6px 0}.bar i{display:block;height:100%;background:var(--ok)}.bar i.over{background:var(--bad)}
+input,select{background:#0f1319;color:var(--ink);border:1px solid #334;border-radius:8px;padding:6px 8px}label{color:var(--ink2);font-size:12px;display:block}
+.btn{background:var(--acc);color:#07111f;border:none;border-radius:10px;padding:10px 16px;font-weight:700;cursor:pointer;font-size:14px}.btn.big{font-size:17px;padding:14px 22px;background:var(--ok)}.btn:disabled{opacity:.5}
+#log{font:12px/1.5 ui-monospace,Menlo,monospace;max-height:420px;overflow:auto;background:#0b0f15;border-radius:8px;padding:10px}#log div{padding:2px 0;border-bottom:1px dashed #1e2733}.ev{color:var(--acc)}.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+pre{background:#0b0f15;border-radius:8px;padding:8px;font-size:11px;max-height:180px;overflow:auto;white-space:pre-wrap}.room{margin:10px 0 4px;color:var(--ink2);font-weight:600}
+.tl{display:flex;gap:8px;margin:8px 0}.tl div{flex:1;background:#0b0f15;border-radius:8px;padding:8px;font-size:12px}.tl b{display:block;font-size:13px;color:var(--ink)}.note{font-size:12px;color:var(--ink2)}</style></head><body>
+<header><h1>Sunlit · checkout</h1>
+ <div><label>budget (USD)</label><input id="budget" type="number" step="50" style="width:110px"></div>
+ <div><label>move-in date</label><input id="movein" type="date"></div>
+ <div><label>payment rail</label><select id="rail"><option value="card">Card (sandbox · stops before capture)</option><option value="x402">x402 · USDC on Base Sepolia (Coinbase)</option></select></div>
+ <button class="btn" id="run">Agent checkout</button><span id="status" class="note"></span></header>
+<main>
+ <section>
+  <div class="card"><div style="display:flex;justify-content:space-between;align-items:baseline"><b>Cart</b><span id="totals"></span></div><div class="bar"><i id="bar" style="width:0"></i></div><div id="cart">loading…</div></div>
+  <div class="card" style="margin-top:14px"><b>Trust & responsibility</b><div class="note" style="margin-top:6px">The agent can never exceed your budget: it removes the lowest-priority items first and tells you. Every step is logged below. Nothing is captured on the card rail until you press Confirm. Only published test card numbers are used; no card data is stored, only tokens and amounts. The x402 rail pays from a dedicated agent wallet with a per-order cap.</div></div>
+ </section>
+ <section>
+  <div class="card"><b>Agent run</b><div id="log" style="margin-top:8px"><div class="note">press “Agent checkout”</div></div>
+   <div id="confirm" style="display:none;margin-top:12px"><button class="btn big" id="confirmBtn">Confirm purchase</button> <span class="note">authorization is held; capture happens only on your click</span></div>
+   <div id="x402" style="display:none;margin-top:12px"><b>x402 details</b><div class="note">402 challenge (payment requirements)</div><pre id="chal"></pre><div class="note">signed payment header</div><pre id="pay"></pre><div class="note">facilitator settlement</div><pre id="settle"></pre><div id="txlink"></div></div>
+  </div>
+  <div class="card" id="receipt" style="display:none;margin-top:14px"><b>Receipt</b><div id="rcpt"></div></div>
+ </section>
+</main>
+<script>
+const API='http://127.0.0.1:8766'; const Q=new URLSearchParams(location.search); const rooms=(Q.get('rooms')||'').split(',').filter(Boolean);
+const $=id=>document.getElementById(id); $('budget').value=Q.get('budget')||3000; $('movein').value=Q.get('movein')||new Date(Date.now()+21*864e5).toISOString().slice(0,10); if(Q.get('rail')) $('rail').value=Q.get('rail');
+let items=[], excluded=new Set(), orderId=null;
+function money(v){return '$'+(+v).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
+function img(u){ if(!u) return ''; return /^https?:/.test(u)?`http://127.0.0.1:8765/api/img?u=${encodeURIComponent(u)}`:u; }
+function render(){ const live=items.filter(i=>!excluded.has(i.id)); const total=live.reduce((s,i)=>s+i.price_usd,0); const b=+$('budget').value||0;
+  $('totals').innerHTML=`<b>${money(total)}</b> <span class="note">of ${money(b)} budget · ${live.length} items</span>`; const bar=$('bar'); bar.style.width=Math.min(100,100*total/Math.max(b,1))+'%'; bar.className=total>b?'over':'';
+  const byRoom={}; for(const i of items){ (byRoom[i.room]||=[]).push(i); } let h='';
+  for(const [r,its] of Object.entries(byRoom)){ h+=`<div class="room">${its[0].room_label||r} <span class="note">${r}</span></div>`;
+    for(const i of its){ const off=excluded.has(i.id); h+=`<div class="item" style="opacity:${off?.4:1}"><img src="${img(i.image)}" onerror="this.style.visibility='hidden'"><div><div class="n">${i.name}</div><div class="m">${i.category.replace('_',' ')} · ${(i.dims||[]).map(v=>v?(+v).toFixed(2):'?').join('×')} m${i.product_url?` · <a href="${i.product_url}" target="_blank" style="color:var(--acc)">product</a>`:''}</div></div><div class="price">${money(i.price_usd)}</div><button class="rm" data-id="${i.id}">${off?'restore':'remove'}</button></div>`; } }
+  $('cart').innerHTML=h||'<div class="note">no items: furnish a room first</div>'; document.querySelectorAll('.rm').forEach(b=>b.onclick=()=>{ const id=b.dataset.id; excluded.has(id)?excluded.delete(id):excluded.add(id); render(); }); }
+fetch(`${API}/cart?rooms=${encodeURIComponent(rooms.join(','))}`).then(r=>r.json()).then(c=>{ items=c.items; $('status').textContent=`merchant ${c.merchant.slice(0,10)}… · ${c.network} · facilitator: ${c.facilitator}`; render(); }).catch(e=>{$('cart').textContent='checkout server not running on :8766 ('+e+')'});
+$('budget').oninput=render;
+function logLine(d){ const el=document.createElement('div'); const cls=/error|failed/.test(d.event)?'bad':/ok|settled|auth|order/.test(d.event)?'ok':/drop|risk/.test(d.event)?'warn':'ev'; el.innerHTML=`<span class="${cls}">[${d.event}]</span> ${d.text||''}`; $('log').appendChild(el); $('log').scrollTop=1e9; }
+$('run').onclick=()=>{ $('log').innerHTML=''; $('confirm').style.display='none'; $('x402').style.display='none'; $('receipt').style.display='none'; $('run').disabled=true;
+  const url=`${API}/agent/run?rooms=${encodeURIComponent(rooms.join(','))}&budget=${+$('budget').value}&movein=${$('movein').value}&rail=${$('rail').value}&exclude=${encodeURIComponent([...excluded].join(','))}`;
+  const es=new EventSource(url); es.onmessage=e=>{ const d=JSON.parse(e.data); logLine(d); orderId=d.order_id||orderId;
+    if(d.event==='drop'){ excluded.add(d.item); render(); }
+    if(d.event==='await_confirm'){ $('confirm').style.display='block'; }
+    if(d.event==='x402_challenge'){ $('x402').style.display='block'; $('chal').textContent=JSON.stringify(d.challenge,null,1); }
+    if(d.event==='x402_paid_header'){ $('pay').textContent=JSON.stringify(d.payment,null,1); }
+    if(d.event==='x402_settled'){ $('settle').textContent=JSON.stringify(d.settlement,null,1); $('txlink').innerHTML=d.tx?`tx <a style="color:var(--acc)" href="${d.explorer}" target="_blank">${d.tx}</a>${d.settlement&&!d.settlement.success===false?'':''}`:''; }
+    if(d.event==='schedule'){ const s=d.schedule; const el=document.createElement('div'); el.className='tl'; el.innerHTML=`<div><b>order by</b>${s.latest_order_by}</div><div><b>delivery</b>${s.delivery_date}<br>${s.delivery_window}</div><div><b>assembly</b>${s.assembly_date}<br>${s.assembly_window}</div><div><b>move-in</b>${s.move_in}</div>`; $('log').appendChild(el); }
+    if(d.event==='done'){ es.close(); $('run').disabled=false; if(d.order&&d.order.status.startsWith('paid')) receipt(d.order); } };
+  es.onerror=()=>{ es.close(); $('run').disabled=false; logLine({event:'error',text:'stream closed'}); }; };
+$('confirmBtn').onclick=async()=>{ $('confirmBtn').disabled=true; const r=await fetch(`${API}/order/${orderId}/confirm`,{method:'POST'}); const j=await r.json(); logLine({event:r.ok?'captured':'error',text:r.ok?`Captured ${money(j.capture.amount)} (${j.capture.capture_id}).`:JSON.stringify(j)}); if(r.ok){ $('confirm').style.display='none'; const o=await (await fetch(`${API}/order/${orderId}`)).json(); receipt(o);} };
+function receipt(o){ $('receipt').style.display='block'; const s=o.schedule; $('rcpt').innerHTML=`<div class="note">order ${o.id} · ${o.status.replace('_',' ')} · rail ${o.rail}</div>${o.items.map(i=>`<div class="item" style="grid-template-columns:1fr auto"><div>${i.name}<div class="m">${i.room_label}</div></div><div class="price">${money(i.price_usd)}</div></div>`).join('')}<div style="text-align:right;margin-top:8px"><b>total ${money(o.total_usd)}</b> <span class="note">budget ${money(o.budget_usd)}</span></div><div class="tl"><div><b>delivery</b>${s.delivery_date}</div><div><b>assembly</b>${s.assembly_date}</div><div><b>move-in</b>${s.move_in}</div></div>${o.x402&&o.x402.tx?`<div class="note">paid via x402 · <a style="color:var(--acc)" href="${o.x402.explorer}" target="_blank">${o.x402.tx.slice(0,20)}…</a>${o.x402.mock?' (mock facilitator)':''}</div>`:''}${o.card&&o.card.capture?`<div class="note">card ${o.card.token.brand} •••• ${o.card.token.last4} · capture ${o.card.capture.capture_id}</div>`:''}`; }
+if(Q.get('order')){ fetch(`${API}/order/${Q.get('order')}`).then(r=>r.json()).then(receipt); }
+</script></body></html>

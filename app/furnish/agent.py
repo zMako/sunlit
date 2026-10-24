@@ -98,7 +98,7 @@ def run_furnish(room, budget, style):
             price = c.get("price_usd") or 0
             if budget and spent + price > budget:
                 emit("reject", item=it, reason=f"over budget by ${spent + price - budget:.0f} (spent ${spent:.0f} of ${budget:.0f})"); continue
-            if not passes_door(c, info["door_w"]):
+            if c["category"] not in ("rug", "curtain", "mattress") and not passes_door(c, info["door_w"]):   # textiles roll up
                 a, b, _ = sorted([c["width_m"], c["depth_m"], c["height_m"]])
                 emit("reject", item=it, reason=f"{c['name'].split(' - ')[0]} is {a:.2f} m thick and {b:.2f} m tall at its smallest; it cannot pass the {info['door_w']:.2f} m door"); continue
             pinned = [dict(x, pinned=True) for x in placed]
@@ -135,7 +135,7 @@ def run_chat(room, message, plan, budget, style):
               "set_budget, set_style. Keep items inside the room polygon and off the door swings; 'by the window' means against a wall that has a window. Reply in one friendly sentence. JSON only.")
     text = f"Room: {json.dumps(info)}\nPolygon: {R['polygon']}\nWalls: {walls}\nWindows (edge index, s0-s1 m): {[(w['edge'], w['s0'], w['s1']) for w in R.get('windows', [])]}\nDoors: {[(d['edge'], d['s0'], d['s1']) for d in R.get('doors', [])]}\n" \
            f"Current items: {json.dumps(summary)}\nBudget: {budget} spent: {plan.get('total_usd')} Style: {style}\nUser: {message}"
-    j, usd = claude_json(system, text, CHAT_SCHEMA, HAIKU, 1200, "agent chat")
+    j, usd = claude_json(system, text, CHAT_SCHEMA, HAIKU, 3000, "agent chat")
     ops = j.get("ops", []); notes = []
     for op in ops:
         kind = op.get("op")
