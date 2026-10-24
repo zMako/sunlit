@@ -220,3 +220,20 @@ Segmentation + harness -> segmentation-driven layout -> panorama completion -> l
 - Coordinator (this log's author): geometry-only sweep over all 444 plan images (418 readable; 98 with fewer than 2
   rooms, 72 without doors, 130 without windows) to harden plan detection across drawing styles; documentation rewrite
   (README = concept and how to run, ARCHITECTURE = contracts, DEVLOG = history); git repository initialised and pushed.
+
+## Oct 24 14:20: plan detection across all 444 plan images (ROADMAP step 1)
+- `app/plan3d/sweep.py` runs the geometry-only engine over every plan and writes per-building contact sheets
+  (`sweep/<lid>.jpg`) and `sweep/sweep.json`; `sweep_compare.py` diffs two runs (ok / rooms>=2 / doors>0 / windows>0).
+- Styles found and handled: SightMap schematics (350-480 px, grey exterior walls, thin windows); architect marketing
+  sheets with titles and footers (777 Tenn, 1000 Green, 1333 Gough with coloured room fills); marketing plans with heavy
+  grey exterior wall fills and furniture drawn (Solaire, Alchemy, Jasper); off-white paper scans (33 8th); photos
+  mislabelled as plans; 3D rendered "plans" (1177 Market, Nob Hill Tower), which are out of scope and rejected.
+- Fixes this round: paper-tone normalisation; stroke thickness from LONG skeleton strokes only (titles no longer hijack
+  it); two wall weights per tone class (thin interior + heavy exterior) with geometry parameters from the dominant one;
+  elongated thick components are walls, compact ones are blocks; door reference width from confident arcs in an
+  image-relative range (2.5-12% of the image) so title letters cannot set it; windows on long gaps need parallel lines
+  and a blank outside; renders rejected by gradient softness (soft/hard ratio > 3), coloured fills allowed.
+- Metric after v3 (strict rejection, before the colour relaxation): rooms>=2 320 -> 325, doors>0 346 -> 348, windows>0
+  288 -> 304 of 418 readable plans; 777 Tenn went from 1/15 to 15/15. v4 running with coloured plans re-admitted.
+- Still weak: tall narrow plans with large black exterior masses (Jasper), bathroom enclosure when the door arc is faint,
+  entry corridors open to the front door, thin closet-back walls read as gaps.

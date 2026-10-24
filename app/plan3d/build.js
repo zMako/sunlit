@@ -43,7 +43,11 @@ export class MaterialLib {
       if (entry.has_normal !== false && hasMap('normal')) { m.normalMap = this._tex(dir + 'normal.jpg', false); m.normalMap.repeat.set(1 / size, 1 / size); m.normalScale.set(0.5, 0.5); }
       if (entry.has_roughness !== false && hasMap('roughness')) { m.roughnessMap = this._tex(dir + 'roughness.jpg', false); m.roughnessMap.repeat.set(1 / size, 1 / size); m.roughness = 1.0; }
       if (slot === 'floor' && entry.category === 'wood_floor') m.envMapIntensity = 0.6;
-      if (entry.category === 'paint' || entry.category === 'plaster') { m.normalScale.set(0.12, 0.12); m.roughness = 0.92; if (m.roughnessMap) { m.roughnessMap = null; } m.envMapIntensity = 0.35; }   // painted walls are nearly flat
+      if (entry.category === 'paint' || entry.category === 'plaster') {   // interior walls are painted drywall: take the swatch's tone, drop the stucco/plaster relief
+        const rgb = entry.mean_rgb || [235, 233, 228]; const mx = Math.max(...rgb, 1); const f = Math.min(1.6, 238 / mx);
+        m.map = null; m.normalMap = null; m.roughnessMap = null; m.color = new THREE.Color(rgb[0] * f / 255, rgb[1] * f / 255, rgb[2] * f / 255); m.roughness = 0.93; m.envMapIntensity = 0.3;
+        const pt = proceduralTexture('paint'); if (pt) { m.map = pt.map; }   // faint eggshell noise only
+      }
       m.userData.materialId = entry.id; m.userData.category = entry.category;
     } else {
       const dk = (slot === 'floor' && roomType && ROOM_FLOOR_DEFAULT[roomType]) || (id && DEFAULTS[id] ? id : null) || SLOT_DEFAULT[slot] || 'paint';

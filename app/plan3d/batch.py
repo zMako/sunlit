@@ -1,13 +1,13 @@
 """Layouts for every plan image of the given listings (skips plans already done), then rooms_export; writes layouts/index.json."""
 import sys, json, glob, pathlib, subprocess, time
 HERE = pathlib.Path(__file__).resolve().parent; ROOT = HERE.parents[1]; PY = str(ROOT / "feasibility/.venv/bin/python")
-listings = sys.argv[1:]; done = []
+novlm = "--novlm" in sys.argv; listings = [a for a in sys.argv[1:] if not a.startswith("--")]; done = []
 for lid in listings:
     meta = json.load(open(ROOT / "feasibility/listings" / lid / "meta.json")); plans = sorted(p for p in glob.glob(str(ROOT / "feasibility/listings" / lid / "plans/plan_*.[jp]*g")))
     for p in plans:
         unit = f"{lid}_{pathlib.Path(p).stem}"; out = HERE / "layouts" / f"{unit}.json"
         if not out.exists():
-            r = subprocess.run([PY, str(HERE / "plan_engine.py"), "layout", p], capture_output=True, text=True, cwd=str(ROOT))
+            r = subprocess.run([PY, str(HERE / "plan_engine.py"), "layout", p] + (["--novlm"] if novlm else []), capture_output=True, text=True, cwd=str(ROOT))
             if not out.exists(): print(f"[batch] {unit} FAILED: {r.stderr[-300:]}", flush=True); continue
             subprocess.run([PY, str(HERE / "rooms_export.py"), unit], capture_output=True, text=True, cwd=str(ROOT))
         L = json.load(open(out)); plan_name = next((f.get("name") for f in meta.get("floorplans", []) if f.get("file", "").endswith(pathlib.Path(p).name)), None)

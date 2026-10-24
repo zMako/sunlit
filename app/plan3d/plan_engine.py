@@ -197,8 +197,8 @@ def rooms_from(closed, thick):
 
 def is_plan(g):
     """A floor plan is mostly paper (after normalisation): >= 45% near-white pixels and <= 35% ink. Photos and 3D renders fail."""
-    white = float((g > 235).mean()); ink = float((g < 190).mean()); mid = float(((g > 70) & (g < 215)).mean())
-    return white >= 0.45 and ink <= 0.35 and mid <= 0.25   # drawings are paper + ink with few mid-tones; renders and photos are continuous-tone
+    white = float((g > 235).mean()); ink = float((g < 190).mean())
+    return white >= 0.45 and ink <= 0.35   # coloured room fills are fine (1333 Gough); renders/photos are caught by softness()
 
 def softness(path, max_side=800):
     """Ratio of soft gradients to hard edges: drawings ~0.4-1.5, 3D renders and photos > 3."""
@@ -214,7 +214,7 @@ def colourful(path, max_side=400):
 def extract(path, extra=None):
     """extra: list of {'type', 'x0','y0','x1','y1'} in image FRACTIONS to force-bridge (from the VLM review)."""
     g, ink, s = load_ink(path)
-    if not is_plan(g) or colourful(path) > 0.08 or softness(path) > 3.0: raise ValueError(f"not a floor plan (white {float((g > 235).mean()):.2f}, ink {float((g < 190).mean()):.2f}, mid {float(((g > 70) & (g < 215)).mean()):.2f}, colour {colourful(path):.2f})")
+    if not is_plan(g) or softness(path) > 3.0: raise ValueError(f"not a floor plan (white {float((g > 235).mean()):.2f}, ink {float((g < 190).mean()):.2f}, mid {float(((g > 70) & (g < 215)).mean()):.2f}, colour {colourful(path):.2f})")
     wm, thick = walls_two_tone(g); pieces, blocks = wall_rects(wm, thick)
     loose = (g < 235).astype(np.uint8)
     closed, openings = bridge(pieces, g.shape, thick, ink=loose)
@@ -605,9 +605,10 @@ def apply_annotation(L, E, A):
     return L
 
 if __name__ == "__main__":
-    if sys.argv[1] == "layout":   # plan_engine.py layout <plan image> [sqft]  -> app/plan3d/layouts/<listing>_<plan stem>.json
-        pth = pathlib.Path(sys.argv[2]); listing = pth.parts[-3]; unit = f"{listing}_{pth.stem}"
-        L, out = run(pth, listing, unit, pathlib.Path(__file__).parent / "layouts", sqft=float(sys.argv[3]) if len(sys.argv) > 3 else None)
+    if sys.argv[1] == "layout":   # plan_engine.py layout <plan image> [sqft] [--novlm]  -> app/plan3d/layouts/<listing>_<plan stem>.json
+        novlm = "--novlm" in sys.argv; args = [a for a in sys.argv[2:] if not a.startswith("--")]
+        pth = pathlib.Path(args[0]); listing = pth.parts[-3]; unit = f"{listing}_{pth.stem}"
+        L, out = run(pth, listing, unit, pathlib.Path(__file__).parent / "layouts", sqft=float(args[1]) if len(args) > 1 else None, use_reader=not novlm)
         print(json.dumps({"unit": unit, "m_per_px": L["scale"]["m_per_px"], "from": L["scale"]["from"], "walls": len(L["walls"]), "openings": len(L["openings"]), "rooms": [(r["id"], r["area_m2"]) for r in L["rooms"]], "fixtures": len(L["fixtures"])}), "->", out)
     else:
         for p in sys.argv[1:]:
