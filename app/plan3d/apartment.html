@@ -75,7 +75,7 @@ const hemi = new THREE.HemisphereLight(0xfff4e6, 0x8a7a66, 0.45); scene.add(hemi
 const sun = new THREE.DirectionalLight(0xfff1dc, 2.1); sun.castShadow = true; sun.shadow.mapSize.set(QUALITY === 'high' ? 4096 : 2048, QUALITY === 'high' ? 4096 : 2048); sun.shadow.bias = -0.00025; sun.shadow.normalBias = 0.03; sun.shadow.radius = 3; scene.add(sun); scene.add(sun.target);
 
 // ground outside
-const ground = new THREE.Mesh(new THREE.CircleGeometry(80, 48), new THREE.MeshStandardMaterial({ color: 0x9aa39a, roughness: 1 })); ground.rotation.x = -Math.PI / 2; ground.position.y = -0.02; ground.receiveShadow = true; scene.add(ground);
+const ground = new THREE.Mesh(new THREE.CircleGeometry(80, 48), new THREE.MeshStandardMaterial({ color: 0xb9b6ae, roughness: 1 })); ground.rotation.x = -Math.PI / 2; ground.position.y = -0.02; ground.receiveShadow = true; scene.add(ground);
 
 const apt = new Apartment(layout, lib); scene.add(apt.group);
 const bb = apt.bounds; const center = bb.getCenter(new THREE.Vector3()); const size = bb.getSize(new THREE.Vector3()); const ext = Math.max(size.x, size.z);
@@ -121,22 +121,22 @@ renderer.domElement.addEventListener('pointerup', e => { if (!downAt || mode !==
 
 // ---------- views ----------
 let mode = 'doll'; const clipPlane = new THREE.Plane(new THREE.Vector3(0, -1, 0), 1.55);
-function applyClip(on) { const planes = on ? [clipPlane] : []; apt.group.traverse(o => { if (o.isMesh && o.material) { const ms = Array.isArray(o.material) ? o.material : [o.material]; ms.forEach(m => { m.clippingPlanes = planes; m.clipShadows = true; }); } }); }
+function applyClip(on) { const planes = on ? [clipPlane] : []; apt.group.traverse(o => { if (o.isMesh && o.material && o.userData.kind !== 'wall') { const ms = Array.isArray(o.material) ? o.material : [o.material]; ms.forEach(m => { m.clippingPlanes = planes; m.clipShadows = true; }); } }); apt.section(on ? clipPlane.constant : null); }
 function setDoll() {
   mode = 'doll'; if (walk.isLocked) walk.unlock(); document.getElementById('bDoll').classList.add('on'); document.getElementById('bWalk').classList.remove('on'); document.getElementById('hint').style.display = 'none'; document.getElementById('cross').style.display = 'none';
-  apt.ceilingMeshes.forEach(m => m.visible = false); apt.labels.forEach(l => l.visible = true); applyClip(true); setFurnClip([clipPlane]); orbit.enabled = true; labelOcclusion(false); renderer.toneMappingExposure = 0.95;
+  apt.ceilingMeshes.forEach(m => m.visible = false); apt.labels.forEach(l => l.visible = true); applyClip(true); setFurnClip([clipPlane]); orbit.enabled = true; labelOcclusion(false); renderer.toneMappingExposure = 1.02;
   camera.fov = 45; camera.position.set(center.x + ext * 0.75, ext * 0.95 + 2, center.z + ext * 0.9); orbit.target.set(center.x, 0.6, center.z); camera.updateProjectionMatrix(); orbit.update();
 }
 function setWalk(roomId, yawDeg) {
   mode = 'walk'; document.getElementById('bWalk').classList.add('on'); document.getElementById('bDoll').classList.remove('on'); document.getElementById('hint').style.display = 'block'; document.getElementById('cross').style.display = 'block';
   apt.ceilingMeshes.forEach(m => m.visible = true); apt.labels.forEach(l => l.visible = false); applyClip(false); setFurnClip([]); orbit.enabled = false; labelOcclusion(true); renderer.toneMappingExposure = 1.22;
   if (roomId && furn[roomId]) activateRoom(roomId);
-  const r = apt.roomMeshes[roomId] || Object.values(apt.roomMeshes)[0]; const c = r.center; camera.fov = 70; camera.updateProjectionMatrix();
+  const r = apt.roomMeshes[roomId] || Object.values(apt.roomMeshes)[0]; const c = r.center; camera.fov = 62; camera.updateProjectionMatrix();
   camera.position.set(c.x, 1.6, c.z); const yaw = THREE.MathUtils.degToRad(yawDeg ?? 35); camera.rotation.set(0, 0, 0); camera.lookAt(c.x + Math.sin(yaw), 1.5, c.z + Math.cos(yaw));
   if (!Q.has('nolock')) renderer.domElement.requestPointerLock?.();
 }
 document.getElementById('bDoll').onclick = setDoll; document.getElementById('bWalk').onclick = () => setWalk(currentRoom());
-document.getElementById('clip').oninput = e => { clipPlane.constant = +e.target.value; document.getElementById('clipv').textContent = (+e.target.value).toFixed(2) + ' m'; };
+document.getElementById('clip').oninput = e => { clipPlane.constant = +e.target.value; document.getElementById('clipv').textContent = (+e.target.value).toFixed(2) + ' m'; if (mode === 'doll') apt.section(clipPlane.constant); };
 renderer.domElement.addEventListener('click', () => { if (mode === 'walk' && !walk.isLocked && !Q.has('nolock')) walk.lock(); });
 function currentRoom() { let best = null, bd = Infinity; for (const [id, r] of Object.entries(apt.roomMeshes)) { const d = r.center.distanceTo(new THREE.Vector3(camera.position.x, 0, camera.position.z)); if (d < bd) { bd = d; best = id; } } return best; }
 
@@ -159,7 +159,7 @@ function stepWalk(dt) {
 }
 const v0 = Q.get('view'); if (v0 === 'walk') setWalk(Q.get('room'), Q.has('yaw') ? +Q.get('yaw') : undefined); else setDoll();
 setTimeout(() => { if (mode === 'doll') setFurnClip([clipPlane]); labelOcclusion(mode === 'walk'); }, 1500);
-if (Q.has('clip')) { clipPlane.constant = +Q.get('clip'); document.getElementById('clip').value = Q.get('clip'); document.getElementById('clipv').textContent = (+Q.get('clip')).toFixed(2) + ' m'; }
+if (Q.has('clip')) { clipPlane.constant = +Q.get('clip'); document.getElementById('clip').value = Q.get('clip'); document.getElementById('clipv').textContent = (+Q.get('clip')).toFixed(2) + ' m'; if (mode === 'doll') apt.section(clipPlane.constant); }
 addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); composer.setSize(innerWidth, innerHeight); if (gtao) gtao.setSize(innerWidth, innerHeight); });
 // furniture labels (sprites with depthTest off) show through walls in walk view: occlude them there, float them in the dollhouse
 function labelOcclusion(walkMode) { for (const f of Object.values(furn)) f.group?.traverse(o => { if (o.isSprite) { o.material.depthTest = walkMode; o.material.depthWrite = false; o.material.needsUpdate = true; } }); }

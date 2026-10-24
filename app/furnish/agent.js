@@ -71,14 +71,14 @@ el.querySelectorAll('[data-cam]').forEach(b => b.onclick = () => camPreset(b.dat
 $('aiRender').onclick = () => { const w = renderer.domElement.width, h = renderer.domElement.height; renderer.setPixelRatio(Math.min(3, devicePixelRatio * 2)); renderer.render(scene, camera); const url = renderer.domElement.toDataURL('image/png'); renderer.setPixelRatio(devicePixelRatio); const a = document.createElement('a'); a.href = url; a.download = `${layout.unit}_${activeRoomId()}_render.png`; a.click(); };
 
 // ---------- item animations ----------
-function flash(it, color) { it.obj.traverse(o => { if (!o.isMesh || !o.material || o.isSprite) return; const ms = Array.isArray(o.material) ? o.material : [o.material]; const nm = ms.map(m => { const c = m.clone(); if ('emissive' in c) { c.emissive = new THREE.Color(color); c.emissiveIntensity = 0.9; } else if (c.color) c.color = new THREE.Color(color); return c; }); o.material = Array.isArray(o.material) ? nm : nm[0]; }); }
+function flash(it, color) { it.obj.traverse(o => { if (!o.isMesh || !o.material || o.isSprite) return; const ms = Array.isArray(o.material) ? o.material : [o.material]; const nm = ms.map(m => { const c = m.clone(); if (c.color) c.color = new THREE.Color(color); if ('emissive' in c) { c.emissive = new THREE.Color(color); c.emissiveIntensity = 0.6; } if (c.map) c.map = null; return c; }); o.material = Array.isArray(o.material) ? nm : nm[0]; }); }
 async function animatePlace(f, spec, from) {
   const it = await f.addItem(spec, false); const target = new THREE.Vector3(spec.x, 0, spec.z); const start = new THREE.Vector3(from.x, 1.6, from.z); it.obj.position.copy(start); it.obj.scale.setScalar(0.3);
   return new Promise(res => tween(650, e => { it.obj.position.lerpVectors(start, target, e); it.obj.position.y = (1 - e) * 1.6 * (1 - e); it.obj.scale.setScalar(0.3 + 0.7 * e); }, () => { it.obj.position.copy(target); it.obj.scale.setScalar(1); f._refresh(); res(it); }));
 }
 async function animateReject(f, spec, from, reason) {
   const it = await f.addItem({ ...spec, x: from.x, z: from.z }, false); it.obj.position.set(from.x, 0.05, from.z); flash(it, 0xff3b3b); f.toast && f.toast(`✗ ${reason}`);
-  await new Promise(r => setTimeout(r, 700));
+  await new Promise(r => setTimeout(r, 1400));
   await new Promise(res => tween(600, e => { it.obj.position.y = e * 3; it.obj.scale.setScalar(1 - 0.7 * e); it.obj.rotation.y += 0.08; }, () => { f.group.remove(it.obj); f.items = f.items.filter(o => o !== it); f._refresh(); res(); }));
 }
 async function animateMove(f, it, to) { const p0 = it.obj.position.clone(); const p1 = new THREE.Vector3(to.x, 0, to.z); const r0 = it.obj.rotation.y, r1 = -(to.rot_deg || 0) * Math.PI / 180; return new Promise(res => tween(700, e => { it.obj.position.lerpVectors(p0, p1, e); it.obj.position.y = Math.sin(e * Math.PI) * 0.4; it.obj.rotation.y = r0 + (r1 - r0) * e; }, () => { f._place(it, to.x, to.z, to.rot_deg || 0); f._refresh(); res(); })); }
@@ -97,7 +97,8 @@ async function furnishRoom(roomId) {
   const from = doorPoint(f); let queue = Promise.resolve();
   return new Promise(resolve => {
     es = new EventSource(`/api/agent/furnish?room=${encodeURIComponent(f.room)}&budget=${budget}&style=${encodeURIComponent(styleTxt)}${Q.has('drama') ? '&drama=1' : ''}`);
-    es.onmessage = ev => { const e = JSON.parse(ev.data); queue = queue.catch(() => {}).then(async () => {
+    let gotEnd = false;
+    es.onmessage = ev => { const e = JSON.parse(ev.data); if (e.event === 'end') { gotEnd = true; es && es.close(); } queue = queue.catch(() => {}).then(async () => {
       if (e.event === 'shortlist') log(`<b>Palette:</b> ${e.palette || ''} · wood: ${e.wood || ''} · accent: ${e.accent || ''}`);
       else if (e.event === 'consider') log(`<span class="dim">considering</span> ${e.item.name} <span class="dim">$${e.item.price_usd}</span>`);
       else if (e.event === 'place') { await animatePlace(f, e.item, from); setSpent(e.spent); log(`<span class="ok">✓ placed</span> ${e.item.name} <span class="dim">· ${e.why || ''}</span>`, 'ok'); }
@@ -105,9 +106,9 @@ async function furnishRoom(roomId) {
       else if (e.event === 'skip') log(`<span class="dim">skipped ${e.slot}: ${e.reason}</span>`);
       else if (e.event === 'error') log(`error: ${e.message}`, 'bad');
       else if (e.event === 'summary') { $('aiCard').innerHTML = `<div class="card"><b>${e.n_items} items · $${(e.total_usd || 0).toFixed(0)}</b> <span class="dim">(${e.saved_usd >= 0 ? '$' + e.saved_usd.toFixed(0) + ' under budget' : '$' + (-e.saved_usd).toFixed(0) + ' over'})</span><br><span class="dim">${e.palette || ''}</span><br>${e.notes || ''}</div>`; }
-      else if (e.event === 'end') { es && es.close(); es = null; await f.loadPlan(); $('aiGo').disabled = false; $('aiAll').disabled = false; $('aiStop').style.display = 'none'; window.furnishOnChange && window.furnishOnChange(); resolve(); }
+      else if (e.event === 'end') { es = null; await f.loadPlan(); $('aiGo').disabled = false; $('aiAll').disabled = false; $('aiStop').style.display = 'none'; window.furnishOnChange && window.furnishOnChange(); resolve(); }
     }).catch(err => log(`ui error: ${err.message}`, 'bad')); };
-    es.onerror = () => { if (!es) return; log('stream closed', 'dim'); es.close(); es = null; $('aiGo').disabled = false; $('aiAll').disabled = false; $('aiStop').style.display = 'none'; resolve(); };
+    es.onerror = () => { if (!es) return; es.close(); if (gotEnd) { es = null; return; } log('stream closed', 'dim'); es = null; $('aiGo').disabled = false; $('aiAll').disabled = false; $('aiStop').style.display = 'none'; resolve(); };
   });
 }
 $('aiGo').onclick = () => furnishRoom(activeRoomId());

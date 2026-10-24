@@ -100,6 +100,7 @@ def run_furnish(room, budget, style, drama=False):
         if not picks: emit("skip", slot=slot.get("slot"), reason="nothing in the catalogue suits this slot"); continue
         done = False
         for p in picks:
+            if any(x["category"] == (slot.get("category") or "") for x in placed) and p is not picks[0]: break   # repeated slot: one try is enough
             c = by_id[p["id"]]; k += 1; it = to_item(c, k, p.get("why")); it["slot"] = slot.get("slot")
             emit("consider", item=it)
             price = c.get("price_usd") or 0
@@ -117,7 +118,17 @@ def run_furnish(room, budget, style, drama=False):
                 emit("reject", item=it, reason="blocks the walking path from the door"); continue
             rec = {kk: v for kk, v in new.items() if kk not in ("pinned", "unplaced")}; placed.append(rec); spent += price
             emit("place", item=rec, x=rec["x"], z=rec["z"], rot_deg=rec["rot_deg"], why=p.get("why"), spent=round(spent, 2)); done = True; break
-        if not done: emit("skip", slot=slot.get("slot"), reason="no candidate could be placed")
+        repeated = any(x["category"] == (slot.get("category") or "") for x in placed)   # a 3rd/4th chair that found no spot: do not churn through the catalogue
+        if not done and not repeated:   # last resort for the slot: the cheapest in-budget product of the category that fits the room and the door
+            cat = slot.get("category") or ""; tried = {p["id"] for p in picks}; remaining = (budget - spent) if budget else None
+            fb = sorted([c for c in by.get(cat, []) if c["id"] not in tried and fits_room(c, info) and (remaining is None or (c.get("price_usd") or 0) <= remaining) and (cat in ("rug",) or passes_door(c, info["door_w"]))], key=lambda c: c.get("price_usd") or 0)
+            for c in fb[:2]:
+                k += 1; it = to_item(c, k, "practical fallback that fits"); it["slot"] = slot.get("slot"); emit("consider", item=it)
+                res, walk = place.place(R, [dict(x, pinned=True) for x in placed] + [dict(it)]); new = next((r for r in res if r["id"] == it["id"]), None)
+                if new is None or new.get("x") is None or not walk: emit("reject", item=it, reason=(new or {}).get("unplaced") or "blocks the walking path from the door"); continue
+                rec = {kk: v for kk, v in new.items() if kk not in ("pinned", "unplaced")}; placed.append(rec); spent += c.get("price_usd") or 0
+                emit("place", item=rec, x=rec["x"], z=rec["z"], rot_deg=rec["rot_deg"], why="practical fallback that fits", spent=round(spent, 2)); done = True; break
+        if not done: emit("skip", slot=slot.get("slot"), reason="no free spot left for another one" if repeated else "no candidate could be placed")
     plan = {"room": room, "room_type": info["type"], "items": placed, "total_usd": round(spent, 2), "budget": budget, "style": style, "palette": sl.get("palette"), "notes": sl.get("notes"), "walkable": True, "picker": f"agent haiku ${usd:.4f}"}
     (HERE / "plans").mkdir(exist_ok=True); json.dump(plan, open(HERE / "plans" / f"{room}.json", "w"), indent=1)
     emit("summary", total_usd=round(spent, 2), budget=budget, saved_usd=round((budget or spent) - spent, 2), n_items=len(placed), palette=sl.get("palette"), wood=sl.get("wood"), accent=sl.get("accent"), notes=sl.get("notes"), usd=round(usd, 4))

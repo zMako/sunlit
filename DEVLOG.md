@@ -237,3 +237,15 @@ Segmentation + harness -> segmentation-driven layout -> panorama completion -> l
   288 -> 304 of 418 readable plans; 777 Tenn went from 1/15 to 15/15. v4 running with coloured plans re-admitted.
 - Still weak: tall narrow plans with large black exterior masses (Jasper), bathroom enclosure when the door arc is faint,
   entry corridors open to the front door, thin closet-back walls read as gaps.
+
+## Oct 24 15:10: checkout and furniture agent delivered by workers
+- `app/checkout/`: FastAPI :8766; cart from furnishing plans; budget enforcement; delivery/assembly scheduled before the
+  move-in date; card rail (intent, tokenised test card, 3-D Secure, authorisation, server-enforced stop before capture,
+  human Confirm); x402 rail with the official SDK middleware, real EIP-3009 signatures, local mock facilitator :8767
+  (switches to the CDP facilitator when CDP keys exist; on-chain cap $1). Receipt and order JSON. HOLD.md 7-8.
+- `app/furnish/agent.py` + `agent.js`: streaming planner (Haiku, ~$0.002 per room): shortlist within budget and style,
+  one-by-one placement with earlier items pinned, door-passage test, honest rejections ("over budget by $249", "cannot pass
+  the 0.76 m door"), summary with palette; chat edits (move/add/remove/swap) re-validated by the solver; top-down
+  animation, red flash at the door for rejections, camera presets, 2x render download. `/api/agent/furnish` (SSE),
+  `/api/agent/chat`. `--drama` makes the first pick a deliberate failure for the demo.
+- Vendored three.js 0.170 + Draco + 3 CC0 HDRIs under app/vendor (fetch.sh) so the demo does not depend on CDNs.

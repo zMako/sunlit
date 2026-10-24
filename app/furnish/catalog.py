@@ -96,13 +96,16 @@ def product(url, cat):
             if isinstance(j, dict) and j.get("@type") == "Product":
                 off = j.get("offers") or {}; off = off[0] if isinstance(off, list) and off else off
                 img = j.get("image"); img = img[0] if isinstance(img, list) and img else img
-                if isinstance(img, dict): img = img.get("contentUrl")
+                if isinstance(img, dict): img = img.get("contentUrl") or img.get("url")
                 P = {"name": html.unescape(str(j.get("name") or "")), "sku": j.get("sku"), "image": img if isinstance(img, str) else None,
                      "width_m": inches_to_m(j.get("width")), "depth_m": inches_to_m(j.get("depth")) or inches_to_m(j.get("length")), "height_m": inches_to_m(j.get("height")), "length_m": inches_to_m(j.get("length")),
                      "price_usd": float(off.get("price")) if isinstance(off, dict) and off.get("price") not in (None, "") else None, "description": html.unescape(str(j.get("description") or ""))[:300], "color": j.get("color")}
         if "3DModel" in l:
             m = re.search(r'"contentUrl"\s*:\s*"([^"]+\.glb[^"]*)"', l); glb = m.group(1) if m else glb
     if not P: return None
+    if not P["image"]:
+        m = re.search(r'property="og:image"\s+content="([^"]+)"', h) or re.search(r'content="([^"]+)"\s+property="og:image"', h)
+        P["image"] = m.group(1) if m else None
     tn = re.search(r'"typeName"\s*:\s*"([^"]+)"', h); P["type_name"] = tn.group(1) if tn else None
     ms = re.search(r'"itemMeasureReferenceText"\s*:\s*"([^"]*)"', h); P["size_label"] = ms.group(1) if ms else None
     series = (P["name"].split() or [""])[0].lower()
@@ -153,7 +156,7 @@ def main():
     # backfill pass for items from the earlier run (no image/style_tags/local assets)
     for p in out["items"]:
         if out_of_time(): break
-        if "style_tags" not in p or "model_glb" not in p and p.get("model_glb_url"):
+        if "style_tags" not in p or not p.get("image") or "image_local" not in p or ("model_glb" not in p and p.get("model_glb_url")):
             q = product(p["product_url"], p["category"]); pause()
             if q: 
                 for k in ("image", "variants", "style_tags"): p[k] = q[k]

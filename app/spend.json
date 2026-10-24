@@ -1,150 +1,22 @@
 {
  "usd": {
   "google": 0.038,
-  "anthropic": 4.021907
+  "anthropic": 4.080445
  },
  "counts": {
-  "anthropic_calls": 535,
+  "anthropic_calls": 551,
   "google_geocode": 4,
   "google_root_tile": 3,
   "google_tile": 65,
   "poly_pizza": 7
  },
  "tokens": {
-  "in": 2421042,
-  "out": 1064853,
+  "in": 2534551,
+  "out": 1099043,
   "cache_read": 0,
-  "cache_write": 53078
+  "cache_write": 58271
  },
  "events": [
-  {
-   "t": "2026-10-24T06:19:21",
-   "bucket": "anthropic",
-   "usd": 0.002425,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph 22iuETVzq6FxBFz45ccrGd"
-  },
-  {
-   "t": "2026-10-24T06:19:33",
-   "bucket": "anthropic",
-   "usd": 0.001443,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph 28hvKTyo9uLHwdEZYg2GvX"
-  },
-  {
-   "t": "2026-10-24T06:20:13",
-   "bucket": "anthropic",
-   "usd": 0.002318,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph 5vaJro9uTTgCDZw4G6n5xh"
-  },
-  {
-   "t": "2026-10-24T06:20:33",
-   "bucket": "anthropic",
-   "usd": 0.001583,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph 9MS64ykJFcF9L78DkmXLdx"
-  },
-  {
-   "t": "2026-10-24T06:21:54",
-   "bucket": "anthropic",
-   "usd": 0.002441,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph fWvTcnH7ESek42Mqj6gX2n"
-  },
-  {
-   "t": "2026-10-24T06:22:21",
-   "bucket": "anthropic",
-   "usd": 0.001728,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph ro2Js1bqDCBRvGK1JbcHQx"
-  },
-  {
-   "t": "2026-10-24T06:22:39",
-   "bucket": "anthropic",
-   "usd": 0.002126,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph tdiqermb4GUD9a4yhoxYkT"
-  },
-  {
-   "t": "2026-10-24T06:23:02",
-   "bucket": "anthropic",
-   "usd": 0.002354,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph uxruxLnziFm8ggND6spA5D"
-  },
-  {
-   "t": "2026-10-24T06:23:30",
-   "bucket": "anthropic",
-   "usd": 0.002759,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph xBfGp2vfgwLqqkH1tLaUej"
-  },
-  {
-   "t": "2026-10-24T06:25:30",
-   "bucket": "anthropic",
-   "usd": 0.000639,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure kitchen / living"
-  },
-  {
-   "t": "2026-10-24T06:25:57",
-   "bucket": "anthropic",
-   "usd": 0.000711,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living: Living room with bay windows"
-  },
-  {
-   "t": "2026-10-24T06:26:08",
-   "bucket": "anthropic",
-   "usd": 0.000707,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living: Living room"
-  },
-  {
-   "t": "2026-10-24T06:26:16",
-   "bucket": "anthropic",
-   "usd": 0.000582,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure kitchen: Kitchen"
-  },
-  {
-   "t": "2026-10-24T06:26:24",
-   "bucket": "anthropic",
-   "usd": 0.000609,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bedroom: Bedroom 1"
-  },
-  {
-   "t": "2026-10-24T06:26:32",
-   "bucket": "anthropic",
-   "usd": 0.000671,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bedroom: Bedroom 2"
-  },
-  {
-   "t": "2026-10-24T06:26:41",
-   "bucket": "anthropic",
-   "usd": 0.000719,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living: Living room"
-  },
   {
    "t": "2026-10-24T06:26:49",
    "bucket": "anthropic",
@@ -4016,6 +3888,134 @@
    "key": "anthropic_calls",
    "n": 1,
    "note": "claude-haiku-5-5 agent shortlist living"
+  },
+  {
+   "t": "2026-10-24T11:27:35",
+   "bucket": "anthropic",
+   "usd": 0.001965,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 agent shortlist living"
+  },
+  {
+   "t": "2026-10-24T11:27:56",
+   "bucket": "anthropic",
+   "usd": 0.001967,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 agent shortlist living"
+  },
+  {
+   "t": "2026-10-24T11:28:13",
+   "bucket": "anthropic",
+   "usd": 0.030991,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 archviz critique r3"
+  },
+  {
+   "t": "2026-10-24T11:28:34",
+   "bucket": "anthropic",
+   "usd": 0.002207,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 agent shortlist living"
+  },
+  {
+   "t": "2026-10-24T11:28:50",
+   "bucket": "anthropic",
+   "usd": 0.002081,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 agent shortlist living"
+  },
+  {
+   "t": "2026-10-24T11:29:09",
+   "bucket": "anthropic",
+   "usd": 0.001843,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 agent shortlist living"
+  },
+  {
+   "t": "2026-10-24T11:29:43",
+   "bucket": "anthropic",
+   "usd": 0.002264,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 agent shortlist living"
+  },
+  {
+   "t": "2026-10-24T11:30:24",
+   "bucket": "anthropic",
+   "usd": 0.002263,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 agent shortlist living"
+  },
+  {
+   "t": "2026-10-24T11:30:47",
+   "bucket": "anthropic",
+   "usd": 0.001997,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 agent shortlist living"
+  },
+  {
+   "t": "2026-10-24T11:31:16",
+   "bucket": "anthropic",
+   "usd": 0.001035,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 agent shortlist dining"
+  },
+  {
+   "t": "2026-10-24T11:32:11",
+   "bucket": "anthropic",
+   "usd": 0.001719,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 agent shortlist living"
+  },
+  {
+   "t": "2026-10-24T11:32:57",
+   "bucket": "anthropic",
+   "usd": 0.002019,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 agent shortlist living"
+  },
+  {
+   "t": "2026-10-24T11:33:34",
+   "bucket": "anthropic",
+   "usd": 0.002063,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 agent shortlist living"
+  },
+  {
+   "t": "2026-10-24T11:33:47",
+   "bucket": "anthropic",
+   "usd": 0.00211,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 agent shortlist living"
+  },
+  {
+   "t": "2026-10-24T11:34:22",
+   "bucket": "anthropic",
+   "usd": 0.001067,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 agent shortlist dining"
+  },
+  {
+   "t": "2026-10-24T11:34:52",
+   "bucket": "anthropic",
+   "usd": 0.000946,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 agent shortlist dining"
   }
  ]
 }

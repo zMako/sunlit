@@ -11,7 +11,7 @@ from shapely.affinity import rotate, translate
 from shapely.ops import unary_union
 
 WALL_BACKED = {"bed": 1, "sofa": 1, "wardrobe": 2, "dresser": 2, "bookcase": 2, "desk": 2, "tv_bench": 2, "nightstand": 3}   # dining tables stand free, chairs go around them
-RELATIONAL = {"coffee_table": ("sofa", "front", 0.45), "rug": ("sofa|bed|dining_table", "under", 0.0), "desk_chair": ("desk", "front", 0.10), "floor_lamp": ("sofa|armchair|bed|desk", "side", 0.10),
+RELATIONAL = {"coffee_table": ("sofa", "front", 0.45), "rug": ("sofa|bed|dining_table", "under", 0.0), "desk_chair": ("desk", "front", 0.10), "floor_lamp": ("sofa|armchair|bed|desk|dining_table|dresser", "side", 0.10),
               "armchair": ("sofa", "corner", 0.30), "dining_chair": ("dining_table", "around", 0.05)}
 LOW_UNDER_WINDOW = {"bed", "sofa", "desk", "dining_table", "coffee_table", "rug", "nightstand", "tv_bench", "dining_chair", "desk_chair", "armchair"}
 PATH_W = 0.75

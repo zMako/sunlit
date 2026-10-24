@@ -1,0 +1,23 @@
+IMAGE 1 (dollhouse overview)
+1. Floor textures are mismatched and mis-scaled. Parquet herringbone in one room, dark herringbone in another, tile in the kitchen. Each reads at a different scale (the Bedroom herringbone is ~2x too large). Normalise texture repeat to real-world metres (a ~90 mm plank width, ~1.2 m board length) and keep one floor family across the living areas. Set the kitchen tile to 300×600 mm.
+2. The section cut is flat and ghostly. Cut wall tops are white with no thickness cue, and some walls are partially transparent or fragmentary (floating slivers, broken edges near the top left). Cap the cut walls with a solid, slightly darker material (~0.6 albedo). Fix the clipping-plane caps so there are no gaps or slivers. Render walls as closed solids.
+3. The ground and shadow read as fake. The flat grey-green ground plane merges with the white walls, and the shadow is a soft smear with no contact definition. Replace the ground with a neutral light backdrop or gradient. Use a PCFSoft or VSM shadow map at 2048+ with the shadow camera frustum fitted tightly to the plan bounds. Add SSAO or baked AO at the wall bases so the walls ground themselves. Tone down the exposure: the whites are close to clipping.
+
+IMAGE 2 (living room, window wall)
+1. The window glazing is a flat grey-green rectangle, and the exterior is a flat horizon band. Replace it with an HDRI or gradient sky, push the exterior to ~3–5 stops brighter than the interior, and use a glass material (transmission ~0.9, roughness 0.05, subtle reflection). The specular blob on the glass reads as a point light artefact. Remove or soften it.
+2. The frames and mullions are thick and uniform, with no depth. The reveal is shallow and the sill is a plain slab. Reduce mullion width to ~50–60 mm. Add a 150–250 mm deep reveal with a visible return, and a thin sill nosing. Add a small bevel (1–2 mm) to every frame edge so it catches a highlight.
+3. The lighting is flat, with no sun and no gradient. The walls are one even off-white with no falloff, and the ceiling is grey. Add a directional sun that casts a window-shaped light patch across the floor. Add a hemisphere light or an environment map at ~0.3 intensity for bounce. Enable ACESFilmic tone mapping and drop the exposure so the walls sit at ~0.8 rather than ~0.95 albedo.
+
+IMAGE 3 (bedroom, narrow window)
+1. The window and its sill are the wrong scale and detail. The window looks very tall and narrow with no frame depth, and the lower sill and the panel below it look pasted on. Check the sill height (~0.9 m for a standard window, or full-height if it is a French door). Extrude the frame properly. Add a visible casing around the opening, with the same trim profile as the skirting.
+2. The floor is murky, with a heavily blurred texture and a grey cast. The planks are too large and low-contrast, with no specular variation. Raise the anisotropy to 16. Set the plank width to ~120–150 mm, add a roughness map (~0.5 with variation) and a slight clearcoat. Warm the albedo.
+3. The skirting and wall junctions are sharp and clean, with no AO, so they look cut out. Add contact shadow or SSAO at wall–floor and wall–ceiling corners. Use a slightly warm wall tint (e.g. #ECE8E1), not neutral grey-white. Add a subtle ceiling-to-wall gradient from bounce light.
+
+IMAGE 4 (empty bedroom, gs-20665)
+1. The floor is flat and washed out, reading as a grey slab with a blurry streaky shadow. The shadow is a stretched, low-res projection from the window. Raise the shadow map resolution, tighten the frustum, and set the shadow bias and normalBias so there are no streaks. Use a 1–2 px soft penumbra that widens with distance. Add a plank texture or a visible laminate pattern with real-world scale.
+2. The ceiling and wall planes are indistinguishable. The ceiling has the same grey as the walls and the perspective is distorted (FOV too wide, ~90°+). Reduce the FOV to ~60–65° and make the ceiling slightly brighter (~0.9 albedo) than the walls. Add a faint coving or shadow gap.
+3. The window and pier are crude. The window sits behind a thick, plain white column with no frame detail, and the glazing is a flat pale green. Model the frame (~60 mm), add glazing bars with proper depth, and give the glass transmission plus a bright sky behind. Remove the green tint. Make the door and trim consistent, with the same skirting height (~100 mm) throughout.
+
+TOP 5 CHANGES ACROSS ALL FOUR (ranked)
+1. Real lighting: add a sun directional light with a window-shaped light patch, an HDRI or sky environment for fill, and ACESFilmic tone mapping with exposure tuned so the whites do not clip. This is the biggest cause of the flat, CG look.
+2. AO everywhere: SSAO/GTAO or baked AO at every wall–floor, wall–

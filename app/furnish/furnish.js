@@ -14,7 +14,7 @@ export class Furnish {
     this.items = []; this.fixtures = []; this.selected = null; this.room = null; this.meta = null; this.plan = { items: [] }; this.clipPlanes = [];
     this.ray = new THREE.Raycaster(); this.floor = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
     (window.furnishInstances ||= []).push(this); window.furnishByRoom ||= {};
-    this.drag = null; this.dirty = false; this.saveTimer = null; this.loader = new GLTFLoader(); const draco = new DRACOLoader(); draco.setDecoderPath('https://unpkg.com/three@0.170.0/examples/jsm/libs/draco/gltf/'); this.loader.setDRACOLoader(draco); /* IKEA GLBs are Draco-compressed */ this.texLoader = new THREE.TextureLoader();
+    this.drag = null; this.dirty = false; this.saveTimer = null; this.loader = new GLTFLoader(); const draco = new DRACOLoader(); draco.setDecoderPath('/vendor/three/jsm/libs/draco/gltf/'); this.loader.setDRACOLoader(draco); /* IKEA GLBs are Draco-compressed */ this.texLoader = new THREE.TextureLoader();
     this.texLoader.setCrossOrigin('anonymous');
     this._bind();
   }

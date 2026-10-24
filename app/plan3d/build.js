@@ -6,8 +6,8 @@ export const DEFAULTS = {
   wood_floor: { color: 0xb3804d, roughness: 0.55, metalness: 0 },
   tile: { color: 0xdcd8d0, roughness: 0.25, metalness: 0 },
   carpet: { color: 0xb9b2a4, roughness: 1.0, metalness: 0 },
-  paint: { color: 0xf1eee6, roughness: 0.92, metalness: 0 },
-  paint_white: { color: 0xf7f7f4, roughness: 0.9, metalness: 0 },
+  paint: { color: 0xece8e1, roughness: 0.92, metalness: 0 },
+  paint_white: { color: 0xfafaf7, roughness: 0.9, metalness: 0 },
   stone: { color: 0x3b3b3d, roughness: 0.3, metalness: 0 },
   laminate: { color: 0xe8e4dc, roughness: 0.35, metalness: 0 },
   steel: { color: 0xa6a8ab, roughness: 0.32, metalness: 0.85 },
@@ -19,7 +19,7 @@ export const DEFAULTS = {
 const SLOT_DEFAULT = { floor: 'wood_floor', wall: 'paint', ceiling: 'paint_white', door: 'paint_white', cabinet: 'paint_white', counter: 'stone', baseboard: 'paint_white', trim: 'wood_trim' };
 const ROOM_FLOOR_DEFAULT = { kitchen: 'tile', bathroom: 'tile', closet: 'wood_floor' };
 // metres covered by one texture tile per library category (ambientCG/Poly Haven 1K textures are mostly 1-2 m squares)
-const CAT_SIZE = { wood_floor: 2.0, tile: 1.0, plaster: 2.0, paint: 2.0, concrete: 2.0, laminate: 1.0, stone: 1.0, brick: 1.0, fabric: 0.6, metal: 1.0, carpet: 1.0 };
+const CAT_SIZE = { wood_floor: 1.5, tile: 1.0, plaster: 2.0, paint: 2.0, concrete: 2.0, laminate: 1.0, stone: 1.0, brick: 1.0, fabric: 0.6, metal: 1.0, carpet: 1.0 };
 const CAT_ROUGH = { wood_floor: 0.55, tile: 0.25, plaster: 0.95, paint: 0.9, concrete: 0.9, laminate: 0.4, stone: 0.35, brick: 0.9, fabric: 1.0, metal: 0.4, carpet: 1.0 };
 
 export class MaterialLib {
@@ -118,15 +118,15 @@ export class Apartment {
     const pieces = [];
     for (const o of ops) {
       const s0 = Math.max(o.s0, s), s1 = Math.min(o.s1, fr.len + t / 2);
-      if (s0 > s + 1e-3) pieces.push({ s, len: s0 - s, y: 0, h: H });
+      if (s0 > s + 1e-3) pieces.push({ s, len: s0 - s, y: 0, h: H + 0.03 });
       const oh = o.type === 'window' ? (o.sill_m ?? 0.9) + (o.height_m ?? 1.3) : (o.height_m ?? 2.03);
       if (o.type === 'window' && (o.sill_m ?? 0.9) > 0.02) pieces.push({ s: s0, len: s1 - s0, y: 0, h: o.sill_m ?? 0.9 });
-      if (oh < H - 0.02) pieces.push({ s: s0, len: s1 - s0, y: oh, h: H - oh });
+      if (oh < H - 0.02) pieces.push({ s: s0, len: s1 - s0, y: oh, h: H + 0.03 - oh });
       s = s1;
     }
-    if (fr.len + t / 2 > s + 1e-3) pieces.push({ s, len: fr.len + t / 2 - s, y: 0, h: H });
+    if (fr.len + t / 2 > s + 1e-3) pieces.push({ s, len: fr.len + t / 2 - s, y: 0, h: H + 0.03 });
     const wallOff = hash01(w.id) * 3.1;   // per-wall texture phase, so neighbouring walls never share a visible repeat
-    for (const p of pieces) { const m = this.placeAlong(fr, p.s + p.len / 2, p.y, p.h, p.len, t, 0, p.s + wallOff, p.y); m.userData = { kind: 'wall', wall: w.id, exterior: !!w.exterior, mid: m.position.clone() }; this.group.add(m); this.wallMeshes.push(m); }
+    for (const p of pieces) { const m = this.placeAlong(fr, p.s + p.len / 2, p.y, p.h, p.len, t, 0, p.s + wallOff, p.y); m.userData = { kind: 'wall', wall: w.id, exterior: !!w.exterior, mid: m.position.clone(), y0: p.y, h: p.h }; this.group.add(m); this.wallMeshes.push(m); }
     for (const o of ops) { if (o.type === 'window') this.buildWindow(fr, o); else if (o.type === 'door' || o.type === 'closet_door') this.buildDoor(fr, o); else this.buildOpeningTrim(fr, o); }
   }
   trimMat() { if (!this._trim) { const base = this.lib.get(null, 'trim'); let rgb = (this.layout.materials || {}).trim_rgb; if (rgb && !Array.isArray(rgb)) rgb = Object.values(rgb).find(v => Array.isArray(v)) || null;
@@ -142,6 +142,11 @@ export class Apartment {
     const jamb = (s) => { const m = new THREE.Mesh(metricBox(0.05, h + 0.05, t), trim); const c = fr.a.clone().add(fr.d.clone().multiplyScalar(s)); m.position.set(c.x, (h + 0.05) / 2, c.y); m.rotation.y = fr.angle; m.castShadow = true; this.group.add(m); };
     jamb(o.s0 + 0.025); jamb(o.s1 - 0.025);
     const head = new THREE.Mesh(metricBox(w, 0.06, t), trim); const cm = fr.a.clone().add(fr.d.clone().multiplyScalar((o.s0 + o.s1) / 2)); head.position.set(cm.x, h + 0.03, cm.y); head.rotation.y = fr.angle; this.group.add(head);
+    for (const side of [1, -1]) {   // casing (architrave) on both faces of the wall
+      const cas = new THREE.Group(); cas.position.set(cm.x, 0, cm.y); cas.rotation.y = fr.angle; const cz = side * (fr.t / 2 + 0.008);
+      for (const [cw, ch, cx, cy] of [[0.07, h + 0.07, -w / 2 - 0.035, (h + 0.07) / 2], [0.07, h + 0.07, w / 2 + 0.035, (h + 0.07) / 2], [w + 0.14, 0.07, 0, h + 0.035]]) { const m = new THREE.Mesh(metricBox(cw, ch, 0.016), trim); m.position.set(cx, cy, cz); m.castShadow = m.receiveShadow = true; cas.add(m); }
+      this.group.add(cas);
+    }
     // leaf: hinge at the left (s0) or right (s1) end, opening to the 'in' side (+n) or 'out' side (-n), ajar
     const sw = o.swing || 'in_left'; const hingeS = sw.endsWith('left') ? o.s0 + 0.02 : o.s1 - 0.02; const side = sw.startsWith('out') ? -1 : 1; const dir = sw.endsWith('left') ? 1 : -1;
     const pivot = new THREE.Group(); const hc = fr.a.clone().add(fr.d.clone().multiplyScalar(hingeS)); pivot.position.set(hc.x, 0, hc.y); pivot.rotation.y = fr.angle;
@@ -163,16 +168,24 @@ export class Apartment {
   buildWindow(fr, o) {
     const sill = o.sill_m ?? 0.9, h = o.height_m ?? 1.3, w = o.s1 - o.s0, t = fr.t; const trim = this.trimMat(); const cm = fr.a.clone().add(fr.d.clone().multiplyScalar((o.s0 + o.s1) / 2));
     const frame = new THREE.Group(); frame.position.set(cm.x, 0, cm.y); frame.rotation.y = fr.angle;
-    const bar = (len, hh, x, y) => { const m = new THREE.Mesh(metricBox(len, hh, t * 0.5), trim); m.position.set(x, y, 0); m.castShadow = true; frame.add(m); };
-    bar(w, 0.06, 0, sill + 0.03); bar(w, 0.06, 0, sill + h - 0.03); bar(0.06, h, -w / 2 + 0.03, sill + h / 2); bar(0.06, h, w / 2 - 0.03, sill + h / 2);
-    const nMull = Math.max(1, Math.round(w / 0.8)); for (let i = 1; i < nMull; i++) bar(0.03, h, -w / 2 + i * w / nMull, sill + h / 2);
-    bar(w + 0.1, 0.03, 0, sill - 0.015);   // stool
-    const sillBoard = new THREE.Mesh(metricBox(w + 0.1, 0.03, t + 0.06), trim); sillBoard.position.set(0, sill - 0.015, 0); frame.add(sillBoard);
-    const glass = new THREE.Mesh(new THREE.PlaneGeometry(w - 0.1, h - 0.1), this.glassMat()); glass.position.set(0, sill + h / 2, 0); glass.name = 'pglass'; frame.add(glass);
+    const bar = (len, hh, x, y, depth = 0.045, z = 0) => { const m = new THREE.Mesh(metricBox(len, hh, depth), trim); m.position.set(x, y, z); m.castShadow = m.receiveShadow = true; frame.add(m); };
+    // reveal lining: the wall thickness shows as a return on all four sides (jambs, head, stool)
+    const lining = (len, hh, x, y, rotZ = 0) => { const m = new THREE.Mesh(metricBox(len, hh, t + 0.01), trim); m.position.set(x, y, 0); m.rotation.z = rotZ; m.receiveShadow = true; frame.add(m); };
+    lining(0.025, h, -w / 2 + 0.0125, sill + h / 2); lining(0.025, h, w / 2 - 0.0125, sill + h / 2); lining(w, 0.025, 0, sill + h - 0.0125);
+    // sash frame, 55 mm, sitting at the outer third of the reveal
+    const z0 = -t * 0.18; bar(w - 0.05, 0.055, 0, sill + 0.03, 0.045, z0); bar(w - 0.05, 0.055, 0, sill + h - 0.03, 0.045, z0); bar(0.055, h - 0.05, -w / 2 + 0.05, sill + h / 2, 0.045, z0); bar(0.055, h - 0.05, w / 2 - 0.05, sill + h / 2, 0.045, z0);
+    const nMull = Math.max(1, Math.round(w / 0.75)); for (let i = 1; i < nMull; i++) bar(0.035, h - 0.1, -w / 2 + i * w / nMull, sill + h / 2, 0.04, z0);
+    if (h > 1.5) bar(w - 0.1, 0.035, 0, sill + h * 0.62, 0.04, z0);   // transom rail on tall windows
+    // stool with a nosing that projects into the room, apron below it
+    const stool = new THREE.Mesh(metricBox(w + 0.12, 0.035, t + 0.08), trim); stool.position.set(0, sill - 0.0175, 0.02); stool.castShadow = stool.receiveShadow = true; frame.add(stool);
+    bar(w + 0.08, 0.07, 0, sill - 0.07, 0.018, t / 2 + 0.009);   // apron
+    // casing around the opening on the room side
+    const cz = t / 2 + 0.008; bar(0.07, h + 0.07, -w / 2 - 0.035, sill + h / 2 + 0.035, 0.016, cz); bar(0.07, h + 0.07, w / 2 + 0.035, sill + h / 2 + 0.035, 0.016, cz); bar(w + 0.14, 0.07, 0, sill + h + 0.035, 0.016, cz);
+    const glass = new THREE.Mesh(new THREE.PlaneGeometry(w - 0.1, h - 0.1), this.glassMat()); glass.position.set(0, sill + h / 2, z0); glass.name = 'pglass'; frame.add(glass);
     frame.userData = { kind: 'window', opening: o.id }; this.group.add(frame);
   }
   glassMat() {
-    if (!this._glass) this._glass = new THREE.MeshPhysicalMaterial({ color: 0xffffff, transmission: 0.92, roughness: 0.04, metalness: 0, ior: 1.5, thickness: 0.01, transparent: true, opacity: 1, side: THREE.DoubleSide, envMapIntensity: 1.2 });
+    if (!this._glass) this._glass = new THREE.MeshPhysicalMaterial({ color: 0xf4f8fb, transmission: 0.95, roughness: 0.03, metalness: 0, ior: 1.5, thickness: 0.005, transparent: true, opacity: 1, side: THREE.DoubleSide, envMapIntensity: 0.8 });
     return this._glass;
   }
 
@@ -210,6 +223,11 @@ export class Apartment {
     }
     const label = makeLabel(`${r.name}  ${area.toFixed(1)} m²`); label.position.set(c.x, this.ceil + 0.25, c.y); label.userData = { room: r.id }; this.group.add(label); this.labels.push(label);
     this.roomMeshes[r.id] = { floor, ceiling: ceil, light, label, room: r, center: new THREE.Vector3(c.x, 0, c.y) };
+  }
+  /** dollhouse section: cut every wall piece at height hCut with a solid top (scale, not clip): pieces starting above hCut are hidden */
+  section(hCut) {
+    for (const m of this.wallMeshes) { const { y0, h } = m.userData; if (hCut == null) { m.visible = true; m.scale.y = 1; m.position.y = y0 + h / 2; continue; }
+      if (y0 >= hCut - 0.02) { m.visible = false; continue; } m.visible = true; const nh = Math.min(h, hCut - y0); m.scale.y = nh / h; m.position.y = y0 + nh / 2; }
   }
   recolourRoomWalls(r, mat) {   // per-room wall material: applies to wall pieces whose inside face is on this room (approximate: midpoint within 0.3 m of the polygon)
     for (const m of this.wallMeshes) { const p = new THREE.Vector2(m.position.x, m.position.z); if (distToPoly(p, r.polygon) < 0.3) m.material = mat; }
