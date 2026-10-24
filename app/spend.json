@@ -1,1726 +1,22 @@
 {
  "usd": {
-  "google": 0.038,
-  "anthropic": 5.215958
+  "google": 0.403,
+  "anthropic": 8.894734
  },
  "counts": {
-  "anthropic_calls": 597,
-  "google_geocode": 4,
+  "anthropic_calls": 737,
+  "google_geocode": 77,
   "google_root_tile": 3,
   "google_tile": 65,
   "poly_pizza": 7
  },
  "tokens": {
-  "in": 2783094,
-  "out": 1175112,
+  "in": 3356387,
+  "out": 1428331,
   "cache_read": 0,
   "cache_write": 65756
  },
  "events": [
-  {
-   "t": "2026-10-24T06:33:24",
-   "bucket": "anthropic",
-   "usd": 0.000477,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bathroom: Bathroom"
-  },
-  {
-   "t": "2026-10-24T06:33:30",
-   "bucket": "anthropic",
-   "usd": 0.00059,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bedroom: Bedroom"
-  },
-  {
-   "t": "2026-10-24T06:33:37",
-   "bucket": "anthropic",
-   "usd": 0.000633,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living: Living room"
-  },
-  {
-   "t": "2026-10-24T06:33:44",
-   "bucket": "anthropic",
-   "usd": 0.000641,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure dining: Front room (blue)"
-  },
-  {
-   "t": "2026-10-24T06:33:53",
-   "bucket": "anthropic",
-   "usd": 0.000501,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure kitchen: Kitchen"
-  },
-  {
-   "t": "2026-10-24T06:34:00",
-   "bucket": "anthropic",
-   "usd": 0.000762,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bedroom: Primary bedroom"
-  },
-  {
-   "t": "2026-10-24T06:34:08",
-   "bucket": "anthropic",
-   "usd": 0.000616,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bathroom: Ensuite bathroom"
-  },
-  {
-   "t": "2026-10-24T06:34:15",
-   "bucket": "anthropic",
-   "usd": 0.000605,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bedroom: Bay bedroom (front)"
-  },
-  {
-   "t": "2026-10-24T06:34:23",
-   "bucket": "anthropic",
-   "usd": 0.000641,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bedroom: Bedroom with bay and closet"
-  },
-  {
-   "t": "2026-10-24T06:34:29",
-   "bucket": "anthropic",
-   "usd": 0.000602,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living: Front living room with curved bay"
-  },
-  {
-   "t": "2026-10-24T06:34:35",
-   "bucket": "anthropic",
-   "usd": 0.000572,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure kitchen: Kitchen"
-  },
-  {
-   "t": "2026-10-24T06:37:39",
-   "bucket": "anthropic",
-   "usd": 0.000813,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure "
-  },
-  {
-   "t": "2026-10-24T06:38:02",
-   "bucket": "anthropic",
-   "usd": 0.000771,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure "
-  },
-  {
-   "t": "2026-10-24T06:38:24",
-   "bucket": "anthropic",
-   "usd": 0.000519,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure "
-  },
-  {
-   "t": "2026-10-24T07:31:26",
-   "bucket": "anthropic",
-   "usd": 0.001826,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan green_plan.jpg"
-  },
-  {
-   "t": "2026-10-24T07:31:40",
-   "bucket": "anthropic",
-   "usd": 0.001623,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_00.jpg"
-  },
-  {
-   "t": "2026-10-24T07:32:15",
-   "bucket": "anthropic",
-   "usd": 0.001826,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan green_plan.jpg"
-  },
-  {
-   "t": "2026-10-24T07:32:48",
-   "bucket": "anthropic",
-   "usd": 0.002692,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan green_plan.jpg"
-  },
-  {
-   "t": "2026-10-24T07:34:45",
-   "bucket": "anthropic",
-   "usd": 0.0016,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph gs-20667"
-  },
-  {
-   "t": "2026-10-24T07:35:15",
-   "bucket": "anthropic",
-   "usd": 0.000755,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph gs-22612"
-  },
-  {
-   "t": "2026-10-24T07:35:33",
-   "bucket": "anthropic",
-   "usd": 0.002075,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_00.jpg"
-  },
-  {
-   "t": "2026-10-24T07:35:52",
-   "bucket": "anthropic",
-   "usd": 0.00249,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_01.jpg"
-  },
-  {
-   "t": "2026-10-24T07:36:16",
-   "bucket": "anthropic",
-   "usd": 0.002363,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_02.jpg"
-  },
-  {
-   "t": "2026-10-24T07:36:35",
-   "bucket": "anthropic",
-   "usd": 0.001975,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_03.jpg"
-  },
-  {
-   "t": "2026-10-24T07:37:04",
-   "bucket": "anthropic",
-   "usd": 0.003644,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_04.jpg"
-  },
-  {
-   "t": "2026-10-24T07:37:19",
-   "bucket": "anthropic",
-   "usd": 0.002059,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_05.jpg"
-  },
-  {
-   "t": "2026-10-24T07:37:41",
-   "bucket": "anthropic",
-   "usd": 0.002771,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_06.jpg"
-  },
-  {
-   "t": "2026-10-24T07:38:03",
-   "bucket": "anthropic",
-   "usd": 0.002919,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_07.jpg"
-  },
-  {
-   "t": "2026-10-24T07:38:30",
-   "bucket": "anthropic",
-   "usd": 0.00353,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_08.jpg"
-  },
-  {
-   "t": "2026-10-24T07:38:55",
-   "bucket": "anthropic",
-   "usd": 0.003244,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_09.jpg"
-  },
-  {
-   "t": "2026-10-24T07:39:16",
-   "bucket": "anthropic",
-   "usd": 0.002586,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_10.jpg"
-  },
-  {
-   "t": "2026-10-24T07:39:43",
-   "bucket": "anthropic",
-   "usd": 0.000518,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living: Living room"
-  },
-  {
-   "t": "2026-10-24T07:40:17",
-   "bucket": "anthropic",
-   "usd": 0.000498,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living: Living room"
-  },
-  {
-   "t": "2026-10-24T07:41:14",
-   "bucket": "anthropic",
-   "usd": 0.00193,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_00.jpg"
-  },
-  {
-   "t": "2026-10-24T07:41:33",
-   "bucket": "anthropic",
-   "usd": 0.002495,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_01.jpg"
-  },
-  {
-   "t": "2026-10-24T07:41:54",
-   "bucket": "anthropic",
-   "usd": 0.002074,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_02.jpg"
-  },
-  {
-   "t": "2026-10-24T07:42:19",
-   "bucket": "anthropic",
-   "usd": 0.002506,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_03.jpg"
-  },
-  {
-   "t": "2026-10-24T07:42:38",
-   "bucket": "anthropic",
-   "usd": 0.0025,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_04.jpg"
-  },
-  {
-   "t": "2026-10-24T07:42:59",
-   "bucket": "anthropic",
-   "usd": 0.002756,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_05.jpg"
-  },
-  {
-   "t": "2026-10-24T07:43:20",
-   "bucket": "anthropic",
-   "usd": 0.002778,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_06.jpg"
-  },
-  {
-   "t": "2026-10-24T07:43:39",
-   "bucket": "anthropic",
-   "usd": 0.002593,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_07.jpg"
-  },
-  {
-   "t": "2026-10-24T07:44:04",
-   "bucket": "anthropic",
-   "usd": 0.00333,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_08.jpg"
-  },
-  {
-   "t": "2026-10-24T07:44:33",
-   "bucket": "anthropic",
-   "usd": 0.004167,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_09.jpg"
-  },
-  {
-   "t": "2026-10-24T07:44:53",
-   "bucket": "anthropic",
-   "usd": 0.002455,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_10.jpg"
-  },
-  {
-   "t": "2026-10-24T07:49:08",
-   "bucket": "anthropic",
-   "usd": 0.001226,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph gs-22612"
-  },
-  {
-   "t": "2026-10-24T07:50:28",
-   "bucket": "anthropic",
-   "usd": 0.000441,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living: Living room"
-  },
-  {
-   "t": "2026-10-24T07:50:43",
-   "bucket": "anthropic",
-   "usd": 0.002405,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph fWvTcnH7ESek42Mqj6gX2n"
-  },
-  {
-   "t": "2026-10-24T07:52:49",
-   "bucket": "anthropic",
-   "usd": 0.002727,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph gs-20665"
-  },
-  {
-   "t": "2026-10-24T07:53:04",
-   "bucket": "anthropic",
-   "usd": 0.002449,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph gs-20666"
-  },
-  {
-   "t": "2026-10-24T07:53:22",
-   "bucket": "anthropic",
-   "usd": 0.002509,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph gs-20668"
-  },
-  {
-   "t": "2026-10-24T07:54:25",
-   "bucket": "anthropic",
-   "usd": 0.002759,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph xBfGp2vfgwLqqkH1tLaUej"
-  },
-  {
-   "t": "2026-10-24T07:55:05",
-   "bucket": "anthropic",
-   "usd": 0.00286,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph gs-20660"
-  },
-  {
-   "t": "2026-10-24T07:55:53",
-   "bucket": "anthropic",
-   "usd": 0.000945,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph gs-15189"
-  },
-  {
-   "t": "2026-10-24T07:56:01",
-   "bucket": "anthropic",
-   "usd": 0.001741,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph gs-16296"
-  },
-  {
-   "t": "2026-10-24T07:56:05",
-   "bucket": "anthropic",
-   "usd": 0.000907,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph gs-18149"
-  },
-  {
-   "t": "2026-10-24T07:56:14",
-   "bucket": "anthropic",
-   "usd": 0.001509,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph gs-20660"
-  },
-  {
-   "t": "2026-10-24T07:56:20",
-   "bucket": "anthropic",
-   "usd": 0.000934,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph gs-20662"
-  },
-  {
-   "t": "2026-10-24T07:56:31",
-   "bucket": "anthropic",
-   "usd": 0.001872,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph gs-20663"
-  },
-  {
-   "t": "2026-10-24T07:56:49",
-   "bucket": "anthropic",
-   "usd": 0.003338,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph gs-20665"
-  },
-  {
-   "t": "2026-10-24T07:57:02",
-   "bucket": "anthropic",
-   "usd": 0.002416,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph gs-20668"
-  },
-  {
-   "t": "2026-10-24T07:57:07",
-   "bucket": "anthropic",
-   "usd": 0.001032,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph gs-20672"
-  },
-  {
-   "t": "2026-10-24T07:57:22",
-   "bucket": "anthropic",
-   "usd": 0.002777,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph gs-20673"
-  },
-  {
-   "t": "2026-10-24T07:57:27",
-   "bucket": "anthropic",
-   "usd": 0.000764,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph gs-20676"
-  },
-  {
-   "t": "2026-10-24T07:57:38",
-   "bucket": "anthropic",
-   "usd": 0.002106,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph gs-23748"
-  },
-  {
-   "t": "2026-10-24T07:59:33",
-   "bucket": "anthropic",
-   "usd": 0.0412,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-sonnet-5-5 roomgraph gs-20665"
-  },
-  {
-   "t": "2026-10-24T07:59:54",
-   "bucket": "anthropic",
-   "usd": 0.018898,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-sonnet-5-5 roomgraph gs-15189"
-  },
-  {
-   "t": "2026-10-24T08:00:04",
-   "bucket": "anthropic",
-   "usd": 0.033302,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-sonnet-5-5 roomgraph gs-16296"
-  },
-  {
-   "t": "2026-10-24T08:00:11",
-   "bucket": "anthropic",
-   "usd": 0.017318,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-sonnet-5-5 roomgraph gs-18149"
-  },
-  {
-   "t": "2026-10-24T08:00:19",
-   "bucket": "anthropic",
-   "usd": 0.024218,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-sonnet-5-5 roomgraph gs-20660"
-  },
-  {
-   "t": "2026-10-24T08:00:25",
-   "bucket": "anthropic",
-   "usd": 0.017572,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-sonnet-5-5 roomgraph gs-20662"
-  },
-  {
-   "t": "2026-10-24T08:00:35",
-   "bucket": "anthropic",
-   "usd": 0.027624,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-sonnet-5-5 roomgraph gs-20663"
-  },
-  {
-   "t": "2026-10-24T08:00:47",
-   "bucket": "anthropic",
-   "usd": 0.043292,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-sonnet-5-5 roomgraph gs-20666"
-  },
-  {
-   "t": "2026-10-24T08:00:57",
-   "bucket": "anthropic",
-   "usd": 0.03345,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-sonnet-5-5 roomgraph gs-20667"
-  },
-  {
-   "t": "2026-10-24T08:01:09",
-   "bucket": "anthropic",
-   "usd": 0.037096,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-sonnet-5-5 roomgraph gs-20668"
-  },
-  {
-   "t": "2026-10-24T08:01:15",
-   "bucket": "anthropic",
-   "usd": 0.015054,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-sonnet-5-5 roomgraph gs-20672"
-  },
-  {
-   "t": "2026-10-24T08:01:31",
-   "bucket": "anthropic",
-   "usd": 0.04519,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-sonnet-5-5 roomgraph gs-20673"
-  },
-  {
-   "t": "2026-10-24T08:01:38",
-   "bucket": "anthropic",
-   "usd": 0.015066,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-sonnet-5-5 roomgraph gs-20676"
-  },
-  {
-   "t": "2026-10-24T08:01:53",
-   "bucket": "anthropic",
-   "usd": 0.016128,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-sonnet-5-5 roomgraph gs-22612"
-  },
-  {
-   "t": "2026-10-24T08:02:13",
-   "bucket": "anthropic",
-   "usd": 0.03363,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-sonnet-5-5 roomgraph gs-23748"
-  },
-  {
-   "t": "2026-10-24T08:15:49",
-   "bucket": "anthropic",
-   "usd": 0.000563,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure kitchen: Kitchen/Living C (window over sink)"
-  },
-  {
-   "t": "2026-10-24T08:16:03",
-   "bucket": "anthropic",
-   "usd": 0.001922,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_01.jpg"
-  },
-  {
-   "t": "2026-10-24T08:16:26",
-   "bucket": "anthropic",
-   "usd": 0.002926,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_02.jpg"
-  },
-  {
-   "t": "2026-10-24T08:16:46",
-   "bucket": "anthropic",
-   "usd": 0.002384,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_03.jpg"
-  },
-  {
-   "t": "2026-10-24T08:17:16",
-   "bucket": "anthropic",
-   "usd": 0.003732,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_04.jpg"
-  },
-  {
-   "t": "2026-10-24T08:17:37",
-   "bucket": "anthropic",
-   "usd": 0.002665,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_05.jpg"
-  },
-  {
-   "t": "2026-10-24T08:17:55",
-   "bucket": "anthropic",
-   "usd": 0.002531,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_06.jpg"
-  },
-  {
-   "t": "2026-10-24T08:18:17",
-   "bucket": "anthropic",
-   "usd": 0.002859,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_07.jpg"
-  },
-  {
-   "t": "2026-10-24T08:18:37",
-   "bucket": "anthropic",
-   "usd": 0.002687,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_08.jpg"
-  },
-  {
-   "t": "2026-10-24T08:19:02",
-   "bucket": "anthropic",
-   "usd": 0.003016,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_09.jpg"
-  },
-  {
-   "t": "2026-10-24T08:19:22",
-   "bucket": "anthropic",
-   "usd": 0.002552,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_10.jpg"
-  },
-  {
-   "t": "2026-10-24T08:19:37",
-   "bucket": "anthropic",
-   "usd": 0.002045,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_11.jpg"
-  },
-  {
-   "t": "2026-10-24T08:19:58",
-   "bucket": "anthropic",
-   "usd": 0.002646,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_12.jpg"
-  },
-  {
-   "t": "2026-10-24T08:20:18",
-   "bucket": "anthropic",
-   "usd": 0.002462,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_13.jpg"
-  },
-  {
-   "t": "2026-10-24T08:20:41",
-   "bucket": "anthropic",
-   "usd": 0.00301,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_14.jpg"
-  },
-  {
-   "t": "2026-10-24T08:21:02",
-   "bucket": "anthropic",
-   "usd": 0.002768,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_15.jpg"
-  },
-  {
-   "t": "2026-10-24T08:22:12",
-   "bucket": "anthropic",
-   "usd": 0.000555,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure kitchen: Unit A kitchen (white, cedar ceiling, skylight)"
-  },
-  {
-   "t": "2026-10-24T08:22:24",
-   "bucket": "anthropic",
-   "usd": 0.001313,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_00.jpg"
-  },
-  {
-   "t": "2026-10-24T08:22:36",
-   "bucket": "anthropic",
-   "usd": 0.001551,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_01.jpg"
-  },
-  {
-   "t": "2026-10-24T08:22:53",
-   "bucket": "anthropic",
-   "usd": 0.002092,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_03.jpg"
-  },
-  {
-   "t": "2026-10-24T08:23:13",
-   "bucket": "anthropic",
-   "usd": 0.002287,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_04.jpg"
-  },
-  {
-   "t": "2026-10-24T08:23:23",
-   "bucket": "anthropic",
-   "usd": 0.001218,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_05.jpg"
-  },
-  {
-   "t": "2026-10-24T08:23:36",
-   "bucket": "anthropic",
-   "usd": 0.001647,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_06.jpg"
-  },
-  {
-   "t": "2026-10-24T08:23:49",
-   "bucket": "anthropic",
-   "usd": 0.001417,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_07.jpg"
-  },
-  {
-   "t": "2026-10-24T08:24:02",
-   "bucket": "anthropic",
-   "usd": 0.001534,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_08.jpg"
-  },
-  {
-   "t": "2026-10-24T08:24:15",
-   "bucket": "anthropic",
-   "usd": 0.001574,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_09.jpg"
-  },
-  {
-   "t": "2026-10-24T08:24:26",
-   "bucket": "anthropic",
-   "usd": 0.001248,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_10.jpg"
-  },
-  {
-   "t": "2026-10-24T08:25:40",
-   "bucket": "anthropic",
-   "usd": 0.001132,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure kitchen: Unit C kitchen (renovated, grey floor)"
-  },
-  {
-   "t": "2026-10-24T08:26:52",
-   "bucket": "anthropic",
-   "usd": 0.000713,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure kitchen: Unit F kitchen/living (white, brick fireplace, ground level)"
-  },
-  {
-   "t": "2026-10-24T08:28:05",
-   "bucket": "anthropic",
-   "usd": 0.000622,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living: Unit E living (fireplace, cedar ceiling)"
-  },
-  {
-   "t": "2026-10-24T08:28:34",
-   "bucket": "anthropic",
-   "usd": 0.000538,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bedroom: Unit C bedroom (grey floor)"
-  },
-  {
-   "t": "2026-10-24T08:29:02",
-   "bucket": "anthropic",
-   "usd": 0.000608,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bedroom: Unit E bedroom (cedar ceiling)"
-  },
-  {
-   "t": "2026-10-24T08:30:13",
-   "bucket": "anthropic",
-   "usd": 0.000684,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living: Living room with fireplace and balcony window"
-  },
-  {
-   "t": "2026-10-24T08:31:27",
-   "bucket": "anthropic",
-   "usd": 0.000613,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living: Long living room with fireplace edge"
-  },
-  {
-   "t": "2026-10-24T08:32:37",
-   "bucket": "anthropic",
-   "usd": 0.000569,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bedroom: Bedroom with sun patches"
-  },
-  {
-   "t": "2026-10-24T08:33:48",
-   "bucket": "anthropic",
-   "usd": 0.000574,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure kitchen: Kitchen/open living with brick fireplace (red tile unit)"
-  },
-  {
-   "t": "2026-10-24T08:34:00",
-   "bucket": "anthropic",
-   "usd": 0.00138,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_00.jpg"
-  },
-  {
-   "t": "2026-10-24T08:34:15",
-   "bucket": "anthropic",
-   "usd": 0.001807,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_01.jpg"
-  },
-  {
-   "t": "2026-10-24T08:34:26",
-   "bucket": "anthropic",
-   "usd": 0.001396,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_02.jpg"
-  },
-  {
-   "t": "2026-10-24T08:35:38",
-   "bucket": "anthropic",
-   "usd": 0.000666,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure kitchen: Kitchen white subway tile with window"
-  },
-  {
-   "t": "2026-10-24T08:36:53",
-   "bucket": "anthropic",
-   "usd": 0.000724,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bedroom: Bedroom with small high windows and bathroom access"
-  },
-  {
-   "t": "2026-10-24T08:37:25",
-   "bucket": "anthropic",
-   "usd": 0.000592,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bedroom: Bedroom with mirrored closets and window"
-  },
-  {
-   "t": "2026-10-24T08:38:36",
-   "bucket": "anthropic",
-   "usd": 0.000596,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure kitchen: Kitchen C (renovated, subway tile)"
-  },
-  {
-   "t": "2026-10-24T08:38:46",
-   "bucket": "anthropic",
-   "usd": 0.001182,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_01.jpg"
-  },
-  {
-   "t": "2026-10-24T08:38:59",
-   "bucket": "anthropic",
-   "usd": 0.001542,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_02.jpg"
-  },
-  {
-   "t": "2026-10-24T08:39:16",
-   "bucket": "anthropic",
-   "usd": 0.001896,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_03.jpg"
-  },
-  {
-   "t": "2026-10-24T08:39:33",
-   "bucket": "anthropic",
-   "usd": 0.001938,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_04.jpg"
-  },
-  {
-   "t": "2026-10-24T08:39:45",
-   "bucket": "anthropic",
-   "usd": 0.001553,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_05.jpg"
-  },
-  {
-   "t": "2026-10-24T08:39:48",
-   "bucket": "anthropic",
-   "usd": 0.000476,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_06.jpg"
-  },
-  {
-   "t": "2026-10-24T08:40:01",
-   "bucket": "anthropic",
-   "usd": 0.00151,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_07.jpg"
-  },
-  {
-   "t": "2026-10-24T08:40:15",
-   "bucket": "anthropic",
-   "usd": 0.001603,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_08.jpg"
-  },
-  {
-   "t": "2026-10-24T08:40:28",
-   "bucket": "anthropic",
-   "usd": 0.001521,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_09.jpg"
-  },
-  {
-   "t": "2026-10-24T08:40:41",
-   "bucket": "anthropic",
-   "usd": 0.001501,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_10.jpg"
-  },
-  {
-   "t": "2026-10-24T08:40:52",
-   "bucket": "anthropic",
-   "usd": 0.001378,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_11.jpg"
-  },
-  {
-   "t": "2026-10-24T08:41:04",
-   "bucket": "anthropic",
-   "usd": 0.001459,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_12.jpg"
-  },
-  {
-   "t": "2026-10-24T08:41:13",
-   "bucket": "anthropic",
-   "usd": 0.001256,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_13.jpg"
-  },
-  {
-   "t": "2026-10-24T08:41:25",
-   "bucket": "anthropic",
-   "usd": 0.001441,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_14.jpg"
-  },
-  {
-   "t": "2026-10-24T08:41:33",
-   "bucket": "anthropic",
-   "usd": 0.001199,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_15.jpg"
-  },
-  {
-   "t": "2026-10-24T08:41:44",
-   "bucket": "anthropic",
-   "usd": 0.00136,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_16.jpg"
-  },
-  {
-   "t": "2026-10-24T08:41:57",
-   "bucket": "anthropic",
-   "usd": 0.00167,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_17.jpg"
-  },
-  {
-   "t": "2026-10-24T08:42:09",
-   "bucket": "anthropic",
-   "usd": 0.001457,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_18.jpg"
-  },
-  {
-   "t": "2026-10-24T08:42:24",
-   "bucket": "anthropic",
-   "usd": 0.001735,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_19.jpg"
-  },
-  {
-   "t": "2026-10-24T08:42:37",
-   "bucket": "anthropic",
-   "usd": 0.001642,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_20.jpg"
-  },
-  {
-   "t": "2026-10-24T08:42:40",
-   "bucket": "anthropic",
-   "usd": 0.000408,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_21.jpg"
-  },
-  {
-   "t": "2026-10-24T08:42:52",
-   "bucket": "anthropic",
-   "usd": 0.001585,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_22.jpg"
-  },
-  {
-   "t": "2026-10-24T08:43:04",
-   "bucket": "anthropic",
-   "usd": 0.001351,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_23.jpg"
-  },
-  {
-   "t": "2026-10-24T08:43:18",
-   "bucket": "anthropic",
-   "usd": 0.001627,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_24.jpg"
-  },
-  {
-   "t": "2026-10-24T08:44:29",
-   "bucket": "anthropic",
-   "usd": 0.000502,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure kitchen: Galley kitchen / entry and living area"
-  },
-  {
-   "t": "2026-10-24T08:44:39",
-   "bucket": "anthropic",
-   "usd": 0.001378,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_01.jpg"
-  },
-  {
-   "t": "2026-10-24T08:44:50",
-   "bucket": "anthropic",
-   "usd": 0.001524,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_02.jpg"
-  },
-  {
-   "t": "2026-10-24T08:45:06",
-   "bucket": "anthropic",
-   "usd": 0.00204,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_03.jpg"
-  },
-  {
-   "t": "2026-10-24T08:45:16",
-   "bucket": "anthropic",
-   "usd": 0.001267,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_04.jpg"
-  },
-  {
-   "t": "2026-10-24T08:45:25",
-   "bucket": "anthropic",
-   "usd": 0.001247,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_05.jpg"
-  },
-  {
-   "t": "2026-10-24T08:45:42",
-   "bucket": "anthropic",
-   "usd": 0.002051,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_06.jpg"
-  },
-  {
-   "t": "2026-10-24T08:45:54",
-   "bucket": "anthropic",
-   "usd": 0.001612,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_07.jpg"
-  },
-  {
-   "t": "2026-10-24T08:46:09",
-   "bucket": "anthropic",
-   "usd": 0.001822,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_08.jpg"
-  },
-  {
-   "t": "2026-10-24T08:46:24",
-   "bucket": "anthropic",
-   "usd": 0.001837,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_09.jpg"
-  },
-  {
-   "t": "2026-10-24T08:47:34",
-   "bucket": "anthropic",
-   "usd": 0.000571,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living: Living room with brick wall (unit A)"
-  },
-  {
-   "t": "2026-10-24T08:48:47",
-   "bucket": "anthropic",
-   "usd": 0.000615,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living: Living room with pass-through (unit B)"
-  },
-  {
-   "t": "2026-10-24T09:01:03",
-   "bucket": "anthropic",
-   "usd": 0.000652,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bedroom"
-  },
-  {
-   "t": "2026-10-24T09:04:26",
-   "bucket": "anthropic",
-   "usd": 0.001,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-1008-larkin-310"
-  },
-  {
-   "t": "2026-10-24T09:04:41",
-   "bucket": "anthropic",
-   "usd": 0.001887,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-1025-post-5"
-  },
-  {
-   "t": "2026-10-24T09:05:01",
-   "bucket": "anthropic",
-   "usd": 0.002348,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-1025-sutter-208"
-  },
-  {
-   "t": "2026-10-24T09:05:24",
-   "bucket": "anthropic",
-   "usd": 0.002011,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-1025-sutter-304"
-  },
-  {
-   "t": "2026-10-24T09:06:11",
-   "bucket": "anthropic",
-   "usd": 0.001895,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-1036-polk-207"
-  },
-  {
-   "t": "2026-10-24T09:06:12",
-   "bucket": "anthropic",
-   "usd": 0.000701,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living"
-  },
-  {
-   "t": "2026-10-24T09:06:42",
-   "bucket": "anthropic",
-   "usd": 0.002342,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-1060-pine-12"
-  },
-  {
-   "t": "2026-10-24T09:07:23",
-   "bucket": "anthropic",
-   "usd": 0.003293,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-1064-dolores-2"
-  },
-  {
-   "t": "2026-10-24T09:07:38",
-   "bucket": "anthropic",
-   "usd": 0.001462,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-1163-pine-4"
-  },
-  {
-   "t": "2026-10-24T09:08:06",
-   "bucket": "anthropic",
-   "usd": 0.002257,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-1234-jones-1"
-  },
-  {
-   "t": "2026-10-24T09:09:02",
-   "bucket": "anthropic",
-   "usd": 0.002388,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-1340-lombard-304"
-  },
-  {
-   "t": "2026-10-24T09:09:44",
-   "bucket": "anthropic",
-   "usd": 0.002344,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-1405-franklin-207"
-  },
-  {
-   "t": "2026-10-24T09:09:59",
-   "bucket": "anthropic",
-   "usd": 0.000548,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure kitchen"
-  },
-  {
-   "t": "2026-10-24T09:10:14",
-   "bucket": "anthropic",
-   "usd": 0.002373,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-1405-franklin-607"
-  },
-  {
-   "t": "2026-10-24T09:10:59",
-   "bucket": "anthropic",
-   "usd": 0.002356,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-1474-sacramento-107"
-  },
-  {
-   "t": "2026-10-24T09:12:38",
-   "bucket": "anthropic",
-   "usd": 0.002144,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-1795-ofarrell-202"
-  },
-  {
-   "t": "2026-10-24T09:13:08",
-   "bucket": "anthropic",
-   "usd": 0.002531,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-1835-vallejo-604"
-  },
-  {
-   "t": "2026-10-24T09:13:58",
-   "bucket": "anthropic",
-   "usd": 0.002589,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-2128-van-ness-105"
-  },
-  {
-   "t": "2026-10-24T09:14:31",
-   "bucket": "anthropic",
-   "usd": 0.002504,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-2171-pacific-207"
-  },
-  {
-   "t": "2026-10-24T09:15:04",
-   "bucket": "anthropic",
-   "usd": 0.000446,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living"
-  },
-  {
-   "t": "2026-10-24T09:15:25",
-   "bucket": "anthropic",
-   "usd": 0.001834,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-226-athol-212"
-  },
-  {
-   "t": "2026-10-24T09:16:49",
-   "bucket": "anthropic",
-   "usd": 0.002098,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-2459-larkin-a"
-  },
-  {
-   "t": "2026-10-24T09:17:20",
-   "bucket": "anthropic",
-   "usd": 0.002374,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-250-fell-24"
-  },
-  {
-   "t": "2026-10-24T09:18:17",
-   "bucket": "anthropic",
-   "usd": 0.002235,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-2619-mission-23"
-  },
-  {
-   "t": "2026-10-24T09:19:57",
-   "bucket": "anthropic",
-   "usd": 0.002719,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-300-buchanan-406"
-  },
-  {
-   "t": "2026-10-24T09:20:18",
-   "bucket": "anthropic",
-   "usd": 0.002515,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-300-buchanan-407"
-  },
-  {
-   "t": "2026-10-24T09:20:43",
-   "bucket": "anthropic",
-   "usd": 0.00217,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-310-6th-avenue-25"
-  },
-  {
-   "t": "2026-10-24T09:21:08",
-   "bucket": "anthropic",
-   "usd": 0.002087,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-312-baker-314a"
-  },
-  {
-   "t": "2026-10-24T09:21:31",
-   "bucket": "anthropic",
-   "usd": 0.002037,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-320-turk-502"
-  },
-  {
-   "t": "2026-10-24T09:21:56",
-   "bucket": "anthropic",
-   "usd": 0.002575,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-3201-23rd-street-302"
-  },
-  {
-   "t": "2026-10-24T09:23:03",
-   "bucket": "anthropic",
-   "usd": 0.002429,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-4231-montgomery-105"
-  },
-  {
-   "t": "2026-10-24T09:23:56",
-   "bucket": "anthropic",
-   "usd": 0.002556,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-455-hyde-1002"
-  },
-  {
-   "t": "2026-10-24T09:24:33",
-   "bucket": "anthropic",
-   "usd": 0.002473,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-455-hyde-71"
-  },
-  {
-   "t": "2026-10-24T09:24:53",
-   "bucket": "anthropic",
-   "usd": 0.001326,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-472-jean-5"
-  },
-  {
-   "t": "2026-10-24T09:25:18",
-   "bucket": "anthropic",
-   "usd": 0.001862,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-472-jean-6"
-  },
-  {
-   "t": "2026-10-24T09:26:13",
-   "bucket": "anthropic",
-   "usd": 0.000935,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-57-taylor-316"
-  },
-  {
-   "t": "2026-10-24T09:26:32",
-   "bucket": "anthropic",
-   "usd": 0.001219,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-605-jones-33"
-  },
-  {
-   "t": "2026-10-24T09:27:03",
-   "bucket": "anthropic",
-   "usd": 0.001307,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-630-mariposa-203"
-  },
-  {
-   "t": "2026-10-24T09:27:27",
-   "bucket": "anthropic",
-   "usd": 0.002351,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-634-powell-37"
-  },
-  {
-   "t": "2026-10-24T09:27:46",
-   "bucket": "anthropic",
-   "usd": 0.001324,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-635-ellis-201"
-  },
-  {
-   "t": "2026-10-24T09:28:54",
-   "bucket": "anthropic",
-   "usd": 0.00207,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-665-pine-102"
-  },
-  {
-   "t": "2026-10-24T09:29:22",
-   "bucket": "anthropic",
-   "usd": 0.002762,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-735-ofarrell-24"
-  },
-  {
-   "t": "2026-10-24T09:29:48",
-   "bucket": "anthropic",
-   "usd": 0.001909,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-735-taylor-206"
-  },
-  {
-   "t": "2026-10-24T09:30:12",
-   "bucket": "anthropic",
-   "usd": 0.001814,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-735-taylor-208"
-  },
-  {
-   "t": "2026-10-24T09:30:34",
-   "bucket": "anthropic",
-   "usd": 0.001853,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-735-taylor-307"
-  },
-  {
-   "t": "2026-10-24T09:30:45",
-   "bucket": "anthropic",
-   "usd": 0.00138,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-735-taylor-309"
-  },
-  {
-   "t": "2026-10-24T09:31:13",
-   "bucket": "anthropic",
-   "usd": 0.00181,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-786-geary-204"
-  },
-  {
-   "t": "2026-10-24T09:31:33",
-   "bucket": "anthropic",
-   "usd": 0.002459,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-795-pine-34"
-  },
-  {
-   "t": "2026-10-24T09:32:02",
-   "bucket": "anthropic",
-   "usd": 0.002528,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-816-geary-21"
-  },
-  {
-   "t": "2026-10-24T09:32:20",
-   "bucket": "anthropic",
-   "usd": 0.001547,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-825-post-106"
-  },
-  {
-   "t": "2026-10-24T09:32:41",
-   "bucket": "anthropic",
-   "usd": 0.001674,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-825-post-109"
-  },
-  {
-   "t": "2026-10-24T09:33:12",
-   "bucket": "anthropic",
-   "usd": 0.001042,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-825-post-222"
-  },
-  {
-   "t": "2026-10-24T09:33:27",
-   "bucket": "anthropic",
-   "usd": 0.00153,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-8300-de-longpre-302"
-  },
-  {
-   "t": "2026-10-24T09:33:48",
-   "bucket": "anthropic",
-   "usd": 0.002009,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 roomgraph rsn-839-leavenworth-309"
-  },
   {
    "t": "2026-10-24T09:34:02",
    "bucket": "anthropic",
@@ -4016,6 +2312,1710 @@
    "key": "anthropic_calls",
    "n": 1,
    "note": "claude-sonnet-5-5 annotate plan_12.jpg"
+  },
+  {
+   "t": "2026-10-24T12:53:26",
+   "bucket": "anthropic",
+   "usd": 0.030906,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_13.jpg"
+  },
+  {
+   "t": "2026-10-24T12:53:44",
+   "bucket": "anthropic",
+   "usd": 0.046644,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_13.jpg"
+  },
+  {
+   "t": "2026-10-24T12:54:02",
+   "bucket": "anthropic",
+   "usd": 0.033446,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_13.jpg"
+  },
+  {
+   "t": "2026-10-24T12:54:17",
+   "bucket": "anthropic",
+   "usd": 0.032496,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_14.jpg"
+  },
+  {
+   "t": "2026-10-24T12:54:34",
+   "bucket": "anthropic",
+   "usd": 0.043364,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_14.jpg"
+  },
+  {
+   "t": "2026-10-24T12:54:44",
+   "bucket": "anthropic",
+   "usd": 0.030246,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_14.jpg"
+  },
+  {
+   "t": "2026-10-24T12:54:55",
+   "bucket": "anthropic",
+   "usd": 0.026036,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_15.jpg"
+  },
+  {
+   "t": "2026-10-24T12:55:10",
+   "bucket": "anthropic",
+   "usd": 0.040144,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_15.jpg"
+  },
+  {
+   "t": "2026-10-24T12:55:20",
+   "bucket": "anthropic",
+   "usd": 0.026526,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_15.jpg"
+  },
+  {
+   "t": "2026-10-24T12:55:33",
+   "bucket": "anthropic",
+   "usd": 0.027386,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_04.jpg"
+  },
+  {
+   "t": "2026-10-24T12:55:46",
+   "bucket": "anthropic",
+   "usd": 0.027886,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_04.jpg"
+  },
+  {
+   "t": "2026-10-24T12:55:58",
+   "bucket": "anthropic",
+   "usd": 0.026426,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_06.jpg"
+  },
+  {
+   "t": "2026-10-24T12:56:11",
+   "bucket": "anthropic",
+   "usd": 0.035384,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_06.jpg"
+  },
+  {
+   "t": "2026-10-24T12:56:23",
+   "bucket": "anthropic",
+   "usd": 0.026536,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_07.jpg"
+  },
+  {
+   "t": "2026-10-24T12:56:39",
+   "bucket": "anthropic",
+   "usd": 0.040224,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_07.jpg"
+  },
+  {
+   "t": "2026-10-24T12:56:48",
+   "bucket": "anthropic",
+   "usd": 0.023546,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_08.jpg"
+  },
+  {
+   "t": "2026-10-24T12:57:05",
+   "bucket": "anthropic",
+   "usd": 0.040734,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_08.jpg"
+  },
+  {
+   "t": "2026-10-24T12:57:16",
+   "bucket": "anthropic",
+   "usd": 0.027386,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_09.jpg"
+  },
+  {
+   "t": "2026-10-24T12:57:31",
+   "bucket": "anthropic",
+   "usd": 0.037654,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_09.jpg"
+  },
+  {
+   "t": "2026-10-24T12:57:43",
+   "bucket": "anthropic",
+   "usd": 0.027906,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_10.jpg"
+  },
+  {
+   "t": "2026-10-24T12:58:00",
+   "bucket": "anthropic",
+   "usd": 0.041704,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_10.jpg"
+  },
+  {
+   "t": "2026-10-24T12:58:10",
+   "bucket": "anthropic",
+   "usd": 0.022986,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_11.jpg"
+  },
+  {
+   "t": "2026-10-24T12:58:28",
+   "bucket": "anthropic",
+   "usd": 0.041634,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_11.jpg"
+  },
+  {
+   "t": "2026-10-24T12:58:39",
+   "bucket": "anthropic",
+   "usd": 0.024736,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_12.jpg"
+  },
+  {
+   "t": "2026-10-24T12:58:58",
+   "bucket": "anthropic",
+   "usd": 0.035704,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_12.jpg"
+  },
+  {
+   "t": "2026-10-24T12:59:06",
+   "bucket": "anthropic",
+   "usd": 0.017402,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_01.png"
+  },
+  {
+   "t": "2026-10-24T12:59:16",
+   "bucket": "anthropic",
+   "usd": 0.023638,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_01.png"
+  },
+  {
+   "t": "2026-10-24T12:59:28",
+   "bucket": "anthropic",
+   "usd": 0.020952,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_01.png"
+  },
+  {
+   "t": "2026-10-24T12:59:36",
+   "bucket": "anthropic",
+   "usd": 0.015466,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_02.jpg"
+  },
+  {
+   "t": "2026-10-24T12:59:48",
+   "bucket": "anthropic",
+   "usd": 0.02876,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_02.jpg"
+  },
+  {
+   "t": "2026-10-24T12:59:54",
+   "bucket": "anthropic",
+   "usd": 0.015376,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_02.jpg"
+  },
+  {
+   "t": "2026-10-24T13:00:02",
+   "bucket": "anthropic",
+   "usd": 0.01864,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_03.jpg"
+  },
+  {
+   "t": "2026-10-24T13:00:17",
+   "bucket": "anthropic",
+   "usd": 0.036652,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_03.jpg"
+  },
+  {
+   "t": "2026-10-24T13:00:25",
+   "bucket": "anthropic",
+   "usd": 0.015676,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_04.jpg"
+  },
+  {
+   "t": "2026-10-24T13:00:40",
+   "bucket": "anthropic",
+   "usd": 0.03611,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_04.jpg"
+  },
+  {
+   "t": "2026-10-24T13:00:47",
+   "bucket": "anthropic",
+   "usd": 0.016586,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_04.jpg"
+  },
+  {
+   "t": "2026-10-24T13:00:56",
+   "bucket": "anthropic",
+   "usd": 0.018742,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_05.jpg"
+  },
+  {
+   "t": "2026-10-24T13:01:12",
+   "bucket": "anthropic",
+   "usd": 0.039768,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_05.jpg"
+  },
+  {
+   "t": "2026-10-24T13:01:23",
+   "bucket": "anthropic",
+   "usd": 0.022066,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_06.jpg"
+  },
+  {
+   "t": "2026-10-24T13:01:39",
+   "bucket": "anthropic",
+   "usd": 0.04018,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_06.jpg"
+  },
+  {
+   "t": "2026-10-24T13:01:49",
+   "bucket": "anthropic",
+   "usd": 0.020932,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_07.jpg"
+  },
+  {
+   "t": "2026-10-24T13:02:06",
+   "bucket": "anthropic",
+   "usd": 0.041608,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_07.jpg"
+  },
+  {
+   "t": "2026-10-24T13:02:16",
+   "bucket": "anthropic",
+   "usd": 0.018492,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_08.jpg"
+  },
+  {
+   "t": "2026-10-24T13:02:29",
+   "bucket": "anthropic",
+   "usd": 0.032058,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_08.jpg"
+  },
+  {
+   "t": "2026-10-24T13:02:37",
+   "bucket": "anthropic",
+   "usd": 0.019552,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_08.jpg"
+  },
+  {
+   "t": "2026-10-24T13:02:45",
+   "bucket": "anthropic",
+   "usd": 0.01568,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_09.jpg"
+  },
+  {
+   "t": "2026-10-24T13:02:53",
+   "bucket": "anthropic",
+   "usd": 0.022462,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_09.jpg"
+  },
+  {
+   "t": "2026-10-24T13:02:59",
+   "bucket": "anthropic",
+   "usd": 0.01498,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_09.jpg"
+  },
+  {
+   "t": "2026-10-24T13:03:10",
+   "bucket": "anthropic",
+   "usd": 0.021832,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_10.jpg"
+  },
+  {
+   "t": "2026-10-24T13:03:27",
+   "bucket": "anthropic",
+   "usd": 0.042128,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_10.jpg"
+  },
+  {
+   "t": "2026-10-24T13:03:36",
+   "bucket": "anthropic",
+   "usd": 0.021502,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_10.jpg"
+  },
+  {
+   "t": "2026-10-24T13:03:47",
+   "bucket": "anthropic",
+   "usd": 0.020776,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_11.jpg"
+  },
+  {
+   "t": "2026-10-24T13:04:03",
+   "bucket": "anthropic",
+   "usd": 0.04131,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_11.jpg"
+  },
+  {
+   "t": "2026-10-24T13:04:13",
+   "bucket": "anthropic",
+   "usd": 0.021106,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_11.jpg"
+  },
+  {
+   "t": "2026-10-24T13:04:21",
+   "bucket": "anthropic",
+   "usd": 0.01616,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_12.jpg"
+  },
+  {
+   "t": "2026-10-24T13:04:31",
+   "bucket": "anthropic",
+   "usd": 0.025272,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_12.jpg"
+  },
+  {
+   "t": "2026-10-24T13:04:39",
+   "bucket": "anthropic",
+   "usd": 0.017202,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_13.png"
+  },
+  {
+   "t": "2026-10-24T13:04:48",
+   "bucket": "anthropic",
+   "usd": 0.023668,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_13.png"
+  },
+  {
+   "t": "2026-10-24T13:04:56",
+   "bucket": "anthropic",
+   "usd": 0.019552,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_13.png"
+  },
+  {
+   "t": "2026-10-24T13:05:10",
+   "bucket": "anthropic",
+   "usd": 0.016606,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_05.jpg"
+  },
+  {
+   "t": "2026-10-24T13:05:21",
+   "bucket": "anthropic",
+   "usd": 0.02871,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_05.jpg"
+  },
+  {
+   "t": "2026-10-24T13:05:29",
+   "bucket": "anthropic",
+   "usd": 0.015298,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_09.jpg"
+  },
+  {
+   "t": "2026-10-24T13:05:41",
+   "bucket": "anthropic",
+   "usd": 0.023076,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_09.jpg"
+  },
+  {
+   "t": "2026-10-24T13:05:49",
+   "bucket": "anthropic",
+   "usd": 0.015838,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_11.jpg"
+  },
+  {
+   "t": "2026-10-24T13:05:59",
+   "bucket": "anthropic",
+   "usd": 0.026246,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_11.jpg"
+  },
+  {
+   "t": "2026-10-24T13:06:05",
+   "bucket": "anthropic",
+   "usd": 0.015078,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_11.jpg"
+  },
+  {
+   "t": "2026-10-24T13:06:13",
+   "bucket": "anthropic",
+   "usd": 0.015018,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_13.jpg"
+  },
+  {
+   "t": "2026-10-24T13:06:22",
+   "bucket": "anthropic",
+   "usd": 0.023456,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_13.jpg"
+  },
+  {
+   "t": "2026-10-24T13:06:27",
+   "bucket": "anthropic",
+   "usd": 0.013658,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_13.jpg"
+  },
+  {
+   "t": "2026-10-24T13:06:36",
+   "bucket": "anthropic",
+   "usd": 0.015678,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_14.jpg"
+  },
+  {
+   "t": "2026-10-24T13:06:44",
+   "bucket": "anthropic",
+   "usd": 0.021176,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_14.jpg"
+  },
+  {
+   "t": "2026-10-24T13:06:52",
+   "bucket": "anthropic",
+   "usd": 0.015608,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_15.jpg"
+  },
+  {
+   "t": "2026-10-24T13:07:03",
+   "bucket": "anthropic",
+   "usd": 0.029366,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_15.jpg"
+  },
+  {
+   "t": "2026-10-24T13:07:09",
+   "bucket": "anthropic",
+   "usd": 0.015028,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_15.jpg"
+  },
+  {
+   "t": "2026-10-24T13:07:17",
+   "bucket": "anthropic",
+   "usd": 0.014042,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_16.jpg"
+  },
+  {
+   "t": "2026-10-24T13:07:25",
+   "bucket": "anthropic",
+   "usd": 0.023218,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_16.jpg"
+  },
+  {
+   "t": "2026-10-24T13:07:32",
+   "bucket": "anthropic",
+   "usd": 0.013722,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_16.jpg"
+  },
+  {
+   "t": "2026-10-24T13:07:39",
+   "bucket": "anthropic",
+   "usd": 0.014458,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_18.jpg"
+  },
+  {
+   "t": "2026-10-24T13:07:48",
+   "bucket": "anthropic",
+   "usd": 0.023926,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_18.jpg"
+  },
+  {
+   "t": "2026-10-24T13:07:56",
+   "bucket": "anthropic",
+   "usd": 0.016468,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_19.jpg"
+  },
+  {
+   "t": "2026-10-24T13:08:06",
+   "bucket": "anthropic",
+   "usd": 0.023956,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_19.jpg"
+  },
+  {
+   "t": "2026-10-24T13:08:12",
+   "bucket": "anthropic",
+   "usd": 0.014708,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_19.jpg"
+  },
+  {
+   "t": "2026-10-24T13:08:19",
+   "bucket": "anthropic",
+   "usd": 0.015116,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_20.jpg"
+  },
+  {
+   "t": "2026-10-24T13:08:30",
+   "bucket": "anthropic",
+   "usd": 0.02892,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_20.jpg"
+  },
+  {
+   "t": "2026-10-24T13:08:42",
+   "bucket": "anthropic",
+   "usd": 0.029252,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_00.jpg"
+  },
+  {
+   "t": "2026-10-24T13:09:04",
+   "bucket": "anthropic",
+   "usd": 0.051438,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_00.jpg"
+  },
+  {
+   "t": "2026-10-24T13:09:15",
+   "bucket": "anthropic",
+   "usd": 0.029612,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_00.jpg"
+  },
+  {
+   "t": "2026-10-24T13:09:24",
+   "bucket": "anthropic",
+   "usd": 0.021222,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_01.jpg"
+  },
+  {
+   "t": "2026-10-24T13:09:35",
+   "bucket": "anthropic",
+   "usd": 0.028888,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_01.jpg"
+  },
+  {
+   "t": "2026-10-24T13:09:43",
+   "bucket": "anthropic",
+   "usd": 0.020592,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_01.jpg"
+  },
+  {
+   "t": "2026-10-24T13:09:54",
+   "bucket": "anthropic",
+   "usd": 0.026022,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_02.jpg"
+  },
+  {
+   "t": "2026-10-24T13:10:08",
+   "bucket": "anthropic",
+   "usd": 0.033378,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_02.jpg"
+  },
+  {
+   "t": "2026-10-24T13:10:18",
+   "bucket": "anthropic",
+   "usd": 0.026122,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_02.jpg"
+  },
+  {
+   "t": "2026-10-24T13:10:27",
+   "bucket": "anthropic",
+   "usd": 0.022542,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_03.jpg"
+  },
+  {
+   "t": "2026-10-24T13:10:42",
+   "bucket": "anthropic",
+   "usd": 0.038008,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_03.jpg"
+  },
+  {
+   "t": "2026-10-24T13:10:51",
+   "bucket": "anthropic",
+   "usd": 0.022712,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_03.jpg"
+  },
+  {
+   "t": "2026-10-24T13:11:01",
+   "bucket": "anthropic",
+   "usd": 0.025882,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_04.jpg"
+  },
+  {
+   "t": "2026-10-24T13:11:20",
+   "bucket": "anthropic",
+   "usd": 0.046118,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_04.jpg"
+  },
+  {
+   "t": "2026-10-24T13:11:30",
+   "bucket": "anthropic",
+   "usd": 0.026242,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_04.jpg"
+  },
+  {
+   "t": "2026-10-24T13:11:41",
+   "bucket": "anthropic",
+   "usd": 0.025032,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_05.jpg"
+  },
+  {
+   "t": "2026-10-24T13:11:55",
+   "bucket": "anthropic",
+   "usd": 0.034448,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_05.jpg"
+  },
+  {
+   "t": "2026-10-24T13:12:04",
+   "bucket": "anthropic",
+   "usd": 0.025272,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_05.jpg"
+  },
+  {
+   "t": "2026-10-24T13:12:15",
+   "bucket": "anthropic",
+   "usd": 0.026042,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_06.jpg"
+  },
+  {
+   "t": "2026-10-24T13:12:33",
+   "bucket": "anthropic",
+   "usd": 0.044998,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_06.jpg"
+  },
+  {
+   "t": "2026-10-24T13:12:43",
+   "bucket": "anthropic",
+   "usd": 0.026852,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_06.jpg"
+  },
+  {
+   "t": "2026-10-24T13:12:54",
+   "bucket": "anthropic",
+   "usd": 0.025172,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_07.jpg"
+  },
+  {
+   "t": "2026-10-24T13:13:10",
+   "bucket": "anthropic",
+   "usd": 0.041038,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_07.jpg"
+  },
+  {
+   "t": "2026-10-24T13:13:21",
+   "bucket": "anthropic",
+   "usd": 0.026122,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_07.jpg"
+  },
+  {
+   "t": "2026-10-24T13:13:30",
+   "bucket": "anthropic",
+   "usd": 0.021702,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_08.jpg"
+  },
+  {
+   "t": "2026-10-24T13:13:44",
+   "bucket": "anthropic",
+   "usd": 0.037248,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_08.jpg"
+  },
+  {
+   "t": "2026-10-24T13:13:53",
+   "bucket": "anthropic",
+   "usd": 0.022642,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_08.jpg"
+  },
+  {
+   "t": "2026-10-24T13:14:02",
+   "bucket": "anthropic",
+   "usd": 0.020022,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_09.jpg"
+  },
+  {
+   "t": "2026-10-24T13:14:14",
+   "bucket": "anthropic",
+   "usd": 0.032848,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_09.jpg"
+  },
+  {
+   "t": "2026-10-24T13:14:21",
+   "bucket": "anthropic",
+   "usd": 0.019602,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_09.jpg"
+  },
+  {
+   "t": "2026-10-24T13:14:30",
+   "bucket": "anthropic",
+   "usd": 0.019242,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_10.jpg"
+  },
+  {
+   "t": "2026-10-24T13:14:40",
+   "bucket": "anthropic",
+   "usd": 0.029308,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_10.jpg"
+  },
+  {
+   "t": "2026-10-24T13:14:50",
+   "bucket": "anthropic",
+   "usd": 0.020332,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_11.jpg"
+  },
+  {
+   "t": "2026-10-24T13:15:02",
+   "bucket": "anthropic",
+   "usd": 0.031548,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_11.jpg"
+  },
+  {
+   "t": "2026-10-24T13:15:09",
+   "bucket": "anthropic",
+   "usd": 0.019802,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_11.jpg"
+  },
+  {
+   "t": "2026-10-24T13:15:18",
+   "bucket": "anthropic",
+   "usd": 0.021542,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_13.jpg"
+  },
+  {
+   "t": "2026-10-24T13:15:36",
+   "bucket": "anthropic",
+   "usd": 0.042458,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_13.jpg"
+  },
+  {
+   "t": "2026-10-24T13:15:45",
+   "bucket": "anthropic",
+   "usd": 0.023192,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_13.jpg"
+  },
+  {
+   "t": "2026-10-24T13:15:54",
+   "bucket": "anthropic",
+   "usd": 0.020932,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_14.jpg"
+  },
+  {
+   "t": "2026-10-24T13:16:09",
+   "bucket": "anthropic",
+   "usd": 0.038588,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_14.jpg"
+  },
+  {
+   "t": "2026-10-24T13:16:17",
+   "bucket": "anthropic",
+   "usd": 0.021602,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_14.jpg"
+  },
+  {
+   "t": "2026-10-24T13:16:28",
+   "bucket": "anthropic",
+   "usd": 0.025052,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_15.jpg"
+  },
+  {
+   "t": "2026-10-24T13:16:47",
+   "bucket": "anthropic",
+   "usd": 0.046358,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_15.jpg"
+  },
+  {
+   "t": "2026-10-24T13:16:56",
+   "bucket": "anthropic",
+   "usd": 0.024752,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_15.jpg"
+  },
+  {
+   "t": "2026-10-24T13:17:06",
+   "bucket": "anthropic",
+   "usd": 0.021932,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_16.jpg"
+  },
+  {
+   "t": "2026-10-24T13:17:19",
+   "bucket": "anthropic",
+   "usd": 0.033608,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_16.jpg"
+  },
+  {
+   "t": "2026-10-24T13:17:26",
+   "bucket": "anthropic",
+   "usd": 0.020242,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_16.jpg"
+  },
+  {
+   "t": "2026-10-24T13:17:35",
+   "bucket": "anthropic",
+   "usd": 0.020832,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_17.jpg"
+  },
+  {
+   "t": "2026-10-24T13:17:46",
+   "bucket": "anthropic",
+   "usd": 0.029898,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_17.jpg"
+  },
+  {
+   "t": "2026-10-24T13:17:54",
+   "bucket": "anthropic",
+   "usd": 0.019782,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_17.jpg"
+  },
+  {
+   "t": "2026-10-24T13:18:03",
+   "bucket": "anthropic",
+   "usd": 0.020832,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_18.jpg"
+  },
+  {
+   "t": "2026-10-24T13:18:13",
+   "bucket": "anthropic",
+   "usd": 0.028608,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_18.jpg"
+  },
+  {
+   "t": "2026-10-24T13:18:21",
+   "bucket": "anthropic",
+   "usd": 0.021632,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_18.jpg"
+  },
+  {
+   "t": "2026-10-24T13:18:31",
+   "bucket": "anthropic",
+   "usd": 0.023062,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_19.jpg"
+  },
+  {
+   "t": "2026-10-24T13:18:45",
+   "bucket": "anthropic",
+   "usd": 0.034728,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_19.jpg"
+  },
+  {
+   "t": "2026-10-24T13:18:54",
+   "bucket": "anthropic",
+   "usd": 0.023542,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_19.jpg"
+  },
+  {
+   "t": "2026-10-24T13:21:29",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 1025 Post, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:32",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 1008 Larkin, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:32",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 1025 Post, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:33",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 1025 Sutter, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:33",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 1035 Sutter, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:33",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 1036 Polk, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:33",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 1060 Pine, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:33",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 1064 Dolores, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:33",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 1163 Pine, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:34",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 1234 Jones, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:34",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 1333 N Martel, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:34",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 1340 Lombard, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:34",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 1360 Lombard, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:34",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 1405 Franklin, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:35",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 1450 Golden Gate, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:35",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 1474 Sacramento, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:35",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 1545 North Laurel, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:35",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 1612 3Rd Avenue, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:35",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 1675 Clay, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:35",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 1720 Golden Gate, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:36",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 1795 Ofarrell, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:36",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 1835 Vallejo, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:36",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 1844 1850 North Harvard, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:36",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 2128 Van Ness, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:36",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 2171 Pacific, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:37",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 2200 Leavenworth, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:37",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 226 Athol, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:37",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 2275 Broadway, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:37",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 230 Orange, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:37",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 2355 Leavenworth, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:37",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 2459 Larkin, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:38",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 250 Fell, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:38",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 250 King, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:38",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 257 Vernon, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:38",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 2619 Mission, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:38",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 276 Adams, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:38",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 2921 Arizona, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:39",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 300 Buchanan, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:39",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 310 6Th Avenue, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:39",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 312 Baker, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:39",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 320 Turk, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:39",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 3201 23Rd Street, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:39",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 343 Palos Verdes, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:40",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 390 Liberty, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:40",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 4231 Montgomery, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:40",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 430 Baker, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:40",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 455 Hyde, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:40",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 472 Jean, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:40",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 491 Crescent, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:41",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 514 North Hayworth, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:41",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 57 Taylor, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:41",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 605 Jones, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:41",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 610 Clipper, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:41",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 630 Mariposa, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:41",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 634 Powell, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:42",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 635 Ellis, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:42",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 655 Powell, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:42",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 665 Pine, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:42",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 735 Ofarrell, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:42",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 735 Taylor, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:43",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 77 Glen, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:43",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 786 Geary, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:43",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 795 Pine, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:43",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 816 Geary, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:43",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 825 Post, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:43",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 8300 De Longpre, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:44",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 839 Leavenworth, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:44",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 8741 8743 Shoreham, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:44",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 900 Broderick, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:44",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 9400 Exposition, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:44",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 950 4Th Street, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:44",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 969 Bush, San Francisco, CA"
+  },
+  {
+   "t": "2026-10-24T13:21:44",
+   "bucket": "google",
+   "usd": 0.005,
+   "key": "google_geocode",
+   "n": 1,
+   "note": "map index geocode 990 Geary, San Francisco, CA"
   }
  ]
 }

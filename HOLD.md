@@ -36,3 +36,12 @@
    functionality. Our angle: the furnishing + checkout agent with budget limits, audit log, human confirmation. Also
    "Microsoft Customer Impact Award" (same criteria). Owner to confirm we enter both.
 10. **Creao "Best One-Person Company"**: owner to read the Creao doc (needs login) and confirm.
+
+## Added 18:05
+11. **API spend is at $8.89 of the $10 Anthropic cap.** The Sonnet annotation batch ran faster than expected and covered
+    68 units (~5 cents each, reader + repair + annotation). Left: ~$1.10, enough for Haiku furnishing/chat runs (0.2 cents
+    each) and a handful of annotations (the 777 Tenn demo unit still needs one). Raise the cap if you want more units
+    annotated or Sonnet material picks. Subagents run on your Claude Code plan, not on this ledger.
+12. **Map front door** (owner's idea, Oct 24 ~17:45): being built in app/map/ (Leaflet + cached OSM tiles, listing cards
+    with photos/plans/price/description, detail drawer into 3D/furnish/checkout, compare tray). Scope decision still open:
+    keep it as the entry screen, or grow it into a comparison site? Owner wanted to come back to this.

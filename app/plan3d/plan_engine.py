@@ -12,8 +12,29 @@ def load_ink(path, max_side=1600):
     # paper normalisation: the most common bright level is the paper; stretch it to 255 so thresholds hold on off-white scans
     hist = np.bincount(g.ravel(), minlength=256); bright = hist[150:]; paper = int(150 + bright.argmax()) if bright.sum() else 255
     if paper < 250: g = np.clip(g.astype(np.float32) * (255.0 / paper), 0, 255).astype(np.uint8)
+    g = defill(g)
     ink = (g < 190).astype(np.uint8)   # paper is near-white, light-grey fills are fixtures; walls are dark grey (SightMap) or black
     return g, ink, s
+
+def defill(g):
+    """Marketing plans tint whole rooms (wood grain, carpet grey, tile blue: 1333 Gough). Those fills read as ink and turn into
+    hatching 'walls'. A fill is a LARGE light-to-mid-tone area (both sides >= 6% of the image, area >= 0.6% of it); inside one,
+    only strokes clearly darker than the fill (black lines, door arcs, text) survive, the rest becomes paper. Dark-grey wall
+    masses (SightMap, < 130) and small grey fixtures (counters) are not fills."""
+    H, W = g.shape; mid = ((g >= 130) & (g < 238)).astype(np.uint8)
+    if mid.sum() < 0.04 * H * W: return g
+    k = max(9, int(0.012 * min(H, W))) | 1
+    m = cv2.morphologyEx(mid, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5)))
+    m = cv2.morphologyEx(m, cv2.MORPH_OPEN, cv2.getStructuringElement(cv2.MORPH_RECT, (k, k)))
+    n, lab, st, _ = cv2.connectedComponentsWithStats(m, 4); fill = np.zeros_like(m)
+    for i in range(1, n):
+        x, y, w, h, a = st[i]
+        if min(w, h) >= 0.06 * min(H, W) and a >= 0.006 * H * W: fill[lab == i] = 1
+    if not fill.any(): return g
+    fill = cv2.dilate(fill, cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))).astype(bool)
+    vals = g[fill & (g >= 130)]; ref = float(np.median(vals)) if vals.size else 200.0
+    out = g.copy(); out[fill & (g.astype(np.float32) > min(ref - 55, 120))] = 255
+    return out
 
 def wall_thickness(ink):
     """Stroke thickness of the long thick strokes: 2 x distance-transform value, sampled along the ink skeleton (length-weighted,
@@ -48,10 +69,10 @@ def walls_mask(ink, thick):
         if stats[i, cv2.CC_STAT_AREA] >= thick * thick * 2: keep[lab == i] = 1
     return keep
 
-def wall_rects(wmask, thick):
+def wall_rects(wmask, thick, heavy=None):
     """Axis-aligned wall pieces: open the wall mask with a long horizontal kernel (keeps horizontal walls) and a long vertical
     one (keeps vertical walls); each connected component is one wall piece = (orientation, centre coordinate, start, end, thickness)."""
-    L = max(int(thick * 2), int(0.01 * min(wmask.shape)), 6); pieces = []   # short jambs between openings must survive
+    L = max(int(thick * 2), int(1.6 * heavy) if heavy else 0, int(0.01 * min(wmask.shape)), 6); pieces = []   # short jambs between openings must survive; longer than the heaviest wall is thick, so a wall crossing the kernel's direction is not kept
     # filled blocks (fireplaces, columns, counters) are much thicker than walls: take them out first so a block glued to a wall
     # does not swallow it
     kb = int(max(thick * 2.2, 5)); blockmask = cv2.morphologyEx(wmask, cv2.MORPH_OPEN, cv2.getStructuringElement(cv2.MORPH_RECT, (kb, kb)))
@@ -60,6 +81,7 @@ def wall_rects(wmask, thick):
     for i in range(1, bn):
         x, y, w, h, a = bstats[i]
         if max(w, h) >= 3.5 * min(w, h): continue   # elongated: a thick (exterior) wall, keep it as wall
+        if heavy and min(w, h) <= 1.45 * heavy and max(w, h) >= 2.2 * min(w, h): continue   # a short stretch of the heavy (exterior) wall weight between windows: wall, not a block
         blocks.append({"o": "h", "c": y + h / 2, "s0": int(x), "s1": int(x + w), "t": int(h), "x0": int(x), "y0": int(y), "x1": int(x + w), "y1": int(y + h), "block": True}); compact[blab == i] = 1
     core = cv2.erode(compact, cv2.getStructuringElement(cv2.MORPH_RECT, (int(thick) + 2, int(thick) + 2)))   # keep the rim: a wall glued to a block must survive
     wonly = cv2.subtract(wmask, core)
@@ -67,14 +89,22 @@ def wall_rects(wmask, thick):
         m = cv2.morphologyEx(wonly, cv2.MORPH_OPEN, ker); n, lab, stats, _ = cv2.connectedComponentsWithStats(m, 8)
         for i in range(1, n):
             x, y, w, h, a = stats[i]
-            if o == "h" and w >= L: pieces.append({"o": "h", "c": y + h / 2, "s0": int(x), "s1": int(x + w), "t": int(h)})
-            if o == "v" and h >= L: pieces.append({"o": "v", "c": x + w / 2, "s0": int(y), "s1": int(y + h), "t": int(w)})
+            if (w if o == "h" else h) < L: continue
+            # thickness and centre line from the per-position cross-sections (median), not the bounding box: a corner blob or a
+            # stub glued to one end must not make the whole wall fat
+            sub = (lab[y:y + h, x:x + w] == i); prof = sub.sum(axis=0) if o == "h" else sub.sum(axis=1); prof = prof[prof > 0]
+            tt = float(np.median(prof)) if prof.size else float(h if o == "h" else w)
+            ax = np.arange(h if o == "h" else w, dtype=np.float32); wsum = (sub * (ax[:, None] if o == "h" else ax[None, :])).sum(axis=0 if o == "h" else 1)
+            cnt = sub.sum(axis=0 if o == "h" else 1); ok = cnt > 0; cc = float(np.median(wsum[ok] / cnt[ok])) if ok.any() else (h if o == "h" else w) / 2
+            if o == "h" and w >= 1.25 * tt: pieces.append({"o": "h", "c": y + cc + 0.5, "s0": int(x), "s1": int(x + w), "t": max(1, int(round(tt)))})
+            if o == "v" and h >= 1.25 * tt: pieces.append({"o": "v", "c": x + cc + 0.5, "s0": int(y), "s1": int(y + h), "t": max(1, int(round(tt)))})   # a blob wider than tall is not a vertical wall
     # merge pieces of the same wall split by thin crossings: same orientation, same centre line (within thick), touching or overlapping
     merged = []
     for pc in sorted(pieces, key=lambda q: (q["o"], q["c"], q["s0"])):
         for m in merged:
-            if m["o"] == pc["o"] and abs(m["c"] - pc["c"]) <= thick * 0.7 and pc["s0"] <= m["s1"] + 2 and pc["s1"] >= m["s0"] - 2:
-                m["s0"], m["s1"] = min(m["s0"], pc["s0"]), max(m["s1"], pc["s1"]); m["t"] = max(m["t"], pc["t"]); break
+            if m["o"] == pc["o"] and abs(m["c"] - pc["c"]) <= max(2.0, 0.35 * min(m["t"], pc["t"]), 0.35 * thick) and pc["s0"] <= m["s1"] + 2 and pc["s1"] >= m["s0"] - 2:
+                lo = min(m["c"] - m["t"] / 2, pc["c"] - pc["t"] / 2); hi = max(m["c"] + m["t"] / 2, pc["c"] + pc["t"] / 2)   # union of the two bands
+                m["s0"], m["s1"] = min(m["s0"], pc["s0"]), max(m["s1"], pc["s1"]); m["c"] = (lo + hi) / 2; m["t"] = int(round(hi - lo)); break
         else: merged.append(dict(pc))
     def inside_block(pc):
         x0, y0, x1, y1 = ext_of(pc)
@@ -83,7 +113,7 @@ def wall_rects(wmask, thick):
     for m in merged: m["block"] = False
     return merged, blocks
 
-def walls_two_tone(g):
+def walls_two_tone(g, weights_out=None):
     """Plans often draw exterior walls in grey and interior walls in black with different thicknesses (SightMap). Extract
     walls per tone class and union them. Returns (mask, thickness used for geometry = the thinner class)."""
     cls = []
@@ -97,11 +127,15 @@ def walls_two_tone(g):
         ink = (g < 190).astype(np.uint8); t = wall_thickness(ink); return walls_mask(ink, t), t
     cls.sort(key=lambda c: -c[0]); dom = cls[0]
     masks = [c for c in cls if c[0] >= 0.10 * dom[0] and 0.25 <= c[1] / dom[1] <= 4.0]   # minor classes join when they are plausible walls (thin interior next to heavy exterior)
+    if weights_out is not None: weights_out.extend(sorted(c[1] for c in masks))
     return np.clip(sum(c[2] for c in masks), 0, 1).astype(np.uint8), float(dom[1])   # union of weights, geometry parameters from the dominant one
 
 def ext_of(pc):   # piece extent as (x0, y0, x1, y1) in pixels
     t = max(pc["t"], 2) / 2
     return (pc["s0"], pc["c"] - t, pc["s1"], pc["c"] + t) if pc["o"] == "h" else (pc["c"] - t, pc["s0"], pc["c"] + t, pc["s1"])
+
+def band_overlap(p, q):   # overlap (px) of the across-axis bands of two parallel pieces
+    return min(p["c"] + max(p["t"], 2) / 2, q["c"] + max(q["t"], 2) / 2) - max(p["c"] - max(p["t"], 2) / 2, q["c"] - max(q["t"], 2) / 2)
 
 def classify_gap(thin, o, c, a, b, t, thick):
     """What fills a gap in a wall line: window (thin lines along the wall inside the band), door (a quarter-circle arc of
@@ -159,7 +193,7 @@ def bridge(pieces, shape, thick, ink=None, max_gap_frac=0.3):
                 if i == j: continue
                 qx0, qy0, qx1, qy1 = ext_of(q)
                 if q["o"] == pc["o"]:   # collinear continuation
-                    if abs(q["c"] - pc["c"]) > max(2.0, thick * 0.35): continue
+                    if abs(q["c"] - pc["c"]) > max(2.0, thick * 0.35) and band_overlap(pc, q) < 0.6 * min(max(pc["t"], 2), max(q["t"], 2)): continue   # same wall line (offset centres of a thin and a thick piece still share the band)
                     gap = (q["s0"] - pc["s1"]) if end == 1 else (pc["s0"] - q["s1"])
                     if 0 <= gap <= max_gap and (best is None or gap < best[0]): best = (gap, j, "collinear")
                 else:   # perpendicular wall crossing the extension line: close a corner, or reach it across a window/door that runs into the corner
@@ -185,6 +219,110 @@ def bridge(pieces, shape, thick, ink=None, max_gap_frac=0.3):
     for o in openings:
         if not any(u["o"] == o["o"] and abs(u["c"] - o["c"]) <= thick and abs(u["a"] - o["a"]) <= thick and abs(u["b"] - o["b"]) <= thick for u in uniq): uniq.append(o)
     return img, uniq
+
+def outside_of(closed):
+    """Free pixels connected (4-conn) to the image border."""
+    free = (closed == 0).astype(np.uint8); n, lab = cv2.connectedComponents(free, connectivity=4)
+    border = np.unique(np.concatenate([lab[0], lab[-1], lab[:, 0], lab[:, -1]])); border = border[border > 0]
+    return np.isin(lab, border)
+
+def gap_candidates(pieces, thick, max_gap):
+    """Every piece end facing a collinear piece or a perpendicular wall across a gap: (gap, i, j, o, c, a, b, t)."""
+    out = []
+    for i, pc in enumerate(pieces):
+        for end in (0, 1):
+            best = None
+            for j, q in enumerate(pieces):
+                if i == j: continue
+                qx0, qy0, qx1, qy1 = ext_of(q)
+                if q["o"] == pc["o"]:
+                    if abs(q["c"] - pc["c"]) > max(2.0, thick * 0.35) and band_overlap(pc, q) < 0.6 * min(max(pc["t"], 2), max(q["t"], 2)): continue
+                    gap = (q["s0"] - pc["s1"]) if end == 1 else (pc["s0"] - q["s1"])
+                else:
+                    lo, hi = (qy0, qy1) if pc["o"] == "h" else (qx0, qx1)
+                    if not (lo - thick <= pc["c"] <= hi + thick): continue
+                    near = (qx0, qx1) if pc["o"] == "h" else (qy0, qy1)
+                    gap = (near[0] - pc["s1"]) if end == 1 else (pc["s0"] - near[1])
+                if 0.5 * thick < gap <= max_gap and (best is None or gap < best[0]): best = (gap, j)
+            if best:
+                gap, j = best; a = pc["s1"] if end == 1 else pc["s0"] - gap
+                out.append((float(gap), i, j, pc["o"], float(pc["c"]), float(a), float(a + gap), max(pc["t"], pieces[j]["t"] if pieces[j]["o"] == pc["o"] else pc["t"], 3)))
+    out.sort(); uniq = []
+    for c in out:
+        if not any(u[3] == c[3] and abs(u[4] - c[4]) <= thick and abs(u[5] - c[5]) <= thick and abs(u[6] - c[6]) <= thick for u in uniq): uniq.append(c)
+    return uniq
+
+def repair_leaks(closed, pieces, openings, thin, thick, door_ref, max_rounds=40):
+    """Rooms whose door arc is faint, or whose door is the front entry in the exterior wall, leak into the outside through that
+    gap and never become rooms. Close a gap (and record the opening) when doing so encloses a plausible room:
+    - exterior gap (the far side stays outside and is blank paper): door or window regardless of arc evidence, room 0.8-80 m2
+    - interior gap: a door with a weak arc (>= 0.12), door-sized, the enclosed room 0.8-12 m2 (bath, entry, closet).
+    Areas are at door scale (0.86 m door); without a door reference the door is taken as 6.5 wall thicknesses."""
+    H, W = closed.shape; dref = door_ref or 6.5 * thick; mpp = 0.86 / dref; px2m = mpp * mpp
+    cands = gap_candidates(pieces, thick, max_gap=min(0.3 * min(H, W), 3.2 * dref))
+    closed = closed.copy(); added = []; outside = outside_of(closed)
+    for _ in range(max_rounds):
+        changed = False
+        for (gap, i, j, o, c, a, b, t) in cands:
+            tt = max(t, thick * 0.8); half = tt / 2
+            if o == "h": x0, y0, x1, y1 = int(a), int(c - half), int(math.ceil(b)), int(math.ceil(c + half))
+            else: x0, y0, x1, y1 = int(c - half), int(a), int(math.ceil(c + half)), int(math.ceil(b))
+            x0, y0, x1, y1 = max(0, x0), max(0, y0), min(W - 1, x1), min(H - 1, y1)
+            if x1 <= x0 or y1 <= y0: continue
+            strip = closed[y0:y1 + 1, x0:x1 + 1]
+            if strip.mean() > 0.6 or not outside[y0:y1 + 1, x0:x1 + 1].any(): continue   # already closed, or not on a leak path
+            trial = closed.copy(); trial[y0:y1 + 1, x0:x1 + 1] = 1; out2 = outside_of(trial)
+            newly = (outside & ~out2 & (trial == 0)).astype(np.uint8)
+            if not newly.any(): continue
+            n, lab, st, _ = cv2.connectedComponentsWithStats(newly, 4)
+            comps = [st[k, cv2.CC_STAT_AREA] for k in range(1, n) if st[k, cv2.CC_STAT_AREA] >= (6 * thick) ** 2]
+            if not comps: continue
+            area = max(comps) * px2m
+            # which side stays outside: probe both sides of the strip
+            def side(sign):
+                if o == "h": yy0, yy1 = int(c + sign * (half + 2)), int(c + sign * (half + 2 + thick)); yy0, yy1 = sorted((yy0, yy1)); return (max(0, yy0), min(H, yy1 + 1), max(0, int(a)), min(W, int(b) + 1))
+                xx0, xx1 = int(c + sign * (half + 2)), int(c + sign * (half + 2 + thick)); xx0, xx1 = sorted((xx0, xx1)); return (max(0, int(a)), min(H, int(b) + 1), max(0, xx0), min(W, xx1 + 1))
+            far = None
+            for sg in (1, -1):
+                r0, r1, c0, c1 = side(sg)
+                if r1 > r0 and c1 > c0 and out2[r0:r1, c0:c1].mean() > 0.5: far = (r0, r1, c0, c1)
+            if far is None: continue
+            # paper beyond the far side (1..4 wall thicknesses out): the exterior
+            r0, r1, c0, c1 = far
+            if o == "h": rr0, rr1 = (r0, min(H, r0 + 4 * int(thick) + 2)) if r0 > c else (max(0, r1 - 4 * int(thick) - 2), r1)
+            else: rr0, rr1 = (c0, min(W, c0 + 4 * int(thick) + 2)) if c0 > c else (max(0, c1 - 4 * int(thick) - 2), c1)
+            ext_strip = thin[rr0:rr1, c0:c1] if o == "h" else thin[r0:r1, rr0:rr1]
+            exterior = ext_strip.size > 0 and float(ext_strip.mean()) < 0.03 and out2[r0:r1, c0:c1].mean() > 0.9
+            cls = classify_gap(thin, o, c, a, b, t, thick)
+            if exterior:
+                if not (0.8 <= area <= 80): continue
+                if gap > 1.7 * dref and cls["kind"] != "window" and gap > 9 * thick: continue   # wide blank gap: open space (or a recess), not a door
+                kind = cls["kind"] if cls["kind"] != "opening" else ("door" if gap <= 1.7 * dref else "window")
+            else:
+                if not (0.8 <= area <= 12): continue
+                if not (0.5 * dref <= gap <= 1.7 * dref): continue
+                sc = cls.get("score", 0) if cls["kind"] == "door" else door_arc_score(thin, o, c, a, b)
+                if cls["kind"] == "window": kind = "window"
+                elif sc >= 0.12: kind = "door"; cls = {"kind": "door", "score": round(sc, 2), "swing_raw": cls.get("swing_raw") or door_arc_score(thin, o, c, a, b, want_swing=True)}
+                else: continue
+            closed = trial; outside = out2; changed = True
+            added.append({"piece": i, "o": o, "c": c, "a": a, "b": b, "t": t, "meets": j, **cls, "kind": kind, "repair": "exterior" if exterior else "interior"})
+        if not changed: break
+    return closed, openings + added
+
+def door_arc_score(thin, o, c, a, b, want_swing=False):
+    """Best quarter-arc hit ratio over both hinges and both sides (the door part of classify_gap)."""
+    H, W = thin.shape; gap = b - a; th = cv2.dilate(thin, cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))); best = 0.0; swing = None
+    for end_pos, hinge in ((a, "start"), (b, "end")):
+        for sd in (1, -1):
+            hits = n = 0
+            for k in range(1, 13):
+                ang = math.radians(90 * k / 13); al = (1 if hinge == "start" else -1) * gap * math.cos(ang); ac = sd * gap * math.sin(ang)
+                x, y = (end_pos + al, c + ac) if o == "h" else (c + ac, end_pos + al); xi, yi = int(round(x)), int(round(y))
+                if 0 <= xi < W and 0 <= yi < H: n += 1; hits += int(th[yi, xi] > 0)
+            sc = hits / n if n else 0
+            if sc > best: best = sc; swing = f"{hinge}_{'pos' if sd > 0 else 'neg'}"
+    return swing if want_swing else best
 
 def rooms_from(closed, thick):
     free = (closed == 0).astype(np.uint8); H, W = free.shape; ff = free.copy(); mask = np.zeros((H + 2, W + 2), np.uint8)
@@ -215,7 +353,7 @@ def extract(path, extra=None):
     """extra: list of {'type', 'x0','y0','x1','y1'} in image FRACTIONS to force-bridge (from the VLM review)."""
     g, ink, s = load_ink(path)
     if not is_plan(g) or softness(path) > 3.0: raise ValueError(f"not a floor plan (white {float((g > 235).mean()):.2f}, ink {float((g < 190).mean()):.2f}, mid {float(((g > 70) & (g < 215)).mean()):.2f}, colour {colourful(path):.2f})")
-    wm, thick = walls_two_tone(g); pieces, blocks = wall_rects(wm, thick)
+    weights = []; wm, thick = walls_two_tone(g, weights); pieces, blocks = wall_rects(wm, thick, heavy=max(weights) if weights else None)
     loose = (g < 235).astype(np.uint8)
     closed, openings = bridge(pieces, g.shape, thick, ink=loose)
     # second pass: the typical door width is now known (confident arcs, plausible size); bridges much wider than a door that
@@ -252,6 +390,8 @@ def extract(path, extra=None):
             if o == "h": cv2.rectangle(closed, (int(a), int(c - thick / 2)), (int(b), int(c + thick / 2)), 1, -1)
             else: cv2.rectangle(closed, (int(c - thick / 2), int(a)), (int(c + thick / 2), int(b)), 1, -1)
             if i >= 0: openings.append({"piece": i, "o": o, "c": c, "a": float(a), "b": float(b), "t": pieces[i]["t"], "meets": i, "kind": e["type"], "score": 1.0, "from_review": True})
+    thin = cv2.subtract(loose, cv2.dilate(closed, cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))))
+    closed, openings = repair_leaks(closed, pieces, openings, thin, thick, door_ref)
     lab, rooms = rooms_from(closed, thick)
     # keep pieces (and openings) that border a room; everything else is title, legend, logo
     roomsmask = np.isin(lab, [r["label"] for r in rooms]).astype(np.uint8); near = cv2.dilate(roomsmask, cv2.getStructuringElement(cv2.MORPH_RECT, (int(thick * 2) + 3, int(thick * 2) + 3)))

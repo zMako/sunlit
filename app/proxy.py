@@ -133,6 +133,25 @@ class H(http.server.SimpleHTTPRequestHandler):
             r = subprocess.run([PY, str(ROOT / "furnish" / "agent.py"), "chat", name], input=json.dumps(req), capture_output=True, text=True, cwd=str(ROOT.parent), env=dict(os.environ), timeout=300)
             out = (r.stdout.strip().splitlines() or ["{}"])[-1]
             return self.reply(out.encode() if out.startswith("{") else json.dumps({"error": (r.stderr or r.stdout)[-800:]}).encode())
+        # --- map front door (app/map/): OSM raster tile cache + listings index ---
+        if rel.startswith("/tiles/") and rel.endswith(".png"):   # /tiles/{z}/{x}/{y}.png, cached to map/tiles/; OSM tile policy: identifying UA, cache, no bulk
+            try: z, x, y = (int(v) for v in rel[len("/tiles/"):-4].split("/"))
+            except ValueError: return self.send_error(400)
+            if not (0 <= z <= 19 and 0 <= x < 2 ** z and 0 <= y < 2 ** z): return self.send_error(400)
+            f = ROOT / "map" / "tiles" / str(z) / str(x) / f"{y}.png"
+            if not f.exists():
+                try:
+                    req = urllib.request.Request(f"https://tile.openstreetmap.org/{z}/{x}/{y}.png", headers={"User-Agent": "MoveIn-CalHacks-demo/1.0 (local single-user tile cache; app/map in the sunlit project)"})
+                    with urllib.request.urlopen(req, timeout=8) as r: data = r.read()
+                    f.parent.mkdir(parents=True, exist_ok=True); f.write_bytes(data)
+                except Exception: return self.send_error(502)
+            body = f.read_bytes(); self.send_response(200); self.send_header("Content-Type", "image/png"); self.send_header("Content-Length", str(len(body))); self.send_header("Cache-Control", "max-age=604800"); self.end_headers(); self.wfile.write(body); return
+        if rel == "/api/listings":   # map/listings.json, written by map/listings_index.py
+            f = ROOT / "map" / "listings.json"
+            return self.reply(f.read_bytes()) if f.exists() else self.send_error(404)
+        if rel.startswith("/listings/") and "/plans/" in rel and rel.endswith(".png"):   # a few floor plans are PNG
+            p = (LIST / rel[len("/listings/"):]).resolve()
+            return self.reply(p.read_bytes(), "image/png") if LIST.resolve() in p.parents and p.exists() else self.send_error(404)
         if rel.startswith("/listings/") and rel.endswith(".jpg"):
             p = (LIST / rel[len("/listings/"):]).resolve()
             if LIST.resolve() in p.parents and p.exists(): return self.reply(p.read_bytes(), "image/jpeg")

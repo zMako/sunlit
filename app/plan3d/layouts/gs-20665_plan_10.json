@@ -6,6 +6,8 @@
   "m_per_px": 0.05389,
   "from": [
    "area:prior 0 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
   "sqft_listed": null,
@@ -16,19 +18,20 @@
    86.0
   ],
   "image_scale": 1.0,
-  "rescale_k": 1.0
+  "door_vs_reader": 1.35,
+  "rescale_k": 2.218
  },
  "ceiling_m": 2.6,
  "walls": [
   {
    "id": "w0",
    "a": [
-    0.054,
-    10.913
+    0.055,
+    10.915
    ],
    "b": [
-    2.587,
-    10.913
+    2.588,
+    10.915
    ],
    "thickness_m": 0.195,
    "exterior": true
@@ -36,25 +39,25 @@
   {
    "id": "w1",
    "a": [
-    4.042,
-    10.913
+    4.043,
+    10.915
    ],
    "b": [
-    9.162,
-    10.913
+    9.163,
+    10.915
    ],
-   "thickness_m": 0.269,
+   "thickness_m": 0.271,
    "exterior": true
   },
   {
    "id": "w2",
    "a": [
-    7.113,
-    15.898
+    7.114,
+    15.9
    ],
    "b": [
-    9.162,
-    15.898
+    9.163,
+    15.9
    ],
    "thickness_m": 0.215,
    "exterior": true
@@ -62,14 +65,14 @@
   {
    "id": "w3",
    "a": [
-    0.054,
-    17.138
+    0.055,
+    17.141
    ],
    "b": [
-    9.162,
-    17.138
+    9.163,
+    17.141
    ],
-   "thickness_m": 0.646,
+   "thickness_m": 0.648,
    "exterior": true
   },
   {
@@ -80,20 +83,20 @@
    ],
    "b": [
     0.162,
-    17.461
+    17.463
    ],
-   "thickness_m": 0.323,
+   "thickness_m": 0.322,
    "exterior": true
   },
   {
    "id": "w5",
    "a": [
     2.02,
-    10.832
+    10.835
    ],
    "b": [
     2.02,
-    11.479
+    11.48
    ],
    "thickness_m": 0.195,
    "exterior": false
@@ -102,11 +105,11 @@
    "id": "w6",
    "a": [
     2.047,
-    15.252
+    15.254
    ],
    "b": [
     2.047,
-    17.461
+    17.463
    ],
    "thickness_m": 0.215,
    "exterior": false
@@ -114,12 +117,12 @@
   {
    "id": "w7",
    "a": [
-    4.58,
-    10.832
+    4.581,
+    10.835
    ],
    "b": [
-    4.58,
-    13.204
+    4.581,
+    13.205
    ],
    "thickness_m": 0.215,
    "exterior": false
@@ -128,11 +131,11 @@
    "id": "w8",
    "a": [
     7.249,
-    10.832
+    10.835
    ],
    "b": [
     7.249,
-    17.516
+    17.518
    ],
    "thickness_m": 0.377,
    "exterior": true
@@ -143,8 +146,8 @@
    "id": "o0",
    "wall": "w0",
    "type": "door",
-   "s0": 2.533,
-   "s1": 3.988,
+   "s0": 2.535,
+   "s1": 3.987,
    "width_m": 1.455,
    "sill_m": 0.0,
    "height_m": 2.03,
@@ -154,34 +157,54 @@
    "id": "o1",
    "wall": "w5",
    "type": "window",
-   "s0": 0.646,
-   "s1": 4.42,
-   "width_m": 3.773,
+   "s0": 0.648,
+   "s1": 4.419,
+   "width_m": 3.772,
    "sill_m": 0.9,
    "height_m": 1.3
+  },
+  {
+   "id": "o2",
+   "wall": "w1",
+   "type": "opening",
+   "s0": 3.289,
+   "s1": 4.635,
+   "width_m": 1.346,
+   "sill_m": 0.0,
+   "height_m": 2.1
+  },
+  {
+   "id": "o3",
+   "wall": "w3",
+   "type": "opening",
+   "s0": 7.276,
+   "s1": 8.894,
+   "width_m": 1.619,
+   "sill_m": 0.0,
+   "height_m": 2.1
   }
  ],
  "rooms": [
   {
    "id": "r0",
-   "name": "Room 1",
-   "type": "other",
+   "name": "Closet",
+   "type": "closet",
    "polygon": [
     [
      1.887,
-     11.049
+     11.048
     ],
     [
      1.887,
-     16.761
+     16.762
     ],
     [
      0.377,
-     16.761
+     16.762
     ],
     [
      0.377,
-     11.049
+     11.048
     ]
    ],
    "area_m2": 8.56,
@@ -193,39 +216,39 @@
   },
   {
    "id": "r1",
-   "name": "Room 2",
-   "type": "other",
+   "name": "Bath",
+   "type": "bathroom",
    "polygon": [
     [
-     4.42,
+     4.419,
      11.101
     ],
     [
-     4.42,
-     13.259
+     4.419,
+     13.261
     ],
     [
      4.743,
-     13.259
+     13.261
     ],
     [
      4.743,
      11.101
     ],
     [
-     7.007,
+     7.005,
      11.101
     ],
     [
-     7.007,
-     16.761
+     7.005,
+     16.762
     ],
     [
-     2.21,
-     16.761
+     2.209,
+     16.762
     ],
     [
-     2.21,
+     2.209,
      11.101
     ]
    ],
@@ -237,9 +260,131 @@
    ]
   }
  ],
- "fixtures": [],
+ "fixtures": [
+  {
+   "id": "f0",
+   "type": "tub",
+   "rect": {
+    "x": 5.954,
+    "z": 12.136,
+    "w": 2.747,
+    "d": 2.069,
+    "rot_deg": 0
+   },
+   "room": "r1",
+   "against_wall": "N",
+   "height_m": 0.55
+  },
+  {
+   "id": "f1",
+   "type": "toilet",
+   "rect": {
+    "x": 6.092,
+    "z": 16.057,
+    "w": 1.375,
+    "d": 2.069,
+    "rot_deg": 270
+   },
+   "room": "r1",
+   "against_wall": "E",
+   "height_m": 0.75
+  },
+  {
+   "id": "f2",
+   "type": "vanity",
+   "rect": {
+    "x": 3.207,
+    "z": 15.857,
+    "w": 2.747,
+    "d": 1.809,
+    "rot_deg": 180
+   },
+   "room": "r1",
+   "against_wall": "S",
+   "height_m": 0.85
+  },
+  {
+   "id": "f3",
+   "type": "closet_rod",
+   "rect": {
+    "x": 0.514,
+    "z": 13.988,
+    "w": 0.275,
+    "d": 5.173,
+    "rot_deg": 90
+   },
+   "room": "r0",
+   "against_wall": "W",
+   "height_m": 1.7
+  },
+  {
+   "id": "f4",
+   "type": "stove",
+   "rect": {
+    "x": 7.879,
+    "z": 11.662,
+    "w": 1.1,
+    "d": 1.552,
+    "rot_deg": 0
+   },
+   "room": null,
+   "against_wall": "N",
+   "height_m": 0.9
+  },
+  {
+   "id": "f5",
+   "type": "sink",
+   "rect": {
+    "x": 7.879,
+    "z": 13.731,
+    "w": 1.1,
+    "d": 1.552,
+    "rot_deg": 270
+   },
+   "room": null,
+   "against_wall": "E",
+   "height_m": 0.9
+  },
+  {
+   "id": "f6",
+   "type": "counter",
+   "rect": {
+    "x": 7.948,
+    "z": 13.212,
+    "w": 1.237,
+    "d": 4.657,
+    "rot_deg": 270
+   },
+   "room": null,
+   "against_wall": "E",
+   "height_m": 0.9
+  },
+  {
+   "id": "f7",
+   "type": "fireplace",
+   "rect": {
+    "x": 10.626,
+    "z": 4.16,
+    "w": 1.65,
+    "d": 3.105,
+    "rot_deg": 270
+   },
+   "room": null,
+   "against_wall": "E",
+   "height_m": 1.1
+  }
+ ],
  "materials": {},
  "review": {
-  "rounds": 0
+  "rounds": 1,
+  "issues": [
+   "Living area, kitchen, and foyer are not detected as rooms",
+   "Entry door to foyer at the bottom right is not marked",
+   "Bath is split from the closet by a blue window line that is really a wall or door",
+   "Patio is not detected",
+   "Kitchen opening to living area is not marked",
+   "Window along patio wall is not marked"
+  ],
+  "usd": 0.0134
  }
 }

@@ -6565,66 +6565,76 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 5.9
+    "name": "Entry",
+    "type": "entry",
+    "area_m2": 6.77
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 4.1
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 4.99
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 0.63
+    "name": "WD",
+    "type": "laundry",
+    "area_m2": 0.77
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 0.41
+    "name": "Closet (west end)",
+    "type": "closet",
+    "area_m2": 0.49
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 1.22
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.48
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 8.74
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 10.55
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 0.83
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.01
    },
    {
     "id": "r7",
-    "name": "Room 8",
-    "type": "other",
-    "area_m2": 2.8
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 3.39
    },
    {
     "id": "r8",
-    "name": "Room 9",
-    "type": "other",
-    "area_m2": 11.08
+    "name": "Living/Dining",
+    "type": "living",
+    "area_m2": 13.52
    }
   ],
-  "area_m2": 35.7,
+  "area_m2": 43.0,
   "scale_from": [
-   "area:prior 0 bedroom(s)",
-   "door_width"
+   "area:printed sqft 544.0",
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width",
+   "sqft"
   ],
-  "n_fixtures": 7,
-  "issues": [],
+  "n_fixtures": 11,
+  "issues": [
+   "Kitchen counter run is split between region 8 and living region 9; kitchen is open to living/dining",
+   "Region 1 entry includes the hall and extends down to the bedroom area; hallway south of WD is merged into region 6 bedroom",
+   "Region 4 is a sliver of the closet and should merge with 5",
+   "Entry door on the top wall is shown as a door but the entry is open",
+   "Bath door arc is marked as a door along a long thin red line",
+   "Bedroom opening to hall (yellow) is a cased opening/ sliding door"
+  ],
   "materials": false
  },
  {
@@ -6636,42 +6646,51 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 31.69
+    "name": "Patio",
+    "type": "balcony",
+    "area_m2": 32.85
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 15.61
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 16.25
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 3.33
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 3.46
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 1.34
+    "name": "WD",
+    "type": "laundry",
+    "area_m2": 1.4
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 0.73
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 0.76
    }
   ],
-  "area_m2": 52.7,
+  "area_m2": 54.7,
   "scale_from": [
-   "area:prior 1 bedroom(s)",
-   "door_width"
+   "area:printed sqft 693.0",
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width",
+   "sqft"
   ],
-  "n_fixtures": 9,
-  "issues": [],
+  "n_fixtures": 13,
+  "issues": [
+   "Living/dining/kitchen, entry and bath are not detected as rooms (open to each other, doors unmarked)",
+   "Bath door and entry door not marked",
+   "Patio door arc partly marked, door gap in the wall not marked",
+   "Bathroom has no region",
+   "Closet 5 is a small part of the bath area closet, and region 4 is the WD closet"
+  ],
   "materials": false
  },
  {
@@ -6683,48 +6702,58 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
+    "name": "Title area (spurious)",
     "type": "other",
-    "area_m2": 0.31
+    "area_m2": 0.33
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 18.94
+    "name": "Patio",
+    "type": "balcony",
+    "area_m2": 20.65
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 10.31
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 11.23
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 21.56
+    "name": "Living/Dining/Kitchen",
+    "type": "living",
+    "area_m2": 23.24
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 0.72
+    "name": "WD",
+    "type": "laundry",
+    "area_m2": 0.79
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 0.86
+    "name": "Bath entry hall",
+    "type": "hallway",
+    "area_m2": 0.93
    }
   ],
-  "area_m2": 52.7,
+  "area_m2": 57.2,
   "scale_from": [
-   "area:prior 1 bedroom(s)",
-   "door_width"
+   "area:printed sqft 724.0",
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width",
+   "sqft"
   ],
-  "n_fixtures": 9,
-  "issues": [],
+  "n_fixtures": 12,
+  "issues": [
+   "Region 1 is a false region from the title area with doors drawn on the header; ignore",
+   "Bathroom is not a separate region; it merges with the living/kitchen region through the missing door",
+   "The bath entry door is missing, so the bathroom is open to region 4",
+   "The bedroom closet is merged into the bedroom (region 3)",
+   "Hall closet near the island is merged into region 4",
+   "Patio door is drawn but not marked as a door"
+  ],
   "materials": false
  },
  {
@@ -6736,48 +6765,58 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 32.79
+    "name": "Entry/Kitchen",
+    "type": "kitchen",
+    "area_m2": 32.31
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 16.95
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 16.98
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 4.86
+    "name": "WD",
+    "type": "laundry",
+    "area_m2": 4.88
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
+    "name": "Closet",
+    "type": "closet",
     "area_m2": 9.58
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 6.26
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 6.27
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 4.35
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 4.37
    }
   ],
-  "area_m2": 74.8,
+  "area_m2": 74.4,
   "scale_from": [
-   "area:prior 2 bedroom(s)",
-   "door_width"
+   "area:printed sqft 942.0",
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width",
+   "sqft"
   ],
-  "n_fixtures": 12,
-  "issues": [],
+  "n_fixtures": 14,
+  "issues": [
+   "Bath at left middle (shower, toilet, double vanity) not detected as a room",
+   "Living/dining and both bedrooms not detected as rooms",
+   "Kitchen region 1 includes entry and leaks around the island",
+   "Entry closet merged into kitchen",
+   "Door between bath 2 and entry is marked, but the bath door swing area is open",
+   "Bedroom doors missing"
+  ],
   "materials": false
  },
  {
@@ -6789,84 +6828,95 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 18.71
+    "name": "Patio",
+    "type": "balcony",
+    "area_m2": 18.68
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 27.03
+    "name": "Living/Dining/Kitchen",
+    "type": "living",
+    "area_m2": 26.59
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 9.83
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 9.81
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 8.19
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 8.06
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
+    "name": "Closet",
+    "type": "closet",
     "area_m2": 1.26
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 1.14
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.13
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 1.91
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 1.83
    },
    {
     "id": "r7",
-    "name": "Room 8",
-    "type": "other",
-    "area_m2": 1.78
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 1.77
    },
    {
     "id": "r8",
-    "name": "Room 9",
-    "type": "other",
+    "name": "Kitchen counter area",
+    "type": "kitchen",
     "area_m2": 0.56
    },
    {
     "id": "r9",
-    "name": "Room 10",
-    "type": "other",
+    "name": "Bath",
+    "type": "bathroom",
     "area_m2": 2.47
    },
    {
     "id": "r10",
-    "name": "Room 11",
-    "type": "other",
+    "name": "Bath",
+    "type": "bathroom",
     "area_m2": 0.53
    },
    {
     "id": "r11",
-    "name": "Room 12",
-    "type": "other",
-    "area_m2": 1.4
+    "name": "Ref/Kitchen corner",
+    "type": "kitchen",
+    "area_m2": 1.39
    }
   ],
-  "area_m2": 74.8,
+  "area_m2": 74.1,
   "scale_from": [
-   "area:prior 2 bedroom(s)",
-   "door_width"
+   "area:printed sqft 938.0",
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width",
+   "sqft"
   ],
-  "n_fixtures": 14,
-  "issues": [],
+  "n_fixtures": 16,
+  "issues": [
+   "Patio west wall region is black/filled; left exterior wall thickened",
+   "Living/dining and kitchen merged correctly but kitchen counter strip split into 9 and 12",
+   "Entry door region 11 is a sliver of bath 10 and entry area",
+   "Bath 7 and 8 are one bathroom split by a door swing",
+   "Hall closet near entry merged into region 2",
+   "Washer/dryer closet merged into living region 2",
+   "Bedroom 4 closet door and bath door swing cause false walls"
+  ],
   "materials": false
  },
  {
@@ -6878,30 +6928,40 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 4.4
+    "name": "WD closet",
+    "type": "laundry",
+    "area_m2": 4.81
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 8.69
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 9.47
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 39.61
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 43.21
    }
   ],
-  "area_m2": 52.7,
+  "area_m2": 57.5,
   "scale_from": [
-   "area:prior 1 bedroom(s)",
-   "door_width"
+   "area:printed sqft 728.0",
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width",
+   "sqft"
   ],
-  "n_fixtures": 6,
-  "issues": [],
+  "n_fixtures": 12,
+  "issues": [
+   "Living/dining, kitchen, entry and bath are not detected as rooms",
+   "Bath door/opening missing",
+   "Bedroom region includes the closet door swing area",
+   "Bedroom door at the closet and living room boundary marked oddly",
+   "Front entry doors at top and bottom right not marked",
+   "Bathroom closet not detected"
+  ],
   "materials": false
  },
  {
@@ -6913,48 +6973,57 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 36.33
+    "name": "Living/Dining/Kitchen",
+    "type": "living",
+    "area_m2": 33.06
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 7.99
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 7.3
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 1.54
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.41
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 0.86
+    "name": "WD",
+    "type": "laundry",
+    "area_m2": 0.78
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 4.94
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 4.5
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 1.04
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 0.95
    }
   ],
-  "area_m2": 52.7,
+  "area_m2": 48.0,
   "scale_from": [
-   "area:prior 1 bedroom(s)",
-   "door_width"
+   "area:printed sqft 608.0",
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width",
+   "sqft"
   ],
-  "n_fixtures": 15,
-  "issues": [],
+  "n_fixtures": 11,
+  "issues": [
+   "Living/dining and kitchen are one region (fine)",
+   "Region 6 closet includes a dark filled wall block",
+   "Patio is not a numbered region",
+   "Hall gap between living and washer closet door drawn but fine",
+   "Kitchen closet door arc partially unmarked"
+  ],
   "materials": false
  },
  {
@@ -6966,66 +7035,77 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 1.75
+    "name": "Kitchen counter strip",
+    "type": "kitchen",
+    "area_m2": 2.02
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 2.99
+    "name": "Kitchen (fragment)",
+    "type": "kitchen",
+    "area_m2": 2.47
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 3.5
+    "name": "Bath (entry area)",
+    "type": "bathroom",
+    "area_m2": 4.1
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 1.71
+    "name": "WD closet",
+    "type": "laundry",
+    "area_m2": 1.98
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 24.68
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 28.82
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 2.14
+    "name": "Entry",
+    "type": "entry",
+    "area_m2": 2.51
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 2.72
+    "name": "Bath (toilet area)",
+    "type": "bathroom",
+    "area_m2": 3.17
    },
    {
     "id": "r7",
-    "name": "Room 8",
-    "type": "other",
-    "area_m2": 10.88
+    "name": "Bath (tub area)",
+    "type": "bathroom",
+    "area_m2": 12.69
    },
    {
     "id": "r8",
-    "name": "Room 9",
-    "type": "other",
-    "area_m2": 2.33
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 2.73
    }
   ],
-  "area_m2": 52.7,
+  "area_m2": 60.5,
   "scale_from": [
-   "area:prior 1 bedroom(s)",
-   "door_width"
+   "area:printed sqft 766.0",
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width",
+   "sqft"
   ],
-  "n_fixtures": 8,
-  "issues": [],
+  "n_fixtures": 12,
+  "issues": [
+   "Kitchen/living/dining open area is not a region; only fragments 1 and 2 detected",
+   "Entry door at left of kitchen is only partly marked",
+   "Closet at left (door opening to living) not detected as a room",
+   "Bath split into 3, 7, 8 by false lines; 3 and 7 and 8 are one bath",
+   "Region 1 includes dark filled corner and has false window lines",
+   "Bedroom door to living area is marked red but the open area is missing",
+   "Bedroom wall window on east is marked blue properly"
+  ],
   "materials": false
  },
  {
@@ -7037,23 +7117,36 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 16.34
+    "name": "Bath (tub area)",
+    "type": "bathroom",
+    "area_m2": 19.07
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 19.36
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 21.68
    }
   ],
-  "area_m2": 35.7,
+  "area_m2": 40.8,
   "scale_from": [
-   "area:prior 0 bedroom(s)"
+   "area:printed sqft 516.0",
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width",
+   "sqft"
   ],
-  "n_fixtures": 7,
-  "issues": [],
+  "n_fixtures": 12,
+  "issues": [
+   "Only the tub area and the bedroom-side closet were detected; the bath proper, entry, bedroom, living/dining/kitchen and other closet are not separate regions",
+   "Bath region is cut off at the tub; the bath wall is open at the toilet",
+   "Red door line drawn at x~0.53 y~0.26-0.34 is on the bath wall, not on the actual door swing",
+   "Bath door, entry door, WD door and closet door are missing",
+   "Bedroom is open to living area; there is a wall gap at the bedroom/living divider",
+   "Entry door at the top right is not marked",
+   "Large window at the bottom is not marked",
+   "Sliding closet doors are only partly marked"
+  ],
   "materials": false
  },
  {
@@ -7065,72 +7158,90 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 32.41
+    "name": "Living/Dining/Kitchen",
+    "type": "living",
+    "area_m2": 31.44
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 0.59
+    "name": "Entry closet",
+    "type": "closet",
+    "area_m2": 0.58
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
+    "name": "Refrigerator alcove",
+    "type": "kitchen",
     "area_m2": 0.43
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 0.68
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 0.67
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 1.34
+    "name": "Kitchen counter run",
+    "type": "kitchen",
+    "area_m2": 1.33
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 18.44
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 18.23
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 6.0
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 5.9
    },
    {
     "id": "r7",
-    "name": "Room 8",
-    "type": "other",
-    "area_m2": 11.52
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 11.31
    },
    {
     "id": "r8",
-    "name": "Room 9",
-    "type": "other",
-    "area_m2": 2.06
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 2.05
    },
    {
     "id": "r9",
-    "name": "Room 10",
-    "type": "other",
-    "area_m2": 1.33
+    "name": "Hallway",
+    "type": "hallway",
+    "area_m2": 1.3
+   },
+   {
+    "id": "r10",
+    "name": "Window bay",
+    "type": "living",
+    "area_m2": 0.44
    }
   ],
-  "area_m2": 74.8,
+  "area_m2": 73.7,
   "scale_from": [
-   "area:prior 2 bedroom(s)",
-   "door_width"
+   "area:printed sqft 933.0",
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width",
+   "sqft"
   ],
-  "n_fixtures": 15,
-  "issues": [],
+  "n_fixtures": 13,
+  "issues": [
+   "Kitchen split into regions 3 and 5 from main room 1 by false lines",
+   "Region 6 is a duplicate of closet 9 and 6 labeled left bath",
+   "Bath on left is merged with bedroom region 6",
+   "Region 10 is a hallway between bath and bedroom",
+   "Closet at right (above bedroom) is merged with bedroom 8",
+   "Region 2 is the entry door swing area, not a closet",
+   "Entry door swing and entry area are part of region 1",
+   "Several door swings are drawn white and not detected as doors"
+  ],
   "materials": false
  },
  {
@@ -7142,84 +7253,95 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 5.29
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 5.8
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 1.82
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 2.04
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 12.65
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 14.17
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 0.57
-   },
-   {
-    "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 4.3
-   },
-   {
-    "id": "r5",
-    "name": "Room 6",
-    "type": "other",
+    "name": "Vanity",
+    "type": "bathroom",
     "area_m2": 0.63
    },
    {
+    "id": "r4",
+    "name": "Entry",
+    "type": "entry",
+    "area_m2": 4.81
+   },
+   {
+    "id": "r5",
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 0.71
+   },
+   {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 2.01
+    "name": "Hallway",
+    "type": "hallway",
+    "area_m2": 2.26
    },
    {
     "id": "r7",
-    "name": "Room 8",
-    "type": "other",
-    "area_m2": 40.27
+    "name": "Refrigerator",
+    "type": "kitchen",
+    "area_m2": 44.74
    },
    {
     "id": "r8",
-    "name": "Room 9",
-    "type": "other",
-    "area_m2": 4.82
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 5.41
    },
    {
     "id": "r9",
-    "name": "Room 10",
-    "type": "other",
-    "area_m2": 0.82
+    "name": "WD",
+    "type": "laundry",
+    "area_m2": 0.91
    },
    {
     "id": "r10",
-    "name": "Room 11",
-    "type": "other",
-    "area_m2": 1.09
+    "name": "Kitchen stove area",
+    "type": "kitchen",
+    "area_m2": 1.23
    },
    {
     "id": "r11",
-    "name": "Room 12",
-    "type": "other",
-    "area_m2": 0.53
+    "name": "Kitchen counter",
+    "type": "kitchen",
+    "area_m2": 0.59
    }
   ],
-  "area_m2": 74.8,
+  "area_m2": 83.3,
   "scale_from": [
-   "area:prior 2 bedroom(s)",
-   "door_width"
+   "area:printed sqft 1055.0",
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width",
+   "sqft"
   ],
-  "n_fixtures": 11,
-  "issues": [],
+  "n_fixtures": 16,
+  "issues": [
+   "Kitchen counter run split into regions 10, 11, 12 by fixtures; the kitchen should be part of the large living/dining region 8",
+   "Living/dining, kitchen and south bedroom are one region (8) because the bedroom has no door marking and the opening is unmarked",
+   "Bath 4 is a false split of bath 1 (vanity strip)",
+   "Bedroom 3 and closet 2 separate OK but closet door is marked while bath door and bedroom door are partially unmarked",
+   "Bath 9 door at top and WD door are not marked",
+   "Closet door in south bedroom not marked and bedroom door gap missing",
+   "Main entry door at right is marked as window-like blue"
+  ],
   "materials": false
  },
  {
@@ -7231,84 +7353,94 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 45.81
+    "name": "Living/Dining/Kitchen/Entry",
+    "type": "living",
+    "area_m2": 44.43
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 15.42
+    "name": "Patio",
+    "type": "balcony",
+    "area_m2": 15.1
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 4.11
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 4.01
    },
    {
     "id": "r3",
-    "name": "Room 4",
+    "name": "Bedroom area (door swing/WD alcove)",
     "type": "other",
-    "area_m2": 3.67
+    "area_m2": 3.6
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 0.64
+    "name": "Bath vanity strip",
+    "type": "bathroom",
+    "area_m2": 0.62
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 0.82
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 0.8
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 7.56
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 7.36
    },
    {
     "id": "r7",
-    "name": "Room 8",
-    "type": "other",
-    "area_m2": 10.4
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 10.2
    },
    {
     "id": "r8",
-    "name": "Room 9",
-    "type": "other",
-    "area_m2": 5.37
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 5.23
    },
    {
     "id": "r9",
-    "name": "Room 10",
-    "type": "other",
-    "area_m2": 0.98
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 0.97
    },
    {
     "id": "r10",
-    "name": "Room 11",
-    "type": "other",
-    "area_m2": 2.46
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 2.41
    },
    {
     "id": "r11",
-    "name": "Room 12",
-    "type": "other",
-    "area_m2": 0.51
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 0.5
    }
   ],
-  "area_m2": 97.8,
+  "area_m2": 95.2,
   "scale_from": [
-   "area:prior 3 bedroom(s)",
-   "door_width"
+   "area:printed sqft 1206.0",
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width",
+   "sqft"
   ],
-  "n_fixtures": 8,
-  "issues": [],
+  "n_fixtures": 15,
+  "issues": [
+   "Region 1 merges living, kitchen, entry and hallway",
+   "Regions 4 and 6 are the WD alcove and closet; region 4 is not a real room",
+   "Region 5 is part of bath 3, merge them",
+   "Entry opening and door at bottom are partly marked",
+   "Door of bath 3 is marked but bedroom 8 door swing is split into region 8 area",
+   "Window on bedroom 8 east side missing"
+  ],
   "materials": false
  },
  {
@@ -7320,42 +7452,65 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 5.65
+    "name": "Kitchen counter strip",
+    "type": "kitchen",
+    "area_m2": 2.99
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 2.33
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.24
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 4.44
+    "name": "WD",
+    "type": "laundry",
+    "area_m2": 2.35
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 30.74
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 16.22
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 31.63
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.64
+   },
+   {
+    "id": "r5",
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 16.27
+   },
+   {
+    "id": "r6",
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 17.8
    }
   ],
-  "area_m2": 74.8,
+  "area_m2": 58.5,
   "scale_from": [
-   "area:prior 2 bedroom(s)",
-   "door_width"
+   "area:printed sqft 741.0",
+   "annotation_dims",
+   "reader_dims+estimated",
+   "door_width",
+   "sqft"
   ],
-  "n_fixtures": 8,
-  "issues": [],
+  "n_fixtures": 13,
+  "issues": [
+   "Kitchen/living/entry open area has no region; only the counter strip was found as room 1",
+   "Wall drawn along kitchen counter incorrectly",
+   "Living/dining not detected as a room",
+   "Entry door not marked",
+   "Bedroom 4 includes its closet at the bottom",
+   "Bathroom region 6 includes the dark column block",
+   "Closet 2 door marked but the entry swing is missing"
+  ],
   "materials": false
  },
  {
@@ -9117,190 +9272,193 @@
     "id": "r0",
     "name": "Room 1",
     "type": "other",
-    "area_m2": 2.39
+    "area_m2": 4.23
    },
    {
     "id": "r1",
     "name": "Room 2",
     "type": "other",
-    "area_m2": 1.48
+    "area_m2": 2.62
    },
    {
     "id": "r2",
     "name": "Room 3",
     "type": "other",
-    "area_m2": 0.5
+    "area_m2": 0.89
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 14.27
+    "name": "Balcony",
+    "type": "balcony",
+    "area_m2": 25.28
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 2.7
+    "name": "Living room north strip",
+    "type": "living",
+    "area_m2": 4.77
    },
    {
     "id": "r5",
     "name": "Room 6",
     "type": "other",
-    "area_m2": 1.12
+    "area_m2": 1.98
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 0.5
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 0.89
    },
    {
     "id": "r7",
     "name": "Room 8",
     "type": "other",
-    "area_m2": 0.52
+    "area_m2": 0.92
    },
    {
     "id": "r8",
     "name": "Room 9",
     "type": "other",
-    "area_m2": 0.54
+    "area_m2": 0.95
    },
    {
     "id": "r9",
     "name": "Room 10",
     "type": "other",
-    "area_m2": 0.7
+    "area_m2": 1.24
    },
    {
     "id": "r10",
-    "name": "Room 11",
-    "type": "other",
-    "area_m2": 0.49
+    "name": "Living Room",
+    "type": "living",
+    "area_m2": 0.86
    },
    {
     "id": "r11",
     "name": "Room 12",
     "type": "other",
-    "area_m2": 1.72
+    "area_m2": 3.05
    },
    {
     "id": "r12",
     "name": "Room 13",
     "type": "other",
-    "area_m2": 1.74
+    "area_m2": 3.08
    },
    {
     "id": "r13",
-    "name": "Room 14",
-    "type": "other",
-    "area_m2": 2.08
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 3.68
    },
    {
     "id": "r14",
-    "name": "Room 15",
-    "type": "other",
-    "area_m2": 3.96
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 7.02
    },
    {
     "id": "r15",
     "name": "Room 16",
     "type": "other",
-    "area_m2": 0.89
+    "area_m2": 1.58
    },
    {
     "id": "r16",
     "name": "Room 17",
     "type": "other",
-    "area_m2": 0.34
+    "area_m2": 0.6
    },
    {
     "id": "r17",
     "name": "Room 18",
     "type": "other",
-    "area_m2": 0.65
+    "area_m2": 1.15
    },
    {
     "id": "r18",
     "name": "Room 19",
     "type": "other",
-    "area_m2": 0.34
+    "area_m2": 0.6
    },
    {
     "id": "r19",
-    "name": "Room 20",
-    "type": "other",
-    "area_m2": 0.44
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 0.78
    },
    {
     "id": "r20",
-    "name": "Room 21",
-    "type": "other",
-    "area_m2": 0.39
+    "name": "Bedroom Closet",
+    "type": "closet",
+    "area_m2": 0.98
    },
    {
     "id": "r21",
-    "name": "Room 22",
-    "type": "other",
-    "area_m2": 0.55
+    "name": "Linen",
+    "type": "closet",
+    "area_m2": 0.78
    },
    {
     "id": "r22",
-    "name": "Room 23",
-    "type": "other",
-    "area_m2": 0.44
+    "name": "Bathroom",
+    "type": "bathroom",
+    "area_m2": 2.65
    },
    {
     "id": "r23",
-    "name": "Room 24",
-    "type": "other",
-    "area_m2": 1.49
+    "name": "Hall",
+    "type": "hallway",
+    "area_m2": 9.69
    },
    {
     "id": "r24",
-    "name": "Room 25",
-    "type": "other",
-    "area_m2": 5.47
+    "name": "Bathroom tub area",
+    "type": "bathroom",
+    "area_m2": 4.0
    },
    {
     "id": "r25",
     "name": "Room 26",
     "type": "other",
-    "area_m2": 2.26
+    "area_m2": 0.55
    },
    {
     "id": "r26",
     "name": "Room 27",
     "type": "other",
-    "area_m2": 0.31
+    "area_m2": 3.48
    },
    {
     "id": "r27",
     "name": "Room 28",
     "type": "other",
-    "area_m2": 1.97
+    "area_m2": 2.24
    },
    {
     "id": "r28",
     "name": "Room 29",
     "type": "other",
-    "area_m2": 1.27
-   },
-   {
-    "id": "r29",
-    "name": "Room 30",
-    "type": "other",
-    "area_m2": 1.19
+    "area_m2": 2.1
    }
   ],
-  "area_m2": 52.7,
+  "area_m2": 92.6,
   "scale_from": [
-   "area:prior 1 bedroom(s)",
-   "door_width"
+   "reader_dims+printed",
+   "door_width",
+   "sqft"
   ],
-  "n_fixtures": 123,
-  "issues": [],
+  "n_fixtures": 10,
+  "issues": [
+   "Bedroom is fragmented into many regions (6-22) by hatch texture",
+   "Living room and kitchen are blacked out and not found as proper rooms",
+   "Regions 1,2,3 are title text noise",
+   "Regions 27-29 are the key map noise",
+   "Bathroom split into 23, 25, 26",
+   "Entry door to hall and bedroom door not properly closed",
+   "Balcony door opening at living room is marked yellow only"
+  ],
   "materials": false
  },
  {
@@ -9398,78 +9556,83 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 5.21
+    "name": "Living Room",
+    "type": "living",
+    "area_m2": 5.49
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 1.37
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 1.44
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 1.14
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 1.2
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 2.7
+    "name": "Balcony",
+    "type": "balcony",
+    "area_m2": 2.84
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 1.19
+    "name": "Bathroom",
+    "type": "bathroom",
+    "area_m2": 1.25
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 2.88
+    "name": "Hall",
+    "type": "hallway",
+    "area_m2": 3.03
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 2.1
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 2.21
    },
    {
     "id": "r7",
-    "name": "Room 8",
-    "type": "other",
-    "area_m2": 18.47
+    "name": "Entry Closet",
+    "type": "closet",
+    "area_m2": 19.45
    },
    {
     "id": "r8",
-    "name": "Room 9",
-    "type": "other",
-    "area_m2": 11.52
+    "name": "Linen",
+    "type": "closet",
+    "area_m2": 12.13
    },
    {
     "id": "r9",
-    "name": "Room 10",
+    "name": "Unused",
     "type": "other",
-    "area_m2": 4.34
+    "area_m2": 4.57
    },
    {
     "id": "r10",
-    "name": "Room 11",
+    "name": "Unused",
     "type": "other",
-    "area_m2": 1.78
+    "area_m2": 1.88
    }
   ],
-  "area_m2": 52.7,
+  "area_m2": 55.5,
   "scale_from": [
-   "area:prior 1 bedroom(s)",
-   "door_width"
+   "area:printed sqft 703.0",
+   "door_width",
+   "sqft"
   ],
-  "n_fixtures": 97,
-  "issues": [],
+  "n_fixtures": 9,
+  "issues": [
+   "Overlay regions found only in the small building key map at the bottom right and the logo, not in the apartment",
+   "Apartment rooms (living, bedroom, kitchen, balcony, bath, hall) were not segmented",
+   "Region numbers do not match actual rooms; all apartment doors and windows are unmarked"
+  ],
   "materials": false
  },
  {
@@ -9480,73 +9643,66 @@
   "plan_name": "H",
   "rooms": [
    {
-    "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 4.02
-   },
-   {
-    "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 1.59
-   },
-   {
     "id": "r2",
-    "name": "Room 3",
+    "name": "Key plan fragment",
     "type": "other",
-    "area_m2": 1.59
+    "area_m2": 2.06
    },
    {
     "id": "r3",
-    "name": "Room 4",
+    "name": "Key plan fragment",
     "type": "other",
-    "area_m2": 3.37
+    "area_m2": 4.37
    },
    {
     "id": "r4",
-    "name": "Room 5",
+    "name": "Key plan unit",
     "type": "other",
-    "area_m2": 18.53
+    "area_m2": 24.03
    },
    {
     "id": "r5",
-    "name": "Room 6",
+    "name": "Key plan fragment",
     "type": "other",
-    "area_m2": 1.59
+    "area_m2": 2.06
    },
    {
     "id": "r6",
-    "name": "Room 7",
+    "name": "Key plan fragment",
     "type": "other",
-    "area_m2": 2.63
+    "area_m2": 3.41
    },
    {
     "id": "r7",
-    "name": "Room 8",
+    "name": "Key plan unit",
     "type": "other",
-    "area_m2": 12.94
+    "area_m2": 16.77
    },
    {
     "id": "r8",
-    "name": "Room 9",
+    "name": "Key plan fragment",
     "type": "other",
-    "area_m2": 5.06
+    "area_m2": 6.55
    },
    {
     "id": "r9",
-    "name": "Room 10",
+    "name": "Key plan fragment",
     "type": "other",
-    "area_m2": 1.39
+    "area_m2": 1.8
    }
   ],
-  "area_m2": 52.7,
+  "area_m2": 61.1,
   "scale_from": [
-   "area:prior 1 bedroom(s)",
-   "door_width"
+   "area:printed sqft 773.0",
+   "door_width",
+   "sqft"
   ],
-  "n_fixtures": 160,
-  "issues": [],
+  "n_fixtures": 10,
+  "issues": [
+   "Overlay detected only the logo and key-plan thumbnails, not the actual apartment",
+   "Living room, kitchen, bedroom, balcony, hall, bathroom and closets are not found as regions",
+   "Apartment walls not closed in the overlay; no doors or windows marked in the unit"
+  ],
   "materials": false
  },
  {
@@ -9557,67 +9713,60 @@
   "plan_name": "J",
   "rooms": [
    {
-    "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 3.05
-   },
-   {
-    "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 1.23
-   },
-   {
     "id": "r2",
-    "name": "Room 3",
+    "name": "Key plan fragment",
     "type": "other",
-    "area_m2": 1.4
+    "area_m2": 2.23
    },
    {
     "id": "r3",
-    "name": "Room 4",
+    "name": "Key plan fragment",
     "type": "other",
-    "area_m2": 9.57
+    "area_m2": 15.27
    },
    {
     "id": "r4",
-    "name": "Room 5",
+    "name": "Key plan fragment",
     "type": "other",
-    "area_m2": 3.35
+    "area_m2": 5.34
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 2.41
-   },
-   {
-    "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 9.78
-   },
-   {
-    "id": "r7",
-    "name": "Room 8",
+    "name": "Key plan fragment",
     "type": "other",
     "area_m2": 3.85
    },
    {
-    "id": "r8",
-    "name": "Room 9",
+    "id": "r6",
+    "name": "Key plan fragment",
     "type": "other",
-    "area_m2": 1.06
+    "area_m2": 15.61
+   },
+   {
+    "id": "r7",
+    "name": "Key plan fragment",
+    "type": "other",
+    "area_m2": 6.15
+   },
+   {
+    "id": "r8",
+    "name": "Key plan fragment",
+    "type": "other",
+    "area_m2": 1.69
    }
   ],
-  "area_m2": 35.7,
+  "area_m2": 50.1,
   "scale_from": [
-   "area:prior 0 bedroom(s)",
-   "door_width"
+   "area:printed sqft 635.0",
+   "door_width",
+   "sqft"
   ],
-  "n_fixtures": 126,
-  "issues": [],
+  "n_fixtures": 7,
+  "issues": [
+   "Overlay found only fragments of the logo and key plan; none of the actual apartment rooms (living room, kitchen, bathroom, closets, hall) were detected",
+   "Apartment walls and doors are not marked",
+   "Regions 1-9 are spurious and are not part of the apartment"
+  ],
   "materials": false
  },
  {
@@ -9628,67 +9777,60 @@
   "plan_name": "K",
   "rooms": [
    {
-    "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 4.17
-   },
-   {
-    "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 1.65
-   },
-   {
     "id": "r2",
-    "name": "Room 3",
+    "name": "Key plan region",
     "type": "other",
-    "area_m2": 1.59
+    "area_m2": 2.36
    },
    {
     "id": "r3",
-    "name": "Room 4",
+    "name": "Key plan region",
     "type": "other",
-    "area_m2": 1.92
+    "area_m2": 2.85
    },
    {
     "id": "r4",
-    "name": "Room 5",
+    "name": "Key plan region",
     "type": "other",
-    "area_m2": 20.18
+    "area_m2": 29.94
    },
    {
     "id": "r5",
-    "name": "Room 6",
+    "name": "Key plan region",
     "type": "other",
-    "area_m2": 3.29
+    "area_m2": 4.88
    },
    {
     "id": "r6",
-    "name": "Room 7",
+    "name": "Key plan region",
     "type": "other",
-    "area_m2": 13.27
+    "area_m2": 19.69
    },
    {
     "id": "r7",
-    "name": "Room 8",
+    "name": "Key plan region",
     "type": "other",
-    "area_m2": 5.21
+    "area_m2": 7.73
    },
    {
     "id": "r8",
-    "name": "Room 9",
+    "name": "Key plan region",
     "type": "other",
-    "area_m2": 1.43
+    "area_m2": 2.12
    }
   ],
-  "area_m2": 52.7,
+  "area_m2": 69.6,
   "scale_from": [
-   "area:prior 1 bedroom(s)",
-   "door_width"
+   "area:printed sqft 881.0",
+   "door_width",
+   "sqft"
   ],
-  "n_fixtures": 133,
-  "issues": [],
+  "n_fixtures": 10,
+  "issues": [
+   "Overlay only found regions in the logo and key plan; none of the actual apartment rooms (bedroom, living room, kitchen, dining, bath, hall, closets, balcony) were detected",
+   "Apartment walls appear not closed so no rooms formed",
+   "Apartment doors and windows are not marked"
+  ],
   "materials": false
  },
  {
@@ -9700,78 +9842,77 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 4.45
+    "name": "Living Room",
+    "type": "living",
+    "area_m2": 5.72
    },
    {
     "id": "r1",
-    "name": "Room 2",
+    "name": "Key plan region",
     "type": "other",
-    "area_m2": 34.28
+    "area_m2": 44.02
    },
    {
     "id": "r2",
-    "name": "Room 3",
+    "name": "Key plan region",
     "type": "other",
-    "area_m2": 6.07
+    "area_m2": 7.79
    },
    {
     "id": "r3",
-    "name": "Room 4",
+    "name": "Key plan region",
     "type": "other",
-    "area_m2": 9.17
-   },
-   {
-    "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 1.14
+    "area_m2": 11.78
    },
    {
     "id": "r5",
-    "name": "Room 6",
+    "name": "Key plan region",
     "type": "other",
-    "area_m2": 5.89
+    "area_m2": 7.57
    },
    {
     "id": "r6",
-    "name": "Room 7",
+    "name": "Key plan region",
     "type": "other",
-    "area_m2": 3.01
+    "area_m2": 3.87
    },
    {
     "id": "r7",
-    "name": "Room 8",
+    "name": "Key plan region",
     "type": "other",
-    "area_m2": 2.62
+    "area_m2": 3.36
    },
    {
     "id": "r8",
-    "name": "Room 9",
-    "type": "other",
-    "area_m2": 1.83
-   },
-   {
-    "id": "r9",
-    "name": "Room 10",
+    "name": "Key plan region",
     "type": "other",
     "area_m2": 2.36
    },
    {
-    "id": "r10",
-    "name": "Room 11",
+    "id": "r9",
+    "name": "Key plan region",
     "type": "other",
-    "area_m2": 3.97
+    "area_m2": 3.03
+   },
+   {
+    "id": "r10",
+    "name": "Key plan region",
+    "type": "other",
+    "area_m2": 5.1
    }
   ],
-  "area_m2": 74.8,
+  "area_m2": 94.6,
   "scale_from": [
-   "area:prior 2 bedroom(s)",
-   "door_width"
+   "area:printed sqft 1198.0",
+   "door_width",
+   "sqft"
   ],
-  "n_fixtures": 171,
-  "issues": [],
+  "n_fixtures": 12,
+  "issues": [
+   "Overlay numbered only regions in the key plan at lower right; the actual apartment rooms are not segmented except possibly region 1 and are mostly missing",
+   "Bedrooms, bathrooms, hall, kitchen and balcony are not separated",
+   "Many doors are not marked"
+  ],
   "materials": false
  },
  {
@@ -9783,108 +9924,113 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 2.74
+    "name": "Living Room",
+    "type": "living",
+    "area_m2": 10.38
    },
    {
     "id": "r1",
     "name": "Room 2",
     "type": "other",
-    "area_m2": 3.83
+    "area_m2": 14.48
    },
    {
     "id": "r2",
     "name": "Room 3",
     "type": "other",
-    "area_m2": 3.06
+    "area_m2": 11.59
    },
    {
     "id": "r3",
     "name": "Room 4",
     "type": "other",
-    "area_m2": 6.64
+    "area_m2": 25.1
    },
    {
     "id": "r4",
     "name": "Room 5",
     "type": "other",
-    "area_m2": 6.51
+    "area_m2": 24.62
    },
    {
     "id": "r5",
     "name": "Room 6",
     "type": "other",
-    "area_m2": 3.51
+    "area_m2": 13.28
    },
    {
     "id": "r6",
     "name": "Room 7",
     "type": "other",
-    "area_m2": 6.7
+    "area_m2": 25.34
    },
    {
     "id": "r7",
     "name": "Room 8",
     "type": "other",
-    "area_m2": 17.81
+    "area_m2": 67.34
    },
    {
     "id": "r8",
     "name": "Room 9",
     "type": "other",
-    "area_m2": 1.15
+    "area_m2": 4.34
    },
    {
     "id": "r9",
     "name": "Room 10",
     "type": "other",
-    "area_m2": 5.87
+    "area_m2": 22.21
    },
    {
     "id": "r10",
     "name": "Room 11",
     "type": "other",
-    "area_m2": 6.13
+    "area_m2": 23.17
    },
    {
     "id": "r11",
     "name": "Room 12",
     "type": "other",
-    "area_m2": 2.23
+    "area_m2": 8.45
    },
    {
     "id": "r12",
     "name": "Room 13",
     "type": "other",
-    "area_m2": 1.6
+    "area_m2": 6.03
    },
    {
     "id": "r13",
     "name": "Room 14",
     "type": "other",
-    "area_m2": 2.36
+    "area_m2": 8.93
    },
    {
     "id": "r14",
     "name": "Room 15",
     "type": "other",
-    "area_m2": 2.3
+    "area_m2": 8.69
    },
    {
     "id": "r15",
     "name": "Room 16",
     "type": "other",
-    "area_m2": 2.36
+    "area_m2": 8.93
    }
   ],
-  "area_m2": 74.8,
+  "area_m2": 282.9,
   "scale_from": [
-   "area:prior 2 bedroom(s)",
-   "door_width"
+   "reader_dims+printed",
+   "door_width",
+   "sqft"
   ],
-  "n_fixtures": 163,
-  "issues": [],
+  "n_fixtures": 11,
+  "issues": [
+   "Overlay found only the living room (mark 1) as a small fragment; the primary bedroom, bedroom, hall, baths, closets, kitchen and balcony were not detected",
+   "Regions 2-16 are in the building key map and are not part of the apartment",
+   "Many doors and windows are not marked"
+  ],
   "materials": false
  },
  {
@@ -9895,55 +10041,48 @@
   "plan_name": "N",
   "rooms": [
    {
-    "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 3.9
-   },
-   {
-    "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 1.54
-   },
-   {
     "id": "r2",
-    "name": "Room 3",
+    "name": "Key plan fragment",
     "type": "other",
-    "area_m2": 3.23
+    "area_m2": 4.11
    },
    {
     "id": "r3",
-    "name": "Room 4",
+    "name": "Key plan fragment",
     "type": "other",
-    "area_m2": 21.84
+    "area_m2": 27.8
    },
    {
     "id": "r4",
-    "name": "Room 5",
+    "name": "Key plan fragment",
     "type": "other",
-    "area_m2": 3.18
+    "area_m2": 4.05
    },
    {
     "id": "r5",
-    "name": "Room 6",
+    "name": "Key plan fragment",
     "type": "other",
-    "area_m2": 17.69
+    "area_m2": 22.52
    },
    {
     "id": "r6",
-    "name": "Room 7",
+    "name": "Key plan fragment",
     "type": "other",
-    "area_m2": 1.33
+    "area_m2": 1.7
    }
   ],
-  "area_m2": 52.7,
+  "area_m2": 60.2,
   "scale_from": [
-   "area:prior 1 bedroom(s)",
-   "door_width"
+   "area:printed sqft 762.0",
+   "door_width",
+   "sqft"
   ],
-  "n_fixtures": 111,
-  "issues": [],
+  "n_fixtures": 10,
+  "issues": [
+   "Overlay found no rooms in the apartment floor plan itself; all 7 regions are in the logo and key plan",
+   "Apartment rooms (balcony, living room, bedroom, hall, bathroom, closets) are not detected",
+   "Walls seem to be missed or unclosed so the apartment is not enclosed"
+  ],
   "materials": false
  },
  {
@@ -9955,54 +10094,62 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 24.59
+    "name": "Living Room / Bedroom / Kitchen (typical)",
+    "type": "living",
+    "area_m2": 24.62
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
+    "name": "Foyer (typical)",
+    "type": "entry",
     "area_m2": 0.56
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 16.29
+    "name": "Living Room / Kitchen (alternate)",
+    "type": "living",
+    "area_m2": 16.32
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 7.33
+    "name": "Bedroom (alternate)",
+    "type": "bedroom",
+    "area_m2": 7.27
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 0.87
+    "name": "Hall/Closet (alternate)",
+    "type": "closet",
+    "area_m2": 0.86
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
+    "name": "Bath (alternate)",
+    "type": "bathroom",
     "area_m2": 2.22
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
+    "name": "Foyer (alternate)",
+    "type": "entry",
     "area_m2": 0.85
    }
   ],
   "area_m2": 52.7,
   "scale_from": [
    "area:prior 1 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 2,
-  "issues": [],
+  "n_fixtures": 11,
+  "issues": [
+   "Typical plan: bedroom, living room and kitchen merged into region 1",
+   "Typical plan bath, bedroom door, and foyer/closet areas not separated into rooms",
+   "Typical plan bath missing as region",
+   "Alternate plan: bath region 6 may be incomplete, shower room east of it missing",
+   "Several doors unmarked in the typical plan"
+  ],
   "materials": false
  },
  {
@@ -10014,42 +10161,50 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 36.86
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 37.06
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 3.34
+    "name": "Hallway",
+    "type": "hallway",
+    "area_m2": 3.33
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 3.61
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 3.36
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 6.75
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 6.79
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 2.14
+    "name": "Kitchen alcove",
+    "type": "kitchen",
+    "area_m2": 2.16
    }
   ],
   "area_m2": 52.7,
   "scale_from": [
    "area:prior 1 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 7,
-  "issues": [],
+  "n_fixtures": 8,
+  "issues": [
+   "Den, foyer and living room are not enclosed as a region; walls missing around them",
+   "Bath at top right (with tub) is not a numbered region",
+   "Closets east of the hallway are not detected",
+   "Large black block on the right is wrongly filled",
+   "Kitchen split into two regions (4 and 5)"
+  ],
   "materials": false
  },
  {
@@ -10061,60 +10216,68 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 9.68
+    "name": "Kitchen (top sliver)",
+    "type": "kitchen",
+    "area_m2": 9.7
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 12.94
+    "name": "Foyer (east part)",
+    "type": "entry",
+    "area_m2": 12.97
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
+    "name": "Closet by entry",
+    "type": "closet",
     "area_m2": 2.06
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 5.87
+    "name": "Foyer (west part)",
+    "type": "entry",
+    "area_m2": 5.88
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 34.01
+    "name": "Hallway",
+    "type": "hallway",
+    "area_m2": 33.92
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 3.71
+    "name": "Bath closet strip",
+    "type": "closet",
+    "area_m2": 3.74
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 4.52
+    "name": "Bedroom closet",
+    "type": "closet",
+    "area_m2": 4.53
    },
    {
     "id": "r7",
-    "name": "Room 8",
-    "type": "other",
+    "name": "Closet",
+    "type": "closet",
     "area_m2": 2.01
    }
   ],
   "area_m2": 74.8,
   "scale_from": [
    "area:prior 2 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 15,
-  "issues": [],
+  "n_fixtures": 8,
+  "issues": [
+   "Large black region over dining/bedroom wall is a false wall artifact",
+   "Living room, dining, bedrooms, kitchen, baths not recognized as rooms",
+   "Foyer split into regions 2 and 4",
+   "Kitchen only detected as small sliver",
+   "Master bedroom and bath not detected"
+  ],
   "materials": false
  },
  {
@@ -10126,54 +10289,62 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 40.24
+    "name": "Living/Dining/Den/Foyer",
+    "type": "living",
+    "area_m2": 40.36
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 5.77
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 5.8
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
+    "name": "Half Bath",
+    "type": "bathroom",
     "area_m2": 0.79
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 24.07
+    "name": "Bedroom/Master Bedroom",
+    "type": "bedroom",
+    "area_m2": 23.9
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
+    "name": "Closet",
+    "type": "closet",
     "area_m2": 0.87
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
+    "name": "Closet",
+    "type": "closet",
     "area_m2": 1.28
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 1.78
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 1.79
    }
   ],
   "area_m2": 74.8,
   "scale_from": [
    "area:prior 2 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 10,
-  "issues": [],
+  "n_fixtures": 9,
+  "issues": [
+   "Den bathroom, foyer, den, dining and living merged into region 1",
+   "Black band at den is a wall region not labeled",
+   "Bedroom and master bedroom merged into region 4",
+   "Foyer bath not detected as a room",
+   "Several doors near the foyer are missing"
+  ],
   "materials": false
  },
  {
@@ -10185,66 +10356,74 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 36.6
+    "name": "Living Room / Dining / Den",
+    "type": "living",
+    "area_m2": 36.67
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 7.48
+    "name": "Kitchen / Nook",
+    "type": "kitchen",
+    "area_m2": 7.49
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
+    "name": "Foyer",
+    "type": "entry",
     "area_m2": 1.33
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
+    "name": "Hallway",
+    "type": "hallway",
     "area_m2": 2.36
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 9.95
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 9.93
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
+    "name": "Bath",
+    "type": "bathroom",
     "area_m2": 0.89
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 0.82
+    "name": "Bedroom closet",
+    "type": "closet",
+    "area_m2": 0.74
    },
    {
     "id": "r7",
-    "name": "Room 8",
-    "type": "other",
-    "area_m2": 14.27
+    "name": "Master Bedroom",
+    "type": "bedroom",
+    "area_m2": 14.28
    },
    {
     "id": "r8",
-    "name": "Room 9",
-    "type": "other",
-    "area_m2": 1.11
+    "name": "Master Bath",
+    "type": "bathroom",
+    "area_m2": 1.1
    }
   ],
   "area_m2": 74.8,
   "scale_from": [
    "area:prior 2 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
   "n_fixtures": 10,
-  "issues": [],
+  "issues": [
+   "Living room, dining and den are merged as one region 1; den lower part appears as dark unfilled area",
+   "Kitchen and nook merged in region 2",
+   "Bedroom closet/bath areas fragmented into small regions",
+   "Hall region 4 is a narrow strip",
+   "Missing doors at bedroom and master bath"
+  ],
   "materials": false
  },
  {
@@ -10256,108 +10435,116 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 12.23
+    "name": "Living Room",
+    "type": "living",
+    "area_m2": 12.25
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 6.86
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 6.87
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 6.83
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 6.85
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 25.07
+    "name": "Dining / Den",
+    "type": "dining",
+    "area_m2": 25.12
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 2.12
+    "name": "Hallway",
+    "type": "hallway",
+    "area_m2": 2.13
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
+    "name": "Laundry",
+    "type": "laundry",
     "area_m2": 1.95
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
+    "name": "Foyer",
+    "type": "entry",
     "area_m2": 2.17
    },
    {
     "id": "r7",
-    "name": "Room 8",
-    "type": "other",
+    "name": "Hallway",
+    "type": "hallway",
     "area_m2": 3.03
    },
    {
     "id": "r8",
-    "name": "Room 9",
-    "type": "other",
-    "area_m2": 14.4
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 14.3
    },
    {
     "id": "r9",
-    "name": "Room 10",
-    "type": "other",
-    "area_m2": 0.51
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 0.52
    },
    {
     "id": "r10",
-    "name": "Room 11",
-    "type": "other",
+    "name": "Closet",
+    "type": "closet",
     "area_m2": 0.64
    },
    {
     "id": "r11",
-    "name": "Room 12",
-    "type": "other",
+    "name": "Closet",
+    "type": "closet",
     "area_m2": 0.91
    },
    {
     "id": "r12",
-    "name": "Room 13",
-    "type": "other",
-    "area_m2": 0.66
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 0.67
    },
    {
     "id": "r13",
-    "name": "Room 14",
-    "type": "other",
-    "area_m2": 17.87
+    "name": "Master Bedroom",
+    "type": "bedroom",
+    "area_m2": 17.83
    },
    {
     "id": "r14",
-    "name": "Room 15",
-    "type": "other",
+    "name": "Closet",
+    "type": "closet",
     "area_m2": 0.44
    },
    {
     "id": "r15",
-    "name": "Room 16",
-    "type": "other",
+    "name": "Bath",
+    "type": "bathroom",
     "area_m2": 2.06
    }
   ],
-  "area_m2": 97.8,
+  "area_m2": 97.7,
   "scale_from": [
    "area:prior 3 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 12,
-  "issues": [],
+  "n_fixtures": 8,
+  "issues": [
+   "Den/dining/living region 4 is merged; the wide black band across the den is a false wall",
+   "Room 1 split from living room 4 by a false line along the bottom of the living room",
+   "Bath beside den (small bath near x=0.55,y=0.55) not recognised as a room",
+   "Closets 10-13 and 15 are fragments of hallway/closet space",
+   "Foyer 7 and hallway 8 form one circulation space"
+  ],
   "materials": false
  },
  {
@@ -10369,90 +10556,100 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 12.74
+    "name": "Living Room (upper part)",
+    "type": "living",
+    "area_m2": 12.75
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
+    "name": "Kitchen",
+    "type": "kitchen",
     "area_m2": 6.76
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
+    "name": "Bedroom (upper part)",
+    "type": "bedroom",
     "area_m2": 2.96
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
+    "name": "Bedroom",
+    "type": "bedroom",
     "area_m2": 3.42
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
+    "name": "Dining / Den",
+    "type": "dining",
     "area_m2": 28.05
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
+    "name": "Hallway",
+    "type": "hallway",
     "area_m2": 1.4
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
+    "name": "Bath",
+    "type": "bathroom",
     "area_m2": 1.85
    },
    {
     "id": "r7",
-    "name": "Room 8",
-    "type": "other",
-    "area_m2": 1.59
+    "name": "Foyer",
+    "type": "entry",
+    "area_m2": 1.6
    },
    {
     "id": "r8",
-    "name": "Room 9",
-    "type": "other",
+    "name": "Corridor",
+    "type": "hallway",
     "area_m2": 3.3
    },
    {
     "id": "r9",
-    "name": "Room 10",
-    "type": "other",
-    "area_m2": 13.76
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 13.75
    },
    {
     "id": "r10",
-    "name": "Room 11",
-    "type": "other",
+    "name": "Closet",
+    "type": "closet",
     "area_m2": 1.17
    },
    {
     "id": "r11",
-    "name": "Room 12",
-    "type": "other",
+    "name": "Master Bedroom",
+    "type": "bedroom",
     "area_m2": 18.79
    },
    {
     "id": "r12",
-    "name": "Room 13",
-    "type": "other",
-    "area_m2": 1.96
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 1.95
    }
   ],
   "area_m2": 97.8,
   "scale_from": [
    "area:prior 3 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 11,
-  "issues": [],
+  "n_fixtures": 9,
+  "issues": [
+   "Rooms 1 and 5 are really one large living/dining/den room split by a false line",
+   "Rooms 3 and 4 are one bedroom",
+   "Room 9 and the bath near the den are merged into a corridor region",
+   "A black band between rooms 5 and 10 is a wall block, not a room",
+   "The middle bath (near den) has no separate region",
+   "Rooms 6 and 7 are the upper bath and its entry hall",
+   "Rooms 8 and 9 are foyer area and corridor"
+  ],
   "materials": false
  },
  {
@@ -10464,66 +10661,80 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 37.87
+    "name": "Master Bedroom",
+    "type": "bedroom",
+    "area_m2": 38.2
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 10.04
+    "name": "Bedroom (upper part)",
+    "type": "bedroom",
+    "area_m2": 10.08
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 1.27
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.29
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 13.26
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 10.38
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 1.97
+    "name": "Hall",
+    "type": "hallway",
+    "area_m2": 2.23
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 1.66
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 2.01
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 1.44
+    "name": "Bath lower",
+    "type": "bathroom",
+    "area_m2": 1.69
    },
    {
     "id": "r7",
-    "name": "Room 8",
-    "type": "other",
-    "area_m2": 1.94
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.45
    },
    {
     "id": "r8",
-    "name": "Room 9",
-    "type": "other",
-    "area_m2": 5.35
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.99
+   },
+   {
+    "id": "r9",
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 5.47
    }
   ],
   "area_m2": 74.8,
   "scale_from": [
    "area:prior 2 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 7,
-  "issues": [],
+  "n_fixtures": 8,
+  "issues": [
+   "Dining, foyer and living room are not detected as regions",
+   "Master bedroom bath and adjacent bath/closet areas are merged into dark wall mass",
+   "Region 2 and 4 are one bedroom split by a false line",
+   "Overlay missing walls around entry door",
+   "Master bath not detected"
+  ],
   "materials": false
  },
  {
@@ -10535,54 +10746,62 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 4.95
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 4.97
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 1.45
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.46
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
+    "name": "Closet (lower part)",
+    "type": "closet",
     "area_m2": 1.14
    },
    {
     "id": "r3",
-    "name": "Room 4",
+    "name": "Window nook",
     "type": "other",
     "area_m2": 0.37
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 26.4
+    "name": "Living Area / Foyer",
+    "type": "living",
+    "area_m2": 26.51
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 0.47
+    "name": "Bath entry",
+    "type": "hallway",
+    "area_m2": 0.34
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
+    "name": "Bath",
+    "type": "bathroom",
     "area_m2": 0.92
    }
   ],
   "area_m2": 35.7,
   "scale_from": [
    "area:prior 0 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 3,
-  "issues": [],
+  "n_fixtures": 7,
+  "issues": [
+   "Closet split into regions 2 and 3",
+   "Region 4 is a window sill nook belonging to the closet area",
+   "Bath split from its entry (6 and 7); bath door area is one room",
+   "Foyer is merged with living area (acceptable)",
+   "Bath region 7 extends past the wall on the right (tub area)"
+  ],
   "materials": false
  },
  {
@@ -10594,96 +10813,100 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 12.75
+    "name": "Living Room (north part)",
+    "type": "living",
+    "area_m2": 12.92
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 6.85
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 6.94
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 2.96
+    "name": "Bedroom (north strip)",
+    "type": "bedroom",
+    "area_m2": 3.0
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 3.33
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 3.38
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 28.06
+    "name": "Living/Dining/Den/Foyer",
+    "type": "living",
+    "area_m2": 28.44
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 1.4
+    "name": "Hall",
+    "type": "hallway",
+    "area_m2": 1.41
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 1.85
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 1.88
    },
    {
     "id": "r7",
-    "name": "Room 8",
-    "type": "other",
-    "area_m2": 0.85
+    "name": "Corridor/Closet",
+    "type": "hallway",
+    "area_m2": 3.35
    },
    {
     "id": "r8",
-    "name": "Room 9",
-    "type": "other",
-    "area_m2": 3.3
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 13.67
    },
    {
     "id": "r9",
-    "name": "Room 10",
-    "type": "other",
-    "area_m2": 13.77
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.19
    },
    {
     "id": "r10",
-    "name": "Room 11",
-    "type": "other",
-    "area_m2": 1.17
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 0.97
    },
    {
     "id": "r11",
-    "name": "Room 12",
-    "type": "other",
-    "area_m2": 0.96
+    "name": "Master Bedroom",
+    "type": "bedroom",
+    "area_m2": 18.63
    },
    {
     "id": "r12",
-    "name": "Room 13",
-    "type": "other",
-    "area_m2": 18.4
-   },
-   {
-    "id": "r13",
-    "name": "Room 14",
-    "type": "other",
-    "area_m2": 2.09
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 1.97
    }
   ],
-  "area_m2": 97.7,
+  "area_m2": 97.8,
   "scale_from": [
    "area:prior 3 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 11,
-  "issues": [],
+  "n_fixtures": 10,
+  "issues": [
+   "Living room split into 1 and 5; living/dining/den/foyer is one large open region",
+   "Bedroom 3 and 4 are one room",
+   "Bath near den (at ~0.55,0.56) not separate room; merged into corridor 8",
+   "Closets 10 and 11 are part of bedroom area",
+   "Bathroom at y~0.43 region 7 partly OK",
+   "Door of north bedroom marked at hall",
+   "Master bedroom door missing"
+  ],
   "materials": false
  },
  {
@@ -10695,96 +10918,104 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 7.83
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 7.85
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 7.8
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 7.83
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 31.28
+    "name": "Living Room / Dining / Den",
+    "type": "living",
+    "area_m2": 31.31
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
+    "name": "Entry hall",
+    "type": "hallway",
     "area_m2": 2.42
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
+    "name": "Laundry",
+    "type": "laundry",
     "area_m2": 2.23
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
+    "name": "Foyer",
+    "type": "entry",
     "area_m2": 3.46
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 16.44
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 16.35
    },
    {
     "id": "r7",
-    "name": "Room 8",
-    "type": "other",
+    "name": "Closet",
+    "type": "closet",
     "area_m2": 0.59
    },
    {
     "id": "r8",
-    "name": "Room 9",
-    "type": "other",
-    "area_m2": 0.73
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 0.72
    },
    {
     "id": "r9",
-    "name": "Room 10",
-    "type": "other",
+    "name": "Closet",
+    "type": "closet",
     "area_m2": 1.04
    },
    {
     "id": "r10",
-    "name": "Room 11",
-    "type": "other",
+    "name": "Hall",
+    "type": "hallway",
     "area_m2": 0.76
    },
    {
     "id": "r11",
-    "name": "Room 12",
-    "type": "other",
-    "area_m2": 20.42
+    "name": "Master Bedroom",
+    "type": "bedroom",
+    "area_m2": 20.4
    },
    {
     "id": "r12",
-    "name": "Room 13",
-    "type": "other",
-    "area_m2": 0.5
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 0.51
    },
    {
     "id": "r13",
-    "name": "Room 14",
-    "type": "other",
-    "area_m2": 2.26
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 2.27
    }
   ],
-  "area_m2": 97.8,
+  "area_m2": 97.7,
   "scale_from": [
    "area:prior 3 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 12,
-  "issues": [],
+  "n_fixtures": 8,
+  "issues": [
+   "Living room, dining, den are one open space (region 3) but a thick black band at den/bedroom boundary is wrongly drawn",
+   "Living room window line drawn as blue across the open area; the living room's top left alcove is outside",
+   "Central bath next to den (at ~0.58,0.53) not detected as a room",
+   "Foyer region 6 is extended down along the east wall",
+   "Closets 8-11,13 are fragments"
+  ],
   "materials": false
  },
  {
@@ -10796,60 +11027,68 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 7.21
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 7.22
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
+    "name": "Closet",
+    "type": "closet",
     "area_m2": 2.24
    },
    {
     "id": "r2",
-    "name": "Room 3",
+    "name": "Kitchen nook",
     "type": "other",
-    "area_m2": 1.88
+    "area_m2": 1.89
    },
    {
     "id": "r3",
-    "name": "Room 4",
+    "name": "Alcove",
     "type": "other",
-    "area_m2": 0.53
+    "area_m2": 0.52
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 30.37
+    "name": "Living Room / Foyer",
+    "type": "living",
+    "area_m2": 30.41
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 8.16
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 8.09
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
+    "name": "Bedroom closet",
+    "type": "closet",
     "area_m2": 0.81
    },
    {
     "id": "r7",
-    "name": "Room 8",
-    "type": "other",
-    "area_m2": 1.5
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 1.51
    }
   ],
   "area_m2": 52.7,
   "scale_from": [
    "area:prior 1 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 3,
-  "issues": [],
+  "n_fixtures": 8,
+  "issues": [
+   "Kitchen and closet/nook region 3 is part of kitchen area",
+   "Region 4 is a small alcove near the foyer, likely part of living room",
+   "Region 7 is a bedroom closet/door nook area",
+   "Foyer at right is not a separate region; merged into living room",
+   "Bath region 8 extends with dark fill, walls unclear"
+  ],
   "materials": false
  },
  {
@@ -10861,54 +11100,62 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
+    "name": "Living Room / Kitchen (Typical)",
+    "type": "living",
     "area_m2": 24.59
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 0.56
+    "name": "Foyer (Typical)",
+    "type": "entry",
+    "area_m2": 0.57
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 16.29
+    "name": "Living Room / Kitchen (Alternate)",
+    "type": "living",
+    "area_m2": 16.2
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 7.33
+    "name": "Bedroom (Alternate)",
+    "type": "bedroom",
+    "area_m2": 7.38
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
+    "name": "Closet (Alternate)",
+    "type": "closet",
     "area_m2": 0.87
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 2.22
+    "name": "Bath (Alternate)",
+    "type": "bathroom",
+    "area_m2": 2.24
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
+    "name": "Foyer (Alternate)",
+    "type": "entry",
     "area_m2": 0.85
    }
   ],
   "area_m2": 52.7,
   "scale_from": [
    "area:prior 1 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 2,
-  "issues": [],
+  "n_fixtures": 10,
+  "issues": [
+   "Typical plan: bedroom, bath and the closet area merged into region 1 with the living room; bath and bedroom not separate",
+   "Typical plan: bedroom door, bath door and closet doors not marked",
+   "Typical plan: foyer door and exterior door partially marked",
+   "Alternate plan: bedroom door to the living room is open, so regions 3 and 4 are split by a wall gap",
+   "Windows along the north walls of living room and bedroom not marked"
+  ],
   "materials": false
  },
  {
@@ -11886,24 +12133,33 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
+    "name": "Closet",
+    "type": "closet",
     "area_m2": 8.56
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
+    "name": "Bath",
+    "type": "bathroom",
     "area_m2": 27.14
    }
   ],
   "area_m2": 35.7,
   "scale_from": [
    "area:prior 0 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 0,
-  "issues": [],
+  "n_fixtures": 7,
+  "issues": [
+   "Living area, patio, kitchen and foyer are not detected as rooms",
+   "Kitchen is open to the living area and has no region",
+   "Foyer door is not marked",
+   "Bath door at the top is marked, but the doorway into the closet is shown as a window (blue) when it is likely a door",
+   "Closet region 1 may be a separate closet with its own door that is not marked",
+   "Patio sliding door/windows on the north wall of the living area are not marked"
+  ],
   "materials": false
  },
  {
@@ -12072,24 +12328,33 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
+    "name": "Closet",
+    "type": "closet",
     "area_m2": 8.56
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
+    "name": "Bath",
+    "type": "bathroom",
     "area_m2": 27.14
    }
   ],
   "area_m2": 35.7,
   "scale_from": [
    "area:prior 0 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 0,
-  "issues": [],
+  "n_fixtures": 8,
+  "issues": [
+   "Living area, kitchen, and foyer are not detected as rooms",
+   "Entry door to foyer at the bottom right is not marked",
+   "Bath is split from the closet by a blue window line that is really a wall or door",
+   "Patio is not detected",
+   "Kitchen opening to living area is not marked",
+   "Window along patio wall is not marked"
+  ],
   "materials": false
  },
  {
@@ -12211,42 +12476,49 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 27.25
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 27.14
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
+    "name": "Closet",
+    "type": "closet",
     "area_m2": 3.41
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 9.16
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 9.18
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 6.87
+    "name": "Foyer",
+    "type": "entry",
+    "area_m2": 6.91
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 6.01
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 6.06
    }
   ],
   "area_m2": 52.7,
   "scale_from": [
    "area:prior 1 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 0,
-  "issues": [],
+  "n_fixtures": 7,
+  "issues": [
+   "Living room is not detected as a region; it is open to the kitchen area and missing from the numbering",
+   "Window at the top of the living room not marked as blue",
+   "Door between foyer and bath area is missing",
+   "Bath region may include the closet door at the top, and the closet door is marked red on the right wall extending past the plan"
+  ],
   "materials": false
  },
  {
@@ -12258,42 +12530,50 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 39.47
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 39.08
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 4.92
+    "name": "Hall strip",
+    "type": "hallway",
+    "area_m2": 4.99
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 4.86
+    "name": "Small closet",
+    "type": "closet",
+    "area_m2": 4.92
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 13.13
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 13.27
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 12.42
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 12.53
    }
   ],
   "area_m2": 74.8,
   "scale_from": [
    "area:prior 2 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 0,
-  "issues": [],
+  "n_fixtures": 7,
+  "issues": [
+   "Living room, kitchen, foyer and second bedroom are not detected as rooms (open to each other or leaking)",
+   "Region 2 is a sliver of the bedroom closet/hall strip, likely closet with sliding doors",
+   "Bedroom 2 has no region",
+   "Bath door on east side shown red but bath entry may be open",
+   "Foyer door and front entry not marked"
+  ],
   "materials": false
  },
  {
@@ -12305,42 +12585,50 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 27.28
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 27.29
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 3.33
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 3.32
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
+    "name": "Kitchen",
+    "type": "kitchen",
     "area_m2": 9.12
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
+    "name": "Foyer",
+    "type": "entry",
     "area_m2": 6.86
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 6.11
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 6.1
    }
   ],
   "area_m2": 52.7,
   "scale_from": [
    "area:prior 1 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 0,
-  "issues": [],
+  "n_fixtures": 7,
+  "issues": [
+   "Living room is not detected as a region; it is open and not numbered",
+   "Living room balcony/window on top wall is not marked as a window",
+   "Window on far right of bedroom top is marked, but closet doors at 2 appear to be double doors with one missing",
+   "Second closet next to closet 2 (left of it) is not a region",
+   "Bath door between foyer and bath and bedroom closet doors are partly unmarked"
+  ],
   "materials": false
  },
  {
@@ -12352,36 +12640,45 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 41.46
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 41.37
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 6.26
+    "name": "Hall closet",
+    "type": "closet",
+    "area_m2": 6.29
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 13.54
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 13.55
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 13.54
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 13.59
    }
   ],
   "area_m2": 74.8,
   "scale_from": [
    "area:prior 2 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 0,
-  "issues": [],
+  "n_fixtures": 8,
+  "issues": [
+   "Bedroom on the right (east) and the living room/kitchen/foyer are not detected as rooms, probably because the large exterior openings and balcony windows are not closed off",
+   "Right bedroom, living room, kitchen and foyer are open to each other and unmarked",
+   "Bedroom 1 and the right bedroom entry doors are marked but the right bedroom has no region",
+   "Windows on the right bedroom and living room east wall are not marked",
+   "Foyer door arc at the bottom left is not marked",
+   "Bath door is marked, but the kitchen is unseparated from the living room"
+  ],
   "materials": false
  },
  {
@@ -12393,42 +12690,50 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 4.1
+    "name": "Bedroom window nook/closet",
+    "type": "closet",
+    "area_m2": 4.11
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 6.33
+    "name": "Foyer (upper)",
+    "type": "hallway",
+    "area_m2": 6.34
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
+    "name": "Bedroom",
+    "type": "bedroom",
     "area_m2": 25.76
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
+    "name": "Bath",
+    "type": "bathroom",
     "area_m2": 11.3
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 5.2
+    "name": "Foyer (lower)",
+    "type": "entry",
+    "area_m2": 5.19
    }
   ],
   "area_m2": 52.7,
   "scale_from": [
    "area:prior 1 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 1,
-  "issues": [],
+  "n_fixtures": 7,
+  "issues": [
+   "Kitchen/living room region is not detected as a room (no numbered region); the large open area is missing",
+   "Foyer is split into two regions (2 and 5) by a false line",
+   "Bath door opening to foyer seems detected but the entry door arc area at the bottom is ambiguous",
+   "Region 1 is a bedroom window nook, likely part of the living room or a bedroom alcove",
+   "Gap between the kitchen/living area and the foyer top is marked yellow, not a door"
+  ],
   "materials": false
  },
  {
@@ -12440,42 +12745,55 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 4.1
+    "name": "Kitchen/Living Room",
+    "type": "living",
+    "area_m2": 33.72
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 6.33
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.48
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 25.76
+    "name": "Foyer",
+    "type": "entry",
+    "area_m2": 2.28
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 11.3
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 9.29
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 5.2
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 4.08
+   },
+   {
+    "id": "r5",
+    "name": "Foyer entry",
+    "type": "entry",
+    "area_m2": 1.83
    }
   ],
   "area_m2": 52.7,
   "scale_from": [
    "area:prior 1 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 1,
-  "issues": [],
+  "n_fixtures": 8,
+  "issues": [
+   "Foyer split into regions 3 and 6 by the false line at the door swing/foyer label",
+   "Region 2 is a closet over the bedroom top which is fine but may be wall-thin",
+   "Bath door and entry door arcs only partly detected",
+   "Kitchen has a small closet/pantry alcove below the stove not separated from region 1"
+  ],
   "materials": false
  },
  {
@@ -12487,42 +12805,49 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 27.25
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 27.44
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 3.41
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 3.47
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 9.16
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 9.04
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 6.87
+    "name": "Foyer",
+    "type": "entry",
+    "area_m2": 6.64
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 6.01
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 6.11
    }
   ],
   "area_m2": 52.7,
   "scale_from": [
    "area:prior 1 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 0,
-  "issues": [],
+  "n_fixtures": 6,
+  "issues": [
+   "Living room is not detected as a numbered region; it is open to the kitchen and not enclosed",
+   "Kitchen region 3 is separated from the living room by a false blue window line",
+   "Small closet between bedroom and foyer at about x 0.58-0.68, y 0.65-0.78 is not a numbered region",
+   "Region 2 appears to combine two closets"
+  ],
   "materials": false
  },
  {
@@ -12534,42 +12859,51 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 4.1
+    "name": "Bedroom window nook",
+    "type": "closet",
+    "area_m2": 4.12
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 6.33
+    "name": "Foyer",
+    "type": "entry",
+    "area_m2": 6.4
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 25.76
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 25.87
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 11.3
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 11.28
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 5.2
+    "name": "Foyer entry",
+    "type": "entry",
+    "area_m2": 5.03
    }
   ],
   "area_m2": 52.7,
   "scale_from": [
    "area:prior 1 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 1,
-  "issues": [],
+  "n_fixtures": 8,
+  "issues": [
+   "Kitchen/living room region is not detected as a room; it is open to the outside and likely needs wall closure",
+   "Foyer is split into two regions (2 and 5)",
+   "Closet next to the kitchen is not detected",
+   "Bedroom window nook (1) is probably part of the living room or bedroom",
+   "Door from foyer to bath drawn but region 4 door is marked",
+   "Door arc into foyer on the bottom may be the front door and is not outlined as a room"
+  ],
   "materials": false
  },
  {
@@ -12581,36 +12915,43 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 44.04
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 44.09
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 5.93
+    "name": "Small closet",
+    "type": "closet",
+    "area_m2": 5.42
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 12.76
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 12.99
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 12.07
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 12.3
    }
   ],
   "area_m2": 74.8,
   "scale_from": [
    "area:prior 2 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 0,
-  "issues": [],
+  "n_fixtures": 7,
+  "issues": [
+   "Bedroom 2 (right, large), kitchen, living room and foyer are not detected as regions",
+   "Door arcs for the bedroom doors and the entry door are not marked",
+   "Bath door on the east side is marked, but the kitchen opening is not",
+   "Bedroom 1 may be missing its door on the east side"
+  ],
   "materials": false
  },
  {
@@ -12622,36 +12963,43 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 6.98
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 6.37
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 19.05
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 19.32
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 14.01
+    "name": "Foyer",
+    "type": "entry",
+    "area_m2": 14.13
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 12.66
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 12.88
    }
   ],
   "area_m2": 52.7,
   "scale_from": [
    "area:prior 1 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 0,
-  "issues": [],
+  "n_fixtures": 7,
+  "issues": [
+   "Living room and bedroom are not recognized as separate numbered regions; they are missing from the overlay, likely because the large open area is not enclosed",
+   "Window on top of bedroom and bay window of living room are not detected as rooms",
+   "Bedroom closet on right (east of closet 1) is not a region",
+   "Kitchen opening to living room marked blue (window) but is an open passage"
+  ],
   "materials": false
  },
  {
@@ -12663,42 +13011,50 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 27.23
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 27.27
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 3.32
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 3.29
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 9.2
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 9.22
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
+    "name": "Foyer",
+    "type": "entry",
     "area_m2": 6.85
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 6.1
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 6.08
    }
   ],
   "area_m2": 52.7,
   "scale_from": [
    "area:prior 1 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 0,
-  "issues": [],
+  "n_fixtures": 7,
+  "issues": [
+   "Living room is not detected as a region; the overlay has no number for it (the large open area on the left/top is unlabeled)",
+   "Window at top of living room (bay) is not marked",
+   "Bedroom door swing into living room has no region link; the opening between living room and bedroom is open",
+   "Second closet (right of region 2) not separated; likely a second closet next to 2",
+   "Door from foyer to bath may be missing"
+  ],
   "materials": false
  },
  {
@@ -12710,42 +13066,55 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 4.1
+    "name": "Kitchen/Living Room",
+    "type": "living",
+    "area_m2": 33.79
    },
    {
     "id": "r1",
-    "name": "Room 2",
+    "name": "Bedroom alcove/window nook",
     "type": "other",
-    "area_m2": 6.33
+    "area_m2": 1.48
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 25.76
+    "name": "Foyer",
+    "type": "hallway",
+    "area_m2": 2.29
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 11.3
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 9.27
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 5.2
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 4.07
+   },
+   {
+    "id": "r5",
+    "name": "Foyer entry",
+    "type": "entry",
+    "area_m2": 1.79
    }
   ],
   "area_m2": 52.7,
   "scale_from": [
    "area:prior 1 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 1,
-  "issues": [],
+  "n_fixtures": 7,
+  "issues": [
+   "Region 2 is the bedroom's window nook/top of bedroom and should merge with region 4",
+   "Region 6 is part of the foyer and should merge with region 3",
+   "Bath door and bedroom door are present but the foyer/living boundary has a false yellow line",
+   "Kitchen closet/pantry at left below the stove is merged into region 1"
+  ],
   "materials": false
  },
  {
@@ -12757,36 +13126,44 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 41.46
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 41.52
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 6.26
+    "name": "Hall closet",
+    "type": "closet",
+    "area_m2": 6.28
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 13.54
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 13.43
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 13.54
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 13.58
    }
   ],
   "area_m2": 74.8,
   "scale_from": [
    "area:prior 2 bedroom(s)",
+   "annotation_dims",
+   "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 0,
-  "issues": [],
+  "n_fixtures": 7,
+  "issues": [
+   "Second bedroom, living room, kitchen and foyer are merged into one unnumbered open area and not detected as rooms",
+   "Bedroom 2 door/arch at top center is not fully marked",
+   "Bath door swing is marked but the kitchen and foyer door is missing",
+   "Large windows along east wall and top of bedroom 2 are missing",
+   "Closet 3 window marking is suspect, it is a closet"
+  ],
   "materials": false
  },
  {
@@ -14802,108 +15179,115 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 8.76
+    "name": "Bedroom 2",
+    "type": "bedroom",
+    "area_m2": 12.8
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 25.39
+    "name": "Living/Dining Room",
+    "type": "living",
+    "area_m2": 37.07
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 4.14
+    "name": "Bedroom 3",
+    "type": "bedroom",
+    "area_m2": 6.04
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 6.83
+    "name": "Bedroom 1",
+    "type": "bedroom",
+    "area_m2": 9.98
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 2.41
+    "name": "Walk-In Closet",
+    "type": "closet",
+    "area_m2": 3.53
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 1.87
+    "name": "Hallway",
+    "type": "hallway",
+    "area_m2": 2.74
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 1.57
+    "name": "Walk-In Closet",
+    "type": "closet",
+    "area_m2": 2.3
    },
    {
     "id": "r7",
-    "name": "Room 8",
-    "type": "other",
-    "area_m2": 1.38
+    "name": "Walk-In Closet",
+    "type": "closet",
+    "area_m2": 2.02
    },
    {
     "id": "r8",
-    "name": "Room 9",
-    "type": "other",
-    "area_m2": 1.22
+    "name": "Closet Hall",
+    "type": "hallway",
+    "area_m2": 1.78
    },
    {
     "id": "r9",
-    "name": "Room 10",
-    "type": "other",
-    "area_m2": 4.17
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 6.09
    },
    {
     "id": "r10",
-    "name": "Room 11",
-    "type": "other",
-    "area_m2": 3.29
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 4.82
    },
    {
     "id": "r11",
-    "name": "Room 12",
-    "type": "other",
-    "area_m2": 6.89
+    "name": "Den",
+    "type": "office",
+    "area_m2": 9.89
    },
    {
     "id": "r12",
-    "name": "Room 13",
-    "type": "other",
-    "area_m2": 0.77
+    "name": "Bath tub area",
+    "type": "bathroom",
+    "area_m2": 1.12
    },
    {
     "id": "r13",
-    "name": "Room 14",
-    "type": "other",
-    "area_m2": 0.8
+    "name": "Vanity area",
+    "type": "bathroom",
+    "area_m2": 1.18
    },
    {
     "id": "r14",
-    "name": "Room 15",
-    "type": "other",
-    "area_m2": 3.93
+    "name": "Kitchen",
+    "type": "kitchen",
+    "area_m2": 5.75
    },
    {
     "id": "r15",
-    "name": "Room 16",
-    "type": "other",
-    "area_m2": 1.38
+    "name": "Laundry",
+    "type": "laundry",
+    "area_m2": 2.01
    }
   ],
-  "area_m2": 74.8,
+  "area_m2": 109.1,
   "scale_from": [
-   "area:prior 2 bedroom(s)",
+   "reader_dims+printed",
    "door_width"
   ],
-  "n_fixtures": 5,
-  "issues": [],
+  "n_fixtures": 16,
+  "issues": [
+   "Living/Dining region 2 extends into the entry and bath 2 area on the east, so the east bath and its closet hall are merged or mislabeled as 6",
+   "The East Bath is not a separate room and is partly covered by black fill",
+   "Bath 10 is split into 10, 13, 14",
+   "Den 12 merges with the hallway on the left",
+   "Entry is merged into living region 2",
+   "Door of the east bath and the walk-in closet at 3 and 7 are partly missing"
+  ],
   "materials": false
  },
  {
@@ -14915,48 +15299,55 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 42.38
+    "name": "Living/Dining Room, Kitchen, Bedroom and Patio (merged)",
+    "type": "living",
+    "area_m2": 36.68
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 0.79
+    "name": "Dining nook (false region)",
+    "type": "dining",
+    "area_m2": 0.68
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 0.94
+    "name": "Laundry closet W/D",
+    "type": "laundry",
+    "area_m2": 0.83
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 5.44
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 4.75
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 1.46
+    "name": "Entry",
+    "type": "entry",
+    "area_m2": 1.28
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 1.69
+    "name": "Entry closet / entry door area",
+    "type": "entry",
+    "area_m2": 1.33
    }
   ],
-  "area_m2": 52.7,
+  "area_m2": 45.5,
   "scale_from": [
-   "area:prior 1 bedroom(s)",
+   "reader_dims+printed",
    "door_width"
   ],
-  "n_fixtures": 2,
-  "issues": [],
+  "n_fixtures": 10,
+  "issues": [
+   "Living/dining, kitchen, bedroom and patio merged into region 1 because the patio door, bedroom opening and kitchen opening are not closed",
+   "Region 2 is a false region in the dining area",
+   "Patio sliding door and balcony door not properly marked",
+   "Entry area split into regions 5 and 6",
+   "Bedroom opening to living is not a closed room",
+   "Bath door is marked but the opening to the entry is partly outlined"
+  ],
   "materials": false
  },
  {
@@ -14968,66 +15359,73 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 37.35
+    "name": "Living/Dining Room/Kitchen",
+    "type": "living",
+    "area_m2": 18.42
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 11.49
+    "name": "Bedroom 2",
+    "type": "bedroom",
+    "area_m2": 5.72
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 1.66
+    "name": "Linen/Hall",
+    "type": "hallway",
+    "area_m2": 0.82
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 3.76
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 1.87
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 15.03
+    "name": "Bedroom 1",
+    "type": "bedroom",
+    "area_m2": 7.4
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 1.15
+    "name": "Tub (Bath)",
+    "type": "bathroom",
+    "area_m2": 0.57
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 1.51
+    "name": "Tub (Bath 2)",
+    "type": "bathroom",
+    "area_m2": 0.75
    },
    {
     "id": "r7",
-    "name": "Room 8",
-    "type": "other",
-    "area_m2": 1.36
+    "name": "Bedroom 1 nook",
+    "type": "bedroom",
+    "area_m2": 0.68
    },
    {
     "id": "r8",
-    "name": "Room 9",
-    "type": "other",
-    "area_m2": 1.49
+    "name": "Bath vanity",
+    "type": "bathroom",
+    "area_m2": 0.74
    }
   ],
-  "area_m2": 74.8,
+  "area_m2": 37.0,
   "scale_from": [
-   "area:prior 2 bedroom(s)",
+   "reader_dims+printed",
    "door_width"
   ],
-  "n_fixtures": 2,
-  "issues": [],
+  "n_fixtures": 15,
+  "issues": [
+   "Kitchen counter area is filled black and the kitchen/living is merged with the hallway region 1",
+   "Bedroom 1 is split into regions 5, 8 and a black block; bed area wrongly separated",
+   "Bath near Bedroom 1 is merged with Bedroom 1 as region 5; tub 7 and vanity 9 are fragments",
+   "Tub region 6 is part of the east bath 4",
+   "Entry is merged into region 1",
+   "Door from Bedroom 1 bath is partly marked"
+  ],
   "materials": false
  },
  {
@@ -15039,54 +15437,61 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 10.45
+    "name": "Bedroom 2",
+    "type": "bedroom",
+    "area_m2": 7.81
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 2.17
+    "name": "Closet (Bedroom 2)",
+    "type": "closet",
+    "area_m2": 1.62
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 39.79
+    "name": "Living/Dining Room, Kitchen and Entry",
+    "type": "living",
+    "area_m2": 29.5
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 11.33
+    "name": "Bedroom 1",
+    "type": "bedroom",
+    "area_m2": 8.45
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 2.4
+    "name": "Walk-In Closet",
+    "type": "closet",
+    "area_m2": 1.79
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 7.33
+    "name": "Bath (Bedroom 2)",
+    "type": "bathroom",
+    "area_m2": 5.48
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 1.33
+    "name": "Hall",
+    "type": "hallway",
+    "area_m2": 0.99
    }
   ],
-  "area_m2": 74.8,
+  "area_m2": 55.6,
   "scale_from": [
-   "area:prior 2 bedroom(s)",
+   "reader_dims+printed",
    "door_width"
   ],
-  "n_fixtures": 2,
-  "issues": [],
+  "n_fixtures": 12,
+  "issues": [
+   "Bath of Bedroom 1 (right side, with tub, toilet, vanity) is filled solid black and not detected as a room",
+   "Entry, kitchen and living are merged into region 3",
+   "W/D closet at lower right is merged into region 3",
+   "Bedroom 1 door and bath door to living room not all marked",
+   "Bedroom 2 closet region 2 has no door marked",
+   "Bedroom 1 extends to right wall but region cut off by black fill"
+  ],
   "materials": false
  },
  {
@@ -15098,102 +15503,111 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 2.32
+    "name": "Porch",
+    "type": "balcony",
+    "area_m2": 2.54
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 28.69
+    "name": "Living/Kitchen/Dining/Entry",
+    "type": "living",
+    "area_m2": 31.16
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 4.85
+    "name": "Bedroom 1",
+    "type": "bedroom",
+    "area_m2": 5.3
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 1.28
+    "name": "Bedroom 1 corner",
+    "type": "bedroom",
+    "area_m2": 1.4
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 3.31
+    "name": "Balcony",
+    "type": "balcony",
+    "area_m2": 3.62
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 1.82
+    "name": "Bedroom 1 strip",
+    "type": "bedroom",
+    "area_m2": 1.99
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 1.53
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.66
    },
    {
     "id": "r7",
-    "name": "Room 8",
-    "type": "other",
-    "area_m2": 2.35
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 2.57
    },
    {
     "id": "r8",
-    "name": "Room 9",
-    "type": "other",
-    "area_m2": 8.91
+    "name": "Bedroom 2",
+    "type": "bedroom",
+    "area_m2": 9.72
    },
    {
     "id": "r9",
-    "name": "Room 10",
-    "type": "other",
-    "area_m2": 1.2
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.31
    },
    {
     "id": "r10",
-    "name": "Room 11",
-    "type": "other",
-    "area_m2": 1.45
+    "name": "Stairs",
+    "type": "hallway",
+    "area_m2": 1.58
    },
    {
     "id": "r11",
-    "name": "Room 12",
-    "type": "other",
-    "area_m2": 12.94
+    "name": "Bath/Hall",
+    "type": "bathroom",
+    "area_m2": 13.99
    },
    {
     "id": "r12",
-    "name": "Room 13",
-    "type": "other",
-    "area_m2": 0.95
+    "name": "Stairs/Storage",
+    "type": "closet",
+    "area_m2": 1.05
    },
    {
     "id": "r13",
-    "name": "Room 14",
-    "type": "other",
-    "area_m2": 1.26
+    "name": "Stair landing",
+    "type": "hallway",
+    "area_m2": 1.38
    },
    {
     "id": "r14",
-    "name": "Room 15",
-    "type": "other",
-    "area_m2": 1.94
+    "name": "Stairs",
+    "type": "hallway",
+    "area_m2": 2.11
    }
   ],
-  "area_m2": 74.8,
+  "area_m2": 81.4,
   "scale_from": [
-   "area:prior 2 bedroom(s)",
+   "reader_dims+printed",
    "door_width"
   ],
-  "n_fixtures": 1,
-  "issues": [],
+  "n_fixtures": 11,
+  "issues": [
+   "Powder room, storage, and W/D area are not tinted as rooms (black fill at bottom of level 1)",
+   "Living room, entry, kitchen, dining merged into region 2",
+   "Bedroom 1 split into 3, 4, 6",
+   "Bedroom 2 and closet partially split with 8, 9, 10",
+   "Bath merged with hallway in 12",
+   "Stairs split in 11, 14, 15",
+   "Black fill at bottom of level 1 is wrong",
+   "Red door line at the bottom of level 1 is spurious"
+  ],
   "materials": false
  },
  {
@@ -15205,72 +15619,85 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 40.77
+    "name": "Bedroom 2",
+    "type": "bedroom",
+    "area_m2": 9.49
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 11.79
+    "name": "Living Room / Kitchen",
+    "type": "living",
+    "area_m2": 36.06
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 0.97
+    "name": "Bedroom 1",
+    "type": "bedroom",
+    "area_m2": 10.42
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 1.77
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 0.85
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 1.43
+    "name": "Bath alcove",
+    "type": "hallway",
+    "area_m2": 1.57
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 3.96
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.27
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 8.4
+    "name": "Bedroom 1 closet area",
+    "type": "closet",
+    "area_m2": 3.5
    },
    {
     "id": "r7",
-    "name": "Room 8",
-    "type": "other",
-    "area_m2": 0.82
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 7.29
    },
    {
     "id": "r8",
-    "name": "Room 9",
-    "type": "other",
-    "area_m2": 1.66
+    "name": "Laundry",
+    "type": "laundry",
+    "area_m2": 0.73
    },
    {
     "id": "r9",
-    "name": "Room 10",
-    "type": "other",
-    "area_m2": 3.23
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.46
+   },
+   {
+    "id": "r10",
+    "name": "Entry",
+    "type": "entry",
+    "area_m2": 2.85
    }
   ],
-  "area_m2": 74.8,
+  "area_m2": 75.5,
   "scale_from": [
-   "area:prior 2 bedroom(s)",
+   "reader_dims+printed",
    "door_width"
   ],
-  "n_fixtures": 3,
-  "issues": [],
+  "n_fixtures": 14,
+  "issues": [
+   "Bath on the east side (around x 0.67-0.92, y 0.58-0.78) is filled solid black and has no region",
+   "Regions 7 and 10 are fragments of bedroom 1 closet and bath",
+   "Region 5 is a bath alcove that should merge with bath 8",
+   "Region 4 is a closet of bedroom 2",
+   "Door between living room and bath 8 not fully marked as a door",
+   "Door opening to bath at east not marked"
+  ],
   "materials": false
  },
  {
@@ -15282,90 +15709,98 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 39.75
+    "name": "Living/Dining/Kitchen",
+    "type": "living",
+    "area_m2": 53.57
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 9.28
+    "name": "Bedroom 1",
+    "type": "bedroom",
+    "area_m2": 12.3
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 0.92
+    "name": "Kitchen sink area",
+    "type": "kitchen",
+    "area_m2": 1.23
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 1.9
+    "name": "Walk-In Closet",
+    "type": "closet",
+    "area_m2": 2.56
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 1.5
+    "name": "Closet passage",
+    "type": "hallway",
+    "area_m2": 2.01
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 1.36
+    "name": "W/D closet",
+    "type": "laundry",
+    "area_m2": 1.83
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 5.74
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 7.74
    },
    {
     "id": "r7",
-    "name": "Room 8",
-    "type": "other",
-    "area_m2": 0.87
+    "name": "Hall strip",
+    "type": "hallway",
+    "area_m2": 1.17
    },
    {
     "id": "r8",
-    "name": "Room 9",
-    "type": "other",
-    "area_m2": 4.17
+    "name": "Bedroom 2 (part)",
+    "type": "bedroom",
+    "area_m2": 5.47
    },
    {
     "id": "r9",
-    "name": "Room 10",
-    "type": "other",
-    "area_m2": 0.84
+    "name": "Bedroom 2 (part)",
+    "type": "bedroom",
+    "area_m2": 1.13
    },
    {
     "id": "r10",
-    "name": "Room 11",
-    "type": "other",
-    "area_m2": 3.3
+    "name": "Bedroom 2",
+    "type": "bedroom",
+    "area_m2": 4.4
    },
    {
     "id": "r11",
-    "name": "Room 12",
-    "type": "other",
-    "area_m2": 0.84
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.13
    },
    {
     "id": "r12",
-    "name": "Room 13",
-    "type": "other",
-    "area_m2": 4.33
+    "name": "Entry",
+    "type": "entry",
+    "area_m2": 5.83
    }
   ],
-  "area_m2": 74.8,
+  "area_m2": 100.4,
   "scale_from": [
-   "area:prior 2 bedroom(s)",
+   "reader_dims+printed",
    "door_width"
   ],
-  "n_fixtures": 3,
-  "issues": [],
+  "n_fixtures": 12,
+  "issues": [
+   "Living, dining and kitchen are one open room but the overlay shows it as region 1 with a black block at the bottom center",
+   "Second bath (center bottom) is not a numbered region and is filled black",
+   "Bedroom 2 is split into regions 9, 10 and 11",
+   "Region 3 is a sliver of the kitchen",
+   "Regions 4 and 5 split the walk-in closet",
+   "Regions 6 and 8 are slivers of the W/D and hall",
+   "Balcony is not a separate region"
+  ],
   "materials": false
  },
  {
@@ -15377,60 +15812,80 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 13.68
+    "name": "Living/Dining Room",
+    "type": "living",
+    "area_m2": 45.68
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 35.86
+    "name": "Bedroom 2",
+    "type": "bedroom",
+    "area_m2": 6.23
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 2.0
+    "name": "Bedroom 1",
+    "type": "bedroom",
+    "area_m2": 16.34
    },
    {
     "id": "r3",
-    "name": "Room 4",
+    "name": "Bedroom 2 nook",
     "type": "other",
-    "area_m2": 4.71
+    "area_m2": 0.91
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 6.91
+    "name": "Walk-In Closet",
+    "type": "closet",
+    "area_m2": 2.15
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 7.38
+    "name": "Hallway",
+    "type": "hallway",
+    "area_m2": 1.67
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 2.26
+    "name": "Bath vanity area",
+    "type": "bathroom",
+    "area_m2": 1.35
    },
    {
     "id": "r7",
-    "name": "Room 8",
-    "type": "other",
-    "area_m2": 2.0
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 3.35
+   },
+   {
+    "id": "r8",
+    "name": "Washer/Dryer closet",
+    "type": "laundry",
+    "area_m2": 1.03
+   },
+   {
+    "id": "r9",
+    "name": "Kitchen counter",
+    "type": "kitchen",
+    "area_m2": 0.91
    }
   ],
-  "area_m2": 74.8,
+  "area_m2": 79.6,
   "scale_from": [
-   "area:prior 2 bedroom(s)",
+   "reader_dims+printed",
    "door_width"
   ],
-  "n_fixtures": 3,
-  "issues": [],
+  "n_fixtures": 13,
+  "issues": [
+   "Bedroom 2 split into regions 2 and 4 by false lines",
+   "Bedroom 1 region 3 not separated from walk-in closet; the closet, right bath and den form a large black unfilled area, not rooms",
+   "Right bath and right walk-in closet missing as rooms",
+   "Den not detected as a room",
+   "Entry and kitchen merged into the living region 1",
+   "Region 6 is a hallway between closet and bath, region 7 is part of bath 8",
+   "Doors for the right bath and closet are missing"
+  ],
   "materials": false
  },
  {
@@ -15442,30 +15897,41 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 29.13
+    "name": "Living/Dining Room",
+    "type": "living",
+    "area_m2": 6.91
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 33.91
+    "name": "Entry",
+    "type": "entry",
+    "area_m2": 8.04
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 11.76
+    "name": "Bedroom 1",
+    "type": "bedroom",
+    "area_m2": 9.22
+   },
+   {
+    "id": "r3",
+    "name": "Walk-In Closet",
+    "type": "closet",
+    "area_m2": 2.79
    }
   ],
-  "area_m2": 74.8,
+  "area_m2": 27.0,
   "scale_from": [
-   "area:prior 2 bedroom(s)",
+   "reader_dims+printed",
    "door_width"
   ],
-  "n_fixtures": 0,
-  "issues": [],
+  "n_fixtures": 13,
+  "issues": [
+   "Overlay misses most of the apartment: the large living/kitchen area, Bedroom 2 and both baths are black or unsegmented",
+   "Living/Dining Room is split by a false line at the bottom of region 1, so the entry region 2 is really part of the main living space",
+   "Bedroom 1 is only partly captured",
+   "Bedroom 2 door and bathroom doors are not marked"
+  ],
   "materials": false
  },
  {
@@ -15477,36 +15943,42 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 38.22
+    "name": "Living/Dining/Kitchen/Entry",
+    "type": "living",
+    "area_m2": 31.72
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 8.84
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 7.33
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 2.8
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 2.32
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 2.84
+    "name": "Walk-In Closet",
+    "type": "closet",
+    "area_m2": 2.36
    }
   ],
-  "area_m2": 52.7,
+  "area_m2": 43.7,
   "scale_from": [
-   "area:prior 1 bedroom(s)",
+   "reader_dims+printed",
    "door_width"
   ],
-  "n_fixtures": 0,
-  "issues": [],
+  "n_fixtures": 10,
+  "issues": [
+   "Kitchen, dining, entry and washer area are merged into the living region 1",
+   "Entry, laundry closet and kitchen are not separate rooms",
+   "Bath is only partly captured; its door is missing and the tub area is cut off",
+   "Doors at the entry, bath and laundry closet are drawn on walls that the overlay shows as thick black fill",
+   "Bedroom has no opening toward the living room on the north wall"
+  ],
   "materials": false
  },
  {
@@ -15518,36 +15990,44 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 37.09
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 13.75
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 3.02
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.12
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 2.78
+    "name": "W/D",
+    "type": "laundry",
+    "area_m2": 1.03
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 9.81
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 3.64
    }
   ],
-  "area_m2": 52.7,
+  "area_m2": 19.5,
   "scale_from": [
-   "area:prior 1 bedroom(s)",
+   "reader_dims+printed",
    "door_width"
   ],
-  "n_fixtures": 2,
-  "issues": [],
+  "n_fixtures": 10,
+  "issues": [
+   "Living room, kitchen and entry are not detected as a region (open area unmarked)",
+   "Large black filled block covers the bath east portion and entry area incorrectly",
+   "Bath door not marked",
+   "Living room windows not marked",
+   "Front entry door not marked",
+   "Bedroom closet strip on east side merged into bedroom",
+   "Bath region 4 is truncated"
+  ],
   "materials": false
  },
  {
@@ -15559,36 +16039,47 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 47.41
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 12.0
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 1.17
+    "name": "Living/Dining Room",
+    "type": "living",
+    "area_m2": 37.53
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 2.14
+    "name": "W/D Closet",
+    "type": "laundry",
+    "area_m2": 1.23
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 1.98
+    "name": "Walk-In Closet",
+    "type": "closet",
+    "area_m2": 2.25
+   },
+   {
+    "id": "r4",
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 2.07
    }
   ],
-  "area_m2": 52.7,
+  "area_m2": 55.1,
   "scale_from": [
-   "area:prior 1 bedroom(s)",
+   "reader_dims+printed",
    "door_width"
   ],
-  "n_fixtures": 1,
-  "issues": [],
+  "n_fixtures": 11,
+  "issues": [
+   "Bathroom, kitchen and lower-left area merged into a black blob and not detected as rooms",
+   "Den is merged into the Living/Dining region (2)",
+   "Bedroom door to living opening is shown with a vertical line only",
+   "Bath door and kitchen openings not detected properly"
+  ],
   "materials": false
  },
  {
@@ -15600,42 +16091,56 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 42.98
+    "name": "Living/Dining Room",
+    "type": "living",
+    "area_m2": 43.03
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 15.56
+    "name": "Bedroom 1",
+    "type": "bedroom",
+    "area_m2": 15.31
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 7.97
+    "name": "Bedroom 2",
+    "type": "bedroom",
+    "area_m2": 6.18
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 3.73
+    "name": "Closet",
+    "type": "closet",
+    "area_m2": 1.67
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
+    "name": "Entry",
+    "type": "entry",
+    "area_m2": 3.73
+   },
+   {
+    "id": "r5",
+    "name": "Kitchen",
+    "type": "kitchen",
     "area_m2": 4.56
    }
   ],
-  "area_m2": 74.8,
+  "area_m2": 74.5,
   "scale_from": [
-   "area:prior 2 bedroom(s)",
+   "reader_dims+printed",
    "door_width"
   ],
-  "n_fixtures": 1,
-  "issues": [],
+  "n_fixtures": 13,
+  "issues": [
+   "Bedroom 2 region 3 appears cut off; the west part is blacked out",
+   "Bath near Bedroom 2 and entry is missing as a room",
+   "Bedroom 1 bath, walk-in closet and Den are not separated; the area right of the living room is filled black",
+   "Den merged into Living/Dining region 1",
+   "Region 4 is a closet/hall fragment near Bedroom 2 door",
+   "Patio is not a region",
+   "Missing doors on baths and walk-in closet"
+  ],
   "materials": false
  },
  {
@@ -15647,36 +16152,48 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 46.17
+    "name": "Living/Dining/Kitchen/Entry/Bedroom",
+    "type": "living",
+    "area_m2": 53.42
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 1.95
+    "name": "Walk-In Closet",
+    "type": "closet",
+    "area_m2": 2.55
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 1.22
+    "name": "W/D",
+    "type": "laundry",
+    "area_m2": 1.6
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 3.36
+    "name": "Den",
+    "type": "office",
+    "area_m2": 6.69
+   },
+   {
+    "id": "r4",
+    "name": "Walk-In Closet",
+    "type": "closet",
+    "area_m2": 4.39
    }
   ],
-  "area_m2": 52.7,
+  "area_m2": 68.7,
   "scale_from": [
-   "area:prior 1 bedroom(s)",
+   "reader_dims+printed",
    "door_width"
   ],
-  "n_fixtures": 3,
-  "issues": [],
+  "n_fixtures": 13,
+  "issues": [
+   "Bath is not detected as a room; it is the black filled area merged with wall fill (door to Bath at about 0.48,0.7 is not marked properly)",
+   "Entry, kitchen, living and bedroom are merged into region 1; Bedroom has no separating wall or door",
+   "Bedroom opening to living is missing",
+   "Den door is a marked yellow line only; Den entry door at left may be a sliding door",
+   "Bath door shows red line in the wall at wrong location"
+  ],
   "materials": false
  },
  {
@@ -15688,72 +16205,86 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 36.22
+    "name": "Bedroom 1",
+    "type": "bedroom",
+    "area_m2": 18.23
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 9.92
+    "name": "Walk-In Closet",
+    "type": "closet",
+    "area_m2": 4.99
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 10.86
+    "name": "Living Room",
+    "type": "living",
+    "area_m2": 6.29
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 5.4
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 5.47
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 2.68
+    "name": "Bedroom 3 hallway strip",
+    "type": "hallway",
+    "area_m2": 2.72
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 11.57
+    "name": "Bath tub area",
+    "type": "bathroom",
+    "area_m2": 1.35
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 12.48
+    "name": "Den",
+    "type": "office",
+    "area_m2": 5.82
    },
    {
     "id": "r7",
-    "name": "Room 8",
-    "type": "other",
-    "area_m2": 3.47
+    "name": "Entry",
+    "type": "entry",
+    "area_m2": 6.28
    },
    {
     "id": "r8",
-    "name": "Room 9",
-    "type": "other",
-    "area_m2": 2.74
+    "name": "Bath tub area",
+    "type": "bathroom",
+    "area_m2": 1.75
    },
    {
     "id": "r9",
-    "name": "Room 10",
-    "type": "other",
-    "area_m2": 2.42
+    "name": "Bath toilet area",
+    "type": "bathroom",
+    "area_m2": 1.38
+   },
+   {
+    "id": "r10",
+    "name": "Laundry",
+    "type": "laundry",
+    "area_m2": 1.22
    }
   ],
-  "area_m2": 97.8,
+  "area_m2": 55.5,
   "scale_from": [
-   "area:prior 3 bedroom(s)",
+   "reader_dims+printed",
    "door_width"
   ],
-  "n_fixtures": 6,
-  "issues": [],
+  "n_fixtures": 12,
+  "issues": [
+   "Overlay lost the whole right half: living/kitchen, Bedroom 2, Bath 2 and balcony are blacked out",
+   "Bedroom 3 is not a numbered region; it is merged with the balcony",
+   "Bath on left is split into 9 and 10",
+   "Bath 3 is split into 4 and 6",
+   "Region 5 is a sliver of Bedroom 3 / hallway",
+   "Region 3 is a thin strip of the living room",
+   "Den door and entry closet openings unclear"
+  ],
   "materials": false
  },
  {
@@ -15765,48 +16296,54 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 2.46
+    "name": "Bedroom (north part)",
+    "type": "bedroom",
+    "area_m2": 3.07
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 34.76
+    "name": "Living/Dining/Kitchen",
+    "type": "living",
+    "area_m2": 43.25
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 6.52
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 8.02
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 3.95
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 4.92
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 4.14
+    "name": "Entry",
+    "type": "entry",
+    "area_m2": 5.17
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 0.87
+    "name": "Entry closet",
+    "type": "closet",
+    "area_m2": 1.09
    }
   ],
-  "area_m2": 52.7,
+  "area_m2": 65.5,
   "scale_from": [
-   "area:prior 1 bedroom(s)",
+   "reader_dims+printed",
    "door_width"
   ],
-  "n_fixtures": 3,
-  "issues": [],
+  "n_fixtures": 9,
+  "issues": [
+   "Bedroom split into regions 1 and 3 by a false line",
+   "Closet at the south of the bedroom is not a separate region",
+   "Washer/dryer closet is merged into region 2",
+   "Bedroom closet door/opening at the bottom of the bedroom partially marked",
+   "Kitchen counter area has the dining area merged by a false red line"
+  ],
   "materials": false
  },
  {
@@ -15818,42 +16355,55 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 13.52
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 12.44
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 0.87
+    "name": "Living Room (nightstand corner, split)",
+    "type": "living",
+    "area_m2": 0.9
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 33.71
+    "name": "Living Room / Kitchen / Entry",
+    "type": "living",
+    "area_m2": 34.56
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 3.25
+    "name": "Bedroom Closet",
+    "type": "closet",
+    "area_m2": 1.23
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 1.35
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 3.35
+   },
+   {
+    "id": "r5",
+    "name": "Bath tub area",
+    "type": "bathroom",
+    "area_m2": 1.4
    }
   ],
-  "area_m2": 52.7,
+  "area_m2": 53.9,
   "scale_from": [
-   "area:prior 1 bedroom(s)",
+   "reader_dims+printed",
    "door_width"
   ],
-  "n_fixtures": 1,
-  "issues": [],
+  "n_fixtures": 11,
+  "issues": [
+   "Region 2 is the nightstand corner of the living room, split off by a false red door line at x~0.56",
+   "Tub region 6 is split from bath 5 by a false wall",
+   "Living room sofa has false blue window lines",
+   "Front entry and living room are open and correctly one region",
+   "Washer/dryer closet has a door marked at the top but is merged into region 3",
+   "Bedroom door marked fine"
+  ],
   "materials": false
  },
  {
@@ -15865,48 +16415,55 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 42.38
+    "name": "Living/Dining Room, Kitchen, Bedroom",
+    "type": "living",
+    "area_m2": 37.31
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 0.79
+    "name": "Dining nook (part of Living/Dining)",
+    "type": "dining",
+    "area_m2": 0.7
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 0.94
+    "name": "W/D closet",
+    "type": "laundry",
+    "area_m2": 0.84
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 5.44
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 4.84
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 1.46
+    "name": "Entry",
+    "type": "entry",
+    "area_m2": 1.3
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 1.69
+    "name": "Entry closet / foyer",
+    "type": "entry",
+    "area_m2": 1.41
    }
   ],
-  "area_m2": 52.7,
+  "area_m2": 46.4,
   "scale_from": [
-   "area:prior 1 bedroom(s)",
+   "reader_dims+printed",
    "door_width"
   ],
-  "n_fixtures": 2,
-  "issues": [],
+  "n_fixtures": 10,
+  "issues": [
+   "Living, kitchen and bedroom are merged into one region 1; bedroom needs a separating opening/wall",
+   "Region 2 is a false split of the dining table area",
+   "Balcony is tinted but unnumbered/merged with living, door to balcony not marked",
+   "Balcony sliding door and balcony swing door are missing",
+   "Bath door and entry doors partly unmarked",
+   "Entry closet region 6 merged with entry area"
+  ],
   "materials": false
  },
  {
@@ -15918,66 +16475,74 @@
   "rooms": [
    {
     "id": "r0",
-    "name": "Room 1",
-    "type": "other",
-    "area_m2": 1.19
+    "name": "Living Room (NW corner, furniture split)",
+    "type": "living",
+    "area_m2": 1.13
    },
    {
     "id": "r1",
-    "name": "Room 2",
-    "type": "other",
-    "area_m2": 30.37
+    "name": "Living/Dining/Kitchen/Entry",
+    "type": "living",
+    "area_m2": 28.84
    },
    {
     "id": "r2",
-    "name": "Room 3",
-    "type": "other",
-    "area_m2": 7.22
+    "name": "Bedroom (bed area)",
+    "type": "bedroom",
+    "area_m2": 6.87
    },
    {
     "id": "r3",
-    "name": "Room 4",
-    "type": "other",
-    "area_m2": 5.34
+    "name": "Bedroom",
+    "type": "bedroom",
+    "area_m2": 5.08
    },
    {
     "id": "r4",
-    "name": "Room 5",
-    "type": "other",
-    "area_m2": 1.06
+    "name": "Linen",
+    "type": "closet",
+    "area_m2": 1.02
    },
    {
     "id": "r5",
-    "name": "Room 6",
-    "type": "other",
-    "area_m2": 2.17
+    "name": "Walk-In Closet",
+    "type": "closet",
+    "area_m2": 2.06
    },
    {
     "id": "r6",
-    "name": "Room 7",
-    "type": "other",
-    "area_m2": 0.72
+    "name": "Walk-In Closet (east strip)",
+    "type": "closet",
+    "area_m2": 0.68
    },
    {
     "id": "r7",
-    "name": "Room 8",
-    "type": "other",
-    "area_m2": 0.72
+    "name": "W/D",
+    "type": "laundry",
+    "area_m2": 0.69
    },
    {
     "id": "r8",
-    "name": "Room 9",
-    "type": "other",
-    "area_m2": 3.9
+    "name": "Bath",
+    "type": "bathroom",
+    "area_m2": 3.7
    }
   ],
-  "area_m2": 52.7,
+  "area_m2": 50.1,
   "scale_from": [
-   "area:prior 1 bedroom(s)",
+   "reader_dims+printed",
    "door_width"
   ],
-  "n_fixtures": 2,
-  "issues": [],
+  "n_fixtures": 12,
+  "issues": [
+   "Bedroom split into regions 3 and 4 because of the bed; should be one room",
+   "Region 1 is a corner of the living room split by furniture and should merge with region 2",
+   "Walk-in closet split into 6 and 7",
+   "Bath is mostly covered by black fill and the W/D alcove is not a clean room",
+   "Black wall blocks over the kitchen and hallway area are wrong; the hallway outside the bedroom is merged into region 2",
+   "Bath door is not closed properly (door marked in the hallway)",
+   "Kitchen window marked blue at the kitchen is false; it is a counter edge"
+  ],
   "materials": false
  },
  {
