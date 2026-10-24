@@ -12,7 +12,7 @@ async def main():
             pg = await b.new_page(viewport={"width": 1200, "height": 800}); errs = []
             pg.on("pageerror", lambda e, errs=errs: errs.append(str(e)[:200]))
             try:
-                await pg.goto(f"http://127.0.0.1:8765/plan3d/apartment.html?unit={u}", timeout=60000); await pg.wait_for_timeout(6000)
+                await pg.goto(f"http://127.0.0.1:8765/plan3d/apartment.html?unit={u}&quality=low", timeout=60000); await pg.wait_for_timeout(6000)
                 await pg.screenshot(path=str(OUT / f"{u}.jpg"), type="jpeg", quality=80)
             except Exception as e: errs.append(f"nav: {str(e)[:120]}")
             await pg.close(); report[u] = errs; print(f"[shots] {u}: {'ok' if not errs else errs[0]}", flush=True)

@@ -9,6 +9,7 @@ for lid in listings:
         if not out.exists():
             r = subprocess.run([PY, str(HERE / "plan_engine.py"), "layout", p] + (["--novlm"] if novlm else []), capture_output=True, text=True, cwd=str(ROOT))
             if not out.exists(): print(f"[batch] {unit} FAILED: {r.stderr[-300:]}", flush=True); continue
+            subprocess.run([PY, str(HERE / "rescale.py"), unit], capture_output=True, text=True, cwd=str(ROOT))   # area rule: listing/printed sqft or bedroom prior; never doors alone
             subprocess.run([PY, str(HERE / "rooms_export.py"), unit], capture_output=True, text=True, cwd=str(ROOT))
         L = json.load(open(out)); plan_name = next((f.get("name") for f in meta.get("floorplans", []) if f.get("file", "").endswith(pathlib.Path(p).name)), None)
         done.append({"unit": unit, "listing": lid, "building": meta.get("title"), "plan_image": f"/listings/{lid}/plans/{pathlib.Path(p).name}", "plan_name": plan_name, "rooms": [{"id": r["id"], "name": r["name"], "type": r["type"], "area_m2": r["area_m2"]} for r in L["rooms"]], "area_m2": round(sum(r["area_m2"] for r in L["rooms"]), 1), "scale_from": L["scale"]["from"] or ["none"], "n_fixtures": len(L["fixtures"]), "issues": L.get("review", {}).get("issues", [])})

@@ -249,3 +249,14 @@ Segmentation + harness -> segmentation-driven layout -> panorama completion -> l
   animation, red flash at the door for rejections, camera presets, 2x render download. `/api/agent/furnish` (SSE),
   `/api/agent/chat`. `--drama` makes the first pick a deliberate failure for the demo.
 - Vendored three.js 0.170 + Draco + 3 CC0 HDRIs under app/vendor (fetch.sh) so the demo does not depend on CDNs.
+
+## Oct 24 16:50: one scale rule for all plans (owner's call: doors are oversized, units came out tiny)
+- `app/plan3d/rescale.py`: interior area must match known square footage: per-plan sqft from the listing when available
+  > sqft printed on the plan (annotation) > SF bedroom-count prior (studio 42, 1BR 62, 2BR 88, 3BR 115 m2 gross, interior
+  0.85 of gross). Door-width scale is only the initial guess. Printed-dimension plans keep their reader scale.
+  Result: 1BR median interior 27 -> 53 m2, 2BR 39 -> 75 m2 over 277 rescaled layouts. Wired into batch.py.
+- SightMap (Greystar's plan-image provider) exposes unit areas per floor plan, but Greystar pages do not embed the
+  property's map key (the CDN asset key leads to unrelated properties), so no per-plan sqft for Greystar; the Greystar
+  page has no sqft at all. `feasibility/sightmap_sqft.py` kept for buildings that do embed it.
+- Walk physics (`app/plan3d/walk.js`, WALK.md): collisions with walls/furniture/fixtures, doors closed until opened with E
+  (hinge animation, block while closed), crosshair, room HUD, bump feedback. Render pass: see app/plan3d/review/REPORT.md.
