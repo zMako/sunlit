@@ -1,7 +1,7 @@
 """Geometry-only sweep over every plan image: per plan stats + a contact sheet per building of overlays. No VLM calls."""
 import sys, json, glob, pathlib, traceback
 import numpy as np, cv2
-HERE = pathlib.Path(__file__).resolve().parent; ROOT = HERE.parents[1]; sys.path.insert(0, str(HERE)); import plan_engine as pe
+HERE = pathlib.Path(__file__).resolve().parent; ROOT = HERE.parents[1]; sys.path.insert(0, str(HERE)); import plan_engine as pe, rescale
 OUT = HERE / "sweep"; OUT.mkdir(exist_ok=True); rows = []
 only = set(sys.argv[1:])
 for lid_dir in sorted(glob.glob(str(ROOT / "feasibility/listings/gs-*"))):
@@ -14,7 +14,20 @@ for lid_dir in sorted(glob.glob(str(ROOT / "feasibility/listings/gs-*"))):
             if not pe.is_plan(g): rows.append({"unit": name, "status": "not_plan"}); continue
             E = pe.extract(p); L = pe.metric_layout(E, name, lid, p)
             total = sum(r["area_m2"] for r in L["rooms"]); kinds = {k: sum(1 for o in E["openings"] if o["kind"] == k) for k in ("window", "door", "opening")}
-            rows.append({"unit": name, "status": "ok", "thick": E["thick"], "pieces": len(E["pieces"]), "rooms": len(E["rooms"]), "area_m2_doorscale": round(total, 1), **kinds, "blocks": len(E["blocks"]), "shape": list(g.shape)})
+            # areas under the one scale rule (rescale.py: interior area = known / printed / prior square footage)
+            meta = json.load(open(pathlib.Path(lid_dir) / "meta.json")) if (pathlib.Path(lid_dir) / "meta.json").exists() else {}
+            tgt, _why = rescale.target_area(L, meta); k2 = (tgt / total) if total > 0 else 1.0
+            areas = sorted(round(r["area_m2"] * k2, 1) for r in L["rooms"])
+            bad_poly = 0
+            try:
+                from shapely.geometry import Polygon
+                P = [Polygon(r["polygon"]) for r in L["rooms"]]; tw = E["thick"] * L["scale"]["m_per_px"]
+                for a_ in range(len(P)):
+                    if not P[a_].is_valid: bad_poly += 1; continue
+                    if any(P[b_].is_valid and not P[a_].intersection(P[b_]).buffer(-tw / 2).is_empty for b_ in range(len(P)) if b_ != a_): bad_poly += 1
+            except Exception: bad_poly = -1
+            rows.append({"unit": name, "status": "ok", "thick": E["thick"], "pieces": len(E["pieces"]), "rooms": len(E["rooms"]), "area_m2_doorscale": round(total, 1), **kinds, "blocks": len(E["blocks"]), "shape": list(g.shape),
+                         "areas_m2": areas, "bath_2_6": any(2.0 <= a_ <= 6.0 for a_ in areas), "bad_polygons": bad_poly})
             rgb = cv2.cvtColor(g, cv2.COLOR_GRAY2BGR); rng = np.random.RandomState(3)
             for r in E["rooms"]:
                 col = rng.randint(80, 255, 3); m = E["room_labels"] == r["label"]; rgb[m] = (0.55 * rgb[m] + 0.45 * col).astype(np.uint8)
@@ -40,3 +53,4 @@ json.dump(rows, open(OUT / "sweep.json", "w"), indent=1)
 ok = [r for r in rows if r["status"] == "ok"]
 print(f"[sweep] total {len(rows)} plans: ok {len(ok)}, not_plan {sum(1 for r in rows if r['status']=='not_plan')}, error {sum(1 for r in rows if r['status']=='error')}")
 print(f"[sweep] rooms<2: {sum(1 for r in ok if r['rooms']<2)}, doors==0: {sum(1 for r in ok if r['door']==0)}, windows==0: {sum(1 for r in ok if r['window']==0)}")
+print(f"[sweep] with a 2-6 m2 room (bath): {sum(1 for r in ok if r.get('bath_2_6'))}, rooms>16: {sum(1 for r in ok if r['rooms'] > 16)}, plans with bad polygons: {sum(1 for r in ok if r.get('bad_polygons', 0) > 0)}")

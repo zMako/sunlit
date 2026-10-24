@@ -106,6 +106,18 @@ def product(url, cat):
     if not P["image"]:
         m = re.search(r'property="og:image"\s+content="([^"]+)"', h) or re.search(r'content="([^"]+)"\s+property="og:image"', h)
         P["image"] = m.group(1) if m else None
+    # fallback: measurement list on the page (sofas, chairs, plants often lack height/width in ld+json)
+    ms_ = {}
+    for nm, val in re.findall(r'measurement-name">([^<]+)</span><span class="pipf-measurements-tab__measurement-value">([^<]+)<', h):
+        v = inches_to_m(html.unescape(val))
+        if v: ms_.setdefault(nm.strip().lower(), v)
+    if not P["height_m"]:
+        hs = [v for k, v in ms_.items() if "height" in k and not re.search(r"under|seat|arm|min|max|adjust|step|pot", k)]
+        P["height_m"] = max(hs) if hs else None
+    if not P["width_m"]:
+        P["width_m"] = ms_.get("width") or ms_.get("length") or ms_.get("diameter") or ms_.get("pot diameter") or ms_.get("outside diameter")
+    if not P["depth_m"]:
+        P["depth_m"] = ms_.get("depth") or ms_.get("diameter") or ms_.get("pot diameter") or ms_.get("outside diameter") or (P["width_m"] if cat in ("plant", "plant_pot") else None)
     tn = re.search(r'"typeName"\s*:\s*"([^"]+)"', h); P["type_name"] = tn.group(1) if tn else None
     ms = re.search(r'"itemMeasureReferenceText"\s*:\s*"([^"]*)"', h); P["size_label"] = ms.group(1) if ms else None
     series = (P["name"].split() or [""])[0].lower()

@@ -29,7 +29,7 @@ def defill(g):
     n, lab, st, _ = cv2.connectedComponentsWithStats(m, 4); fill = np.zeros_like(m)
     for i in range(1, n):
         x, y, w, h, a = st[i]
-        if min(w, h) >= 0.06 * min(H, W) and a >= 0.006 * H * W: fill[lab == i] = 1
+        if min(w, h) >= 0.06 * min(H, W) and a >= 0.006 * H * W and a >= 0.4 * w * h: fill[lab == i] = 1   # solid area, not an L of grey wall
     if not fill.any(): return g
     fill = cv2.dilate(fill, cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))).astype(bool)
     vals = g[fill & (g >= 130)]; ref = float(np.median(vals)) if vals.size else 200.0
@@ -72,7 +72,7 @@ def walls_mask(ink, thick):
 def wall_rects(wmask, thick, heavy=None):
     """Axis-aligned wall pieces: open the wall mask with a long horizontal kernel (keeps horizontal walls) and a long vertical
     one (keeps vertical walls); each connected component is one wall piece = (orientation, centre coordinate, start, end, thickness)."""
-    L = max(int(thick * 2), int(1.6 * heavy) if heavy else 0, int(0.01 * min(wmask.shape)), 6); pieces = []   # short jambs between openings must survive; longer than the heaviest wall is thick, so a wall crossing the kernel's direction is not kept
+    L = max(int(thick * 2), int(1.05 * heavy) + 1 if heavy else 0, int(0.01 * min(wmask.shape)), 6); pieces = []   # short jambs between openings must survive; longer than the heaviest wall is thick, so a wall crossing the kernel's direction is not kept
     # filled blocks (fireplaces, columns, counters) are much thicker than walls: take them out first so a block glued to a wall
     # does not swallow it
     kb = int(max(thick * 2.2, 5)); blockmask = cv2.morphologyEx(wmask, cv2.MORPH_OPEN, cv2.getStructuringElement(cv2.MORPH_RECT, (kb, kb)))
@@ -163,15 +163,16 @@ def classify_gap(thin, o, c, a, b, t, thick):
     best = 0.0; swing = None
     for end_pos, hinge in ((a, "start"), (b, "end")):
         for side in (1, -1):
-            hits = 0; n = 0
-            for k in range(1, 13):
-                th_ang = math.radians(90 * k / 13); r = gap
-                along_v = (1 if hinge == "start" else -1) * r * math.cos(th_ang); across = side * r * math.sin(th_ang)
-                x, y = (end_pos + along_v, c + across) if o == "h" else (c + across, end_pos + along_v)
-                xi, yi = int(round(x)), int(round(y))
-                if 0 <= xi < W and 0 <= yi < H: n += 1; hits += int(th[yi, xi] > 0)
-            sc = hits / n if n else 0
-            if sc > best: best = sc; swing = f"{hinge}_{'pos' if side > 0 else 'neg'}"
+            for rf in (1.0, 1.12, 0.9, 1.25):   # the leaf is often a bit longer than the measured gap (jambs overlap the arc ends)
+                hits = 0; n = 0
+                for k in range(1, 13):
+                    th_ang = math.radians(90 * k / 13); r = gap * rf
+                    along_v = (1 if hinge == "start" else -1) * r * math.cos(th_ang); across = side * r * math.sin(th_ang)
+                    x, y = (end_pos + along_v, c + across) if o == "h" else (c + across, end_pos + along_v)
+                    xi, yi = int(round(x)), int(round(y))
+                    if 0 <= xi < W and 0 <= yi < H: n += 1; hits += int(th[yi, xi] > 0)
+                sc = hits / n if n else 0
+                if sc > best: best = sc; swing = f"{hinge}_{'pos' if side > 0 else 'neg'}"
     if win >= 0.55 and best < 0.5: return {"kind": "window", "score": round(win, 2)}
     if best >= 0.3 and gap >= 2.5 * thick: return {"kind": "door", "score": round(best, 2), "swing_raw": swing}
     if win >= 0.35 and gap <= 9 * thick: return {"kind": "window", "score": round(win, 2)}
@@ -226,6 +227,9 @@ def thin_walls(closed, thin, thick, pieces):
     parallel bundles become a wall piece carrying one window over its length. Returns (closed, new pieces, new openings)."""
     H, W = closed.shape; Lt = int(max(3 * thick, 0.04 * min(H, W))); newp = []; newo = []
     near_wall = cv2.dilate(closed, cv2.getStructuringElement(cv2.MORPH_RECT, (int(thick) + 5, int(thick) + 5)))
+    hug = cv2.dilate(closed, cv2.getStructuringElement(cv2.MORPH_RECT, (int(2 * thick) + 5, int(2 * thick) + 5)))
+    outside0 = outside_of(closed)
+    allsegs = {}
     for o, ker in (("h", (Lt, 1)), ("v", (1, Lt))):
         m = cv2.morphologyEx(thin, cv2.MORPH_OPEN, cv2.getStructuringElement(cv2.MORPH_RECT, ker))
         n, lab, st, _ = cv2.connectedComponentsWithStats(m, 8); segs = []
@@ -234,6 +238,11 @@ def thin_walls(closed, thin, thick, pieces):
             if across > max(4, 0.6 * thick): continue   # thick: a filled fixture edge, not a line
             c = y + h / 2 if o == "h" else x + w / 2; s0, s1 = (x, x + w) if o == "h" else (y, y + h)
             segs.append([c, s0, s1, across])
+        allsegs[o] = segs
+    for o in ("h", "v"):
+        segs = allsegs[o]; perp = allsegs["v" if o == "h" else "h"]
+        # tile grids and hatching: a line crossed by two or more perpendicular long lines is not a wall
+        segs = [sg for sg in segs if sum(1 for q in perp if sg[1] + thick < q[0] < sg[2] - thick and q[1] - 2 <= sg[0] <= q[2] + 2) < 2]
         # bundle parallel lines that overlap along the axis and sit within a wall band of each other (window glazing)
         segs.sort(); used = [False] * len(segs)
         for k, sg in enumerate(segs):
@@ -254,7 +263,14 @@ def thin_walls(closed, thin, thick, pieces):
             if o == "h": band = closed[max(0, int(c0) - 1):int(c1) + 2, int(s0):int(s1)]
             else: band = closed[int(s0):int(s1), max(0, int(c0) - 1):int(c1) + 2]
             if band.size and band.mean() > 0.5: continue   # already a wall
+            if o == "h": hb = hug[max(0, int(c0) - 1):int(c1) + 2, int(s0):int(s1)]
+            else: hb = hug[int(s0):int(s1), max(0, int(c0) - 1):int(c1) + 2]
+            if hb.size and hb.any(axis=0 if o == "h" else 1).mean() > 0.5: continue   # hugs a wall over most of its length: a sill, counter or finish line
             glazing = len(grp) >= 2; t = max(2, int(round(c1 - c0 + 2))) if glazing else max(2, int(round(0.5 * thick)))
+            if glazing:   # glazing is in the envelope: paper (the outside) on one side; parallel lines inside a room are a tub, counter or bed edge
+                mid = int((s0 + s1) / 2); d = int(1.5 * thick) + 3
+                probes = [(int(c0) - d, mid), (int(c1) + d, mid)] if o == "h" else [(mid, int(c0) - d), (mid, int(c1) + d)]
+                if not any(0 <= r < H and 0 <= q < W and outside0[r, q] for r, q in probes): continue
             pc = {"o": o, "c": float(c), "s0": int(s0), "s1": int(s1), "t": t, "block": False, "thin": not glazing, "glazing": glazing}
             x0, y0, x1, y1 = ext_of(pc); cv2.rectangle(closed, (int(x0), int(y0)), (int(math.ceil(x1)), int(math.ceil(y1))), 1, -1)
             newp.append(pc)
@@ -271,10 +287,11 @@ def gap_candidates(pieces, thick, max_gap):
     """Every piece end facing a collinear piece or a perpendicular wall across a gap: (gap, i, j, o, c, a, b, t)."""
     out = []
     for i, pc in enumerate(pieces):
+        if pc.get("thin") or pc.get("glazing"): continue   # line walls are complete: their gaps are not doors
         for end in (0, 1):
             best = None
             for j, q in enumerate(pieces):
-                if i == j: continue
+                if i == j or q.get("thin") or q.get("glazing"): continue
                 qx0, qy0, qx1, qy1 = ext_of(q)
                 if q["o"] == pc["o"]:
                     if abs(q["c"] - pc["c"]) > max(2.0, thick * 0.35) and band_overlap(pc, q) < 0.6 * min(max(pc["t"], 2), max(q["t"], 2)): continue
@@ -287,7 +304,7 @@ def gap_candidates(pieces, thick, max_gap):
                 if 0.5 * thick < gap <= max_gap and (best is None or gap < best[0]): best = (gap, j)
             if best:
                 gap, j = best; a = pc["s1"] if end == 1 else pc["s0"] - gap
-                out.append((float(gap), i, j, pc["o"], float(pc["c"]), float(a), float(a + gap), max(pc["t"], pieces[j]["t"] if pieces[j]["o"] == pc["o"] else pc["t"], 3)))
+                out.append((float(gap), i, j, pc["o"], float(pc["c"]), float(a), float(a + gap), max(pc["t"], pieces[j]["t"] if pieces[j]["o"] == pc["o"] else pc["t"], 3), pieces[j]["o"] == pc["o"]))
     out.sort(); uniq = []
     for c in out:
         if not any(u[3] == c[3] and abs(u[4] - c[4]) <= thick and abs(u[5] - c[5]) <= thick and abs(u[6] - c[6]) <= thick for u in uniq): uniq.append(c)
@@ -304,7 +321,7 @@ def repair_leaks(closed, pieces, openings, thin, thick, door_ref, max_rounds=40)
     closed = closed.copy(); added = []; outside = outside_of(closed)
     for _ in range(max_rounds):
         changed = False
-        for (gap, i, j, o, c, a, b, t) in cands:
+        for (gap, i, j, o, c, a, b, t, coll) in cands:
             tt = max(t, thick * 0.8); half = tt / 2
             if o == "h": x0, y0, x1, y1 = int(a), int(c - half), int(math.ceil(b)), int(math.ceil(c + half))
             else: x0, y0, x1, y1 = int(c - half), int(a), int(math.ceil(c + half)), int(math.ceil(b))
@@ -349,6 +366,34 @@ def repair_leaks(closed, pieces, openings, thin, thick, door_ref, max_rounds=40)
             closed = trial; outside = out2; changed = True
             added.append({"piece": i, "o": o, "c": c, "a": a, "b": b, "t": t, "meets": j, **cls, "kind": kind, "repair": "exterior" if exterior else "interior"})
         if not changed: break
+    # interior split: a door-sized gap between two collinear jambs inside one region; closing it splits the region into two
+    # parts that are both room-sized -> a door (weak arc) or a cased opening. Fixes bedrooms merged with the living room through
+    # a door whose arc is faint or drawn as a pocket/sliding door line.
+    free = (closed == 0).astype(np.uint8); _, rl = cv2.connectedComponents(free, connectivity=4)
+    for (gap, i, j, o, c, a, b, t, coll) in cands:
+        if not coll or not (0.6 * dref <= gap <= 1.9 * dref): continue   # door gaps running into a corner chopped hallways: collinear jambs only
+        tt = max(t, thick * 0.8); half = tt / 2
+        if o == "h": x0, y0, x1, y1 = int(a), int(c - half), int(math.ceil(b)), int(math.ceil(c + half))
+        else: x0, y0, x1, y1 = int(c - half), int(a), int(math.ceil(c + half)), int(math.ceil(b))
+        x0, y0, x1, y1 = max(0, x0), max(0, y0), min(W - 1, x1), min(H - 1, y1)
+        if x1 <= x0 or y1 <= y0 or closed[y0:y1 + 1, x0:x1 + 1].mean() > 0.6: continue
+        d = int(half + 3)
+        pa = (int(c) - d, int((a + b) / 2)) if o == "h" else (int((a + b) / 2), int(c) - d)   # (row, col) on each side
+        pb = (int(c) + d, int((a + b) / 2)) if o == "h" else (int((a + b) / 2), int(c) + d)
+        if not (0 <= pa[0] < H and 0 <= pb[0] < H and 0 <= pa[1] < W and 0 <= pb[1] < W): continue
+        ra, rb = rl[pa], rl[pb]
+        if ra == 0 or ra != rb or outside[pa]: continue
+        trial = closed.copy(); trial[y0:y1 + 1, x0:x1 + 1] = 1; _, tl = cv2.connectedComponents((trial == 0).astype(np.uint8), connectivity=4)
+        la, lb = tl[pa], tl[pb]
+        if la == 0 or lb == 0 or la == lb: continue
+        A, B = float((tl == la).sum()) * px2m, float((tl == lb).sum()) * px2m
+        if min(A, B) < 1.5: continue
+        sc = door_arc_score(thin, o, c, a, b)
+        if gap > 1.5 * dref and sc < 0.3: continue   # wider than a door: only with a clear arc (a wide or double door)
+        if sc < 0.12 and max(A, B) < 20: continue   # no arc and no oversized merged region: leave it open
+        kind = "door" if sc >= 0.12 else "opening"; swing = door_arc_score(thin, o, c, a, b, want_swing=True) if kind == "door" else None
+        closed = trial; rl = tl
+        added.append({"piece": i, "o": o, "c": c, "a": a, "b": b, "t": t, "meets": j, "kind": kind, "score": round(sc, 2), "swing_raw": swing, "repair": "split"})
     return closed, openings + added
 
 def door_arc_score(thin, o, c, a, b, want_swing=False):
@@ -356,14 +401,72 @@ def door_arc_score(thin, o, c, a, b, want_swing=False):
     H, W = thin.shape; gap = b - a; th = cv2.dilate(thin, cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))); best = 0.0; swing = None
     for end_pos, hinge in ((a, "start"), (b, "end")):
         for sd in (1, -1):
-            hits = n = 0
-            for k in range(1, 13):
-                ang = math.radians(90 * k / 13); al = (1 if hinge == "start" else -1) * gap * math.cos(ang); ac = sd * gap * math.sin(ang)
-                x, y = (end_pos + al, c + ac) if o == "h" else (c + ac, end_pos + al); xi, yi = int(round(x)), int(round(y))
-                if 0 <= xi < W and 0 <= yi < H: n += 1; hits += int(th[yi, xi] > 0)
-            sc = hits / n if n else 0
-            if sc > best: best = sc; swing = f"{hinge}_{'pos' if sd > 0 else 'neg'}"
+            for rf in (1.0, 1.12, 0.9, 1.25):
+                hits = n = 0
+                for k in range(1, 13):
+                    ang = math.radians(90 * k / 13); al = (1 if hinge == "start" else -1) * gap * rf * math.cos(ang); ac = sd * gap * rf * math.sin(ang)
+                    x, y = (end_pos + al, c + ac) if o == "h" else (c + ac, end_pos + al); xi, yi = int(round(x)), int(round(y))
+                    if 0 <= xi < W and 0 <= yi < H: n += 1; hits += int(th[yi, xi] > 0)
+                sc = hits / n if n else 0
+                if sc > best: best = sc; swing = f"{hinge}_{'pos' if sd > 0 else 'neg'}"
     return swing if want_swing else best
+
+MAX_ROOMS = 16
+
+def region_sanity(lab, rooms, closed, pieces, openings, thick, door_ref, max_rooms=MAX_ROOMS):
+    """Clean the room set: (1) drop slivers under 0.6 m2 (door scale), (2) merge two regions separated only by a line much
+    thinner than the walls that no opening touches (a counter, tub or cabinet edge, furniture hatching), (3) at most
+    max_rooms: merge the smallest region into its largest neighbour until the cap holds."""
+    H, W = lab.shape; dref = door_ref or 6.5 * thick; px2m = (0.86 / dref) ** 2; lab = lab.copy()
+    rooms = [r for r in rooms if r["area_px"] * px2m >= 0.6]
+    keep = {r["label"] for r in rooms}; lab[~np.isin(lab, list(keep))] = 0
+    opm = np.zeros((H, W), np.uint8)
+    for o in openings:
+        h_ = max(o.get("t", thick), thick) / 2 + 2
+        if o["o"] == "h": cv2.rectangle(opm, (int(o["a"]), int(o["c"] - h_)), (int(math.ceil(o["b"])), int(o["c"] + h_)), 1, -1)
+        else: cv2.rectangle(opm, (int(o["c"] - h_), int(o["a"])), (int(o["c"] + h_), int(math.ceil(o["b"]))), 1, -1)
+    k = int(thick * 1.5) + 3; ker = cv2.getStructuringElement(cv2.MORPH_RECT, (k, k))
+    pm = np.full((H, W), -1, np.int32)   # which piece covers a pixel (thinnest wins)
+    for idx in sorted(range(len(pieces)), key=lambda q: -pieces[q]["t"]):
+        x0, y0, x1, y1 = ext_of(pieces[idx]); pm[max(0, int(y0)):int(math.ceil(y1)) + 1, max(0, int(x0)):int(math.ceil(x1)) + 1] = idx
+    def is_thin(idx): return idx >= 0 and (pieces[idx].get("thin") or pieces[idx]["t"] < 0.5 * thick) and not pieces[idx].get("glazing")
+    byl = {r["label"]: r for r in rooms}
+    def contacts(L_):
+        m = (lab == L_); ys, xs = np.where(m)
+        if not xs.size: return {}, None
+        y0, y1, x0, x1 = max(0, ys.min() - k), min(H, ys.max() + k + 1), max(0, xs.min() - k), min(W, xs.max() + k + 1)
+        d = cv2.dilate(m[y0:y1, x0:x1].astype(np.uint8), ker); sub = lab[y0:y1, x0:x1]; out = {}
+        for nb in np.unique(sub[(d > 0) & (sub > 0) & (sub != L_)]): out[int(nb)] = (y0, y1, x0, x1, d)
+        return out, m
+    def merge(A, B, win):
+        y0, y1, x0, x1, dA = win; sub = lab[y0:y1, x0:x1]
+        dB = cv2.dilate((sub == B).astype(np.uint8), ker); sep = (dA > 0) & (dB > 0) & (sub == 0) & (closed[y0:y1, x0:x1] > 0)
+        sub[sep] = A; lab[lab == B] = A; byl[A]["area_px"] += byl[B]["area_px"] + int(sep.sum()); del byl[B]
+    changed = True
+    while changed:
+        changed = False
+        for A in sorted(byl, key=lambda L_: byl[L_]["area_px"]):
+            nbs, _ = contacts(A)
+            for B, win in nbs.items():
+                if B not in byl: continue
+                y0, y1, x0, x1, dA = win; dB = cv2.dilate((lab[y0:y1, x0:x1] == B).astype(np.uint8), ker)
+                zone = (dA > 0) & (dB > 0) & (lab[y0:y1, x0:x1] == 0)
+                if zone.sum() < 3: continue
+                ids = pm[y0:y1, x0:x1][zone]; ids = ids[ids >= 0]
+                if not ids.size or not all(is_thin(int(q)) for q in np.unique(ids)): continue
+                if opm[y0:y1, x0:x1][zone].any(): continue
+                merge(B, A, (y0, y1, x0, x1, dB)); changed = True; break
+            if changed: break
+    while len(byl) > max_rooms:
+        A = min(byl, key=lambda L_: byl[L_]["area_px"]); nbs, _ = contacts(A)
+        nbs = {b: w for b, w in nbs.items() if b in byl}
+        if not nbs: lab[lab == A] = 0; del byl[A]; continue
+        B = max(nbs, key=lambda b: byl[b]["area_px"]); y0, y1, x0, x1, _ = nbs[B]
+        dB = cv2.dilate((lab[y0:y1, x0:x1] == B).astype(np.uint8), ker); merge(B, A, (y0, y1, x0, x1, dB))
+    out = []
+    for L_, r in byl.items():
+        ys, xs = np.where(lab == L_); r = dict(r); r["area_px"] = int(xs.size); r["bbox"] = [int(xs.min()), int(ys.min()), int(xs.max() - xs.min() + 1), int(ys.max() - ys.min() + 1)]; out.append(r)
+    out.sort(key=lambda r: r["label"]); return lab, out
 
 def rooms_from(closed, thick):
     free = (closed == 0).astype(np.uint8); H, W = free.shape; ff = free.copy(); mask = np.zeros((H + 2, W + 2), np.uint8)
@@ -403,7 +506,12 @@ def extract(path, extra=None):
     sure = [o["b"] - o["a"] for o in openings if o["kind"] == "door" and o.get("score", 0) >= 0.5 and dmin <= (o["b"] - o["a"]) <= dmax]
     door_ref = float(np.median(sure)) if len(sure) >= 2 else None
     if door_ref:
-        keep_o = [o for o in openings if o["kind"] == "window" or 0.6 * door_ref <= (o["b"] - o["a"]) <= 1.6 * door_ref]
+        keep_o = []; wide = []
+        for o in openings:
+            wd = o["b"] - o["a"]
+            if o["kind"] == "window" or 0.5 * door_ref <= wd <= 1.6 * door_ref: keep_o.append(o)
+            elif 1.6 * door_ref < wd <= 2.3 * door_ref and o["kind"] == "door" and o.get("score", 0) >= 0.5: keep_o.append(o)   # closet double doors close the closet
+            elif 1.6 * door_ref < wd <= 2.6 * door_ref: wide.append(dict(o, kind="opening", unbridged=True))   # wide cased opening (living/kitchen): recorded, rooms stay connected
         if len(keep_o) < len(openings):
             closed = np.zeros_like(closed)
             for pc in pieces:
@@ -413,7 +521,7 @@ def extract(path, extra=None):
                 else: cv2.rectangle(closed, (int(o["c"] - thick / 2), int(o["a"])), (int(o["c"] + thick / 2), int(math.ceil(o["b"]))), 1, -1)
             # corner closures (perpendicular bridges) were not recorded as openings: redo them cheaply by closing tiny gaps
             closed = cv2.morphologyEx(closed, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_RECT, (int(2.5 * thick) | 1, int(2.5 * thick) | 1)))
-            openings = keep_o
+            openings = keep_o + wide
     if extra:
         H, W = g.shape
         for e in extra:
@@ -437,11 +545,14 @@ def extract(path, extra=None):
     thin = cv2.subtract(loose, cv2.dilate(closed, cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))))
     closed, openings = repair_leaks(closed, pieces, openings, thin, thick, door_ref)
     lab, rooms = rooms_from(closed, thick)
+    lab, rooms = region_sanity(lab, rooms, closed, pieces, openings, thick, door_ref)
     # keep pieces (and openings) that border a room; everything else is title, legend, logo
     roomsmask = np.isin(lab, [r["label"] for r in rooms]).astype(np.uint8); near = cv2.dilate(roomsmask, cv2.getStructuringElement(cv2.MORPH_RECT, (int(thick * 2) + 3, int(thick * 2) + 3)))
     keep = []
     for i, pc in enumerate(pieces):
         x0, y0, x1, y1 = [int(v) for v in ext_of(pc)]; sub = near[max(0, y0 - 1):y1 + 2, max(0, x0 - 1):x1 + 2]
+        inner = lab[max(0, y0):y1 + 1, max(0, x0):x1 + 1]
+        if inner.size and (inner > 0).mean() > 0.6: continue   # swallowed by a merged room: a counter edge, not a wall
         if sub.size and sub.any(): keep.append(i)
     kept = set(keep); remap = {old: new for new, old in enumerate(keep)}
     openings = [dict(o, piece=remap[o["piece"]], meets=remap[o["meets"]]) for o in openings if o["piece"] in kept and o["meets"] in kept]
@@ -487,19 +598,67 @@ def rectilinear_polygon(mask, thick):
         clean.append(p_)
     return clean if len(clean) >= 4 else out
 
+def _largest(geom):
+    from shapely.geometry import Polygon, MultiPolygon, GeometryCollection
+    if geom.is_empty: return None
+    if isinstance(geom, Polygon): return geom
+    polys = [g_ for g_ in getattr(geom, "geoms", []) if isinstance(g_, Polygon)]
+    return max(polys, key=lambda q: q.area) if polys else None
+
+def _mask_polygon(mask, thick):
+    """Fallback outline: the pixel contour of the region (rectilinear by construction), lightly simplified."""
+    from shapely.geometry import Polygon
+    cs, _ = cv2.findContours(mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    if not cs: return None
+    c = max(cs, key=cv2.contourArea).reshape(-1, 2).astype(float)
+    if len(c) < 3: return None
+    p = Polygon(c).buffer(0); p = _largest(p)
+    return _largest(p.simplify(max(1.0, thick * 0.4), preserve_topology=True).buffer(0)) if p else None
+
+def valid_polygons(rooms_px, lab, thick):
+    """Room outlines must be simple polygons close to the region they describe and must not overlap a neighbour by more than a
+    wall thickness (walk.js picks the room under the player by point-in-polygon). Repairs: buffer(0) + largest part; fall back
+    to the region's pixel contour when the rectilinear snap drifted (area off by > 20%); trim overlaps off the smaller room."""
+    from shapely.geometry import Polygon
+    from shapely.geometry.polygon import orient
+    polys = []
+    for r in rooms_px:
+        m = lab == r["label"]; P = None
+        try:
+            P = Polygon(r["poly"]) if len(r["poly"]) >= 3 else None
+            if P is not None and not P.is_valid: P = _largest(P.buffer(0))
+        except Exception: P = None
+        if P is None or P.area <= 0 or abs(P.area - r["area_px"]) > 0.2 * r["area_px"]: P = _mask_polygon(m, thick) or P
+        polys.append(P)
+    order = sorted(range(len(polys)), key=lambda k: -(polys[k].area if polys[k] is not None else 0))
+    for ia in range(len(order)):
+        for ib in range(ia + 1, len(order)):
+            a, b = order[ia], order[ib]; A, B = polys[a], polys[b]
+            if A is None or B is None or not A.intersects(B): continue
+            inter = A.intersection(B)
+            if inter.area <= 0 or inter.buffer(-thick / 2).is_empty: continue   # sliver within a wall thickness: tolerated
+            nb = _largest(B.difference(A.buffer(0.5)).buffer(0))   # the smaller room gives way
+            if nb is not None and nb.area > 0.3 * B.area: polys[b] = nb
+    for r, P in zip(rooms_px, polys):
+        if P is None: continue
+        P = orient(P, sign=1.0); pts = [[float(x), float(y)] for x, y in list(P.exterior.coords)[:-1]]
+        if len(pts) >= 3: r["poly"] = pts
+    return rooms_px
+
 def metric_layout(E, unit, listing, plan_image, sqft=None, ceiling_m=2.6):
     """Pixel geometry -> LAYOUT_CONTRACT.md JSON. Scale from the median door gap (0.86 m); square footage checks it."""
     pieces, openings, thick, lab = E["pieces"], E["openings"], E["thick"], E["room_labels"]
     doors = [o for o in openings if o["kind"] == "door"]
     door_ref = float(np.median([o["b"] - o["a"] for o in doors])) if doors else None
     if door_ref:   # drop "doors" far wider than the typical door: those are false bridges across open space
-        openings = [o for o in openings if not (o["kind"] == "door" and (o["b"] - o["a"]) > 1.8 * door_ref)]
-        doors = [o for o in openings if o["kind"] == "door"]; door_ref = float(np.median([o["b"] - o["a"] for o in doors]))
+        openings = [dict(o, kind="opening") if (o["kind"] == "door" and (o["b"] - o["a"]) > 2.3 * door_ref) else o for o in openings]   # far wider than a door: a cased opening (the wall line stays)
+        doors = [o for o in openings if o["kind"] == "door" and (o["b"] - o["a"]) <= 1.6 * door_ref] or doors; door_ref = float(np.median([o["b"] - o["a"] for o in doors]))
     m_per_px = DOOR_M / door_ref if door_ref else None
     rooms_px = []
     for r in E["rooms"]:
         m = (lab == r["label"]); poly = rectilinear_polygon(m, thick)
         if poly: rooms_px.append({"label": r["label"], "poly": poly, "area_px": r["area_px"]})
+    rooms_px = valid_polygons(rooms_px, lab, thick)
     unit_area_px = float(sum(r["area_px"] for r in rooms_px))
     scale_from = []
     if m_per_px: scale_from.append("door_width")
@@ -520,17 +679,21 @@ def metric_layout(E, unit, listing, plan_image, sqft=None, ceiling_m=2.6):
     for sx, sy in ((0, 0), (W - 1, 0), (0, H - 1), (W - 1, H - 1)):
         if ff[sy, sx] == 1: cv2.floodFill(ff, mk, (sx, sy), 2)
     outside = (ff == 2)
+    span = {i: [pc["s0"], pc["s1"]] for i, pc in enumerate(pieces)}   # a wall runs across the openings bridged from its ends
+    for o in openings:
+        if o["piece"] in span: sp = span[o["piece"]]; sp[0] = min(sp[0], o["a"]); sp[1] = max(sp[1], o["b"])
     walls = []
     for i, pc in enumerate(pieces):
-        x0, y0, x1, y1 = ext_of(pc); t = max(pc["t"], thick * 0.6)
-        if pc["o"] == "h": a, b = (pc["s0"], pc["c"]), (pc["s1"], pc["c"]); probe = [(int((x0 + x1) / 2), int(y0 - thick)), (int((x0 + x1) / 2), int(y1 + thick))]
-        else: a, b = (pc["c"], pc["s0"]), (pc["c"], pc["s1"]); probe = [(int(x0 - thick), int((y0 + y1) / 2)), (int(x1 + thick), int((y0 + y1) / 2))]
+        x0, y0, x1, y1 = ext_of(pc); t = max(pc["t"], thick * 0.6); lo, hi = span[i]
+        if pc["o"] == "h": a, b = (lo, pc["c"]), (hi, pc["c"]); probe = [(int((x0 + x1) / 2), int(y0 - thick)), (int((x0 + x1) / 2), int(y1 + thick))]
+        else: a, b = (pc["c"], lo), (pc["c"], hi); probe = [(int(x0 - thick), int((y0 + y1) / 2)), (int(x1 + thick), int((y0 + y1) / 2))]
         ext = any(0 <= px < W and 0 <= py < H and outside[py, px] for px, py in probe)
         walls.append({"id": f"w{i}", "a": M(*a), "b": M(*b), "thickness_m": round(t * m_per_px, 3), "exterior": bool(ext)})
     ops = []
     for k, o in enumerate(openings):
         pc = pieces[o["piece"]] if o["piece"] < len(pieces) else None
-        wid = f"w{o['piece']}"; s0 = (o["a"] - pc["s0"]) * m_per_px if pc else 0; s1 = (o["b"] - pc["s0"]) * m_per_px if pc else 0
+        lo = span[o["piece"]][0] if pc else 0
+        wid = f"w{o['piece']}"; s0 = (o["a"] - lo) * m_per_px if pc else 0; s1 = (o["b"] - lo) * m_per_px if pc else 0
         rec = {"id": f"o{k}", "wall": wid, "type": o["kind"], "s0": round(s0, 3), "s1": round(s1, 3), "width_m": round(s1 - s0, 3)}
         if o["kind"] == "window": rec.update({"sill_m": 0.9, "height_m": 1.3})
         elif o["kind"] == "door":
