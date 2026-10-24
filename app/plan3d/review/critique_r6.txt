@@ -1,0 +1,27 @@
+PAIR 1
+Improved: yes. Real window with mullions, sky gradient, baseboard, and a real TV unit model replace flat white boxes. Wall and floor read as surfaces now.
+
+Fixes:
+1. Window glass: the view is a flat gray/blue gradient with a hard horizon band. Use an HDRI or skydome with a real horizon and a MeshPhysicalMaterial transmission pane (or additive sky plane) with slight reflectivity. Add the sky as scene.environment.
+2. Wall and window frame are almost the same white-gray. Add reveal depth (window sill, 10-15 cm jamb returns) and subtle paint roughness variation (roughnessMap noise, bump 0.02).
+3. Floor parquet: the scale looks too large and has no gloss or reflection. Reduce tile repeat to real plank size (~9 cm), add a roughnessMap, set envMapIntensity ~0.4, and use anisotropy 16.
+4. Lighting is flat. Add a sun DirectionalLight through the window with a PCFSoft/VSM shadow (radius 4, bias -0.0005) and a warm RectAreaLight at the window for fill. Switch to ACESFilmic tone mapping with sRGB output.
+5. Baseboard and sill are razor-sharp. Bevel the trim profile (ExtrudeGeometry bevel or a profiled shape). Add a contact-shadow blob under the TV unit, since it floats visually.
+
+PAIR 2
+Improved: yes. The room now has depth, a window with sunlight and shadow patch, baseboards, and a wood floor. BEFORE was a blown-out white door slab.
+
+Fixes:
+1. Ceiling reads dark brown, as if the wrong material or a lighting artifact. Set it to matte white with a ceiling bounce light (hemisphere light, ground color warm), or raise ambient and add a lightmap.
+2. Walls are a flat gray-taupe with a muddy cast. Rebalance the exposure and light color temperature, and use a neutral-white albedo around 0.85. Add fake bounce via a hemisphere light with intensity ~0.6.
+3. Window light: the sun patch has hard, aliased edges and no bloom feel. Increase shadow map to 4096, use VSM or PCSS-style blur, and add a faint additive volumetric cone plane or a soft glow sprite at the window.
+4. Window glass is opaque gray-white with no outside. Add an exterior backdrop (HDRI or skydome plus a simple building silhouette) and slight Fresnel reflection.
+5. The wall corner on the left is a thick column with no trim. Add a crown or ceiling line, door casing detail, and a wall/floor junction shadow gradient. Replace the dashed outline lines (debug artifacts) or hide them.
+
+PAIR 3
+Improved: yes, moderately. Shadows ground the model, the warm background beats the flat gray, wall thickness and trim read, and the floors differ per room. It looks less like a diagram.
+
+Fixes:
+1. The background and ground are one flat tan with a hard shadow edge. Add a soft ground-shadow plane (ShadowMaterial with blur), a subtle radial gradient, and limit the shadow frustum to the model bounds to increase texel density.
+2. The kitchen and wood floors are inconsistent. The kitchen floor looks like a washed-out tile and the living room is strong orange parquet. Normalize the texture scale, tint, and saturation per room, and cut the orange.
+3. The interior is dim under the shadow casters. Cut

@@ -1,38 +1,22 @@
 {
  "usd": {
   "google": 0.038,
-  "anthropic": 4.080445
+  "anthropic": 4.111519
  },
  "counts": {
-  "anthropic_calls": 551,
+  "anthropic_calls": 553,
   "google_geocode": 4,
   "google_root_tile": 3,
   "google_tile": 65,
   "poly_pizza": 7
  },
  "tokens": {
-  "in": 2534551,
-  "out": 1099043,
+  "in": 2535420,
+  "out": 1100776,
   "cache_read": 0,
-  "cache_write": 58271
+  "cache_write": 65756
  },
  "events": [
-  {
-   "t": "2026-10-24T06:26:49",
-   "bucket": "anthropic",
-   "usd": 0.0005,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure kitchen: Kitchen"
-  },
-  {
-   "t": "2026-10-24T06:26:57",
-   "bucket": "anthropic",
-   "usd": 0.00065,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bedroom: Bedroom"
-  },
   {
    "t": "2026-10-24T06:27:05",
    "bucket": "anthropic",
@@ -4016,6 +4000,22 @@
    "key": "anthropic_calls",
    "n": 1,
    "note": "claude-haiku-5-5 agent shortlist dining"
+  },
+  {
+   "t": "2026-10-24T11:44:31",
+   "bucket": "anthropic",
+   "usd": 0.030721,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 archviz critique r6"
+  },
+  {
+   "t": "2026-10-24T11:58:03",
+   "bucket": "anthropic",
+   "usd": 0.000353,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 agent shortlist other"
   }
  ]
 }

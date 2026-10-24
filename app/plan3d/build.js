@@ -25,7 +25,8 @@ const CAT_ROUGH = { wood_floor: 0.55, tile: 0.25, plaster: 0.95, paint: 0.9, con
 export class MaterialLib {
   constructor(base = '../furnish/materials/') { this.base = base; this.index = null; this.cache = new Map(); this.tex = new THREE.TextureLoader(); }
   async load() {
-    try { const r = await fetch(this.base + 'index.json'); if (r.ok) { const j = await r.json(); this.index = new Map((Array.isArray(j) ? j : j.items || []).map(m => [m.id, m])); } } catch (e) { this.index = null; }
+    try { let r = await fetch(this.base + 'index_slim.json'); if (!r.ok) r = await fetch(this.base + 'index.json');   // slim index = same entries without CLIP vectors
+      if (r.ok) { const j = await r.json(); this.index = new Map((Array.isArray(j) ? j : j.items || []).map(m => [m.id, m])); } } catch (e) { this.index = null; }
     return this;
   }
   _tex(url, srgb) {
@@ -44,8 +45,9 @@ export class MaterialLib {
       if (entry.has_roughness !== false && hasMap('roughness')) { m.roughnessMap = this._tex(dir + 'roughness.jpg', false); m.roughnessMap.repeat.set(1 / size, 1 / size); m.roughness = 1.0; }
       if (slot === 'floor' && entry.category === 'wood_floor') m.envMapIntensity = 0.6;
       if (entry.category === 'paint' || entry.category === 'plaster') {   // interior walls are painted drywall: take the swatch's tone, drop the stucco/plaster relief
-        const rgb = entry.mean_rgb || [235, 233, 228]; const mx = Math.max(...rgb, 1); const f = Math.min(1.6, 238 / mx);
-        m.map = null; m.normalMap = null; m.roughnessMap = null; m.color = new THREE.Color(rgb[0] * f / 255, rgb[1] * f / 255, rgb[2] * f / 255); m.roughness = 0.93; m.envMapIntensity = 0.3;
+        const rgb = entry.mean_rgb || [235, 233, 228]; const mx = Math.max(...rgb, 1); const f = Math.min(1.6, 240 / mx);
+        const c = new THREE.Color(rgb[0] * f / 255, rgb[1] * f / 255, rgb[2] * f / 255); const hsl = {}; c.getHSL(hsl); c.setHSL(hsl.h, Math.min(hsl.s * 0.5, 0.1), Math.max(hsl.l, 0.9));   // swatch hue, but a wall-paint lightness and chroma
+        m.map = null; m.normalMap = null; m.roughnessMap = null; m.color = c; m.roughness = 0.93; m.envMapIntensity = 0.3;
         const pt = proceduralTexture('paint'); if (pt) { m.map = pt.map; }   // faint eggshell noise only
       }
       m.userData.materialId = entry.id; m.userData.category = entry.category;
@@ -62,7 +64,7 @@ export class MaterialLib {
     if (!Array.isArray(rgb) || rgb.length < 3 || rgb.some(v => typeof v !== 'number')) return base;
     const k = `${base.uuid}|${key}`; if (this.cache.has(k)) return this.cache.get(k);
     const m = base.clone(); const mx = Math.max(...rgb, 1); const f = Math.min(1.7, 238 / mx); let c = new THREE.Color(rgb[0] * f / 255, rgb[1] * f / 255, rgb[2] * f / 255);
-    const hsl = {}; c.getHSL(hsl); c.setHSL(hsl.h, Math.min(hsl.s * 0.45, 0.18), Math.max(hsl.l, 0.86));   // keep the hue, drop most of the photo's warm cast
+    const hsl = {}; c.getHSL(hsl); c.setHSL(hsl.h, Math.min(hsl.s * 0.3, 0.08), Math.max(hsl.l, 0.9));   // keep a hint of the hue, drop the photo's warm cast (listing photos are tungsten-lit and underexposed)
     m.color = c;
     m.userData = { ...base.userData, tint: rgb }; this.cache.set(k, m); return m;
   }
@@ -185,7 +187,9 @@ export class Apartment {
     frame.userData = { kind: 'window', opening: o.id }; this.group.add(frame);
   }
   glassMat() {
-    if (!this._glass) this._glass = new THREE.MeshPhysicalMaterial({ color: 0xf4f8fb, transmission: 0.95, roughness: 0.03, metalness: 0, ior: 1.5, thickness: 0.005, transparent: true, opacity: 1, side: THREE.DoubleSide, envMapIntensity: 0.8 });
+    if (!this._glass) this._glass = this.lib.lowQuality
+      ? new THREE.MeshStandardMaterial({ color: 0xdfe9f2, transparent: true, opacity: 0.28, roughness: 0.05, metalness: 0.1, side: THREE.DoubleSide, depthWrite: false })
+      : new THREE.MeshPhysicalMaterial({ color: 0xf4f8fb, transmission: 0.95, roughness: 0.03, metalness: 0, ior: 1.5, thickness: 0.005, transparent: true, opacity: 1, side: THREE.DoubleSide, envMapIntensity: 0.8 });
     return this._glass;
   }
 

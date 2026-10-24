@@ -29,3 +29,10 @@
    faucet, restart `app/checkout/server.py`. Per-order real-testnet amount is capped at $1 (X402_REAL_CAP_USD).
 8. **Visa track sandbox.** The card rail is a sandbox mock behind one adapter; once the Visa starter pack names its
    sandbox (Cybersource?), the keys needed are: merchant id, REST key id + shared secret, 3-D Secure (Payer Auth) creds.
+
+## Added 15:30 (owner awake)
+9. **Microsoft "Grand Prize: Built for the Real World"** fits: a production-minded AI agent in a high-impact domain, judged
+   on customer understanding, measurable usefulness, path from prototype to production, responsible design, end-to-end
+   functionality. Our angle: the furnishing + checkout agent with budget limits, audit log, human confirmation. Also
+   "Microsoft Customer Impact Award" (same criteria). Owner to confirm we enter both.
+10. **Creao "Best One-Person Company"**: owner to read the Creao doc (needs login) and confirm.

@@ -19,7 +19,8 @@ your budget, move things around or ask for changes, and order everything so it a
    switch rail to x402: the 402 challenge, the signed USDC payment, verify/settle, tx link (testnet).
 5. **Close** (15 s). "Every listing on this page went through the same pipeline; 25 unit types from four buildings today,
    and the engine reads 370 of the 418 plans we scraped." Tracks: Visa Reimagining Shopping, Coinbase x402, Best Solo
-   Hack, Anthropic track (community: people moving into an unfurnished SF rental).
+   Hack, Microsoft Built for the Real World (production-minded agent: budget limits, audit log, human confirmation),
+   Creao Best One-Person Company, Anthropic track (community: people moving into an unfurnished SF rental).
 
 ## Backup
 - If the live agent run stalls: Auto-furnish all rooms (deterministic planner) is instant.

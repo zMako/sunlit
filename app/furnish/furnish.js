@@ -57,8 +57,9 @@ export class Furnish {
     it.obj.userData.item = it;
     const w = +spec.w_m || 0.5, d = +spec.d_m || 0.5, h = +spec.h_m || 0.5;
     let built = false;
-    this.useIkeaModels = this.useIkeaModels ?? (localStorage.getItem('ikeaModels') === '1');
-    const glbSrc = spec.model_glb || (this.useIkeaModels && spec.model_glb_url ? `/api/model?u=${encodeURIComponent(spec.model_glb_url)}` : null);
+    this.useIkeaModels = this.useIkeaModels ?? (localStorage.getItem('ikeaModels') !== '0');   // default ON: models are cached locally (owner's decision)
+    const local = spec.model_glb ? (/^(https?:)?\//.test(spec.model_glb) ? spec.model_glb : '/' + spec.model_glb.replace(/^\.?\//, '')) : null;   // absolute: pages live in /plan3d/ and /
+    const glbSrc = (this.useIkeaModels && local) || (this.useIkeaModels && spec.model_glb_url ? `/api/model?u=${encodeURIComponent(spec.model_glb_url)}` : null);
     if (glbSrc) {
       try {
         const gl = await this.loader.loadAsync(glbSrc); const m = gl.scene; m.traverse(o => { if (o.isMesh) { o.castShadow = true; o.userData.item = it; } });
@@ -218,7 +219,7 @@ export class Furnish {
         <span class="fprice">${it.spec.price_usd != null ? '$' + (+it.spec.price_usd).toFixed(0) : ''}</span> ${it.spec.product_url ? `<a href="${it.spec.product_url}" target="_blank">product</a>` : ''}
         ${it.problems.length ? `<div class="fprob">${it.problems.join(' · ')}</div>` : ''}</div>`).join('') +
       `<div class="frow"><button id="fsave">Save</button> <button id="fauto">Auto-arrange</button> <button id="freload">Reload</button> <span id="fstatus" class="fdim">${this.dirty ? 'unsaved' : ''}</span></div>
-       <div class="fdim"><label><input type="checkbox" id="fikea" ${this.useIkeaModels ? 'checked' : ''}> IKEA 3D models (loaded live from ikea.com; their terms restrict embedding, your call)</label></div>
+       <div class="fdim"><label><input type="checkbox" id="fikea" ${this.useIkeaModels ? 'checked' : ''}> IKEA 3D models (local cache; falls back to a card when a product has no model)</label></div>
        <div class="fdim">click select · drag move · R rotate 90° · [ ] 15° · arrows nudge 5 cm · D duplicate · Del remove · Shift no snap${this.fixtures.length ? ` · ${this.fixtures.length} built-in fixtures are obstacles` : ''}</div>`;
     this.panelEl.querySelectorAll('.fitem').forEach(el => el.onclick = () => this.select(this.items[+el.dataset.i]));
     const b = id => this.panelEl.querySelector('#' + id); b('fsave').onclick = () => this.save(); b('freload').onclick = () => this.loadPlan(); b('fauto').onclick = () => this.auto();
