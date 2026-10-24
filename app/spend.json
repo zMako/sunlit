@@ -1,222 +1,22 @@
 {
  "usd": {
   "google": 0.038,
-  "anthropic": 4.111519
+  "anthropic": 4.752041
  },
  "counts": {
-  "anthropic_calls": 553,
+  "anthropic_calls": 578,
   "google_geocode": 4,
   "google_root_tile": 3,
   "google_tile": 65,
   "poly_pizza": 7
  },
  "tokens": {
-  "in": 2535420,
-  "out": 1100776,
+  "in": 2650966,
+  "out": 1141719,
   "cache_read": 0,
   "cache_write": 65756
  },
  "events": [
-  {
-   "t": "2026-10-24T06:27:05",
-   "bucket": "anthropic",
-   "usd": 0.000509,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bathroom: Bathroom"
-  },
-  {
-   "t": "2026-10-24T06:27:12",
-   "bucket": "anthropic",
-   "usd": 0.000627,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure kitchen: Kitchen / living area"
-  },
-  {
-   "t": "2026-10-24T06:27:22",
-   "bucket": "anthropic",
-   "usd": 0.000628,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure office: Small sunny room / den"
-  },
-  {
-   "t": "2026-10-24T06:27:33",
-   "bucket": "anthropic",
-   "usd": 0.000704,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living: Living room with bay window"
-  },
-  {
-   "t": "2026-10-24T06:27:43",
-   "bucket": "anthropic",
-   "usd": 0.000601,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure kitchen: Galley kitchen"
-  },
-  {
-   "t": "2026-10-24T06:27:51",
-   "bucket": "anthropic",
-   "usd": 0.000627,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bedroom: Bedroom"
-  },
-  {
-   "t": "2026-10-24T06:27:57",
-   "bucket": "anthropic",
-   "usd": 0.000404,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bathroom: Bathroom"
-  },
-  {
-   "t": "2026-10-24T06:28:04",
-   "bucket": "anthropic",
-   "usd": 0.00063,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living: Living room with bay windows"
-  },
-  {
-   "t": "2026-10-24T06:28:13",
-   "bucket": "anthropic",
-   "usd": 0.000636,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure kitchen: Dining nook and kitchen"
-  },
-  {
-   "t": "2026-10-24T06:28:23",
-   "bucket": "anthropic",
-   "usd": 0.000592,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure balcony: Balcony"
-  },
-  {
-   "t": "2026-10-24T06:28:33",
-   "bucket": "anthropic",
-   "usd": 0.000749,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure office: Den/office"
-  },
-  {
-   "t": "2026-10-24T06:28:44",
-   "bucket": "anthropic",
-   "usd": 0.000608,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure hallway: Hallway"
-  },
-  {
-   "t": "2026-10-24T06:28:53",
-   "bucket": "anthropic",
-   "usd": 0.000807,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living: Living room"
-  },
-  {
-   "t": "2026-10-24T06:29:03",
-   "bucket": "anthropic",
-   "usd": 0.000539,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure kitchen: Kitchen"
-  },
-  {
-   "t": "2026-10-24T06:29:09",
-   "bucket": "anthropic",
-   "usd": 0.000457,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bathroom: Bathroom"
-  },
-  {
-   "t": "2026-10-24T06:29:15",
-   "bucket": "anthropic",
-   "usd": 0.000517,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure laundry: Laundry closet"
-  },
-  {
-   "t": "2026-10-24T06:29:21",
-   "bucket": "anthropic",
-   "usd": 0.000599,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure kitchen: Kitchenette open-plan area"
-  },
-  {
-   "t": "2026-10-24T06:29:29",
-   "bucket": "anthropic",
-   "usd": 0.000692,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living: Living room and kitchen (open plan)"
-  },
-  {
-   "t": "2026-10-24T06:29:39",
-   "bucket": "anthropic",
-   "usd": 0.000597,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bedroom: Bedroom with closet overlooking neighbouring building"
-  },
-  {
-   "t": "2026-10-24T06:29:46",
-   "bucket": "anthropic",
-   "usd": 0.000609,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living: Living/dining with kitchen peninsula"
-  },
-  {
-   "t": "2026-10-24T06:29:54",
-   "bucket": "anthropic",
-   "usd": 0.000595,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living: Living room with bay windows"
-  },
-  {
-   "t": "2026-10-24T06:30:02",
-   "bucket": "anthropic",
-   "usd": 0.000656,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure kitchen: Kitchen"
-  },
-  {
-   "t": "2026-10-24T06:30:09",
-   "bucket": "anthropic",
-   "usd": 0.000474,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure bathroom: Bathroom"
-  },
-  {
-   "t": "2026-10-24T06:30:21",
-   "bucket": "anthropic",
-   "usd": 0.001257,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure living: Living room with fireplace"
-  },
-  {
-   "t": "2026-10-24T06:30:32",
-   "bucket": "anthropic",
-   "usd": 0.000617,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 structure dining: Dining room"
-  },
   {
    "t": "2026-10-24T06:30:41",
    "bucket": "anthropic",
@@ -4016,6 +3816,206 @@
    "key": "anthropic_calls",
    "n": 1,
    "note": "claude-haiku-5-5 agent shortlist other"
+  },
+  {
+   "t": "2026-10-24T12:46:32",
+   "bucket": "anthropic",
+   "usd": 0.013156,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_05.jpg"
+  },
+  {
+   "t": "2026-10-24T12:46:40",
+   "bucket": "anthropic",
+   "usd": 0.013376,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_10.jpg"
+  },
+  {
+   "t": "2026-10-24T12:46:47",
+   "bucket": "anthropic",
+   "usd": 0.014388,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_01.jpg"
+  },
+  {
+   "t": "2026-10-24T12:46:57",
+   "bucket": "anthropic",
+   "usd": 0.025536,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_01.jpg"
+  },
+  {
+   "t": "2026-10-24T12:47:03",
+   "bucket": "anthropic",
+   "usd": 0.014808,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_01.jpg"
+  },
+  {
+   "t": "2026-10-24T12:47:05",
+   "bucket": "anthropic",
+   "usd": 0.013426,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_05.jpg"
+  },
+  {
+   "t": "2026-10-24T12:47:11",
+   "bucket": "anthropic",
+   "usd": 0.014618,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_02.jpg"
+  },
+  {
+   "t": "2026-10-24T12:47:14",
+   "bucket": "anthropic",
+   "usd": 0.0229,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_05.jpg"
+  },
+  {
+   "t": "2026-10-24T12:47:21",
+   "bucket": "anthropic",
+   "usd": 0.029166,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_02.jpg"
+  },
+  {
+   "t": "2026-10-24T12:47:29",
+   "bucket": "anthropic",
+   "usd": 0.014458,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_04.jpg"
+  },
+  {
+   "t": "2026-10-24T12:47:38",
+   "bucket": "anthropic",
+   "usd": 0.023316,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_04.jpg"
+  },
+  {
+   "t": "2026-10-24T12:47:43",
+   "bucket": "anthropic",
+   "usd": 0.027156,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_03.jpg"
+  },
+  {
+   "t": "2026-10-24T12:47:57",
+   "bucket": "anthropic",
+   "usd": 0.036904,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_03.jpg"
+  },
+  {
+   "t": "2026-10-24T12:48:07",
+   "bucket": "anthropic",
+   "usd": 0.026246,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_03.jpg"
+  },
+  {
+   "t": "2026-10-24T12:48:16",
+   "bucket": "anthropic",
+   "usd": 0.024816,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_04.jpg"
+  },
+  {
+   "t": "2026-10-24T12:48:31",
+   "bucket": "anthropic",
+   "usd": 0.038634,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_04.jpg"
+  },
+  {
+   "t": "2026-10-24T12:48:40",
+   "bucket": "anthropic",
+   "usd": 0.025616,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_04.jpg"
+  },
+  {
+   "t": "2026-10-24T12:48:50",
+   "bucket": "anthropic",
+   "usd": 0.025426,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_05.jpg"
+  },
+  {
+   "t": "2026-10-24T12:49:05",
+   "bucket": "anthropic",
+   "usd": 0.039914,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_05.jpg"
+  },
+  {
+   "t": "2026-10-24T12:49:13",
+   "bucket": "anthropic",
+   "usd": 0.025566,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_05.jpg"
+  },
+  {
+   "t": "2026-10-24T12:49:25",
+   "bucket": "anthropic",
+   "usd": 0.027896,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_06.jpg"
+  },
+  {
+   "t": "2026-10-24T12:49:42",
+   "bucket": "anthropic",
+   "usd": 0.046004,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_06.jpg"
+  },
+  {
+   "t": "2026-10-24T12:49:52",
+   "bucket": "anthropic",
+   "usd": 0.027896,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_06.jpg"
+  },
+  {
+   "t": "2026-10-24T12:50:04",
+   "bucket": "anthropic",
+   "usd": 0.031156,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_07.jpg"
+  },
+  {
+   "t": "2026-10-24T12:50:18",
+   "bucket": "anthropic",
+   "usd": 0.038144,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_07.jpg"
   }
  ]
 }

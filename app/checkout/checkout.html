@@ -10,7 +10,7 @@ input,select{background:#0f1319;color:var(--ink);border:1px solid #334;border-ra
 #log{font:12px/1.5 ui-monospace,Menlo,monospace;max-height:420px;overflow:auto;background:#0b0f15;border-radius:8px;padding:10px}#log div{padding:2px 0;border-bottom:1px dashed #1e2733}.ev{color:var(--acc)}.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}
 pre{background:#0b0f15;border-radius:8px;padding:8px;font-size:11px;max-height:180px;overflow:auto;white-space:pre-wrap}.room{margin:10px 0 4px;color:var(--ink2);font-weight:600}
 .tl{display:flex;gap:8px;margin:8px 0}.tl div{flex:1;background:#0b0f15;border-radius:8px;padding:8px;font-size:12px}.tl b{display:block;font-size:13px;color:var(--ink)}.note{font-size:12px;color:var(--ink2)}</style></head><body>
-<header><h1>Sunlit · checkout</h1>
+<header><a id="back" class="note" style="color:var(--acc);text-decoration:none;display:none" href="#">&larr; Back to apartment</a><h1>Sunlit · checkout</h1>
  <div><label>budget (USD)</label><input id="budget" type="number" step="50" style="width:110px"></div>
  <div><label>move-in date</label><input id="movein" type="date"></div>
  <div><label>payment rail</label><select id="rail"><option value="card">Card (sandbox · stops before capture)</option><option value="x402">x402 · USDC on Base Sepolia (Coinbase)</option></select></div>
@@ -32,6 +32,8 @@ pre{background:#0b0f15;border-radius:8px;padding:8px;font-size:11px;max-height:1
 const API='http://127.0.0.1:8766'; const Q=new URLSearchParams(location.search); const rooms=(Q.get('rooms')||'').split(',').filter(Boolean);
 const $=id=>document.getElementById(id); $('budget').value=Q.get('budget')||3000; $('movein').value=Q.get('movein')||new Date(Date.now()+21*864e5).toISOString().slice(0,10); if(Q.get('rail')) $('rail').value=Q.get('rail');
 let items=[], excluded=new Set(), orderId=null;
+const units=[...new Set(rooms.map(r=>r.split('__')[0]).filter(Boolean))]; if(units.length){ $('back').href=`/plan3d/apartment.html?unit=${encodeURIComponent(units[0])}`; $('back').style.display=''; }
+let missing=[];   // requested rooms with no furnishing plan: skipped, with a note
 function money(v){return '$'+(+v).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
 function img(u){ if(!u) return ''; return /^https?:/.test(u)?`http://127.0.0.1:8765/api/img?u=${encodeURIComponent(u)}`:u; }
 function render(){ const live=items.filter(i=>!excluded.has(i.id)); const total=live.reduce((s,i)=>s+i.price_usd,0); const b=+$('budget').value||0;
@@ -39,8 +41,9 @@ function render(){ const live=items.filter(i=>!excluded.has(i.id)); const total=
   const byRoom={}; for(const i of items){ (byRoom[i.room]||=[]).push(i); } let h='';
   for(const [r,its] of Object.entries(byRoom)){ h+=`<div class="room">${its[0].room_label||r} <span class="note">${r}</span></div>`;
     for(const i of its){ const off=excluded.has(i.id); h+=`<div class="item" style="opacity:${off?.4:1}"><img src="${img(i.image)}" onerror="this.style.visibility='hidden'"><div><div class="n">${i.name}</div><div class="m">${i.category.replace('_',' ')} · ${(i.dims||[]).map(v=>v?(+v).toFixed(2):'?').join('×')} m${i.product_url?` · <a href="${i.product_url}" target="_blank" style="color:var(--acc)">product</a>`:''}</div></div><div class="price">${money(i.price_usd)}</div><button class="rm" data-id="${i.id}">${off?'restore':'remove'}</button></div>`; } }
-  $('cart').innerHTML=h||'<div class="note">no items: furnish a room first</div>'; document.querySelectorAll('.rm').forEach(b=>b.onclick=()=>{ const id=b.dataset.id; excluded.has(id)?excluded.delete(id):excluded.add(id); render(); }); }
-fetch(`${API}/cart?rooms=${encodeURIComponent(rooms.join(','))}`).then(r=>r.json()).then(c=>{ items=c.items; $('status').textContent=`merchant ${c.merchant.slice(0,10)}… · ${c.network} · facilitator: ${c.facilitator}`; render(); }).catch(e=>{$('cart').textContent='checkout server not running on :8766 ('+e+')'});
+  const miss=missing.length?`<div class="note" style="margin-top:8px;color:var(--warn)">skipped ${missing.length} room${missing.length>1?'s':''} without a furnishing plan: ${missing.map(r=>r.split('__')[1]||r).join(', ')}</div>`:'';
+  $('cart').innerHTML=(h||'<div class="note">no items: furnish a room first</div>')+miss; document.querySelectorAll('.rm').forEach(b=>b.onclick=()=>{ const id=b.dataset.id; excluded.has(id)?excluded.delete(id):excluded.add(id); render(); }); }
+fetch(`${API}/cart?rooms=${encodeURIComponent(rooms.join(','))}`).then(r=>r.json()).then(c=>{ items=c.items||[]; const have=new Set(items.map(i=>i.room)); missing=rooms.filter(r=>!have.has(r)); $('status').textContent=`merchant ${c.merchant.slice(0,10)}… · ${c.network} · facilitator: ${c.facilitator}`; render(); }).catch(e=>{$('cart').textContent='checkout server not running on :8766 ('+e+')'});
 $('budget').oninput=render;
 function logLine(d){ const el=document.createElement('div'); const cls=/error|failed/.test(d.event)?'bad':/ok|settled|auth|order/.test(d.event)?'ok':/drop|risk/.test(d.event)?'warn':'ev'; el.innerHTML=`<span class="${cls}">[${d.event}]</span> ${d.text||''}`; $('log').appendChild(el); $('log').scrollTop=1e9; }
 $('run').onclick=()=>{ $('log').innerHTML=''; $('confirm').style.display='none'; $('x402').style.display='none'; $('receipt').style.display='none'; $('run').disabled=true;

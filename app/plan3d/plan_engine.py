@@ -456,8 +456,7 @@ def run(plan_path, listing, unit, out_dir, sqft=None, use_reader=True, repair=No
             L = apply_annotation(L, E, A)
         except Exception as e: print(f"[engine] annotation unavailable: {type(e).__name__} {e}")
     total = sum(r["area_m2"] for r in L["rooms"])
-    biggest = max((r["area_m2"] for r in L["rooms"]), default=0)
-    if len(L["rooms"]) < 2 or total < 8 or total > 260 or biggest > 90: raise ValueError(f"layout rejected: {len(L['rooms'])} rooms, {total:.1f} m2, biggest {biggest:.1f}")
+    if len(L["rooms"]) < 2: raise ValueError(f"layout rejected: {len(L['rooms'])} rooms")   # size is settled later by rescale.py (area rule), not here
     out = pathlib.Path(out_dir) / f"{unit}.json"; json.dump(L, open(out, "w"), indent=1)
     return L, out
 

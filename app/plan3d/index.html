@@ -1,25 +1,86 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Sunlit · apartments from floor plans</title>
-<style>:root{--bg:#0f1319;--card:#171d26;--ink:#e8edf3;--ink2:#9aa6b5;--acc:#6ea8fe}body{margin:0;font:14px/1.45 -apple-system,Inter,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}
-header{padding:18px 24px;border-bottom:1px solid #243040}h1{margin:0;font-size:18px}h2{font-size:15px;margin:22px 0 10px;color:var(--ink2);font-weight:600}
-main{padding:10px 24px 40px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
-.card{background:var(--card);border:1px solid #243040;border-radius:12px;overflow:hidden;display:flex;flex-direction:column}.card img{width:100%;height:190px;object-fit:contain;background:#fff}
-.body{padding:10px 12px;display:flex;flex-direction:column;gap:6px}.title{font-weight:600}.meta{color:var(--ink2);font-size:12px}.rooms{font-size:12px;color:var(--ink2)}
-.row{display:flex;gap:8px;align-items:center;margin-top:4px}.btn{background:var(--acc);color:#07111f;border:none;border-radius:8px;padding:6px 10px;font-weight:600;text-decoration:none;font-size:13px}
-.issues{font-size:11px;color:#c9a36a;max-height:48px;overflow:hidden}</style></head><body>
-<header><h1>Sunlit · apartments rebuilt from their floor plans</h1><div class="meta">Each card is one unit type of a building. Open it as a dollhouse, walk through it, furnish it.</div></header>
-<main id="root">loading…</main>
+<!doctype html><html><head><meta charset="utf-8"><title>Move-in · furnish your next apartment before you move in</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>:root{--bg:#0b0f16;--card:#141a24;--line:#243040;--ink:#e8edf3;--ink2:#9aa6b5;--acc:#6ea8fe;--ok:#7fe0b4;--warn:#f3cf7a}
+*{box-sizing:border-box}body{margin:0;font:14px/1.45 system-ui,-apple-system,Inter,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}
+a{color:inherit}header{padding:26px 28px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#111827,#0b0f16)}
+.kicker{color:var(--acc);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}h1{margin:6px 0 6px;font-size:26px;line-height:1.2;max-width:980px}
+.sub{color:var(--ink2);max-width:980px}.stats{display:flex;gap:22px;margin-top:12px;color:var(--ink2);font-size:12px}.stats b{color:var(--ink);font-size:16px;display:block}
+.demo{padding:16px 28px;border-bottom:1px solid var(--line);background:#0e131c}.demo h2{margin:0 0 10px}
+.dgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.dcard{background:var(--card);border:1px solid #2c3a50;border-radius:12px;display:grid;grid-template-columns:120px 1fr;overflow:hidden}
+.dcard img{width:120px;height:100%;min-height:120px;object-fit:contain;background:#fff}.dcard .body{padding:10px 12px}.step{display:inline-block;width:20px;height:20px;border-radius:10px;background:var(--acc);color:#07111f;font-weight:800;text-align:center;font-size:12px;line-height:20px;margin-right:6px}
+h2{font-size:15px;margin:24px 0 10px;color:var(--ink);font-weight:650}h2 .meta{font-weight:400}
+.bar{position:sticky;top:0;z-index:5;background:rgba(11,15,22,.94);backdrop-filter:blur(6px);padding:10px 28px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+input,select{background:#0f1319;color:var(--ink);border:1px solid #334155;border-radius:8px;padding:6px 9px;font:inherit}label{color:var(--ink2);font-size:12px}
+main{padding:4px 28px 50px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}.card img{width:100%;height:180px;object-fit:contain;background:#fff;display:block}
+.body{padding:10px 12px;display:flex;flex-direction:column;gap:6px;flex:1}.title{font-weight:650}.meta{color:var(--ink2);font-size:12px}.rooms{font-size:12px;color:var(--ink2)}
+.badges{display:flex;gap:5px;flex-wrap:wrap}.bd{font-size:11px;border-radius:999px;padding:1px 8px;border:1px solid #334155;color:var(--ink2)}.bd.ok{border-color:#2f6b55;color:var(--ok);background:rgba(127,224,180,.07)}.bd.acc{border-color:#2d4a7a;color:#a9c8ff;background:rgba(110,168,254,.08)}.bd.warn{border-color:#6b5a2f;color:var(--warn)}
+.row{display:flex;gap:6px;align-items:center;margin-top:auto;padding-top:4px;flex-wrap:wrap}.btn{background:var(--acc);color:#07111f;border:none;border-radius:8px;padding:5px 10px;font-weight:650;text-decoration:none;font-size:12.5px}
+.btn.sec{background:#243042;color:#dfe7f1}.btn.go{background:var(--ok)}.btn.off{opacity:.45;pointer-events:none}
+.issues{font-size:11px;color:#c9a36a}.empty{color:var(--ink2);padding:30px 0}
+@media(max-width:1000px){.dgrid{grid-template-columns:1fr}}</style></head><body>
+<header><div class="kicker">Move-in · Cal Hacks 13.0</div>
+<h1>Pick a real SF rental, get its apartment rebuilt in 3D from the floor plan, let an agent furnish it with real products within your budget, and order everything so it arrives before move-in day.</h1>
+<div class="sub">Every card below is a unit type published by its landlord: we only use what the listing publishes, the floor plan and the photos. Walls, doors and windows are read from the plan by classical vision and scaled from its printed dimensions; Claude names the rooms and places the fixtures.</div>
+<div class="stats" id="stats"></div></header>
+<section class="demo"><h2>Demo path <span class="meta">open 3D, walk it, let the agent furnish the living room, check out</span></h2><div class="dgrid" id="demo"></div></section>
+<div class="bar"><label>search <input id="q" placeholder="building, unit, room…" style="width:220px"></label>
+<label>building <select id="fb"><option value="">all buildings</option></select></label>
+<label>bedrooms <select id="fr"><option value="">any</option><option value="0">studio</option><option value="1">1</option><option value="2">2</option><option value="3">3+</option></select></label>
+<label><input type="checkbox" id="fa"> annotated only</label><span class="meta" id="count"></span></div>
+<main id="root"><div class="empty">loading…</div></main>
 <script>
-fetch('layouts/index.json').then(r=>r.json()).then(units=>{
-  const by={}; for(const u of units){ (by[u.building||u.listing] ||= []).push(u); }
-  let html='';
-  for(const [b,us] of Object.entries(by)){
-    html+=`<h2>${b} <span class="meta">${us[0].listing} · ${us.length} unit type${us.length>1?'s':''}</span></h2><div class="grid">`;
-    for(const u of us){ const rooms=u.rooms.filter(r=>r.area_m2>2).map(r=>`${r.name} ${r.area_m2} m²`).join(' · ');
-      html+=`<div class="card"><img src="${u.plan_image}" loading="lazy"><div class="body"><div class="title">${u.plan_name||u.unit}</div>
-        <div class="meta">${u.rooms.length} rooms · ${u.area_m2} m² · ${u.n_fixtures} fixtures · scale: ${u.scale_from[0].replace(/_/g,' ')}</div>
-        <div class="rooms">${rooms}</div>${u.issues&&u.issues.length?`<div class="issues" title="${u.issues.join('\n').replace(/"/g,'&quot;')}">review: ${u.issues.length} note${u.issues.length>1?'s':''}</div>`:''}
-        <div class="row"><a class="btn" href="apartment.html?unit=${u.unit}" target="_blank">open 3D</a><a class="btn" style="background:#2a3444;color:#dfe7f1" href="apartment.html?unit=${u.unit}&view=walk" target="_blank">walk</a></div></div></div>`; }
-    html+='</div>'; }
-  document.getElementById('root').innerHTML=html||'no units yet';
-}).catch(e=>{document.getElementById('root').textContent='no index yet: '+e;});
+const DEMO = ['gs-22612_plan_03', 'gs-20665_plan_00', 'gs-16296_plan_01'];
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const movein = new Date(Date.now() + 21 * 864e5).toISOString().slice(0, 10);
+function annotated(u) { return !!(u.materials || (u.issues && u.issues.length) || u.rooms.some(r => r.type && r.type !== 'other')); }
+function bedrooms(u) { const n = u.rooms.filter(r => r.type === 'bedroom').length; if (annotated(u) && u.rooms.some(r => r.type !== 'other')) return n;
+  const m = /prior (\d+) bedroom/.exec((u.scale_from || []).join(' ')); return m ? +m[1] : null; }
+function badges(u) { const f = u.scale_from || [], s0 = f[0] || ''; const b = [];
+  if (s0.startsWith('reader_dims+printed')) b.push(['ok', 'plan dimensions printed']);
+  else if (s0.startsWith('annotation_dims') || f.includes('annotation_dims')) b.push(['acc', 'Claude size estimates']);
+  else if (s0.includes('printed sqft')) b.push(['ok', 'printed sqft']);
+  else if (s0.startsWith('area:prior')) b.push(['', 'prior size']);
+  if (u.materials) b.push(['acc', 'from photos']);
+  if (u.n_fixtures) b.push(['', `${u.n_fixtures} fixtures`]);
+  const bd = bedrooms(u); if (bd != null) b.push(['', bd === 0 ? 'studio' : `${bd} bed`]);
+  return b.map(([c, t]) => `<span class="bd ${c}">${esc(t)}</span>`).join(''); }
+function score(u) { return (annotated(u) ? 1000 : 0) + (u.materials ? 300 : 0) + ((u.scale_from || [])[0]?.startsWith('reader_dims+printed') ? 200 : 0) + Math.min(u.n_fixtures || 0, 30) * 3 + Math.min(u.rooms.filter(r => r.area_m2 > 2).length, 12) * 10; }
+function agentRoom(u) { const liv = u.rooms.find(r => r.type === 'living'); if (liv) return liv.id; const big = [...u.rooms].sort((a, b) => b.area_m2 - a.area_m2)[0]; return big ? big.id : 'r0'; }
+function links(u) { const a = `apartment.html?unit=${encodeURIComponent(u.unit)}`; return {
+  open: a, walk: `${a}&view=walk`, furnish: `${a}&agent=${agentRoom(u)}&budget=3500&style=warm%20scandinavian&drama=1` }; }
+let UNITS = [], PLANS = {};
+function demoCard(u, i) { const L = links(u); const rooms = PLANS[u.unit] || [];
+  const co = rooms.length ? `../checkout/checkout.html?rooms=${rooms.join(',')}&budget=3500&movein=${movein}` : '';
+  return `<div class="dcard"><img src="${esc(u.plan_image)}" alt="plan"><div class="body"><div class="title"><span class="step">${i + 1}</span>${esc(u.building)} · ${esc(u.plan_name || u.unit)}</div>
+   <div class="meta">${u.rooms.length} rooms · ${u.area_m2} m² · ${esc(u.unit)}</div><div class="badges" style="margin:6px 0">${badges(u)}</div>
+   <div class="row"><a class="btn" href="${L.open}" target="_blank">Open 3D</a><a class="btn sec" href="${L.walk}" target="_blank">Walk</a><a class="btn sec" href="${L.furnish}" target="_blank">Furnish</a><a class="btn go ${co ? '' : 'off'}" href="${co || '#'}" target="_blank" title="${co ? rooms.length + ' furnished room(s)' : 'furnish a room first'}">Checkout</a></div></div></div>`; }
+function card(u) { const L = links(u); const rooms = u.rooms.filter(r => r.area_m2 > 2).map(r => `${esc(r.name)} ${r.area_m2} m²`).join(' · ');
+  return `<div class="card"><img src="${esc(u.plan_image)}" loading="lazy" alt="plan"><div class="body"><div class="title">${esc(u.plan_name || u.unit)}</div>
+   <div class="meta">${u.rooms.length} rooms · ${u.area_m2} m² · ${esc(u.unit)}</div><div class="badges">${badges(u)}</div><div class="rooms">${rooms}</div>
+   ${u.issues && u.issues.length ? `<div class="issues" title="${esc(u.issues.join('\n'))}">review: ${u.issues.length} note${u.issues.length > 1 ? 's' : ''} (hover)</div>` : ''}
+   <div class="row"><a class="btn" href="${L.open}" target="_blank">Open 3D</a><a class="btn sec" href="${L.walk}" target="_blank">Walk</a><a class="btn sec" href="${L.furnish}" target="_blank">Furnish</a></div></div></div>`; }
+function render() { const q = $('q').value.trim().toLowerCase(), fb = $('fb').value, fr = $('fr').value, fa = $('fa').checked;
+  const list = UNITS.filter(u => (!fb || u.building === fb) && (!fa || annotated(u)) && (fr === '' || (fr === '3' ? bedrooms(u) >= 3 : bedrooms(u) === +fr))
+    && (!q || [u.building, u.unit, u.plan_name, u.listing, ...u.rooms.map(r => r.name)].join(' ').toLowerCase().includes(q)));
+  const by = new Map(); for (const u of list) { const b = u.building || u.listing; if (!by.has(b)) by.set(b, []); by.get(b).push(u); }
+  for (const us of by.values()) us.sort((a, b) => score(b) - score(a) || a.unit.localeCompare(b.unit));
+  const groups = [...by.entries()].sort((a, b) => score(b[1][0]) - score(a[1][0]) || b[1].length - a[1].length);
+  let html = ''; const CAP = q || fb ? 1e9 : 60; let shown = 0;
+  for (const [b, us] of groups) { if (shown >= CAP) break; const ann = us.filter(annotated).length;
+    html += `<h2>${esc(b)} <span class="meta">${esc(us[0].listing)} · ${us.length} unit type${us.length > 1 ? 's' : ''}${ann ? ` · ${ann} annotated` : ''}</span></h2><div class="grid">`;
+    for (const u of us) { if (shown++ >= CAP) break; html += card(u); } html += '</div>'; }
+  $('count').textContent = `${list.length} of ${UNITS.length} unit types${list.length > CAP ? ` · first ${CAP} shown, filter to see more` : ''}`;
+  $('root').innerHTML = html || '<div class="empty">no unit matches</div>'; }
+async function plansFor(u) { const ok = await Promise.all(u.rooms.map(async r => { const room = `${u.unit}__${r.id}`; try { const res = await fetch(`/api/furnish?room=${encodeURIComponent(room)}`, { cache: 'no-store' }); return res.status === 200 ? room : null; } catch (e) { return null; } }));
+  PLANS[u.unit] = ok.filter(Boolean); }
+fetch('layouts/index.json').then(r => r.json()).then(units => { UNITS = units;
+  const blds = [...new Set(units.map(u => u.building || u.listing))].sort(); $('fb').innerHTML += blds.map(b => `<option>${esc(b)}</option>`).join('');
+  const printed = units.filter(u => (u.scale_from || [])[0]?.startsWith('reader_dims+printed')).length;
+  $('stats').innerHTML = `<div><b>${units.length}</b>unit types</div><div><b>${blds.length}</b>buildings</div><div><b>${units.filter(annotated).length}</b>annotated by Claude</div><div><b>${printed}</b>scaled from printed dimensions</div><div><b>${units.filter(u => u.materials).length}</b>materials from photos</div>`;
+  const dm = DEMO.map(id => units.find(u => u.unit === id)).filter(Boolean);
+  const drawDemo = () => $('demo').innerHTML = dm.map(demoCard).join(''); drawDemo(); Promise.all(dm.map(plansFor)).then(drawDemo); addEventListener('focus', () => Promise.all(dm.map(plansFor)).then(drawDemo));
+  for (const id of ['q', 'fb', 'fr', 'fa']) $(id).addEventListener('input', render); render();
+}).catch(e => { $('root').textContent = 'no index yet: ' + e; });
 </script></body></html>
