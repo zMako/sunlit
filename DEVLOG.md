@@ -394,3 +394,24 @@ is walked through.
 - Viewer's walking-path check now uses the solver's rule (small pieces such as nightstands, lamps, mirrors, rugs neither block nor need the 0.75 m corridor), so the panel no longer contradicts the agent.
 - Designer meshes: 2,289 of 3,363 untextured, 190 ship a pure-black material (recoloured from catalogue words).
 - Double-door "pair" error from the owner's console did not reproduce headless on gs-22612_plan_07; left as-is, watch for it on the real GPU.
+
+## Oct 24, late night: townhouses without labels; walkable stairs
+
+Admirals Cove "Meridian" (gs-16169_plan_00) has two drawings with stair treads but no UP / DN and no level captions, so it
+was taken for two variants. `levels.py` now also finds stairs without labels (a cluster of tread-length lines holding a
+run of >= 4 parallel lines 18-36 cm apart, ink threshold 220 for thin grey treads) and calls a plan multi-level when two
+drawings have drawn stairs, or when exactly one drawing has the kitchen and the others only bedrooms / baths (ground =
+the kitchen / entry drawing). Stair direction: the end that is open on its level (a wall along the chosen bottom or top
+edge flips it). Passage guaranteed: upper-level walls over the stairwell and walls across the entry band (bottom) and exit
+band (top) are cut, fixtures on the steps removed. `walk.js`: steps only block sideways when far above the feet (steep
+stairs have 18 cm treads; the body overlapped two before standing on one). 38 multi-level units, 4 of them three storeys;
+a headless harness walks every stair: 25 of 32 reach the next floor (failures: the second flight of the 3-storey
+gs-20953 units is drawn as a switchback over the first, and 3 one-offs). Saved furniture of the upper rooms of
+gs-16169_plan_00 shifted by the level offset.
+
+## Oct 25, small hours: colour, orientation, templates
+- Colour. Manufacturer files carry none (2,900 of 3,268 grey/white). Three layers now dress a model at load (`furnish.js _dressUntextured`): the brand's own texture pack where it exists and the mesh has UVs (Muuto, Hem, Carl Hansen: `designer/brand_textures.json`, 811 products, exact variant colours as texture means), else the hero photo read by Haiku subagents in Claude Code (49 batches of 50, `designer/palette/`, merged into `designer/palette.json`: 1,964 products with parts in size order, finish class, hex; 484 skipped because the photo was a line drawing, a blank, or a family shot without the product), else product words. Finish classes map to PBR (fabric normal maps from the CC0 library, lamp shades glow a little).
+- Orientation. Catalogue dims had their axes mixed per scraper; `place.fix_item` canonicalises per category (rug thin, mirror thin in depth, bed longer than wide, wall pieces wider than deep) and repairs misfiled categories. The viewer fits a model into the listed box with the 90-degree rotation that distorts it least instead of stretching it. Chairs around a table and armchairs beside a sofa had their facing sign inverted; fixed. Opus subagent ran a geometric + CLIP orientation pass (`designer/orient.json`), integration pending.
+- Templates. `agent.TEMPLATES`: layered slot lists per room type with minimum areas (core, companions, light, soft, decor), degrade from the end. Relations added: lamp on nightstand/side table (y_m), pendant above table/bed with a cord to the ceiling, bench at the bed's foot, side tables beside seating, corner-loving plants and lamps, wall-hung mirrors at eye height. Wall positions are scored by the open room in front of them (a sofa no longer sits at a corridor mouth). Design tier borrows IKEA/Amazon in categories with fewer than 20 designer models, labelled in the panel.
+- Prices. 2,728 unpriced designer items got estimates (brand x category medians with width scaling, `designer/prices_estimate.py`), stored exactly like the Amazon estimates (`price_source: estimated`), labelled est. in the panel and checkout.
+- Test unit gs-22612_plan_07, design tier: dining 13 items (table, 6 chairs facing it, pendant, rug under, cabinet, lamp, plant, mirror), bedroom 11, living 12. Spend cap raised to $20 by the owner; agent runs cost about half a cent each.
