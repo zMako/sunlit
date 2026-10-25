@@ -8,7 +8,8 @@
 <style>
 html,body{height:100%;overflow:hidden}
 body{background:radial-gradient(120% 90% at 30% 20%,#ffffff 0%,#f4f4f2 60%,#ecebe8 100%)}
-#scene{position:fixed;inset:0}
+#scene{position:fixed;inset:0;z-index:1}
+.pback{position:fixed;z-index:0;box-shadow:none}   /* the real photo under the canvas: staged view */
 #scene canvas{display:block}
 /* reused modules' own chrome: hidden or restyled */
 #ai,#furn{display:none !important}
@@ -116,6 +117,7 @@ body.walking .glass{backdrop-filter:none !important;-webkit-backdrop-filter:none
 }
 </style></head>
 <body class="mi">
+<div class="pphoto pback" id="pBack" hidden><img id="pBackImg" alt=""></div>
 <div id="scene" role="img" aria-label="The apartment in 3D"></div>
 <div class="loading" id="loading"><div><div class="serif">Building your apartment</div><div class="muted">from the landlord's floor plan</div></div></div>
 
@@ -160,7 +162,7 @@ body.walking .glass{backdrop-filter:none !important;-webkit-backdrop-filter:none
 <section class="photos" id="photos" hidden aria-label="Listing photos next to the 3D apartment">
   <div class="ptool glass">
     <div class="seg" role="group" aria-label="Comparison"><button data-pm="side" aria-pressed="true">Side by side</button><button data-pm="swipe" aria-pressed="false">Swipe</button></div>
-    <button class="pill ghost" id="pFurn" aria-pressed="true">Furniture</button>
+    <button class="pill ghost" id="pFurn" aria-pressed="true">Furniture</button><button class="pill ghost" id="pStage" aria-pressed="false" title="Our furniture drawn into the real photo">On the photo</button>
     <span class="sep"></span>
     <button class="icon-btn" id="pPrev" aria-label="Previous photo">&#8249;</button><span class="pcount" id="pCount"></span><button class="icon-btn" id="pNext" aria-label="Next photo">&#8250;</button>
   </div>

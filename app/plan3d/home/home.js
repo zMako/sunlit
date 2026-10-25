@@ -152,7 +152,26 @@ $('pPrev').onclick = () => setPhoto(phIdx - 1); $('pNext').onclick = () => setPh
 for (const b of document.querySelectorAll('[data-pm]')) b.onclick = () => { phMode = b.dataset.pm; for (const x of document.querySelectorAll('[data-pm]')) x.setAttribute('aria-pressed', String(x === b)); layoutPhotos(); };
 $('pFurn').onclick = () => { const on = $('pFurn').getAttribute('aria-pressed') !== 'true'; $('pFurn').setAttribute('aria-pressed', on); setFurnVisible(on); };
 function setFurnVisible(on) { for (const f of Object.values(furn)) f.group.visible = on; }
-function leavePhoto() { if (mode !== 'photo') return; $('photos').hidden = true; document.body.classList.remove('photomode'); renderer.domElement.style.clipPath = ''; setFurnVisible(true); }
+// staged: the real photo behind the 3D frame; our walls, ceilings, doors and fixtures turn into invisible occluders, the
+// floors into shadow catchers, so only the furniture (and its shadows) is drawn, in the photo's own perspective
+let staged = false; const stageSaved = new Map();
+const OCCLUDE = new THREE.MeshBasicMaterial({ colorWrite: false }), CATCH = new THREE.ShadowMaterial({ color: 0x24180e, opacity: 0.5 });
+function setStaged(on) {
+  if (on === staged) return; staged = on; $('pStage').setAttribute('aria-pressed', on); $('pBack').hidden = !on;
+  if (on) {
+    outside?.enable(false); seal?.setWalk(false);
+    apt.group.traverse(o => { if (!o.isMesh || o.userData.item) return; stageSaved.set(o, o.material);
+      o.material = /^pfloor_/.test(o.name) ? CATCH : OCCLUDE; });
+    renderer.toneMappingExposure = 0.82; setSun(24, 0xffd9ae, 2.6); hemi.intensity = 0.45; scene.environmentIntensity = 0.5;   // the listing photo's warm, low window light
+  } else {
+    for (const [o, m] of stageSaved) o.material = m; stageSaved.clear();
+    if (mode === 'photo') { outside?.enable(true); seal?.setWalk(true); renderer.toneMappingExposure = 1.05; setSun(38, 0xfff0dc, 2.4); }
+  }
+  $('pCapR').textContent = on ? 'The photo, furnished in 3D (furniture added digitally)' : `${(layout.rooms.find(r => r.id === PH.photos[phIdx].room) || {}).name || 'The room'}, rebuilt in 3D from the same camera`;
+  layoutPhotos();
+}
+$('pStage').onclick = () => setStaged(!staged);
+function leavePhoto() { if (mode !== 'photo') return; setStaged(false); $('photos').hidden = true; document.body.classList.remove('photomode'); renderer.domElement.style.clipPath = ''; setFurnVisible(true); }
 function setPhoto(i) {
   if (!PH) return; phIdx = (i + PH.photos.length) % PH.photos.length;
   if (mode !== 'photo') {
@@ -164,8 +183,8 @@ function setPhoto(i) {
     setFurnVisible($('pFurn').getAttribute('aria-pressed') === 'true');
   }
   const p = PH.photos[phIdx], room = layout.rooms.find(r => r.id === p.room);
-  $('pPhoto').onload = layoutPhotos; $('pPhoto').src = p.src; $('pCount').textContent = `${phIdx + 1} of ${PH.photos.length}`;
-  $('pCapR').textContent = `${room ? room.name : 'The room'}, rebuilt in 3D from the same camera`;
+  $('pPhoto').onload = layoutPhotos; $('pPhoto').src = p.src; $('pBackImg').src = p.src; $('pCount').textContent = `${phIdx + 1} of ${PH.photos.length}`;
+  $('pCapR').textContent = staged ? 'The photo, furnished in 3D (furniture added digitally)' : `${room ? room.name : 'The room'}, rebuilt in 3D from the same camera`;
   $('pNote').textContent = p.source === 'metrology' ? "Camera measured from the photo's floor and ceiling lines." :
     p.source === 'fit' ? "Camera found by matching the photo's floor, walls, windows and doors to the 3D model. Drag the 3D view to fine-tune." :
     `Camera estimated from the photo${p.confidence < 0.5 ? '; approximate, and the gallery may show another unit with this plan' : ''}. Drag the 3D view to fine-tune.`;
@@ -190,6 +209,7 @@ function layoutPhotos() {   // frames at the photo's aspect inside the scene are
   place($('pBox'), xL, y, w, h); place($('p3d'), xR, y, w, h);
   const img = $('pPhoto'), c = ph.crop || [0, 0, 1, 1], iw = w / (c[2] - c[0]), ih = h / (c[3] - c[1]);   // the crop box fills the frame
   Object.assign(img.style, { width: iw + 'px', height: ih + 'px', left: (-c[0] * iw) + 'px', top: (-c[1] * ih) + 'px' });
+  place($('pBack'), xR, y, w, h); Object.assign($('pBackImg').style, { width: iw + 'px', height: ih + 'px', left: (-c[0] * iw) + 'px', top: (-c[1] * ih) + 'px' });
   const swipe = phMode === 'swipe'; $('photos').classList.toggle('swipe', swipe); $('pHandle').hidden = !swipe;
   $('pBox').style.clipPath = swipe ? `inset(0 ${((1 - phSplit) * 100).toFixed(2)}% 0 0 round 16px 0 0 16px)` : '';
   if (swipe) place($('pHandle'), xR + w * phSplit, y, 0, h);

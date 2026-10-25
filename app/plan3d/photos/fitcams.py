@@ -46,11 +46,19 @@ async def run(units, minscore):
             r = await pg.evaluate("ph => window.fit.run(ph)", [{k: v for k, v in x.items() if k not in ("src", "crop")} for x in ph])
             rooms = {x["id"]: x["name"] for x in await pg.evaluate("window.fit.rooms")}
             byid = {x["id"]: x for x in ph}; keep = []
+            # measured cameras (photo metrology, polish/cameras.json) beat the fit wherever they still sit in the same room
+            try: metro = {c["photo"].split("/")[1]: c for c in json.load(open(APP / "plan3d" / "polish" / "cameras.json")) if c["unit"] == unit}
+            except Exception: metro = {}
+            for res in r["results"]:
+                c = metro.get(res["id"])
+                if c and c.get("room") == res.get("room"):
+                    res.update(pos=c["pos"], yaw=c["yaw"], pitch=c["pitch"], hfov=c["fov"], score=max(res["score"], 0.9), measured=True)
             for res in sorted(r["results"], key=lambda q: -q["score"]):
                 x = byid[res["id"]]; ok = res["score"] >= minscore
                 print(f"  {res['id']}: {'KEEP' if ok else 'skip'} score {res['score']:.3f} (coarse {res['coarse']:.3f})  {res['room']} {rooms.get(res['room'], '')} pos {res['pos']} yaw {res['yaw']} pitch {res['pitch']} hfov {res['hfov']}")
                 if ok: keep.append({"src": x["src"], "room": res["room"], "pos": res["pos"], "yaw": res["yaw"], "pitch": res["pitch"], "hfov": res["hfov"],
-                                    "aspect": x["aspect"], "crop": x["crop"], "confidence": res["score"], "source": "fit", "why": "label match (analysis by synthesis)"})
+                                    "aspect": x["aspect"], "crop": x["crop"], "confidence": res["score"], "source": "metrology" if res.get("measured") else "fit",
+                                    "why": "single-view metrology (floor and ceiling lines)" if res.get("measured") else "label match (analysis by synthesis)"})
             keep.sort(key=lambda q: q["src"])
             json.dump({"unit": unit, "photos": keep, "model": "fit (deterministic)", "standpoints": r["standpoints"]}, open(HERE / f"{unit}.json", "w"), indent=1)
             print(f"{unit}: {len(keep)} of {len(ph)} photos kept, {r['standpoints']} standpoints, {r['ms'] / 1000:.1f} s"); await pg.close()
