@@ -104,6 +104,7 @@ function frameView() {   // keep the scene centred in the space left of the desi
 }
 function pressMode(id) { for (const b of ['vDoll', 'vWalk', 'vPhoto']) $(b).setAttribute('aria-pressed', String(b === id)); }
 function setDoll() {
+  apt.arrangeLevels?.('plan');   // townhouses: levels side by side in the overview
   surfaces.focus(center.x, center.z, 16);
   leavePhoto(); mode = 'doll'; if (look.isLocked) look.unlock(); $('bWalk').classList.remove('on'); pressMode('vDoll');
   outside?.enable(false); document.body.classList.remove('walking'); seal?.setWalk(false);
@@ -113,7 +114,7 @@ function setDoll() {
   const d = ext * 1.55; camera.position.set(center.x + d * 0.55, d * 0.85 + 2, center.z + d * 0.75); orbit.target.set(center.x, 0.4, center.z); orbit.update();
 }
 function setWalk(roomId, yawDeg) {
-  leavePhoto(); mode = 'walk'; $('bWalk').classList.add('on'); pressMode('vWalk'); closeMenus();
+  leavePhoto(); apt.arrangeLevels?.('stack'); mode = 'walk'; $('bWalk').classList.add('on'); pressMode('vWalk'); closeMenus();
   apt.ceilingMeshes.forEach(m => m.visible = true); applyClip(false); orbit.enabled = false;
   outside?.enable(true); document.body.classList.add('walking'); seal?.setWalk(true); amb?.setMode('walk');
   for (const f of Object.values(furn)) { f.select(null); f.setActive(false); }
@@ -182,7 +183,7 @@ function leavePhoto() { if (mode !== 'photo') return; setStaged(false); $('photo
 function setPhoto(i) {
   if (!PH) return; phIdx = (i + PH.photos.length) % PH.photos.length;
   if (mode !== 'photo') {
-    if (look.isLocked) look.unlock(); mode = 'photo'; $('bWalk').classList.remove('on'); pressMode('vPhoto'); closeMenus();
+    if (look.isLocked) look.unlock(); apt.arrangeLevels?.('stack'); mode = 'photo'; $('bWalk').classList.remove('on'); pressMode('vPhoto'); closeMenus();
     apt.ceilingMeshes.forEach(m => m.visible = true); applyClip(false); orbit.enabled = false;
     document.body.classList.add('walking', 'photomode');
     for (const f of Object.values(furn)) { f.select(null); f.setActive(false); }

@@ -73,11 +73,11 @@ export function createAmbiance({ renderer, scene, camera, apt, layout, sun, hemi
   const gtao = new GTAOPass(scene, camera, 2, 2); gtao.output = GTAOPass.OUTPUT.Default; gtao.blendIntensity = 0.85;
   gtao.updateGtaoMaterial({ radius: 0.6, distanceExponent: 1.4, thickness: 1.2, scale: 1.4, samples: 8, distanceFallOff: 0.8, screenSpaceRadius: false });
   gtao.updatePdMaterial({ lumaPhi: 8, depthPhi: 2.5, normalPhi: 3, radius: 8, rings: 2, samples: 8 });
-  const gtaoRender = gtao.render.bind(gtao), gtaoSize = gtao.setSize.bind(gtao);
+  const gtaoRender = gtao.render.bind(gtao), gtaoSize = gtao.setSize.bind(gtao); let halos = [];
   gtao.render = (...a) => {   // AO without the city: far, hazed, and a million triangles
-    const w = outside?.world, s = outside?.sky, wv = w && w.visible, sv = s && s.visible, bg = scene.background;
-    if (w) w.visible = false; if (s) s.visible = false; scene.background = null;
-    try { gtaoRender(...a); } finally { if (w) w.visible = wv; if (s) s.visible = sv; scene.background = bg; }
+    const w = outside?.world, s = outside?.sky, wv = w && w.visible, sv = s && s.visible, bg = scene.background, hv = halos.map(h => h.visible);
+    if (w) w.visible = false; if (s) s.visible = false; scene.background = null; halos.forEach(h => h.visible = false);   // lamp halos are flat cards: AO darkened a square around them
+    try { gtaoRender(...a); } finally { if (w) w.visible = wv; if (s) s.visible = sv; scene.background = bg; halos.forEach((h, i) => h.visible = hv[i]); }
   };
   gtao.setSize = (w, h) => gtaoSize(Math.max(2, Math.round(w / 2)), Math.max(2, Math.round(h / 2)));   // half resolution
   composer.addPass(gtao);
@@ -109,7 +109,8 @@ export function createAmbiance({ renderer, scene, camera, apt, layout, sun, hemi
     lamps.sort((a, b) => (b.lamp.base || 0) - (a.lamp.base || 0));
     lamps.forEach((it, i) => { if (i >= maxLamps) { it.lamp.light.parent?.remove(it.lamp.light); it.lamp.light.intensity = 0; } });   // halo and glow stay
   }
-  function dress() {   // furniture finishes: fabric sheen, wood clearcoat (once per material)
+  function dress() {   // furniture finishes: fabric sheen, wood clearcoat (once per material); also refreshes the halo list for AO
+    halos = []; for (const f of Object.values(furn)) f.group.traverse(o => { if (o.isSprite) halos.push(o); });
     for (const f of Object.values(furn)) for (const it of f.items) {
       const cat = String(it.spec.category || ''); const fab = FABRIC.test(cat), wood = WOOD.test(cat); if (!fab && !wood) continue;
       it.obj.traverse(o => {

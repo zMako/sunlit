@@ -29,11 +29,12 @@ export function createSurfaces({ apt, layout, lib }) {
   const elev = k => levels ? ((levels.find(v => v.id === (k || 0)) || {}).elevation_m || 0) : 0;
   const inPoly = (x, z, P) => { let k = false; for (let i = 0, j = P.length - 1; i < P.length; j = i++) { const [xi, zi] = P[i], [xj, zj] = P[j]; if ((zi > z) !== (zj > z) && x < (xj - xi) * (z - zi) / (zj - zi + 1e-12) + xi) k = !k; } return k; };
   const roomAt = (x, z, level = 0) => rooms.find(r => (r.level || 0) === (level || 0) && inPoly(x, z, r.polygon)) || null;
+  const levelOf = o => { for (let p = o; p; p = p.parent) if (p.userData && p.userData.level != null) return p.userData.level; return 0; };
   const frame = w => { const a = new THREE.Vector2(...w.a), b = new THREE.Vector2(...w.b), d = b.clone().sub(a); const len = d.length() || 1; d.divideScalar(len); return { a, d, n: new THREE.Vector2(-d.y, d.x), len, t: w.thickness_m || 0.15, angle: -Math.atan2(d.y, d.x) }; };
 
   // ---------- shared light uniforms + the shader term ----------
   const U = { uWin: { value: Array.from({ length: MAXW }, () => new THREE.Vector4()) }, uWinN: { value: Array.from({ length: MAXW }, () => new THREE.Vector3()) },
-    uWinCount: { value: 0 }, uWinCol: { value: new THREE.Color() }, uBounce: { value: new THREE.Color() }, uCeil: { value: apt.ceil }, uEdge: { value: 0 } };
+    uWinCount: { value: 0 }, uWinCol: { value: new THREE.Color() }, uBounce: { value: new THREE.Color() }, uCeil: { value: apt.ceil }, uEdge: { value: 0 }, uLevelH: { value: levels ? Math.max(apt.ceil + 0.1, levels[1].elevation_m - levels[0].elevation_m) : 1e4 } };
   const ALL = [];
   { let k = 0; const walls = new Map(layout.walls.map(w => [w.id, w]));   // windows: centre, size weight, normal into the room
     for (const o of layout.openings) { if (o.type !== 'window' || k >= MAXW) continue; const w = walls.get(o.wall); if (!w) continue; const f = frame(w);
@@ -50,12 +51,12 @@ export function createSurfaces({ apt, layout, lib }) {
     mat.onBeforeCompile = sh => {
       Object.assign(sh.uniforms, U);
       sh.vertexShader = 'varying vec3 vGiPos; varying vec3 vGiNor;\n' + sh.vertexShader.replace('#include <project_vertex>', '#include <project_vertex>\nvGiPos = (modelMatrix * vec4(transformed, 1.0)).xyz; vGiNor = normalize(mat3(modelMatrix) * objectNormal);');
-      sh.fragmentShader = `uniform vec4 uWin[${MAXW}]; uniform vec3 uWinN[${MAXW}]; uniform int uWinCount; uniform vec3 uWinCol; uniform vec3 uBounce; uniform float uCeil; uniform float uEdge; varying vec3 vGiPos; varying vec3 vGiNor;\n`
+      sh.fragmentShader = `uniform vec4 uWin[${MAXW}]; uniform vec3 uWinN[${MAXW}]; uniform int uWinCount; uniform vec3 uWinCol; uniform vec3 uBounce; uniform float uCeil; uniform float uEdge; uniform float uLevelH; varying vec3 vGiPos; varying vec3 vGiNor;\n`
         + sh.fragmentShader.replace('#include <lights_fragment_end>', `#include <lights_fragment_end>
         { vec3 Ng = normalize(vGiNor) * (gl_FrontFacing ? 1.0 : -1.0); float g = 0.0;
           for (int i = 0; i < ${MAXW}; i++) { if (i >= uWinCount) break; vec3 d = vGiPos - uWin[i].xyz; if (dot(d, uWinN[i]) < -0.05) continue;   // only surfaces in front of the window
             float dist = length(d); g += uWin[i].w * exp(-dist / 2.4) * clamp(0.3 + 0.7 * dot(Ng, -d / max(dist, 1e-3)), 0.0, 1.0); }
-          float ceilF = smoothstep(0.3, 0.9, -Ng.y), hgt = clamp(vGiPos.y / max(uCeil, 1.0), 0.0, 1.0);
+          float ceilF = smoothstep(0.3, 0.9, -Ng.y), hgt = clamp(mod(vGiPos.y, uLevelH) / max(uCeil, 1.0), 0.0, 1.0);
           reflectedLight.indirectDiffuse += diffuseColor.rgb * (uWinCol * min(g, 2.5) + uBounce * (ceilF + (1.0 - ceilF) * (1.0 - hgt) * 0.4));
           float edge = 1.0 - uEdge * smoothstep(0.84, 1.0, hgt) * (1.0 - ceilF);   // a soft shadow line just under the ceiling
           reflectedLight.indirectDiffuse *= edge; reflectedLight.directDiffuse *= mix(1.0, edge, 0.4); }`);
@@ -98,7 +99,7 @@ export function createSurfaces({ apt, layout, lib }) {
     const q = new THREE.Quaternion(), nz = new THREE.Vector3(), wp = new THREE.Vector3();
     for (const mesh of apt.wallMeshes) {
       mesh.getWorldQuaternion(q); nz.set(0, 0, 1).applyQuaternion(q); mesh.getWorldPosition(wp);
-      const bb = mesh.geometry.boundingBox || (mesh.geometry.computeBoundingBox(), mesh.geometry.boundingBox), t = bb.max.z - bb.min.z, lv = mesh.userData.level || 0;
+      const bb = mesh.geometry.boundingBox || (mesh.geometry.computeBoundingBox(), mesh.geometry.boundingBox), t = bb.max.z - bb.min.z, lv = levelOf(mesh);
       const side = s => roomAt(wp.x + nz.x * s * (t / 2 + 0.25), wp.z + nz.z * s * (t / 2 + 0.25), lv);
       const wall = layout.walls.find(w => w.id === mesh.userData.wall), f = wall ? frame(wall) : null, rp = side(1), rn = side(-1);
       const isAcc = s => acc && mesh.userData.wall === acc.id && f && (Math.sign(nz.x * f.n.x + nz.z * f.n.y) * s === acc.side);
@@ -113,8 +114,11 @@ export function createSurfaces({ apt, layout, lib }) {
     }
     const ceil = paint(CEILING, true); ceil.side = THREE.DoubleSide;   // the ceiling planes are seen from below (their back)
     for (const m of apt.ceilingMeshes) if (/^pceil_/.test(m.name)) m.material = ceil;
-    apt.group.traverse(o => { if (/^pfloor_/.test(o.name) && o.material && o.material.userData && o.material.userData.category === 'wood_floor' && !o.material.userData.amb) {
-      o.material.userData.amb = true; o.material.roughness = Math.min(o.material.roughness, 0.38); o.material.envMapIntensity = 1.0; } });
+    apt.group.traverse(o => {   // floors: the material's own roughness map stays in charge; a gentle sheen, and the grain a little deeper
+      if (!/^pfloor_/.test(o.name) || !o.material || Array.isArray(o.material)) return; const m = o.material, cat = m.userData && m.userData.category; if (m.userData.amb) return; m.userData.amb = true;
+      const F = { wood_floor: [0.85, 0.55, 0.85], laminate: [0.8, 0.6, 0.7], tile: [0.7, 0.75, 0.6], stone: [0.75, 0.7, 0.7], carpet: [1, 0.2, 1], concrete: [0.9, 0.4, 0.8] }[cat] || [0.9, 0.5, 0.7];
+      m.roughness = m.roughnessMap ? F[0] : Math.max(m.roughness, 0.55); m.envMapIntensity = F[1]; if (m.normalMap && m.normalScale) m.normalScale.setScalar(F[2]);
+      m.needsUpdate = false; });
   }
 
   // ---------- crown moulding: a cove profile along every wall top that faces a room ----------
@@ -126,28 +130,30 @@ export function createSurfaces({ apt, layout, lib }) {
       pos.push(...A.toArray(), ...B.toArray(), ...C.toArray(), ...A.toArray(), ...C.toArray(), ...D.toArray()); }
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.computeVertexNormals(); return g;
   }
-  const crown = [];
+  const crown = [], crownBy = new Map();   // per parent group: level groups move between the overview and walking
   for (const mesh of apt.wallMeshes) {
     const { y0 = 0, h = 0 } = mesh.userData; if (y0 + h < apt.ceil - 0.02) continue;   // only pieces that reach the ceiling
     const bb = mesh.geometry.boundingBox || (mesh.geometry.computeBoundingBox(), mesh.geometry.boundingBox), L = bb.max.x - bb.min.x, t = bb.max.z - bb.min.z; if (L < 0.25) continue;
-    const lv = mesh.userData.level || 0, base = mesh.parent ? mesh.parent.getWorldPosition(new THREE.Vector3()).y : 0, cx = mesh.position.x, cz = mesh.position.z, ang = mesh.rotation.y;
+    const lv = levelOf(mesh), base = 0, cx = mesh.position.x, cz = mesh.position.z, ang = mesh.rotation.y, host = mesh.parent || apt.group;
     const ux = Math.cos(ang), uz = -Math.sin(ang), nx = Math.sin(ang), nzz = Math.cos(ang);   // local x and local z in world
     for (const s of [1, -1]) {
       if (!roomAt(cx + nx * s * (t / 2 + 0.25), cz + nzz * s * (t / 2 + 0.25), lv)) continue;   // faces outside: no moulding
-      crown.push(prism(L, (d, v, x) => new THREE.Vector3(cx + ux * x + nx * s * (t / 2 + d), base + apt.ceil - v, cz + uz * x + nzz * s * (t / 2 + d))));
+      const g = prism(L, (d, v, x) => new THREE.Vector3(cx + ux * x + nx * s * (t / 2 + d), base + apt.ceil - v, cz + uz * x + nzz * s * (t / 2 + d)));
+      crown.push(g); if (!crownBy.has(host)) crownBy.set(host, []); crownBy.get(host).push(g);
     }
   }
   const group = new THREE.Group(); group.name = 'surfaces';
   const trim = (apt.trimMat ? apt.trimMat() : new THREE.MeshStandardMaterial({ color: 0xf4f2ee, roughness: 0.6 })).clone(); trim.roughness = 0.55; trim.side = THREE.DoubleSide;
-  if (crown.length) { const m = new THREE.Mesh(mergeGeometries(crown), trim); m.receiveShadow = true; m.userData.kind = 'trim'; m.name = 'crown'; group.add(m); }
+  for (const [host, list] of crownBy) { const m = new THREE.Mesh(mergeGeometries(list), trim); m.receiveShadow = true; m.userData.kind = 'trim'; m.name = 'crown'; (host === apt.group ? group : host).add(m); }
 
   // ---------- switches, outlets, thermostat ----------
-  const plates = [], slots = [], plastic = new THREE.MeshStandardMaterial({ color: 0xf6f5f1, roughness: 0.32 }), dark = new THREE.MeshStandardMaterial({ color: 0x3a3a3a, roughness: 0.6 });
+  const plates = [], slots = [], byLevel = new Map(), plastic = new THREE.MeshStandardMaterial({ color: 0xf6f5f1, roughness: 0.32 }), dark = new THREE.MeshStandardMaterial({ color: 0x3a3a3a, roughness: 0.6 });
   const walls = layout.walls, opsOf = new Map(); for (const o of layout.openings) { if (!opsOf.has(o.wall)) opsOf.set(o.wall, []); opsOf.get(o.wall).push(o); }
   const free = (w, s, r = 0.12) => s > r && s < frame(w).len - r && !(opsOf.get(w.id) || []).some(o => s > o.s0 - r && s < o.s1 + r);
   function put(w, s, side, y, kind) {   // a small box on the wall face: kind 'switch' | 'outlet' | 'thermo'
-    const f = frame(w), m = f.a.clone().add(f.d.clone().multiplyScalar(s)), yy = elev(w.level) + y;
-    const add = (list, bw, bh, bd, ox, oy, oz) => { const g = new THREE.BoxGeometry(bw, bh, bd); const M = new THREE.Matrix4().makeRotationY(f.angle + (side < 0 ? Math.PI : 0));
+    const f = frame(w), m = f.a.clone().add(f.d.clone().multiplyScalar(s)), yy = (apt.levelGroups && apt.levelGroups[w.level || 0] ? 0 : elev(w.level)) + y;   // level groups carry their own height
+    if (!byLevel.has(w.level || 0)) byLevel.set(w.level || 0, { plates: [], slots: [] }); const L = byLevel.get(w.level || 0);
+    const add = (which, bw, bh, bd, ox, oy, oz) => { const list = which === plates ? L.plates : L.slots; (which === plates ? plates : slots).push(0); const g = new THREE.BoxGeometry(bw, bh, bd); const M = new THREE.Matrix4().makeRotationY(f.angle + (side < 0 ? Math.PI : 0));
       const off = new THREE.Vector3(ox, oy, f.t / 2 + oz).applyMatrix4(M); g.applyMatrix4(M); g.translate(m.x + off.x * 1 + 0 * side, yy + off.y, m.y + off.z); list.push(g); };
     // local z of a wall frame points along n; for the -n side we turned the plate around
     if (kind === 'switch') { add(plates, 0.07, 0.115, 0.007, 0, 0, 0.0035); add(plates, 0.022, 0.04, 0.006, 0, 0, 0.009); }
@@ -169,8 +175,9 @@ export function createSurfaces({ apt, layout, lib }) {
   }
   { const r = rooms.find(x => /hall|entry/.test(x.type || '')) || rooms.find(x => x.type === 'living');   // one thermostat
     if (r) outer: for (const w of walls) { const f = frame(w); for (const side of [1, -1]) for (let s = 0.5; s < f.len - 0.5; s += 0.5) if (free(w, s, 0.4) && sideRoom(w, s, side) === r) { put(w, s, side, 1.5, 'thermo'); break outer; } } }
-  if (plates.length) { const m = new THREE.Mesh(mergeGeometries(plates), plastic); m.name = 'wall-details'; m.castShadow = true; m.receiveShadow = true; group.add(m); }
-  if (slots.length) { const m = new THREE.Mesh(mergeGeometries(slots), dark); m.name = 'wall-details-dark'; group.add(m); }
+  for (const [lv, L] of byLevel) { const host = (apt.levelGroups && apt.levelGroups[lv]) || group;
+    if (L.plates.length) { const m = new THREE.Mesh(mergeGeometries(L.plates), plastic); m.name = 'wall-details'; m.castShadow = true; m.receiveShadow = true; host.add(m); }
+    if (L.slots.length) { const m = new THREE.Mesh(mergeGeometries(L.slots), dark); m.name = 'wall-details-dark'; host.add(m); } }
   apt.group.add(group);
 
   return { applyStyle, setLight, focus, group, stats: () => ({ windows: ALL.length, inShader: U.uWinCount.value, crownPieces: crown.length, plates: plates.length, slots: slots.length }) };
