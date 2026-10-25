@@ -1,40 +1,7 @@
-<!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>Rooms</title>
-<style>
-:root{--bg:#0b0f16;--surface:#141a24;--ink:#e8ecf2;--ink2:#9aa4b2;--muted:#5d6775;--ok:#1baf7a;--warn:#eda100;--run:#3987e5}
-body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui;padding:22px 26px}
-h1{font-size:20px;font-weight:600;margin:0 0 2px}.sub{color:var(--ink2);margin-bottom:16px}
-h2{font-size:14px;color:var(--ink2);font-weight:500;margin:22px 0 8px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
-.card{background:var(--surface);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
-.photos{display:flex;gap:4px;height:80px;overflow:hidden;border-radius:8px}.photos img{height:80px;flex:1;object-fit:cover;min-width:0}
-.row{display:flex;justify-content:space-between;align-items:center;gap:8px}.name{font-weight:600}.meta{color:var(--muted);font-size:12px}
-.badge{font-size:11px;padding:2px 8px;border-radius:10px;background:#263040;color:var(--ink2)}.done{background:#0f3d2c;color:#7fe0b4}.rendering{background:#13335c;color:#9fc6ff}.queued{background:#3a2d0a;color:#f3cf7a}.shell{background:#2d2a40;color:#c9bfff}
-button,a.btn{font:inherit;font-size:13px;background:#1c2430;color:var(--ink);border:1px solid #2c3644;border-radius:8px;padding:5px 10px;cursor:pointer;text-decoration:none}
-button:disabled{opacity:.4;cursor:default}.plan{height:120px;object-fit:contain;background:#0e131b;border-radius:8px;width:100%}
-#log{font:12px/1.5 ui-monospace,monospace;color:var(--muted);white-space:pre-wrap;margin-top:18px}
-</style></head><body><div style="padding:10px 16px;background:#13335c;color:#dfe9ff;font:14px -apple-system,sans-serif">New: apartments rebuilt from their floor plans, furnishable → <a href="plan3d/index.html" style="color:#9fc6ff;font-weight:600">open the plan-based units</a>. Below: the older photo-reconstruction rooms.</div>
-<h1>Rooms</h1><div class="sub">Every room with two or more photos from the kept, empty listings. Render builds the shell, the panorama and the completion on one GPU worker.</div>
-<div id="summary" class="meta"></div><div id="root"></div><div id="log"></div>
-<script>
-async function refresh(){
-  const s=await (await fetch('/api/status',{cache:'no-store'})).json(); const byL={};
-  for(const r of s.rooms){ (byL[r.listing]=byL[r.listing]||{title:r.title,rooms:[]}).rooms.push(r); }
-  const counts=s.rooms.reduce((a,r)=>(a[r.status]=(a[r.status]||0)+1,a),{});
-  document.getElementById('summary').textContent=`${s.rooms.length} rooms · ${Object.entries(counts).map(([k,v])=>v+' '+k).join(' · ')}${s.current?' · rendering '+s.current:''}${s.queue.length?' · '+s.queue.length+' queued':''}`;
-  let html='';
-  for(const [lid,L] of Object.entries(byL)){
-    html+=`<h2>${L.title} <span class="meta">${lid}</span></h2><div class="grid">`;
-    for(const r of L.rooms){ const canOpen=r.status==='done'||r.status==='shell';
-      html+=`<div class="card"><div class="photos">${r.photos.slice(0,4).map(p=>`<img src="${p}" loading="lazy">`).join('')}</div>
-        <div class="row"><span class="name">${r.type} · ${r.label.slice(0,38)}</span><span class="badge ${r.status}">${r.status}</span></div>
-        ${r.plan?`<img class="plan" src="${r.plan}?t=${Date.now()>>14}">`:''}
-        <div class="meta">${r.photos.length} photos${r.area_m2?` · ${r.area_m2} m²`:''}${r.n_walls?` · ${r.n_walls} walls`:''}${r.n_windows?` · ${r.n_windows} window${r.n_windows>1?'s':''}`:''}${r.vlm_ratio?` · measured/VLM ${r.vlm_ratio}`:''}</div>
-        <div class="row"><a class="btn" ${canOpen?`href="room.html?room=${r.name}&main=0&view=0" target="_blank"`:'style="opacity:.4"'}>open</a>
-        ${(r.variants||[]).map(v=>`<a class="btn" href="room.html?room=${r.name}_${v}&main=0&view=0" target="_blank" title="path ${v}">${v}</a>`).join('')}
-        <button onclick="fetch('/api/render?room=${r.name}').then(refresh)" ${r.status==='rendering'||r.status==='queued'?'disabled':''}>${r.status==='done'?'re-render':'render'}</button></div></div>`; }
-    html+='</div>'; }
-  document.getElementById('root').innerHTML=html; document.getElementById('log').textContent=s.log.join('\n');
-}
-refresh(); setInterval(refresh, 5000);
-</script></body></html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Move-in · Move-in</title>
+<!-- Platform root: the landing page. The earlier photo-reconstruction rooms list lives at rooms_legacy.html. -->
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<script>location.replace('/plan3d/landing.html' + location.search + location.hash);</script>
+<noscript><meta http-equiv="refresh" content="0; url=/plan3d/landing.html"></noscript>
+<style>body{margin:0;height:100vh;display:grid;place-items:center;font:15px -apple-system,Helvetica,sans-serif;color:#6e6e73;background:#fff}a{color:#1d1d1f}</style>
+</head><body><a href="/plan3d/landing.html">Continue to Move-in</a></body></html>

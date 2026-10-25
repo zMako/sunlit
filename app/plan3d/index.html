@@ -1,120 +1,144 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Move-in · furnish your next apartment before you move in</title>
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>Every apartment · Move-in</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<style>:root{--bg:#0b0f16;--card:#141a24;--line:#243040;--ink:#e8edf3;--ink2:#9aa6b5;--acc:#6ea8fe;--ok:#7fe0b4;--warn:#f3cf7a}
-*{box-sizing:border-box}body{margin:0;font:14px/1.45 system-ui,-apple-system,Inter,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}
-a{color:inherit}header{padding:26px 28px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#111827,#0b0f16)}
-.kicker{color:var(--acc);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}h1{margin:6px 0 6px;font-size:26px;line-height:1.2;max-width:980px}
-.sub{color:var(--ink2);max-width:980px}.stats{display:flex;gap:22px;margin-top:12px;color:var(--ink2);font-size:12px}.stats b{color:var(--ink);font-size:16px;display:block}
-.demo{padding:16px 28px;border-bottom:1px solid var(--line);background:#0e131c}.demo h2{margin:0 0 10px}
-.dgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.dcard{background:var(--card);border:1px solid #2c3a50;border-radius:12px;display:grid;grid-template-columns:120px 1fr;overflow:hidden}
-.dcard img{width:120px;height:100%;min-height:120px;object-fit:contain;background:#fff}.dcard .body{padding:10px 12px}.step{display:inline-block;width:20px;height:20px;border-radius:10px;background:var(--acc);color:#07111f;font-weight:800;text-align:center;font-size:12px;line-height:20px;margin-right:6px}
-h2{font-size:15px;margin:24px 0 10px;color:var(--ink);font-weight:650}h2 .meta{font-weight:400}
-.bar{position:sticky;top:0;z-index:5;background:rgba(11,15,22,.94);backdrop-filter:blur(6px);padding:10px 28px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-input,select{background:#0f1319;color:var(--ink);border:1px solid #334155;border-radius:8px;padding:6px 9px;font:inherit}label{color:var(--ink2);font-size:12px}
-main{padding:4px 28px 50px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}.card img{width:100%;height:180px;object-fit:contain;background:#fff;display:block}
-.body{padding:10px 12px;display:flex;flex-direction:column;gap:6px;flex:1}.title{font-weight:650}.meta{color:var(--ink2);font-size:12px}.rooms{font-size:12px;color:var(--ink2)}
-.badges{display:flex;gap:5px;flex-wrap:wrap}.bd{font-size:11px;border-radius:999px;padding:1px 8px;border:1px solid #334155;color:var(--ink2)}.bd.ok{border-color:#2f6b55;color:var(--ok);background:rgba(127,224,180,.07)}.bd.acc{border-color:#2d4a7a;color:#a9c8ff;background:rgba(110,168,254,.08)}.bd.warn{border-color:#6b5a2f;color:var(--warn)}
-.row{display:flex;gap:6px;align-items:center;margin-top:auto;padding-top:4px;flex-wrap:wrap}.btn{background:var(--acc);color:#07111f;border:none;border-radius:8px;padding:5px 10px;font-weight:650;text-decoration:none;font-size:12.5px}
-.btn.sec{background:#243042;color:#dfe7f1}.btn.go{background:var(--ok)}.btn.off{opacity:.45;pointer-events:none}
-.issues{font-size:11px;color:#c9a36a}button.btn{cursor:pointer;font-family:inherit}.btn.ann{background:#2a2142;color:#d9c9ff;border:1px solid #4b3a7a}.btn.ann:disabled{opacity:.7;cursor:wait}.btn.ann.err{background:#3a2424;color:#f3b0a0;border-color:#6b3a3a;cursor:default}
-.spin{display:inline-block;width:10px;height:10px;border:2px solid #d9c9ff;border-right-color:transparent;border-radius:50%;animation:sp .8s linear infinite;margin-right:6px;vertical-align:-1px}@keyframes sp{to{transform:rotate(360deg)}}
-.metrics{display:flex;gap:14px;margin-top:12px;flex-wrap:wrap}.metric{background:#121a28;border:1px solid #2d4a7a;border-radius:10px;padding:8px 12px;min-width:150px;max-width:300px}.metric b{display:block;font-size:20px;color:#a9c8ff}.metric span{color:var(--ink2);font-size:12px}.empty{color:var(--ink2);padding:30px 0}
-@media(max-width:1000px){.dgrid{grid-template-columns:1fr}}</style></head><body>
-<header><div class="kicker">Move-in · Cal Hacks 13.0</div>
-<h1>Pick a real SF Bay Area rental, get its apartment rebuilt in 3D from the floor plan, let an agent furnish it with real products within your budget, and order everything so it arrives before move-in day.</h1>
-<div class="sub">Every card below is a unit type published by its landlord: we only use what the listing publishes, the floor plan and the photos. Walls, doors and windows are read from the plan by classical vision for every unit, sized from printed dimensions or the listed square footage when published; Claude names the rooms and places the fixtures, already done for the likely picks and one click away (on demand, within the spend cap) for the rest.</div>
-<div style="margin-top:12px"><a class="btn" href="../map/map.html" style="font-size:14px;padding:8px 14px">Find a rental on the map →</a> <span class="meta">real SF and Bay Area listings with plans and prices, 3D-ready ones in green</span> · <a class="meta" href="polish/polish.html" target="_blank">Photo vs our render (honest side-by-side) →</a></div>
-<div class="stats" id="stats"></div><div class="metrics" id="metrics"></div><details id="howm" style="display:none;margin-top:8px;max-width:1180px"><summary class="meta" style="cursor:pointer">How we measured</summary><table id="howt" style="border-collapse:collapse;font-size:12px;margin-top:6px"></table><div class="meta" style="margin-top:4px">full write-up: <a href="metrics/METRICS.md" target="_blank">metrics/METRICS.md</a></div></details></header>
-<section class="demo"><h2>Demo path <span class="meta">open 3D, walk it, let the agent furnish the living room, check out</span></h2><div class="dgrid" id="demo"></div></section>
-<div class="bar"><label>search <input id="q" placeholder="building, unit, room…" style="width:220px"></label>
-<label>building <select id="fb"><option value="">all buildings</option></select></label>
-<label>bedrooms <select id="fr"><option value="">any</option><option value="0">studio</option><option value="1">1</option><option value="2">2</option><option value="3">3+</option></select></label>
-<label><input type="checkbox" id="fa"> annotated only</label><span class="meta" id="count"></span></div>
-<main id="root"><div class="empty">loading…</div></main>
-<script>
-const DEMO = ['gs-22612_plan_03', 'gs-20665_plan_00', 'gs-16296_plan_01'];
-const $ = id => document.getElementById(id);
+<!-- The library: every unit type rebuilt from its floor plan, grouped by building, best-prepared first. Customer view by default;
+     ?dev=1 adds unit ids, scale sources, review notes, plan metrics and links to the engineering viewer (apartment.html). -->
+<link rel="stylesheet" href="/ui/movein.css">
+<style>
+:root{--wrap:min(1240px,100vw - 80px)}
+.wrap{width:var(--wrap);margin:0 auto}
+nav.glass{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:20;display:flex;align-items:center;gap:6px;padding:6px 6px 6px 22px;border-radius:999px;white-space:nowrap}
+nav .mark{font-family:var(--serif);font-size:22px;text-decoration:none;margin-right:18px}
+nav .links a{font-size:14px;text-decoration:none;padding:8px 12px;border-radius:999px;opacity:.78}
+nav .links a:hover,nav .links a[aria-current]{opacity:1}
+header.top{padding:140px 0 36px}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(48px,6vw,84px);line-height:1;letter-spacing:-.02em;margin:0 0 14px}
+.lede{color:var(--graphite);font-size:19px;margin:0;max-width:48ch}
+.bar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.92);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--hair)}
+.bar .wrap{display:flex;gap:10px;align-items:center;padding:14px 0;flex-wrap:wrap}
+.bar .input{width:280px}
+.bar .select{width:auto;border-radius:999px;padding-top:10px;padding-bottom:10px}
+.bar .count{margin-left:auto;color:var(--graphite);font-size:14px}
+label.ck{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--graphite);cursor:pointer}
+label.ck input{accent-color:var(--ink);width:15px;height:15px}
+main{padding:10px 0 120px}
+.building{margin-top:64px}
+.building h2{font-family:var(--serif);font-weight:400;font-size:34px;line-height:1.1;letter-spacing:-.01em;margin:0 0 4px}
+.building .sub{color:var(--graphite);font-size:14px;margin-bottom:22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:40px 24px}
+.unit .img{display:block;aspect-ratio:4/3;border-radius:18px;overflow:hidden;background:#fff;box-shadow:inset 0 0 0 1px var(--hair)}
+.unit .img img{width:100%;height:100%;object-fit:contain;padding:14px;display:block}
+.unit h3{font-family:var(--serif);font-weight:400;font-size:24px;line-height:1.15;margin:16px 0 2px}
+.unit .meta{color:var(--graphite);font-size:14px}
+.unit .acts{display:flex;gap:18px;margin-top:10px;font-size:14px;align-items:center;flex-wrap:wrap}
+.unit .acts a{text-decoration:none;border-bottom:1px solid var(--hair);padding-bottom:2px}
+.unit .acts a:first-child{border-color:currentColor}
+.unit .acts a:hover{border-color:currentColor}
+.prep{background:none;border:0;padding:0;font:inherit;color:var(--graphite);cursor:pointer;border-bottom:1px dashed var(--hair)}
+.prep:hover{color:var(--ink)}
+.prep:disabled{cursor:wait}
+.prep.err{color:var(--bad);border-color:transparent;cursor:default}
+.spin{display:inline-block;width:10px;height:10px;border:2px solid var(--graphite);border-right-color:transparent;border-radius:50%;animation:sp .8s linear infinite;margin-right:6px;vertical-align:-1px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.dev{font-size:12px;color:var(--graphite);margin-top:6px;line-height:1.5}
+.dev .b{display:inline-block;border-radius:999px;padding:0 7px;margin:2px 3px 0 0;background:var(--mist)}
+.dev .warn{color:var(--warn)}
+.more{display:flex;justify-content:center;margin-top:64px}
+.empty{color:var(--graphite);padding:60px 0;text-align:center}
+.metrics{display:flex;gap:28px;flex-wrap:wrap;margin-top:28px}
+.metrics div{font-size:13px;color:var(--graphite);max-width:22ch}
+.metrics b{display:block;font-family:var(--serif);font-weight:400;font-size:30px;color:var(--ink);line-height:1.1}
+footer{border-top:1px solid var(--hair);padding:28px 0 40px;color:var(--graphite);font-size:13px}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer a{text-decoration:none}footer a:hover{text-decoration:underline}
+@media (max-width:860px){nav .links{display:none}.bar .input{width:100%}.bar .count{margin-left:0}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+</style></head>
+<body class="mi">
+<nav class="glass" aria-label="Main">
+  <a class="mark" href="landing.html">Move-in</a>
+  <span class="links"><a href="index.html" aria-current="page">Homes</a><a href="landing.html#how">How it works</a><a href="../map/find.html">Map</a></span>
+  <a class="pill" href="../map/find.html">Find a home</a>
+</nav>
+<header class="top wrap">
+  <h1>Every apartment.</h1>
+  <p class="lede" id="lede">Each one rebuilt in 3D from the floor plan its landlord published.</p>
+  <div class="metrics" id="metrics" hidden></div>
+</header>
+<div class="bar"><div class="wrap">
+  <input class="input" id="q" placeholder="Building, plan or room" aria-label="Search">
+  <select class="select" id="fb" aria-label="Building"><option value="">All buildings</option></select>
+  <select class="select" id="fr" aria-label="Size"><option value="">Any size</option><option value="0">Studio</option><option value="1">1 bedroom</option><option value="2">2 bedrooms</option><option value="3">3+ bedrooms</option></select>
+  <label class="ck"><input type="checkbox" id="fa"> Ready to furnish</label>
+  <span class="count" id="count"></span>
+</div></div>
+<main class="wrap" id="root"><div class="empty">Loading every apartment…</div></main>
+<footer><div class="wrap"><span>Move-in, built at Cal Hacks 13.0 from public listings.</span><span><a href="polish/polish.html">Photo next to render</a> &nbsp; <a href="metrics/METRICS.md">How we measured</a></span></div></footer>
+<script type="module">
+import { enhanceAll } from '/ui/glass.js'; enhanceAll();
+const $ = id => document.getElementById(id), Q = new URLSearchParams(location.search), DEV = Q.get('dev') === '1';
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const movein = new Date(Date.now() + 21 * 864e5).toISOString().slice(0, 10);
-function annotated(u) { if (u.annotated != null) return !!u.annotated; return !!(u.materials || (u.issues && u.issues.length) || u.rooms.some(r => r.type && r.type !== 'other')); }
+const annotated = u => u.annotated != null ? !!u.annotated : !!(u.materials || (u.issues && u.issues.length) || u.rooms.some(r => r.type && r.type !== 'other'));
 function bedrooms(u) { const n = u.rooms.filter(r => r.type === 'bedroom').length; if (annotated(u) && u.rooms.some(r => r.type !== 'other')) return n;
   const m = /prior (\d+) bedroom/.exec((u.scale_from || []).join(' ')); return m ? +m[1] : null; }
-function badges(u) { const f = u.scale_from || [], s0 = f[0] || ''; const b = [];
-  if (s0.startsWith('reader_dims+printed')) b.push(['ok', 'plan dimensions printed']);
-  else if (s0.startsWith('annotation_dims') || f.includes('annotation_dims')) b.push(['acc', 'Claude size estimates']);
-  else if (s0.includes('printed sqft')) b.push(['ok', 'printed sqft']);
-  else if (s0.includes('listing sqft')) b.push(['ok', 'true size (listed sqft)']);
-  else if (s0.startsWith('area:prior')) b.push(['', 'prior size']);
-  if (annotated(u)) b.push(['acc', 'annotated']);
-  if (u.materials) b.push(['acc', 'from photos']);
-  if (u.n_fixtures) b.push(['', `${u.n_fixtures} fixtures`]);
-  const bd = bedrooms(u); if (bd != null) b.push(['', bd === 0 ? 'studio' : `${bd} bed`]);
-  return b.map(([c, t]) => `<span class="bd ${c}">${esc(t)}</span>`).join(''); }
-function score(u) { return (annotated(u) ? 1000 : 0) + (u.materials ? 300 : 0) + ((u.scale_from || [])[0]?.startsWith('reader_dims+printed') ? 200 : 0) + Math.min(u.n_fixtures || 0, 30) * 3 + Math.min(u.rooms.filter(r => r.area_m2 > 2).length, 12) * 10; }
-function agentRoom(u) { const liv = u.rooms.find(r => r.type === 'living'); if (liv) return liv.id; const big = [...u.rooms].sort((a, b) => b.area_m2 - a.area_m2)[0]; return big ? big.id : 'r0'; }
-function links(u) { const a = `apartment.html?unit=${encodeURIComponent(u.unit)}`; return {
-  open: a, walk: `${a}&view=walk`, furnish: `${a}&agent=${agentRoom(u)}&budget=3500&style=warm%20scandinavian&drama=1` }; }
-let UNITS = [], PLANS = {};
-function demoCard(u, i) { const L = links(u); const rooms = PLANS[u.unit] || [];
-  const co = rooms.length ? `../checkout/checkout.html?rooms=${rooms.join(',')}&budget=3500&movein=${movein}` : '';
-  return `<div class="dcard"><img src="${esc(u.plan_image)}" alt="plan"><div class="body"><div class="title"><span class="step">${i + 1}</span>${esc(u.building)} · ${esc(u.plan_name || u.unit)}</div>
-   <div class="meta">${u.rooms.length} rooms · ${u.area_m2} m² · ${esc(u.unit)}</div><div class="badges" style="margin:6px 0">${badges(u)}</div>
-   <div class="row"><a class="btn" href="${L.open}" target="_blank">Open 3D</a><a class="btn sec" href="${L.walk}" target="_blank">Walk</a><a class="btn sec" href="${L.furnish}" target="_blank">Furnish</a><a class="btn go ${co ? '' : 'off'}" href="${co || '#'}" target="_blank" title="${co ? rooms.length + ' furnished room(s)' : 'furnish a room first'}">Checkout</a></div></div></div>`; }
-function card(u) { const L = links(u); const rooms = u.rooms.filter(r => r.area_m2 > 2).map(r => `${esc(r.name)} ${r.area_m2} m²`).join(' · ');
-  return `<div class="card"><img src="${esc(u.plan_image)}" loading="lazy" alt="plan"><div class="body"><div class="title">${esc(u.plan_name || u.unit)}</div>
-   <div class="meta">${u.rooms.length} rooms · ${u.area_m2} m² · ${esc(u.unit)}</div><div class="badges">${badges(u)}</div><div class="rooms">${rooms}</div>
-   ${u.issues && u.issues.length ? `<div class="issues" title="${esc(u.issues.join('\n'))}">review: ${u.issues.length} note${u.issues.length > 1 ? 's' : ''} (hover)</div>` : ''}
-   <div class="row"><a class="btn" href="${L.open}" target="_blank">Open 3D</a><a class="btn sec" href="${L.walk}" target="_blank">Walk</a><a class="btn sec" href="${L.furnish}" target="_blank">Furnish</a>${annBtn(u)}</div></div></div>`; }
-function trueSize(u) { const s0 = (u.scale_from || [])[0] || ''; return s0.startsWith('reader_dims+printed') || s0.includes('listing sqft') || s0.includes('printed sqft'); }
-const ANN = {};   // unit -> 'running' | error text
-function annBtn(u) { if (annotated(u)) return '';
-  const st = ANN[u.unit];
-  if (st === 'running') return `<button class="btn ann" data-ann="${esc(u.unit)}" disabled><span class="spin"></span>Claude is reading the plan…</button>`;
-  if (st) return `<button class="btn ann err" data-ann="${esc(u.unit)}" title="${esc(st)}">${esc(st)}</button>`;
-  return `<button class="btn ann" data-ann="${esc(u.unit)}" title="Claude names the rooms and places kitchen/bath fixtures (~5 cents, within the spend cap)">Name rooms &amp; fixtures with Claude</button>`; }
+const sizeText = u => { const b = bedrooms(u), s = b == null ? '' : b === 0 ? 'Studio' : `${b} bedroom${b > 1 ? 's' : ''}`; return [s, u.area_m2 ? `${Math.round(u.area_m2)} m²` : ''].filter(Boolean).join(', '); };
+const score = u => (annotated(u) ? 1000 : 0) + (u.materials ? 300 : 0) + ((u.scale_from || [])[0]?.startsWith('reader_dims+printed') ? 200 : 0) + Math.min(u.n_fixtures || 0, 30) * 3 + Math.min(u.rooms.filter(r => r.area_m2 > 2).length, 12) * 10;
+const short = b => String(b || '').replace(/ Apartments.*$/, '');
+let UNITS = [], CAP = 48; const ANN = {};
+
+function devInfo(u) {
+  if (!DEV) return ''; const s0 = (u.scale_from || [])[0] || '';
+  const tags = [s0.startsWith('reader_dims+printed') ? 'printed dimensions' : s0.includes('sqft') ? 'listed sqft' : s0.startsWith('annotation_dims') ? 'Claude size estimate' : 'prior size', annotated(u) ? 'annotated' : null, u.materials ? 'materials from photos' : null, u.n_fixtures ? `${u.n_fixtures} fixtures` : null].filter(Boolean);
+  return `<div class="dev">${esc(u.unit)} · <a href="apartment.html?unit=${encodeURIComponent(u.unit)}">engineering viewer</a><br>${tags.map(t => `<span class="b">${esc(t)}</span>`).join('')}${u.issues && u.issues.length ? `<br><span class="warn" title="${esc(u.issues.join('\n'))}">${u.issues.length} review note${u.issues.length > 1 ? 's' : ''}</span>` : ''}</div>`;
+}
+function prepBtn(u) {   // unannotated plans: Claude names the rooms and places kitchen and bath fixtures (~5 cents, spend-capped)
+  if (annotated(u)) return ''; const st = ANN[u.unit];
+  if (st === 'running') return `<button class="prep" data-ann="${esc(u.unit)}" disabled><span class="spin"></span>Reading the plan…</button>`;
+  if (st) return `<button class="prep err" data-ann="${esc(u.unit)}">${esc(st)}</button>`;
+  return `<button class="prep" data-ann="${esc(u.unit)}" title="Claude names the rooms and places the kitchen and bath fixtures">Name the rooms</button>`;
+}
+function card(u) {
+  const a = `home.html?unit=${encodeURIComponent(u.unit)}`;
+  return `<article class="unit"><a class="img" href="${a}"><img src="${esc(u.plan_image)}" loading="lazy" alt="Floor plan of ${esc(u.plan_name || 'this apartment')}"></a>
+    <h3>${esc(u.plan_name || 'Apartment')}</h3><div class="meta">${esc(sizeText(u))}</div>
+    <div class="acts"><a href="${a}">View in 3D</a><a href="${a}&view=walk">Walk through</a>${prepBtn(u)}</div>${devInfo(u)}</article>`;
+}
+function render() {
+  const q = $('q').value.trim().toLowerCase(), fb = $('fb').value, fr = $('fr').value, fa = $('fa').checked;
+  const list = UNITS.filter(u => (!fb || u.building === fb) && (!fa || annotated(u)) && (fr === '' || (fr === '3' ? bedrooms(u) >= 3 : bedrooms(u) === +fr))
+    && (!q || [u.building, u.plan_name, u.listing, DEV ? u.unit : '', ...u.rooms.map(r => r.name)].join(' ').toLowerCase().includes(q)));
+  const by = new Map(); for (const u of list) { const b = u.building || u.listing; if (!by.has(b)) by.set(b, []); by.get(b).push(u); }
+  for (const us of by.values()) us.sort((a, b) => score(b) - score(a) || String(a.plan_name).localeCompare(String(b.plan_name)));
+  const groups = [...by.entries()].sort((a, b) => score(b[1][0]) - score(a[1][0]) || b[1].length - a[1].length);
+  let html = '', shown = 0; const cap = q || fb ? Infinity : CAP;
+  for (const [b, us] of groups) { if (shown >= cap) break;
+    html += `<section class="building"><h2>${esc(short(b))}</h2><div class="sub">${us.length} plan${us.length > 1 ? 's' : ''}${DEV ? ` · ${esc(us[0].listing)}` : ''}</div><div class="grid">`;
+    for (const u of us) { if (shown++ >= cap) break; html += card(u); } html += '</div></section>'; }
+  if (list.length > shown) html += `<div class="more"><button class="pill ghost lg" id="more">Show more</button></div>`;
+  $('count').textContent = `${list.length} of ${UNITS.length}`;
+  $('root').innerHTML = html || '<div class="empty">No apartment matches. Clear a filter.</div>';
+  const m = $('more'); if (m) m.onclick = () => { CAP += 48; render(); };
+}
 async function annotate(unit) {
   if (ANN[unit] === 'running') return; ANN[unit] = 'running'; render();
-  let res; try { res = await (await fetch(`/api/annotate?unit=${encodeURIComponent(unit)}`, { method: 'POST' })).json(); } catch (e) { res = { error: 'server unreachable' }; }
+  let res; try { res = await (await fetch(`/api/annotate?unit=${encodeURIComponent(unit)}`, { method: 'POST' })).json(); } catch (e) { res = { error: 'unreachable' }; }
   if (res.ok) { delete ANN[unit];
-    try { const fresh = await (await fetch('layouts/index.json', { cache: 'no-store' })).json(); const nu = fresh.find(x => x.unit === unit);
-      if (nu) { const i = UNITS.findIndex(x => x.unit === unit); if (i >= 0) UNITS[i] = nu; } } catch (e) {}
-    const u = UNITS.find(x => x.unit === unit); if (u) u.annotated = true; drawStats(); }
-  else ANN[unit] = res.error === 'budget cap reached' ? 'Claude budget cap reached' : res.error === 'busy' ? `busy: another unit is being annotated, retry` : (res.error || 'failed');
-  render(); }
-document.addEventListener('click', e => { const b = e.target.closest('[data-ann]'); if (b && !b.disabled) { const st = ANN[b.dataset.ann]; if (st && st.startsWith('Claude budget')) return; delete ANN[b.dataset.ann]; annotate(b.dataset.ann); } });
-function drawStats() { const units = UNITS, blds = new Set(units.map(u => u.building || u.listing));
-  const printed = units.filter(u => (u.scale_from || [])[0]?.startsWith('reader_dims+printed')).length;
-  $('stats').innerHTML = `<div><b>${units.length}</b>unit types</div><div><b>${blds.size}</b>buildings</div><div><b>${units.filter(annotated).length}</b>annotated by Claude</div><div><b>${units.filter(trueSize).length}</b>true size (listed sqft or printed dimensions)</div><div><b>${printed}</b>scaled from printed dimensions</div><div><b>${units.filter(u => u.materials).length}</b>materials from photos</div>`; }
-function drawMetrics(s) {   // app/plan3d/metrics/summary.json (metrics worker): [{key, value, unit, label, n, method}]; breadth, speed, printed-dimension accuracy
-  const M = Object.fromEntries((Array.isArray(s) ? s : []).map(m => [m.key, m])); const tiles = [];
-  const n1 = v => (Math.round(v * 10) / 10).toLocaleString('en-US');
-  if (M.plans_processed && M.walkable_units) tiles.push({ big: `${n1(M.plans_processed.value)} → ${n1(M.walkable_units.value)}`, label: `floor plans processed → walkable 3D apartments, ${M.walkable_units.n} buildings`, note: M.plans_processed.method + '\n' + M.walkable_units.method });
-  if (M.plan_to_walkable_s) tiles.push({ big: `~${n1(M.plan_to_walkable_s.value)} s`, label: 'floor plan → walkable 3D, median', note: M.plan_to_walkable_s.method });
-  for (const k of ['door_scale_error', 'printed_dims_room_error']) if (M[k]) tiles.push({ big: `${n1(M[k].value)}${M[k].unit === '%' ? '%' : ' ' + M[k].unit}`, label: `${k === 'door_scale_error' ? 'median scale error from door widths alone' : 'median room-dimension error'} vs printed dimensions (n=${M[k].n}${k === 'printed_dims_room_error' ? ' rooms' : ' plans'})`, note: M[k].method });
-  $('howm').style.display = tiles.length ? '' : 'none';
-  const shown = ['plans_processed', 'walkable_units', 'plan_to_layout_s', 'first_frame_s', 'plan_to_walkable_s', 'door_scale_error', 'printed_dims_room_error'];
-  $('howt').innerHTML = shown.filter(k => M[k]).map(k => `<tr style="border-top:1px solid var(--line)"><td style="padding:4px 10px 4px 0;white-space:nowrap"><b>${esc(n1(M[k].value))} ${esc(M[k].unit)}</b></td><td style="padding:4px 10px 4px 0">${esc(M[k].label)} <span class="meta">(n=${esc(M[k].n)})</span></td><td style="padding:4px 0;color:var(--ink2)">${esc(M[k].method)}</td></tr>`).join('');
-  $('metrics').innerHTML = tiles.map(t => `<div class="metric" title="${esc(t.note || '')}"><b>${esc(t.big)}</b><span>${esc(t.label)}</span></div>`).join(''); }
-function render() { const q = $('q').value.trim().toLowerCase(), fb = $('fb').value, fr = $('fr').value, fa = $('fa').checked;
-  const list = UNITS.filter(u => (!fb || u.building === fb) && (!fa || annotated(u)) && (fr === '' || (fr === '3' ? bedrooms(u) >= 3 : bedrooms(u) === +fr))
-    && (!q || [u.building, u.unit, u.plan_name, u.listing, ...u.rooms.map(r => r.name)].join(' ').toLowerCase().includes(q)));
-  const by = new Map(); for (const u of list) { const b = u.building || u.listing; if (!by.has(b)) by.set(b, []); by.get(b).push(u); }
-  for (const us of by.values()) us.sort((a, b) => score(b) - score(a) || a.unit.localeCompare(b.unit));
-  const groups = [...by.entries()].sort((a, b) => score(b[1][0]) - score(a[1][0]) || b[1].length - a[1].length);
-  let html = ''; const CAP = q || fb ? 1e9 : 60; let shown = 0;
-  for (const [b, us] of groups) { if (shown >= CAP) break; const ann = us.filter(annotated).length;
-    html += `<h2>${esc(b)} <span class="meta">${esc(us[0].listing)} · ${us.length} unit type${us.length > 1 ? 's' : ''}${ann ? ` · ${ann} annotated` : ''}</span></h2><div class="grid">`;
-    for (const u of us) { if (shown++ >= CAP) break; html += card(u); } html += '</div>'; }
-  $('count').textContent = `${list.length} of ${UNITS.length} unit types${list.length > CAP ? ` · first ${CAP} shown, filter to see more` : ''}`;
-  $('root').innerHTML = html || '<div class="empty">no unit matches</div>'; }
-async function plansFor(u) { const ok = await Promise.all(u.rooms.map(async r => { const room = `${u.unit}__${r.id}`; try { const res = await fetch(`/api/furnish?room=${encodeURIComponent(room)}`, { cache: 'no-store' }); return res.status === 200 ? room : null; } catch (e) { return null; } }));
-  PLANS[u.unit] = ok.filter(Boolean); }
-fetch('layouts/index.json').then(r => r.json()).then(units => { UNITS = units;
-  const blds = [...new Set(units.map(u => u.building || u.listing))].sort(); $('fb').innerHTML += blds.map(b => `<option>${esc(b)}</option>`).join('');
-  drawStats(); fetch('metrics/summary.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(s => s && drawMetrics(s)).catch(() => {});
-  const dm = DEMO.map(id => units.find(u => u.unit === id)).filter(Boolean);
-  const drawDemo = () => $('demo').innerHTML = dm.map(demoCard).join(''); drawDemo(); Promise.all(dm.map(plansFor)).then(drawDemo); addEventListener('focus', () => Promise.all(dm.map(plansFor)).then(drawDemo));
-  for (const id of ['q', 'fb', 'fr', 'fa']) $(id).addEventListener('input', render); render();
-}).catch(e => { $('root').textContent = 'no index yet: ' + e; });
+    try { const fresh = await (await fetch('layouts/index.json', { cache: 'no-store' })).json(); const nu = fresh.find(x => x.unit === unit); const i = UNITS.findIndex(x => x.unit === unit); if (nu && i >= 0) UNITS[i] = nu; } catch (e) {}
+    const u = UNITS.find(x => x.unit === unit); if (u) u.annotated = true; }
+  else ANN[unit] = res.error === 'budget cap reached' ? 'Not available today' : res.error === 'busy' ? 'Busy, try again' : 'Could not read the plan';
+  render();
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-ann]'); if (b && !b.disabled && !b.classList.contains('err')) annotate(b.dataset.ann); });
+
+fetch('layouts/index.json').then(r => r.json()).then(units => {
+  UNITS = units; const blds = [...new Set(units.map(u => u.building || u.listing))].sort();
+  $('fb').innerHTML += blds.map(b => `<option value="${esc(b)}">${esc(short(b))}</option>`).join('');
+  const nb = new Set(units.map(u => u.listing || u.building)).size;   // listings, as on the landing page (two listings share a building name)
+  $('lede').textContent = `${units.length.toLocaleString('en-US')} apartments in ${nb} buildings, each rebuilt in 3D from the floor plan its landlord published.`;
+  if (DEV) fetch('metrics/summary.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(s => {
+    if (!Array.isArray(s)) return; $('metrics').hidden = false;
+    $('metrics').innerHTML = s.slice(0, 6).map(m => `<div title="${esc(m.method)}"><b>${esc((Math.round(m.value * 10) / 10).toLocaleString('en-US'))}${m.unit === '%' ? '%' : ''}</b>${esc(m.label)}</div>`).join(''); }).catch(() => {});
+  for (const id of ['q', 'fb', 'fr', 'fa']) $(id).addEventListener('input', () => { CAP = 48; render(); });
+  render();
+}).catch(e => { $('root').innerHTML = '<div class="empty">The apartment index is not available right now.</div>'; });
 </script></body></html>

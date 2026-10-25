@@ -3,42 +3,24 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <!-- Light landing (draft next to index.html). Try ?paper=warm to compare warm whites, ?accent=8a6a4f to try an accent. -->
 <script type="importmap">{"imports":{"three":"/vendor/three/build/three.module.js","three/addons/":"/vendor/three/jsm/"}}</script>
+<link rel="stylesheet" href="/ui/movein.css">
 <style>
-@font-face{font-family:"Freight Display";src:url(/vendor/fonts/freight-disp-pro-medium.otf) format("opentype");font-weight:100 900;font-style:normal;font-display:swap}   /* one cut (Medium) for every display size; the weight range stops faux bold/thin */
-:root{
-  --paper:#ffffff;      /* page */
-  --mist:#f5f5f4;       /* quiet sections and image tiles (thumbnails are rendered on this) */
-  --ink:#1d1d1f;        /* text, primary buttons */
-  --graphite:#6e6e73;   /* secondary text */
-  --hair:#e4e4e1;       /* hairlines */
-  --accent:var(--ink);  /* one accent, undecided: ?accent=hex */
-  --serif:"Freight Display","Iowan Old Style",Georgia,serif;
-  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
-  --wrap:min(1240px,100vw - 80px);
-}
+/* tokens, font, glass and pills come from /ui/movein.css; below is this page only */
+:root{--wrap:min(1240px,100vw - 80px)}
 :root.warm{--paper:#faf8f4;--mist:#f2efe9;--hair:#e6e1d8}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.5 var(--sans);font-variant-numeric:lining-nums;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 a{color:inherit}
-:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:6px}
 .wrap{width:var(--wrap);margin:0 auto}
-.serif{font-family:var(--serif);font-weight:400}
 
-/* ---------- glass: frosted base everywhere, edge refraction added in Chromium by enhanceGlass() ---------- */
-.glass{position:relative;background:rgba(255,255,255,.5);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
-  box-shadow:inset 0 1px 1px rgba(255,255,255,.95),inset 0 -1px 1px rgba(255,255,255,.4),0 10px 30px rgba(29,29,31,.08),0 1px 3px rgba(29,29,31,.06)}
-.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
-  background:linear-gradient(140deg,rgba(255,255,255,1),rgba(255,255,255,.2) 38%,rgba(29,29,31,.07) 62%,rgba(255,255,255,.85));
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.glass{background:rgba(255,255,255,.5)}   /* a lighter frost than the app panels: it floats over the hero and photos */
 
 /* ---------- nav ---------- */
 nav.glass{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:20;display:flex;align-items:center;gap:6px;padding:6px 6px 6px 22px;border-radius:999px;white-space:nowrap}
 nav .mark{font-family:var(--serif);font-size:22px;letter-spacing:-.01em;text-decoration:none;margin-right:18px}
 nav .links a{font-size:14px;text-decoration:none;color:var(--ink);padding:8px 12px;border-radius:999px;opacity:.78}
 nav .links a:hover{opacity:1}
-.pill{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;border:0;border-radius:999px;padding:10px 18px;font:500 14px/1 var(--sans);text-decoration:none;cursor:pointer}
-.pill:hover{filter:brightness(1.15)}
 
 /* ---------- hero ---------- */
 .hero{position:relative;height:100svh;min-height:720px;overflow:hidden}
@@ -51,7 +33,7 @@ nav .links a:hover{opacity:1}
 h1{font-family:var(--serif);font-weight:400;font-size:clamp(56px,7.4vw,112px);line-height:.94;letter-spacing:-.025em;margin:0 0 28px}
 .lede{font-size:20px;line-height:1.45;color:var(--graphite);max-width:30ch;margin:0 0 34px}
 .ask{--gap:6px;display:flex;align-items:stretch;border-radius:999px;padding:var(--gap);width:max-content;max-width:100%}
-.ask .field{display:flex;flex-direction:column;justify-content:center;padding:6px 22px 6px 20px;border-right:1px solid var(--hair)}
+.ask .field{display:flex;flex-direction:column;justify-content:center;gap:0;padding:6px 22px 6px 20px;border-right:1px solid var(--hair)}
 .ask .field:nth-of-type(2){border-right:0}
 .ask label{font-size:12px;color:var(--graphite)}
 .ask select{appearance:none;-webkit-appearance:none;border:0;background:transparent;font:500 16px/1.3 var(--sans);color:var(--ink);padding:0 18px 0 0;cursor:pointer;
@@ -180,6 +162,7 @@ footer a{text-decoration:none}footer a:hover{text-decoration:underline}
 
 <script type="module">
 import { mountStage } from './landing/stage.js';
+import { enhanceAll } from '/ui/glass.js'; enhanceAll();
 const $ = id => document.getElementById(id);
 const Q = new URLSearchParams(location.search);
 if (Q.get('paper') === 'warm') document.documentElement.classList.add('warm');
@@ -228,34 +211,5 @@ $('grid').innerHTML = HOMES.map(id => byId[id]).filter(Boolean).map(u => `
     <div class="acts"><a href="${furnishUrl(u)}">Furnish</a><a href="home.html?unit=${encodeURIComponent(u.unit)}&view=walk">Walk through</a></div>
   </article>`).join('');
 
-// ---------- liquid glass: edge refraction through an SVG displacement map, Chromium only (Safari/Firefox keep the frosted base) ----------
-const chromium = navigator.userAgentData?.brands?.some(b => /Chromium/.test(b.brand));
-if (chromium) {
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('width', 0); svg.setAttribute('height', 0); svg.style.position = 'absolute'; document.body.appendChild(svg);
-  let k = 0;
-  function mapFor(w, h, r, bezel) {   // R,G = sampling offset toward the inside, strongest at the rim of a rounded box
-    const c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d'), img = g.createImageData(w, h), d = img.data;
-    const hw = w / 2, hh = h / 2;
-    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-      const px = x + .5 - hw, py = y + .5 - hh, qx = Math.abs(px) - (hw - r), qy = Math.abs(py) - (hh - r);
-      const out = Math.hypot(Math.max(qx, 0), Math.max(qy, 0)), sdf = out + Math.min(Math.max(qx, qy), 0) - r, depth = -sdf;
-      let nx = 0, ny = 0; if (qx > 0 && qy > 0) { nx = qx / out * Math.sign(px); ny = qy / out * Math.sign(py); } else if (qx > qy) nx = Math.sign(px); else ny = Math.sign(py);
-      const t = depth < bezel && depth > 0 ? 1 - depth / bezel : 0, m = 1 - Math.sqrt(1 - t * t);   // circular lens profile: flat in the middle, bending hard at the rim
-      const i = (y * w + x) * 4; d[i] = 128 - nx * m * 127; d[i + 1] = 128 - ny * m * 127; d[i + 2] = 128; d[i + 3] = 255;
-    }
-    g.putImageData(img, 0, 0); return c.toDataURL();
-  }
-  function enhanceGlass(el, { scale = 46, bezel = 18, blur = 6 } = {}) {
-    const id = 'lg' + (k++); const f = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
-    f.setAttribute('id', id); f.setAttribute('color-interpolation-filters', 'sRGB'); f.setAttribute('x', 0); f.setAttribute('y', 0); f.setAttribute('width', '100%'); f.setAttribute('height', '100%');
-    f.innerHTML = `<feImage result="map" preserveAspectRatio="none"/><feDisplacementMap in="SourceGraphic" in2="map" scale="${scale}" xChannelSelector="R" yChannelSelector="G"/>`; svg.appendChild(f);
-    const im = f.querySelector('feImage');
-    const redo = () => { const w = Math.round(el.offsetWidth), h = Math.round(el.offsetHeight); if (!w || !h) return; const r = Math.min(parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0, h / 2, w / 2);
-      im.setAttribute('href', mapFor(w, h, r, Math.min(bezel, r || bezel))); im.setAttribute('width', w); im.setAttribute('height', h);
-      el.style.backdropFilter = `url(#${id}) blur(${blur}px) saturate(180%)`; };
-    new ResizeObserver(redo).observe(el); redo();
-  }
-  for (const el of document.querySelectorAll('.glass')) enhanceGlass(el);
-}
 </script>
 </body></html>

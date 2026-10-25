@@ -19,8 +19,9 @@ canvas{display:block}
 #plan.big img{max-width:62vw;max-height:calc(100vh - 70px)} #plan svg{position:absolute;inset:0;width:100%;height:100%}
 body.hasplan #furn{max-height:calc(100vh - 380px)}
 </style>
+<link rel="stylesheet" href="/ui/movein.css"><link rel="stylesheet" href="/ui/pro.css">   <!-- Move-in light skin over the engineering viewer -->
 <script type="importmap">{"imports":{"three":"/vendor/three/build/three.module.js","three/addons/":"/vendor/three/jsm/"}}</script>
-</head><body>
+</head><body class="pro">
 <div id="ui"><b>Apartment</b> <span id="unit" class="dim"></span><br>
 <div style="margin:6px 0"><button id="bDoll" class="on">dollhouse</button><button id="bWalk">walk</button> <button id="bEvening" title="dusk outside, lamps on">evening</button> <span class="dim">section height</span> <input id="clip" type="range" min="0.6" max="2.8" step="0.05" value="1.55"> <span id="clipv" class="dim">1.55 m</span></div>
 <div id="levelsUi" style="margin:4px 0;display:none"><span class="dim">levels</span> </div>

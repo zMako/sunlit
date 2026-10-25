@@ -1,10 +1,15 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Photo vs render vs polished</title><style>
-body{margin:0;background:#0b0f16;color:#e8ecf2;font:14px/1.45 system-ui,-apple-system,sans-serif} main{max-width:1500px;margin:0 auto;padding:24px}
-h1{font-size:22px;margin:0 0 6px} .lead{color:#aab4c2;max-width:1000px} section{margin:28px 0;padding-top:16px;border-top:1px solid #243040}
-h2{font-size:17px;margin:0 0 10px} h2 span{color:#8f9bab;font-weight:400;font-size:13px;margin-left:8px}
-.row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px} figure{margin:0} img{width:100%;display:block;border-radius:6px;background:#111}
-figcaption{font-size:12px;color:#9aa4b2;margin-top:4px} figcaption b{color:#e8ecf2;font-weight:600} .v{margin:10px 0 4px} .d{color:#7d8899;font-size:12px}
-</style></head><body><main><h1>Listing photo · our render · our render, polished</h1>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Photo next to render · Move-in</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/ui/movein.css"><style>
+main{width:min(1320px,100vw - 64px);margin:0 auto;padding:40px 0 100px}
+.top{display:flex;justify-content:space-between;align-items:center;padding:20px 32px} .top a{text-decoration:none} .top .mark{font-family:var(--serif);font-size:22px}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(40px,5vw,64px);line-height:1.02;letter-spacing:-.02em;margin:24px 0 16px}
+.lead{color:var(--graphite);font-size:17px;max-width:72ch;margin:0}
+section{margin:72px 0 0} h2{font-family:var(--serif);font-weight:400;font-size:30px;margin:0 0 14px} h2 span{font-family:var(--sans);color:var(--graphite);font-size:13px;margin-left:10px}
+.row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px} figure{margin:0} img{width:100%;display:block;border-radius:16px;background:var(--mist)}
+figcaption{font-size:13px;color:var(--graphite);margin-top:8px} figcaption b{color:var(--ink);font-weight:500} .v{margin:16px 0 6px;font-size:15px;max-width:90ch} .d{color:var(--graphite);font-size:12px;max-width:110ch}
+@media (max-width:900px){.row{grid-template-columns:1fr}}
+</style></head><body class="mi"><header class="top"><a class="mark" href="../landing.html">Move-in</a><a class="muted" href="../index.html">Every apartment</a></header>
+<main><h1>Listing photo, our render, our render polished.</h1>
 <p class="lead">The render is the plan-built apartment with the furnishing solver's real products, seen from a camera estimated from the listing photo (field of view from VGGT, pitch, eye height and distance from the floor/ceiling lines of the photo's segmentation). The polish is Stable Diffusion 1.5 image-to-image at low strength, held to our render's depth by ControlNet and given the photo only as a style and lighting reference. It cannot move or add objects; the geometry and every item are ours. The photos come from the building's gallery, so they may show another unit with the same plan type: differences in windows, mouldings and floors are real differences between the photo and our model, not polish artefacts.</p>
 <section><h2>Living Room <span>gs-22612_plan_03 · photo gs-22612/03.jpg · closest</span></h2>
 <div class="row"><figure><img src="out/gs-22612_03/photo.jpg"><figcaption>Listing photo (a unit in the same building; the gallery mixes units)</figcaption></figure>

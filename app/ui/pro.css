@@ -1,0 +1,54 @@
+/* Move-in "pro" skin: the engineering pages (apartment.html and its modules: furnish panel, agent.js, glue.js, walk.js)
+   in the light design language, without touching their markup or ids. Scoped to body.pro so it outranks the dark styles
+   those modules inject at runtime. Tokens come from movein.css (load it first). */
+body.pro { background: var(--mist) !important; color: var(--ink) !important; font: 13px/1.45 var(--sans) !important; -webkit-font-smoothing: antialiased; font-variant-numeric: lining-nums; }
+body.pro a { color: var(--ink); text-decoration-color: rgba(29,29,31,.3); }
+
+/* panels */
+body.pro #ui, body.pro #furn, body.pro #plan, body.pro #ai {
+  background: rgba(255,255,255,.88) !important; color: var(--ink) !important; border: 0 !important; border-radius: 20px !important;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.95), var(--shadow) !important; -webkit-backdrop-filter: blur(18px) saturate(180%); backdrop-filter: blur(18px) saturate(180%); }
+body.pro #ui { padding: 14px 16px !important; }
+body.pro #ui b, body.pro #furn b, body.pro #plan b, body.pro #ai h3 { color: var(--ink) !important; font-weight: 600; }
+body.pro #ui > b:first-child, body.pro #ai h3 { font-family: var(--serif); font-weight: 400 !important; font-size: 20px; letter-spacing: -.01em; }
+body.pro .dim, body.pro .fdim, body.pro #ai .dim, body.pro #coTot { color: var(--graphite) !important; }
+
+/* controls */
+body.pro button, body.pro #ai button, body.pro #ai button.sec {
+  background: rgba(29,29,31,.06) !important; color: var(--ink) !important; border: 0 !important; border-radius: 999px !important;
+  padding: 6px 12px !important; font: 500 12.5px/1.2 var(--sans) !important; margin: 2px 3px 2px 0; box-shadow: none !important; }
+body.pro button:hover { background: rgba(29,29,31,.1) !important; }
+body.pro button.on, body.pro #ai #aiGo, body.pro #coBtn { background: var(--ink) !important; color: #fff !important; }
+body.pro button:disabled, body.pro #coBtn.off { opacity: .4 !important; }
+body.pro #coBtn { border-radius: 999px !important; padding: 7px 14px !important; font: 500 12.5px/1 var(--sans) !important; }
+body.pro #coRow { border-top: 1px solid var(--hair) !important; }
+body.pro #coBack { color: var(--ink) !important; text-decoration: underline; text-decoration-color: rgba(29,29,31,.3); }
+body.pro input, body.pro select, body.pro textarea, body.pro #ai input, body.pro #ai textarea, body.pro #ai select {
+  background: rgba(29,29,31,.05) !important; color: var(--ink) !important; border: 0 !important; border-radius: 10px !important; font: 13px/1.3 var(--sans) !important; padding: 7px 10px; }
+body.pro input[type=range] { accent-color: var(--ink); background: transparent !important; padding: 0; }
+body.pro input[type=checkbox] { accent-color: var(--ink); }
+body.pro #ai label { color: var(--graphite) !important; }
+
+/* agent panel */
+body.pro #ai .bar { background: rgba(29,29,31,.08) !important; height: 4px !important; border-radius: 2px !important; }
+body.pro #ai .bar i { background: var(--ink) !important; }
+body.pro #ai .log div { border-bottom: 1px solid var(--hair) !important; }
+body.pro #ai .ok, body.pro .ok { color: var(--ok) !important; }
+body.pro #ai .bad, body.pro .bad, body.pro .fprob { color: var(--bad) !important; }
+body.pro #ai .card { background: var(--mist) !important; border-radius: 14px !important; }
+
+/* furniture list */
+body.pro .fitem { background: transparent !important; border-left: 0 !important; border-radius: 12px !important; padding: 6px 8px !important; box-shadow: inset 3px 0 0 #9fd8bd; }
+body.pro .fitem:hover { background: rgba(29,29,31,.04) !important; }
+body.pro .fitem.sel { background: rgba(29,29,31,.07) !important; }
+body.pro .fitem.bad { box-shadow: inset 3px 0 0 var(--bad); }
+body.pro .fitem.warn { box-shadow: inset 3px 0 0 var(--warn); }
+body.pro #furn a { color: var(--ink) !important; }
+
+/* plan window, hints, toast, walk HUD */
+body.pro #plan .pbody { border-radius: 12px !important; }
+body.pro #hint, body.pro #toast, body.pro #walkhud {
+  background: rgba(255,255,255,.88) !important; color: var(--ink) !important; border-radius: 999px !important; box-shadow: var(--shadow) !important;
+  -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); font: 13px/1.3 var(--sans) !important; padding: 8px 14px !important; }
+body.pro #walkhud span { color: var(--graphite) !important; }
+body.pro #cross { background: rgba(255,255,255,.9) !important; box-shadow: 0 0 0 1px rgba(29,29,31,.25); }

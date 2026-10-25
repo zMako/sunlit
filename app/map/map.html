@@ -1,20 +1,7 @@
-<!doctype html><html><head><meta charset="utf-8"><title>Move-in · find a San Francisco rental, then furnish it before you move in</title>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Find a home · Move-in</title>
+<!-- The map moved to find.html (same map.js, Move-in design). Query and hash are kept. -->
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="stylesheet" href="vendor/leaflet/leaflet.css"><link rel="stylesheet" href="map.css"></head><body>
-<div class="top"><div class="brand"><span class="k">Move-in</span><b>SF rentals</b></div>
- <div class="filters">
-  <input id="q" placeholder="search street, building, neighborhood…" style="width:230px">
-  <input id="pmin" type="number" placeholder="min $" step="100" min="0"><input id="pmax" type="number" placeholder="max $" step="100" min="0">
-  <select id="beds"><option value="">any beds</option><option value="0">studio</option><option value="1">1 bed</option><option value="2">2 beds</option><option value="3">3+ beds</option></select>
-  <label class="ck" title="only show listings inside the visible map area"><input type="checkbox" id="fbounds" checked> in map view</label>
-  <select id="sort"><option value="3d">recommended</option><option value="plo">price: low to high</option><option value="phi">price: high to low</option><option value="size">largest first</option></select>
- </div>
- <a class="back" href="../plan3d/index.html">all unit types →</a></div>
-<div class="wrap"><div id="map"></div>
- <div class="side"><div class="sidehead"><b id="count">…</b><span id="count2"></span><span class="spacer"></span><span class="hint">hover a card to find it on the map</span></div>
-  <div class="feed" id="feed"><div class="empty">loading listings…</div></div></div></div>
-<div class="legend"><div><i style="background:var(--pin3d)"></i>3D ready: plan rebuilt, walk + furnish</div></div>
-<aside class="drawer" id="drawer"><div class="dhead" id="dhead"></div><div class="dbody" id="dbody"></div></aside>
-<div class="tray" id="tray"></div><div class="cmp" id="cmp"></div>
-<div class="lightbox" id="lb"><img id="lbimg" alt=""></div>
-<script src="vendor/leaflet/leaflet.js"></script><script src="map.js"></script></body></html>
+<script>location.replace('find.html' + location.search + location.hash);</script>
+<noscript><meta http-equiv="refresh" content="0; url=find.html"></noscript>
+<style>body{margin:0;height:100vh;display:grid;place-items:center;font:15px -apple-system,Helvetica,sans-serif;color:#6e6e73;background:#fff}a{color:#1d1d1f}</style>
+</head><body><a href="find.html">Continue to Move-in</a></body></html>

@@ -26,7 +26,7 @@
 <script type="module">
 import { enhanceAll } from '/ui/glass.js'; enhanceAll();
 // customer routes: the engineering pages map.js links to -> the customer pages, same tab
-const route = a => { const h = a.getAttribute('href') || ''; let n = h.replace('/plan3d/apartment.html', '/plan3d/home.html').replace('/checkout/checkout.html', '/checkout/order.html').replace('../plan3d/index.html', '../plan3d/landing.html');
+const route = a => { const h = a.getAttribute('href') || ''; let n = h.replace('/plan3d/apartment.html', '/plan3d/home.html').replace('/checkout/checkout.html', '/checkout/order.html');   // the library (plan3d/index.html) is a customer page now
   if (n !== h) { a.setAttribute('href', n); a.removeAttribute('target'); } };
 for (const ev of ['pointerover', 'focusin', 'click']) document.addEventListener(ev, e => { const a = e.target.closest && e.target.closest('a[href]'); if (a) route(a); }, true);
 // customer wording for map.js's button labels
