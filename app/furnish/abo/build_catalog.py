@@ -8,6 +8,7 @@ for n in tree.body:   # reuse catalog.py's STYLE table + style_tags() verbatim w
     if (isinstance(n, ast.Assign) and getattr(n.targets[0], "id", "") == "STYLE") or (isinstance(n, ast.FunctionDef) and n.name == "style_tags"):
         exec(compile(ast.Module([n], []), "catalog.py", "exec"), ns)
 SEL = {o["item_id"]: o for o in json.load(open(H / "raw/selected.json"))}; chosen = json.load(open(H / "raw/chosen.json"))
+OPT = json.load(open(H / "raw/opt.json")); nopt = 0
 items = []; agree = 0; nlisted = 0
 for iid in chosen:
     o = SEL[iid]; g = H / f"models/{iid}.glb"
@@ -20,14 +21,16 @@ for iid in chosen:
     if L and all(v == v and v > 0 for v in L.values()):
         nlisted += 1
         if max(abs(a / b - 1) for a, b in zip(sorted(ext), sorted(L.values()))) < .25: agree += 1
+    r = OPT.get(iid); use = bool(r and r[2] and r[1] and r[1] <= .6 * r[0]); nopt += use
+    mg = f"furnish/abo/models_opt/{iid}.glb" if use else f"furnish/abo/models/{iid}.glb"; osz = r[1] if use else r[0]
     desc = " ".join(o["bullets"]).strip()[:300]
     name = re.sub(r"\s+", " ", o["name"]).strip()[:120]
     items.append({"id": f"abo-{iid}", "name": name, "category": o["category"], "width_m": round(w, 3), "depth_m": round(d, 3), "height_m": round(h, 3),
         "dims_source": src_d + ("+listing_agrees" if L and max(abs(a / b - 1) for a, b in zip(sorted(ext), sorted(L.values()))) < .25 else "+listing_missing_or_differs" if L else "+no_listing_dims"),
         "listed_dims_m": {k: round(v, 3) for k, v in L.items()} if L else None,
-        "price_usd": None, "product_url": f"https://www.amazon.com/dp/{iid}", "image": f"furnish/abo/images/{iid}.jpg", "model_glb": f"furnish/abo/models/{iid}.glb",
+        "price_usd": None, "product_url": f"https://www.amazon.com/dp/{iid}", "image": f"furnish/abo/images/{iid}.jpg", "model_glb": mg, "model_glb_orig": f"furnish/abo/models/{iid}.glb", "model_bytes": osz, "model_bytes_orig": OPT[iid][0],
         "description": desc, "color": (o["color"] or "").lower() or None, "style_tags": ns["style_tags"](name, desc, o["color"], o["pt"].lower().replace("_", " ")),
         "type_name": o["pt"].lower().replace("_", " "), "brand": o["brand"], "source": "amazon-abo", "license": "CC BY-NC 4.0",
         "attribution": "Amazon.com (Amazon Berkeley Objects)", "fetched": str(datetime.date.today())})
 json.dump({"items": items}, open(H / "catalog_abo.json", "w"), indent=1)
-print(len(items), "items; listed dims present", nlisted, "agree with bbox (<25%)", agree)
+print("optimised model used:", nopt); print(len(items), "items; listed dims present", nlisted, "agree with bbox (<25%)", agree)

@@ -1,7 +1,7 @@
-"""Step 3: download GLB (<=40 MB) + small image per selected item. Resumable (skips existing files; state in raw/state.json). Paced.
+"""Step 3: download GLB (<=60 MB) + small image per selected item. Resumable (skips existing files; state in raw/state.json). Paced.
    ../../../feasibility/.venv/bin/python -I download.py [max_items=400]"""
 import json, csv, gzip, sys, time, pathlib, requests
-H = pathlib.Path(__file__).resolve().parent; B = "https://amazon-berkeley-objects.s3.amazonaws.com/"; MAX = int(sys.argv[1]) if len(sys.argv) > 1 else 400
+H = pathlib.Path(__file__).resolve().parent; B = "https://amazon-berkeley-objects.s3.amazonaws.com/"; MAX = int(sys.argv[1]) if len(sys.argv) > 1 else 1500
 SEL = json.load(open(H / "raw/selected.json")); IMG = {r["image_id"]: r["path"] for r in csv.DictReader(gzip.open(H / "raw/images.csv.gz", "rt"))}
 ST = H / "raw/state.json"; state = json.load(open(ST)) if ST.exists() else {}   # item_id -> "ok" | "skip:<why>"
 (H / "models").mkdir(exist_ok=True); (H / "images").mkdir(exist_ok=True)
@@ -32,17 +32,21 @@ def try_item(o):
     if state.get(i, "").startswith("skip"): return False
     ip = IMG.get(o["img"])
     if not ip: state[i] = "skip:noimg"; return False
-    r = fetch(B + "3dmodels/original/" + o["mpath"], H / f"models/{i}.glb", 40e6)
+    r = fetch(B + "3dmodels/original/" + o["mpath"], H / f"models/{i}.glb", 60e6)
     if r != "ok": state[i] = "skip:" + r; return False
     r = fetch(B + "images/small/" + ip, H / f"images/{i}.jpg")
     if r != "ok": state[i] = "skip:img" + r; (H / f"models/{i}.glb").unlink(missing_ok=True); return False
-    state[i] = "ok"; time.sleep(0.4); return True
-done = 0; chosen = []
-for _, o in order:
-    if done >= MAX: break
+    state[i] = "ok"; time.sleep(0.1); return True
+import concurrent.futures as cf, threading
+lock = threading.Lock(); chosen = []
+def work(o):
     cand = o
     while cand is not None:
-        ok = try_item(cand); json.dump(state, open(ST, "w"))
-        if ok: chosen.append(cand["item_id"]); done += 1; print(done, cand["category"], cand["item_id"], flush=True); break
-        cand = spares[o["category"]].pop(0) if spares[o["category"]] else None
-json.dump(chosen, open(H / "raw/chosen.json", "w")); print("done", done)
+        ok = try_item(cand)
+        with lock: json.dump(state, open(ST, "w"))
+        if ok:
+            with lock: chosen.append(cand["item_id"]); print(len(chosen), cand["category"], cand["item_id"], flush=True)
+            return
+        with lock: cand = spares[o["category"]].pop(0) if spares[o["category"]] else None
+with cf.ThreadPoolExecutor(8) as ex: list(ex.map(work, [o for _, o in order[:MAX]]))
+json.dump(chosen, open(H / "raw/chosen.json", "w")); print("done", len(chosen))

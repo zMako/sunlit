@@ -1,15 +1,15 @@
 {
  "room": "gs-22612_plan_03__r2",
- "room_type": "bedroom",
  "items": [
   {
+   "rot_deg": 90,
    "id": "ikea-50506436#2",
    "name": "VEVELSTAD Bed frame - white Queen",
    "category": "bed",
    "w_m": 1.581,
    "d_m": 2.08,
    "h_m": 0.27,
-   "price_usd": 149.0,
+   "price_usd": 149,
    "product_url": "https://www.ikea.com/us/en/p/vevelstad-bed-frame-white-50506436/",
    "image": "https://www.ikea.com/us/en/images/products/vevelstad-bed-frame-white__1035359_pe840535_s5.jpg",
    "model_glb_url": "https://web-api.ikea.com/dimma/assets/1.2/50506436/PS01_S01_NV01/rqp3/glb_draco/af761aa8362c48a081dc3f5cb3b75df8-50506436_PS01_S01_NV01_RQP3_3.0.glb?cn=pip",
@@ -23,10 +23,10 @@
    ],
    "slot": "bed",
    "x": 14.444,
-   "z": 2.865,
-   "rot_deg": 90.0
+   "z": 2.865
   },
   {
+   "rot_deg": 90,
    "id": "ikea-80489322#3",
    "name": "TONSTAD Nightstand - oak veneer 15 3/4x15 3/4x23 1/4 \"",
    "category": "nightstand",
@@ -42,11 +42,11 @@
    "color": "beige",
    "style_tags": null,
    "slot": "nightstand",
-   "x": 15.284,
-   "z": 3.875,
-   "rot_deg": 90.0
+   "x": 15.259,
+   "z": 3.936
   },
   {
+   "rot_deg": 90,
    "id": "ikea-80489322#4",
    "name": "TONSTAD Nightstand - oak veneer 15 3/4x15 3/4x23 1/4 \"",
    "category": "nightstand",
@@ -63,10 +63,10 @@
    "style_tags": null,
    "slot": "nightstand",
    "x": 15.284,
-   "z": 1.775,
-   "rot_deg": 90.0
+   "z": 1.775
   },
   {
+   "rot_deg": 180,
    "id": "ikea-30639852#5",
    "name": "LILLBERGET 6-drawer dresser - white 55 1/8x16 7/8x26 3/4 \"",
    "category": "dresser",
@@ -83,10 +83,10 @@
    "style_tags": null,
    "slot": "dresser",
    "x": 13.704,
-   "z": 5.131,
-   "rot_deg": 180.0
+   "z": 5.131
   },
   {
+   "rot_deg": 90,
    "id": "ikea-90607688#6",
    "name": "STOENSE Rug, low pile - green 5 ' 7 \"x7 ' 10 \"",
    "category": "rug",
@@ -103,10 +103,10 @@
    "style_tags": null,
    "slot": "rug",
    "x": 13.453,
-   "z": 2.865,
-   "rot_deg": 90.0
+   "z": 2.865
   },
   {
+   "rot_deg": 90,
    "id": "ikea-00331383#7",
    "name": "RANARP Floor/reading lamp - black",
    "category": "floor_lamp",
@@ -122,16 +122,9 @@
    "color": "black",
    "style_tags": null,
    "slot": "floor_lamp",
-   "x": 14.444,
-   "z": 3.895,
-   "rot_deg": 90.0
+   "x": 14.72,
+   "z": 3.241
   }
  ],
- "total_usd": 818.95,
- "budget": 2500.0,
- "style": "warm scandinavian",
- "palette": "Warm white, oak and sage green",
- "notes": "Oak bed and nightstands with white dresser keep the room light; sage rug adds warmth. Total first picks about $1,069, well under budget.",
- "walkable": true,
- "picker": "agent haiku $0.0015"
+ "total_usd": 818.95
 }

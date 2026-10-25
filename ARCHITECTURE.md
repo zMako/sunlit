@@ -39,7 +39,7 @@ model_glb (local), description, color, style_tags[], type_name}`. Built by `cata
 
 ## Catalogue sources
 - IKEA US product pages (facts + the product's own GLB cached locally; the owner accepted IKEA's terms risk for the demo).
-- Amazon Berkeley Objects (`app/furnish/abo/`, source `amazon-abo`, CC BY-NC 4.0, no prices, ASIN links). Planner and
+- Amazon Berkeley Objects (`app/furnish/abo/`, source `amazon-abo`, CC BY 4.0 with attribution, no prices, ASIN links of which roughly half are dead; models compressed with gltf-transform (Draco + WebP) into abo/models_opt). Planner and
   agent prefer products that have a local `model_glb`.
 
 ## Material library: `app/furnish/materials/<id>/{color,normal,roughness,thumb}.jpg` + `index.json`

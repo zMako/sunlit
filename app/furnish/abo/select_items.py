@@ -73,8 +73,8 @@ for o in C:
     o.update(category=cat, extent=[float(m["extent_x"]), float(m["extent_y"]), float(m["extent_z"])], listed_m=ld, dim_err=ok, score=score, mpath=m["path"], verts=int(m["vertices"]))
     by[cat].append(o)
 print("available (unique model):", {k: len(v) for k, v in sorted(by.items())})
-T = {"floor_lamp": 40, "table_lamp": 40, "mirror": 35, "desk_chair": 40, "bookcase": 35, "desk": 35, "armchair": 40, "bed": 15, "sofa": 20, "coffee_table": 15, "side_table": 15,
-     "dining_table": 10, "dining_chair": 15, "wardrobe": 6, "dresser": 10, "nightstand": 10, "rug": 8, "tv_bench": 8, "plant_pot": 8, "bar_stool": 8, "other": 5}
+T = {"floor_lamp": 75, "table_lamp": 150, "mirror": 130, "desk_chair": 110, "bookcase": 95, "desk": 130, "armchair": 200, "bed": 90, "sofa": 90, "coffee_table": 70, "side_table": 70,
+     "dining_table": 40, "dining_chair": 70, "wardrobe": 18, "dresser": 40, "nightstand": 50, "rug": 30, "tv_bench": 40, "plant_pot": 30, "bar_stool": 30, "other": 20}
 sel = []; short = 0
 for c, t in T.items():
     L = sorted(by.get(c, []), key=lambda o: -o["score"]); take = L[:t]; short += t - len(take)
