@@ -8,7 +8,13 @@ BASE = "http://127.0.0.1:8765/plan3d/apartment.html"
 def size_for(aspect, long=1200):
     w = long; h = int(round(w / aspect / 2) * 2); return w, h
 
-async def shot(b, url, path, w, h, wait_ms):
+async def shot(b, url, path, w, h, wait_ms, tries=4):
+    for k in range(tries):
+        st = await shot1(b, url, path, w, h, wait_ms)
+        if st and st["itemMeshes"] > 0: return st
+        print("  retry", path.name)
+
+async def shot1(b, url, path, w, h, wait_ms):
     pg = await b.new_page(viewport={"width": w, "height": h}); logs = []
     pg.on("console", lambda m: logs.append(f"{m.type}: {m.text[:200]}")); pg.on("pageerror", lambda e: logs.append(f"PAGEERROR: {str(e)[:300]}"))
     await pg.goto(url); await pg.wait_for_timeout(4000)
@@ -19,7 +25,7 @@ async def shot(b, url, path, w, h, wait_ms):
         last = st["itemMeshes"] if st else -1; await pg.wait_for_timeout(2000)
     await pg.wait_for_timeout(1500); await pg.screenshot(path=str(path)); st = await pg.evaluate("window.polishcam ? window.polishcam.status() : null"); await pg.close()
     errs = [l for l in logs if "PAGEERROR" in l or l.startswith("error")]
-    print(path.name, st, errs[:4])
+    print(path.name, st, errs[:2]); return st
 
 async def main():
     cams = json.load(open(HERE / "cameras.json")); flt = sys.argv[1] if len(sys.argv) > 1 else ""

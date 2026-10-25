@@ -5,7 +5,7 @@ San Francisco and Bay Area communities with per-floor-plan 2D plan images and TR
 
 Each community's /apartments-pricing/ page embeds window.udr.jsonObjPropertyViewModel with floorPlans[] {Name, bedRooms,
 bathRooms, sqFtMin, sqFtMax, units[] {media[] {src, type photo|diagram}}}. Diagrams come as a 3D render (.gif, skipped)
-and a 2D plan (.jpg/.png, kept). Writes feasibility/listings/udr-<slug>/meta.json (same shape as gs-*, plus per-plan sqft
+and a 2D plan, as .jpg or .gif with or without _2d/_3d in the name; pixels decide (colour + softness), plans saved as PNG. Writes feasibility/listings/udr-<slug>/meta.json (same shape as gs-*, plus per-plan sqft
 so rescale.py gets true sizes) and plans/plan_NN.<ext>, one per distinct plan image URL. No photos (the library is about
 plans). Paced 2-4 s per page, ~0.5 s per image. Re-runs skip done folders."""
 import sys, re, json, time, random, pathlib, html, requests
@@ -65,6 +65,14 @@ def colour3d(img):
     hsv = img.convert("RGB").resize((256, 256)).convert("HSV"); s = list(hsv.getchannel("S").getdata()); v = list(hsv.getchannel("V").getdata())
     return sum(1 for a, b in zip(s, v) if a > 60 and b > 40) / len(s)
 
+def soft(im):
+    """plan_engine.softness (soft gradients / hard edges): drawings ~0.4-1.5, 3D renders and photos > 3."""
+    import tempfile, os
+    sys.path.insert(0, str(HERE.parent / "app" / "plan3d")); import plan_engine as pe
+    fd, tmp = tempfile.mkstemp(suffix=".png"); os.close(fd)
+    try: im.save(tmp); return pe.softness(tmp)
+    finally: os.unlink(tmp)
+
 def fetch_plan(urls, cache):
     """First candidate whose pixels look like a 2D plan -> (url, PIL image, colour score) or None."""
     from PIL import Image
@@ -78,6 +86,7 @@ def fetch_plan(urls, cache):
         im = cache[u]
         if im is None or min(im.size) < 250: continue
         c = colour3d(im)
+        if soft(im) > 3.0: c = 1.0   # soft shading: a 3D render, never a plan
         if best is None or c < best[2]: best = (u, im, c)
         if c < 0.04: break
     return best if best and best[2] < 0.10 else None

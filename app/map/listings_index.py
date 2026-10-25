@@ -19,7 +19,8 @@ HERE = pathlib.Path(__file__).parent.resolve(); APP = HERE.parent; ROOT = APP.pa
 LIST = ROOT / "feasibility" / "listings"; LAYOUTS = APP / "plan3d" / "layouts" / "index.json"; OUT = HERE / "listings.json"
 sys.path.insert(0, str(APP)); import spend  # noqa: E402
 
-SF_BOX = (37.700, 37.835, -122.53, -122.35)   # lat0, lat1, lon0, lon1 (city proper plus a margin)
+SF_BOX = (37.700, 37.835, -122.53, -122.35)
+BAY_BOX = (37.20, 38.05, -122.62, -121.75)   # inner Bay Area: Marin to San Jose, the coast to Dublin   # lat0, lat1, lon0, lon1 (city proper plus a margin)
 NON_SF = re.compile(r"\b(Oakland|Lake Merritt|Adams Point|Grand Lake|Piedmont|Berkeley|Los Angeles|Los Feliz|Hollywood|Santa Monica|West Adams|Koreatown|Silver Lake|Culver City|Burbank|Pasadena)\b", re.I)
 NON_SF_PROMO = re.compile(r"Bilt reward|free parking for the first 6 months", re.I)   # promos seen only on the LA/Santa Monica units
 UA = "MoveIn-CalHacks-demo/1.0 (one-off geocoding of ~100 rental addresses; sunlit project)"
@@ -147,6 +148,7 @@ def main():
             e["city"] = m.get("city")
             lat0, lat1, lon0, lon1 = SF_BOX
             e["in_sf"] = e["lat"] is not None and lat0 <= e["lat"] <= lat1 and lon0 <= e["lon"] <= lon1 and "South San Francisco" not in e["address"]
+            e["in_area"] = e["lat"] is not None and BAY_BOX[0] <= e["lat"] <= BAY_BOX[1] and BAY_BOX[2] <= e["lon"] <= BAY_BOX[3]   # SF plus the inner Bay Area (Greystar/UDR plan sources)
             if not plans: missing["no_plans_gs"].append(lid)
             if not photos and plans: e["cover"] = plans[0]["src"]   # plan-only sources (UDR, AvalonBay): the first plan is the card image
         else:
@@ -154,7 +156,7 @@ def main():
             e["lat"], e["lon"] = (g or {}).get("lat"), (g or {}).get("lon"); e["geo_source"] = (g or {}).get("source")
             e["geo"] = {k: (g or {}).get(k) for k in ("formatted", "partial_match", "location_type", "neighborhood")}
             c = clue.get(street_of(m.get("address", "")).lower())
-            e["in_sf"] = in_sf(g) and not c
+            e["in_sf"] = in_sf(g) and not c; e["in_area"] = e["in_sf"]   # RentSFNow: SF only (its addresses are unreliable outside SF)
             if not e["in_sf"]: e["outside_reason"] = f"text mentions '{c}'" if c else ("geocode not in SF: " + str((g or {}).get("formatted") or (g or {}).get("status")))
             e["neighborhood"] = (g or {}).get("neighborhood") if e["in_sf"] else None
             e["body"] = (m.get("body") or "")[:2500] or None; e["plans"], e["units"] = [], []
@@ -166,7 +168,7 @@ def main():
         if e["lat"] is None: missing["no_coords"].append(lid)
         if not e["in_sf"]: missing["outside_sf"].append(lid)
         out.append(e)
-    doc = {"generated": time.strftime("%Y-%m-%dT%H:%M:%S"), "n": len(out), "n_in_sf": sum(e["in_sf"] for e in out),
+    doc = {"generated": time.strftime("%Y-%m-%dT%H:%M:%S"), "n": len(out), "n_in_sf": sum(e["in_sf"] for e in out), "n_in_area": sum(e.get("in_area", False) for e in out),
            "n_units_3d": sum(len(e["units"]) for e in out), "missing": missing, "listings": out}
     OUT.write_text(json.dumps(doc, separators=(",", ":")))
     print(f"[index] {len(out)} listings ({doc['n_in_sf']} in SF), {doc['n_units_3d']} 3D units -> {OUT}")

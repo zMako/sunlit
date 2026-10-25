@@ -32,7 +32,7 @@ const unitBeds = u => u.beds ?? (u.rooms.filter(r => r.type === 'bedroom').lengt
 // ---------- filters ----------
 function matches(l) {
   const q = $('q').value.trim().toLowerCase(), pmin = +$('pmin').value || 0, pmax = +$('pmax').value || 0, beds = $('beds').value;
-  if (!l.in_sf || l.lat == null) return false;
+  if (!(l.in_area ?? l.in_sf) || l.lat == null) return false;
   if ($('fplan').checked && !l.has_plan) return false;
   if ($('f3d').checked && !l.can_rebuild) return false;
   if ((pmin || pmax) && !l.price) return false;
@@ -64,7 +64,7 @@ function initMap() {
 }
 function drawPins() {
   for (const l of ALL) {
-    if (!l.in_sf || l.lat == null) continue;
+    if (!(l.in_area ?? l.in_sf) || l.lat == null) continue;
     const m = L.circleMarker([l.lat, l.lon], pinStyle(l, false)).addTo(map);
     m.bindTooltip(`<b>${esc(l.building || l.title.split(':')[0])}</b><br>${esc(l.price ? fmt$(l.price) + '/mo' : 'pricing on request')}${l.can_rebuild ? ' · 3D ready' : ''}`, { className: 'tip', direction: 'top', offset: [0, -8] });
     m.on('mouseover', () => hot(l.id, true, 'map')); m.on('mouseout', () => hot(l.id, false, 'map'));

@@ -86,17 +86,13 @@ document.addEventListener('click', e => { const b = e.target.closest('[data-ann]
 function drawStats() { const units = UNITS, blds = new Set(units.map(u => u.building || u.listing));
   const printed = units.filter(u => (u.scale_from || [])[0]?.startsWith('reader_dims+printed')).length;
   $('stats').innerHTML = `<div><b>${units.length}</b>unit types</div><div><b>${blds.size}</b>buildings</div><div><b>${units.filter(annotated).length}</b>annotated by Claude</div><div><b>${units.filter(trueSize).length}</b>true size (listed sqft or printed dimensions)</div><div><b>${printed}</b>scaled from printed dimensions</div><div><b>${units.filter(u => u.materials).length}</b>materials from photos</div>`; }
-function drawMetrics(s) {   // app/plan3d/metrics/summary.json (owned by the metrics worker): up to 3 headline numbers
-  let items = [];
-  if (Array.isArray(s.headline)) items = s.headline;
-  else if (Array.isArray(s.headlines)) items = s.headlines;
-  else { const doc = s.doc || s.docs || s.keys || s._doc || s.labels || {};
-    for (const [k, v] of Object.entries(s)) {
-      if (v && typeof v === 'object' && !Array.isArray(v) && v.value != null && (v.label || doc[k])) items.push({ label: v.label || doc[k], value: v.value, unit: v.unit, note: v.note });
-      else if (typeof v === 'number' && (doc[k] || s.headline_keys?.includes(k))) items.push({ label: typeof doc[k] === 'string' ? doc[k] : (doc[k]?.label || k), value: v, unit: doc[k]?.unit }); } }
-  items = items.filter(i => i && i.value != null && i.label).slice(0, 3);
-  const fmt = v => typeof v === 'number' ? (Math.abs(v) < 1 && v !== 0 ? (Math.round(v * 1000) / 10) + '%' : (Math.round(v * 10) / 10).toLocaleString('en-US')) : esc(v);
-  $('metrics').innerHTML = items.map(i => `<div class="metric" title="${esc(i.note || '')}"><b>${typeof i.value === 'number' && i.unit ? (Math.round(i.value * 10) / 10).toLocaleString('en-US') + ' ' + esc(i.unit) : fmt(i.value) + (i.unit ? ' ' + esc(i.unit) : '')}</b><span>${esc(i.label)}</span></div>`).join(''); }
+function drawMetrics(s) {   // app/plan3d/metrics/summary.json (metrics worker): [{key, value, unit, label, n, method}]; breadth, speed, printed-dimension accuracy
+  const M = Object.fromEntries((Array.isArray(s) ? s : []).map(m => [m.key, m])); const tiles = [];
+  const n1 = v => (Math.round(v * 10) / 10).toLocaleString('en-US');
+  if (M.plans_processed && M.walkable_units) tiles.push({ big: `${n1(M.plans_processed.value)} → ${n1(M.walkable_units.value)}`, label: `floor plans processed → walkable 3D apartments, ${M.walkable_units.n} buildings`, note: M.plans_processed.method + '\n' + M.walkable_units.method });
+  if (M.plan_to_walkable_s) tiles.push({ big: `~${n1(M.plan_to_walkable_s.value)} s`, label: 'floor plan → walkable 3D, median', note: M.plan_to_walkable_s.method });
+  for (const k of ['door_scale_error', 'printed_dims_room_error']) if (M[k]) tiles.push({ big: `${n1(M[k].value)}${M[k].unit === '%' ? '%' : ' ' + M[k].unit}`, label: `${k === 'door_scale_error' ? 'median scale error from door widths alone' : 'median room-dimension error'} vs printed dimensions (n=${M[k].n}${k === 'printed_dims_room_error' ? ' rooms' : ' plans'})`, note: M[k].method });
+  $('metrics').innerHTML = tiles.map(t => `<div class="metric" title="${esc(t.note || '')}"><b>${esc(t.big)}</b><span>${esc(t.label)}</span></div>`).join(''); }
 function render() { const q = $('q').value.trim().toLowerCase(), fb = $('fb').value, fr = $('fr').value, fa = $('fa').checked;
   const list = UNITS.filter(u => (!fb || u.building === fb) && (!fa || annotated(u)) && (fr === '' || (fr === '3' ? bedrooms(u) >= 3 : bedrooms(u) === +fr))
     && (!q || [u.building, u.unit, u.plan_name, u.listing, ...u.rooms.map(r => r.name)].join(' ').toLowerCase().includes(q)));

@@ -1,39 +1,40 @@
 # Furniture catalogue report (final)
 
-- Items: 359; with local GLB: 301 (416.3 MB total, avg 1.38 MB); with local image: 359; with image URL: 359; without GLB url: 58
+- Items: 466; with local GLB: 383 (507.2 MB total, avg 1.32 MB); with local image: 466; with image URL: 466; without GLB url: 83
 
 ## Per category
 
-- armchair: 23
-- bar_stool: 21
-- bed: 12
+- armchair: 25
+- bar_stool: 22
+- bed: 30
 - bookcase: 13
-- coffee_table: 18
+- coffee_table: 29
 - desk: 19
 - desk_chair: 8
 - dining_chair: 31
-- dining_table: 20
+- dining_table: 30
 - dresser: 25
-- floor_lamp: 6
-- mirror: 8
+- floor_lamp: 7
+- mirror: 9
 - nightstand: 27
-- plant_pot: 4
+- plant: 1
+- plant_pot: 29
 - rug: 32
-- side_table: 20
-- sofa: 16
-- table_lamp: 3
+- side_table: 30
+- sofa: 31
+- table_lamp: 15
 - tv_bench: 36
 - wardrobe: 17
 
 ## style_tags (all tags / primary tag)
 
-- scandinavian: 304 / 252
-- rustic: 146 / 58
-- modern: 106 / 9
-- minimal: 82 / 22
-- classic: 30 / 5
-- industrial: 17 / 6
-- mid-century: 13 / 7
+- scandinavian: 397 / 334
+- rustic: 174 / 63
+- modern: 138 / 20
+- minimal: 125 / 27
+- classic: 43 / 8
+- industrial: 20 / 6
+- mid-century: 14 / 8
 
 Tags are keyword-inferred from name/description/colour/type; items with no cue default to `scandinavian` (IKEA house style), so treat that tag as weak.
 

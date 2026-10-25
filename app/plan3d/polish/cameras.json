@@ -134,9 +134,9 @@
   "photo": "gs-20665/11.jpg",
   "wall": "N",
   "pos": [
-   3.616,
+   2.6,
    1.441,
-   7.437
+   7.4
   ],
   "yaw": 155.49,
   "pitch": -2.2,
@@ -149,6 +149,12 @@
   "clamped": false,
   "room_wall_m": 4.25,
   "room_depth_m": 6.55,
+  "pos_metrology": [
+   3.616,
+   1.441,
+   7.437
+  ],
+  "adjusted": "metrology put the camera 0.35 m from the plan room's east wall (the photo room is wider), so the render was a wall; moved 1 m toward the room centre, yaw/pitch/fov unchanged",
   "photo_metrology": {
    "pitch": -2.2,
    "h": 1.441,
@@ -254,49 +260,6 @@
    "corner_x": 0.62,
    "hfov": 90.45,
    "aspect": 1.498
-  },
-  "photo_ceiling_m": 2.6
- },
- {
-  "unit": "gs-20665_plan_00",
-  "room": "r0",
-  "photo": "gs-20665/18.jpg",
-  "wall": "W",
-  "pos": [
-   7.86,
-   1.274,
-   4.778
-  ],
-  "yaw": 312.29,
-  "pitch": -4.4,
-  "fov": 90.91,
-  "aspect": 1.496,
-  "pos_unclamped": [
-   7.955,
-   4.778
-  ],
-  "clamped": true,
-  "room_wall_m": 6.66,
-  "room_depth_m": 3.49,
-  "photo_metrology": {
-   "pitch": -4.4,
-   "h": 1.274,
-   "h_measured": 1.274,
-   "h_source": "floor/ceiling cross-ratio",
-   "D": 3.236,
-   "yaw_rel": -42.29,
-   "side": "left",
-   "along": 2.098,
-   "far_visible_m": 2.12,
-   "n_faces": 2,
-   "far_face": 1,
-   "far_x": [
-    0.6,
-    0.99
-   ],
-   "corner_x": 0.579,
-   "hfov": 90.91,
-   "aspect": 1.496
   },
   "photo_ceiling_m": 2.6
  }

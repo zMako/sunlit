@@ -26,7 +26,7 @@ PAIRS = [  # (listing, photo, unit, room, far wall side of the plan room)
     ("gs-20665", "11", "gs-20665_plan_00", "r1", "N"),
     ("gs-20665", "13", "gs-20665_plan_00", "r1", "N"),
     ("gs-20665", "17", "gs-20665_plan_00", "r0", "S"),
-    ("gs-20665", "18", "gs-20665_plan_00", "r0", "W"),
+    # ("gs-20665", "18", "gs-20665_plan_00", "r0", "W"),  dropped: the plan room's west window is out of any matching view
 ]
 INTR = json.load(open(HERE / "work/intrinsics.json"))
 # Face x-ranges (fractions of the cropped photo width) marked by hand where geom's automatic corner split is wrong (open doors,
@@ -125,6 +125,8 @@ def estimate(lid, n, H):
     return {"pitch": math.degrees(p), "h": hm, "h_measured": hcam, "h_source": hsrc, "D": D, "yaw_rel": yaw_rel, "side": side, "along": along,
             "far_visible_m": vis, "n_faces": len(faces), "far_face": far, "far_x": [F["x0"] / w, F["x1"] / w], "corner_x": cx / w, "hfov": info["hfov_deg"], "aspect": w / h}
 
+# hand adjustments after looking at the first renders (recorded in cameras.json as "adjusted")
+ADJUST = {"gs-20665/11.jpg": {"pos_xz": [2.6, 7.4], "why": "metrology put the camera 0.35 m from the plan room's east wall (the photo room is wider), so the render was a wall; moved 1 m toward the room centre, yaw/pitch/fov unchanged"}}
 SIDES = {"N": ((0, -1), (1, 0)), "E": ((1, 0), (0, 1)), "S": ((0, 1), (-1, 0)), "W": ((-1, 0), (0, -1))}   # (into the wall, image-right along it)
 def place(unit, rid, wall, est):
     L = json.load(open(ROOT / f"app/plan3d/layouts/{unit}.json")); room = next(r for r in L["rooms"] if r["id"] == rid)
@@ -151,6 +153,8 @@ if __name__ == "__main__":
     for lid, n, unit, rid, wall in PAIRS:
         pf = json.load(open(LIST / f"{lid}/photo_facts.json")); H = next((x.get("ceiling_m") for x in pf["photos"] if x["index"] == int(n)), None) or 2.6
         est = estimate(lid, n, H); cam = place(unit, rid, wall, est)
+        adj = ADJUST.get(f"{lid}/{n}.jpg")
+        if adj: cam["pos_metrology"] = list(cam["pos"]); cam["pos"] = [adj["pos_xz"][0], cam["pos"][1], adj["pos_xz"][1]]; cam["adjusted"] = adj["why"]
         rec = {"unit": unit, "room": rid, "photo": f"{lid}/{n}.jpg", "wall": wall, **cam, "photo_metrology": {k: (round(v, 3) if isinstance(v, float) else v) for k, v in est.items()}, "photo_ceiling_m": H}
         out.append(rec); print(json.dumps(rec))
     json.dump(out, open(HERE / "cameras.json", "w"), indent=1)

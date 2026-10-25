@@ -1,0 +1,31 @@
+{
+ "photo": "gs-22612/03.jpg",
+ "unit": "gs-22612_plan_03",
+ "room": "r0",
+ "room_name": "Living Room",
+ "prompt": "interior real-estate photo of a furnished living room, dark brown wood floor, white painted walls, honey brown ceiling, large windows with daylight, natural light, photorealistic, sharp, high dynamic range",
+ "negative": "furniture changed, extra objects, extra furniture, people, text, watermark, logo, distorted, deformed, cartoon, painting, blurry, oversaturated",
+ "strength": 0.35,
+ "steps": 24,
+ "ip_adapter_scale": 0.5,
+ "controlnet_scale": 0.9,
+ "seed": 7,
+ "work_size": [
+  768,
+  576
+ ],
+ "sd_seconds": 38.3,
+ "mean_abs_diff": 8.11,
+ "edges_kept_2px": 0.714,
+ "note": "polish changed pixels by 8.1/255 on average; 71% of the render's edges are within 2 px in the polished image",
+ "camera": {
+  "pos": [
+   5.944,
+   1.637,
+   5.077
+  ],
+  "yaw": 229.46,
+  "pitch": -11.0,
+  "fov": 72.82
+ }
+}
