@@ -40,18 +40,21 @@ def pick_claude(cat_items, wanted, info, budget, style, model, room_type, listin
     if not short: return None, "no candidates"
     system = ("You are an interior planner furnishing an EMPTY rental room with real products from a catalogue. Choose one product per requested slot "
               "(the same product may fill repeated slots, e.g. two nightstands), respecting the budget, the room size, and a coherent style (matching colours/wood). "
-              "Reply with JSON only: {\"items\": [{\"id\": str, \"slot\": str, \"why\": str}], \"palette\": str, \"notes\": str}.")
+              "Reply with JSON only: {\"items\": [{\"id\": str, \"slot\": str, \"why\": str (at most 12 words)}], \"palette\": str (one line), \"notes\": str (one sentence)}.")
     text = (f"Room type: {room_type}. Room: {json.dumps(info)}. Listing hint: {listing_hint[:300]}\nBudget USD: {budget or 'none'}. Style: {style or 'calm, modern, light'}.\n"
             f"Slots to fill: {wanted}\nCatalogue (facts from IKEA US product pages):\n" + "\n".join(json.dumps(s) for s in short))
     schema = {"type": "object", "additionalProperties": False, "properties": {"items": {"type": "array", "items": {"type": "object", "additionalProperties": False, "properties": {"id": {"type": "string"}, "slot": {"type": "string"}, "why": {"type": "string"}}, "required": ["id", "slot", "why"]}}, "palette": {"type": "string"}, "notes": {"type": "string"}}, "required": ["items", "palette", "notes"]}
     import spend as sp
     c = cc.client(); messages = [{"role": "user", "content": [{"type": "text", "text": text}]}]
-    n_in = c.messages.count_tokens(model=model, system=system, messages=messages).input_tokens; sp.check("anthropic", sp.anthropic_estimate(model, n_in, 1500))
-    r = c.messages.create(model=model, max_tokens=1500, system=system, messages=messages, output_config={"format": {"type": "json_schema", "schema": schema}, "effort": "medium"})
+    n_in = c.messages.count_tokens(model=model, system=system, messages=messages).input_tokens; sp.check("anthropic", sp.anthropic_estimate(model, n_in, 4000))
+    r = c.messages.create(model=model, max_tokens=4000, system=system, messages=messages, output_config={"format": {"type": "json_schema", "schema": schema}, "effort": "medium"})
     usd = sp.anthropic_charge(model, r.usage, note=f"furnish {room_type}"); out = "".join(b.text for b in r.content if b.type == "text")
     m = re.search(r"\{.*\}", out, re.S)
     if not m: return None, f"claude returned no JSON (${usd:.4f})"
-    j = json.loads(m.group(0)); by_id = {i["id"]: i for c in cat_items.values() for i in c}
+    try: j = json.loads(m.group(0))
+    except json.JSONDecodeError as e:
+        (HERE / "plans" / "_last_bad_response.txt").write_text(out); return None, f"claude JSON unparsable at {e.pos} (${usd:.4f}); raw saved; deterministic picks used"
+    by_id = {i["id"]: i for c in cat_items.values() for i in c}
     chosen = [dict(by_id[x["id"]], slot=x.get("slot"), why=x.get("why")) for x in j.get("items", []) if x.get("id") in by_id]
     return chosen, f"claude {model} ${usd:.4f}; palette: {j.get('palette')}; {j.get('notes', '')[:200]}"
 
