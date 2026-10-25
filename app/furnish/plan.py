@@ -82,7 +82,7 @@ def main():
         cand = [p for p in d.iterdir() if p.name.startswith(lid)] if d.exists() else []
         if cand and (cand[0] / "meta.json").exists(): meta = json.load(open(cand[0] / "meta.json")); listing_hint = f"{meta.get('title', '')}. {meta.get('body', '')[:200]}"
     cat = json.load(open(HERE / "catalog.json")); cat_items = {}
-    for i in cat["items"]: cat_items.setdefault(i["category"], []).append(i)
+    for i in map(place.fix_item, cat["items"]): cat_items.setdefault(i["category"], []).append(i)   # consistent dims, repaired categories
     for k, v in cat_items.items():   # prefer products with a real 3D model; keep model-less ones only where a category has no modelled product
         cat_items[k] = tier_filter([i for i in v if i.get("model_glb")], a.tier)   # strict: never pick a product without a 3D model; tier = brands allowed
     wanted = SETS.get(room_type, SETS["other"])

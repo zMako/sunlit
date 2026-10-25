@@ -202,7 +202,7 @@ function labelOcclusion(walkMode) { for (const f of Object.values(furn)) f.group
 let roomTick = 0;
 (function loop() { requestAnimationFrame(loop); const dt = Math.min(clock.getDelta(), 0.05); if (mode !== 'walk' && apt && apt.ceilingMeshes) for (const m of apt.ceilingMeshes) m.visible = false; /* guard: nothing may re-show ceilings in dollhouse (they render as black slabs from above) */ if (mode === 'walk') { stepWalk(dt); if ((roomTick += dt) > 0.5) { roomTick = 0; const r = currentRoom(); if (r && r !== activeRoom && furn[r]) activateRoom(r); } } else orbit.update(); if (contextLost) return; if (LOW || postFailed) renderer.render(scene, camera); else { try { composer.render(); } catch (e) { postFailed = true; console.warn('post-processing disabled', e); } } })();
 if (Q.has('furn')) activateRoom(Q.get('furn'));
-window.setWalk = setWalk; window.setDoll = setDoll;
+window.setWalk = setWalk; window.setDoll = setDoll; window.__cam = { camera, orbit, layout: () => layout };   // headless screenshots position the camera through this
 
 // ---------- plan window: the source floor plan, with the rebuilt layout drawn over it in plan pixels (debug: does the 3D match?) ----------
 (function planWindow() {

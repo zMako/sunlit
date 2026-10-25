@@ -12,11 +12,25 @@ HERE = pathlib.Path(__file__).resolve().parent; ROOT = HERE.parent; sys.path.ins
 import place
 
 HAIKU, SONNET = "claude-haiku-5-5", "claude-sonnet-5-5"
-SLOTS = {"living": ["sofa", "coffee_table", "tv_bench", "rug", "bookcase", "floor_lamp", "armchair", "side_table"],
-         "bedroom": ["bed", "nightstand", "nightstand", "dresser", "rug", "floor_lamp", "mirror"],
-         "dining": ["dining_table", "dining_chair", "dining_chair", "dining_chair", "dining_chair", "sideboard", "floor_lamp"],
-         "kitchen": ["dining_table", "dining_chair", "dining_chair", "bar_stool", "bar_stool"],
-         "office": ["desk", "desk_chair", "bookcase", "floor_lamp", "armchair"], "other": ["sofa", "coffee_table", "rug", "floor_lamp"]}
+# Room templates: (category, minimum room area m2) in priority order. The agent fills them top to bottom, so a small room
+# degrades in a known order (decor first, then the second armchair, the bench...), never the core piece. Layers: core,
+# companions (relational: around / beside / facing / on / under / above), light, soft and decor.
+TEMPLATES = {
+    "living": [("sofa", 0), ("rug", 0), ("coffee_table", 0), ("floor_lamp", 0), ("armchair", 11), ("side_table", 9), ("tv_bench", 9), ("pendant_lamp", 0),
+               ("bookcase", 12), ("table_lamp", 10), ("plant_pot", 9), ("armchair", 19), ("ottoman", 15), ("mirror", 13), ("plant_pot", 22)],
+    "bedroom": [("bed", 0), ("nightstand", 0), ("nightstand", 8), ("table_lamp", 0), ("table_lamp", 8), ("rug", 8), ("pendant_lamp", 0), ("dresser", 10),
+                ("mirror", 0), ("bench", 13), ("wardrobe", 12), ("floor_lamp", 11), ("plant_pot", 11)],
+    "dining": [("dining_table", 0), ("dining_chair", 0), ("dining_chair", 0), ("dining_chair", 0), ("dining_chair", 0), ("pendant_lamp", 0), ("dining_chair", 13), ("dining_chair", 13),
+               ("rug", 9), ("dresser", 11), ("plant_pot", 10), ("floor_lamp", 14), ("mirror", 12)],
+    "kitchen": [("bar_stool", 0), ("bar_stool", 0), ("dining_table", 8), ("dining_chair", 8), ("dining_chair", 8), ("pendant_lamp", 8), ("plant_pot", 6)],
+    "office": [("desk", 0), ("desk_chair", 0), ("table_lamp", 0), ("bookcase", 7), ("rug", 9), ("armchair", 11), ("floor_lamp", 9), ("plant_pot", 7), ("pendant_lamp", 0)],
+    "hallway": [("bench", 0), ("mirror", 0), ("plant_pot", 3), ("side_table", 4)],
+    "bathroom": [], "closet": [], "laundry": [], "balcony": [],
+    "other": [("sofa", 0), ("rug", 0), ("coffee_table", 0), ("floor_lamp", 0), ("armchair", 12), ("side_table", 9), ("plant_pot", 9)]}
+def slots_for(room_type, area_m2):
+    t = TEMPLATES.get(room_type, TEMPLATES["other"]); return [c for c, a in t if area_m2 >= a]
+SLOTS = {k: [c for c, _ in v] for k, v in TEMPLATES.items()}   # kept for callers that only want the category list
+THIN_DESIGN = 20   # design tier: categories with fewer designer models than this borrow from the other tiers (beds, rugs, nightstands, wardrobes)
 DOOR_W_DEFAULT, DOOR_H = 0.86, 2.03
 
 def emit(ev, **kw):
@@ -48,10 +62,14 @@ def tier_filter(items, tier):
 
 def catalog(tier="any"):
     c = json.load(open(HERE / "catalog.json")); by = {}
-    for i in c["items"]:
+    for i in map(place.fix_item, c["items"]):   # consistent width/depth/height and repaired categories
         if i.get("width_m") and i.get("depth_m") and i.get("height_m"): by.setdefault(i["category"], []).append(i)
     for k, v in by.items():   # prefer products with a real 3D model; model-less ones only where the category has no modelled product
-        by[k] = tier_filter([i for i in v if i.get("model_glb")], tier)   # strict: never pick a product without a 3D model; tier = brands allowed
+        modelled = [i for i in v if i.get("model_glb")]
+        by[k] = tier_filter(modelled, tier)   # strict: never pick a product without a 3D model; tier = brands allowed
+        if tier == "design" and len(by[k]) < THIN_DESIGN:   # the manufacturers we scraped make seating, tables and lights; beds, rugs and nightstands come from the other tiers, marked
+            seen = {i["id"] for i in by[k]}
+            by[k] = by[k] + [dict(i, borrowed=True) for i in tier_filter(modelled, "standard") if i["id"] not in seen]
     return by
 
 def fits_room(i, info):
@@ -68,7 +86,7 @@ def passes_door(i, door_w):
 def to_item(c, k, why=None):
     return {"id": c["id"] + (f"#{k}" if k else ""), "name": c["name"], "category": c["category"], "w_m": c["width_m"], "d_m": c["depth_m"], "h_m": c["height_m"],
             "price_usd": c.get("price_usd"), "product_url": c.get("product_url"), "image": c.get("image"), "model_glb_url": c.get("model_glb_url"), "model_glb": c.get("model_glb"), "price_source": c.get("price_source", "listed"), "search_url": c.get("search_url"), "brand": c.get("brand"), "designer": c.get("designer"), "color": c.get("color"), "colours": c.get("colours"), "materials": c.get("materials"), "why": why,
-            "color": c.get("color"), "style_tags": c.get("style_tags")}
+            "color": c.get("color"), "style_tags": c.get("style_tags"), "borrowed": c.get("borrowed")}
 
 def claude_json(system, text, schema, model, max_tokens, note):
     import claude_client as cc, spend as sp
@@ -95,20 +113,27 @@ def shortlist(info, budget, style, by, wanted, hint=""):
         def rel(i):   # style retrieval: overlap between the brief and the product's tags/description/materials, then price spread
             txt = " ".join(str(i.get(k) or "") for k in ("style_tags", "description", "materials", "colours", "color", "name", "designer", "brand")).lower()
             return sum(1 for w in words if w in txt)
-        opts.sort(key=lambda i: (-rel(i), i.get("price_usd") or 10 ** 6)); top = opts[:8]; rest = opts[8:]; step = max(1, len(rest) // 6)
+        opts.sort(key=lambda i: (bool(i.get("borrowed")), -rel(i), i.get("price_usd") or 10 ** 6)); top = opts[:8]; rest = opts[8:]; step = max(1, len(rest) // 6)   # borrowed standard-range pieces come after every designer piece
         for i in top + rest[::step][:6]:
-            cands.append({"id": i["id"], "cat": cat, "name": (i.get("name") or i.get("id"))[:70], "brand": i.get("brand"), "designer": i.get("designer"), "w": i["width_m"], "d": i["depth_m"], "h": i["height_m"], "usd": i["price_usd"], "color": i.get("color"), "tags": i.get("style_tags"), "desc": (i.get("description") or "")[:120]})
+            cands.append({"id": i["id"], "cat": cat, "name": (i.get("name") or i.get("id"))[:70], "brand": i.get("brand"), "designer": i.get("designer"), **({"standard_range": True} if i.get("borrowed") else {}), "w": i["width_m"], "d": i["depth_m"], "h": i["height_m"], "usd": i["price_usd"], "color": i.get("color"), "tags": i.get("style_tags"), "desc": (i.get("description") or "")[:120]})
     system = ("You are a senior interior designer furnishing an EMPTY rental room with real catalogue products. Fill the requested slots within the TOTAL budget "
               "(sum of your first picks must be <= budget; leave 5-10% slack), in ONE coherent style: one wood tone, one accent colour, matching textiles. "
               "For each slot give 2 picks ranked: the ideal piece first, a safer/cheaper alternative second (different id). Repeated slots (two nightstands, four chairs) use the same product. "
-              "Skip a slot (empty picks) if nothing suits. Keep every 'why' under 12 words. Reply JSON only.")
-    text = f"Room: {json.dumps(info)}. {hint}\nBudget USD: {budget or 'none'}. Style brief: {style or 'calm, modern, light'}.\nSlots: {wanted}\nCatalogue:\n" + "\n".join(json.dumps(c) for c in cands)
+              "Skip a slot (empty picks) if nothing suits. Candidates marked standard_range are mass-market stand-ins offered only because the designer range is thin there: pick them only when no designer piece fits the slot. "
+              "Keep every 'why' under 12 words. Reply JSON only.")
+    area = info.get("area_m2") or 0
+    size_hint = ("Scale the main piece to the room: " + ("a sofa at least 2.0 m wide, a dining table seating 6, a 160-180 cm bed" if area >= 18 else "a sofa 1.6-2.0 m wide, a table for 4, a 140-160 cm bed" if area >= 11 else "compact pieces: a two-seater, a table for 2-4, a 140 cm bed") + ". ")
+    text = f"Room: {json.dumps(info)}. {hint}{size_hint}\nBudget USD: {budget or 'none'}. Style brief: {style or 'calm, modern, light'}.\nSlots: {wanted}\nCatalogue:\n" + "\n".join(json.dumps(c) for c in cands)
     j, usd = claude_json(system, text, SHORTLIST_SCHEMA, HAIKU, 6000, f"agent shortlist {info['type']}")
     return j, usd, {c["id"]: c for cat in by.values() for c in cat}
 
 def run_furnish(room, budget, style, drama=False, tier="any"):
-    R = load_room(room); info = room_info(R); by = catalog(tier); wanted = [s for s in SLOTS.get(info["type"], SLOTS["other"]) if s in by]
+    R = load_room(room); info = room_info(R); by = catalog(tier); wanted = [s for s in slots_for(info["type"], info.get("area_m2") or 0) if s in by]
     emit("start", room=room, type=info["type"], budget=budget, style=style, slots=wanted, door_w=info["door_w"], tier=tier)
+    if not wanted:
+        plan = {"room": room, "room_type": info["type"], "items": [], "total_usd": 0, "budget": budget, "style": style, "walkable": True, "picker": "agent: nothing to furnish"}
+        (HERE / "plans").mkdir(exist_ok=True); json.dump(plan, open(HERE / "plans" / f"{room}.json", "w"), indent=1)
+        emit("summary", total_usd=0, budget=budget, saved_usd=budget or 0, n_items=0, notes=f"a {info['type']} is not furnished", usd=0); return
     sl, usd, by_id = shortlist(info, budget, style, by, wanted)
     if drama and sl.get("slots"):   # demo mode: the agent first reaches for the showpiece of the main slot (the bulkiest or priciest real product);
         # the real door / fit / budget checks then decide, so the rejection the audience sees is genuine
@@ -146,7 +171,7 @@ def run_furnish(room, budget, style, drama=False, tier="any"):
         if not done and not repeated:   # last resort for the slot: the cheapest in-budget product of the category that fits the room and the door
             cat = slot.get("category") or ""; tried = {p["id"] for p in picks}; remaining = (budget - spent) if budget else None
             core = slot is sl.get("slots", [{}])[0] or cat in ("bed", "sofa", "dining_table", "desk")
-            fb = sorted([c for c in by.get(cat, []) if c["id"] not in tried and fits_room(c, info) and (remaining is None or (c.get("price_usd") or 0) <= remaining) and (cat in ("rug",) or passes_door(c, info["door_w"]))], key=lambda c: c.get("price_usd") or 0)
+            fb = sorted([c for c in by.get(cat, []) if c["id"] not in tried and fits_room(c, info) and (remaining is None or (c.get("price_usd") or 0) <= remaining) and (cat in ("rug",) or passes_door(c, info["door_w"]))], key=lambda c: (bool(c.get("borrowed")), c.get("price_usd") or 0))
             for c in fb[:(12 if core else 2)]:   # a core piece (bed, sofa, table, desk) is never left out while any candidate can be placed
                 k += 1; it = to_item(c, k, "practical fallback that fits"); it["slot"] = slot.get("slot"); emit("consider", item=it)
                 res, walk = place.place(R, [dict(x, pinned=True) for x in placed] + [dict(it)]); new = next((r for r in res if r["id"] == it["id"]), None)

@@ -66,10 +66,17 @@ export class Furnish {
       try {
         const gl = await this.loader.loadAsync(glbSrc); const m = gl.scene; m.traverse(o => { if (o.isMesh) { o.castShadow = true; o.userData.item = it; } });
         this._dressUntextured(m, spec);   // manufacturer OBJ/FBX exports mostly come without textures: give them a plausible PBR finish from the catalogue words
-        const bb = new THREE.Box3().setFromObject(m); const sz = bb.getSize(new THREE.Vector3()); const c = bb.getCenter(new THREE.Vector3());
-        m.position.sub(c); m.position.y += sz.y / 2;   // rest on the floor, centred on footprint
+        let bb = new THREE.Box3().setFromObject(m); let sz = bb.getSize(new THREE.Vector3());
+        // which way up / which way round: of the 90-degree rotations, keep the one whose extents need the least anisotropic stretch to meet the listed w x h x d
+        const err = (ex, ey, ez) => Math.abs(Math.log(Math.max(ex, 1e-3) / w)) + Math.abs(Math.log(Math.max(ey, 1e-3) / h)) + Math.abs(Math.log(Math.max(ez, 1e-3) / d));
+        const tries = [[0, 0, 0, sz.x, sz.y, sz.z], [0, Math.PI / 2, 0, sz.z, sz.y, sz.x], [Math.PI / 2, 0, 0, sz.x, sz.z, sz.y], [Math.PI / 2, 0, Math.PI / 2, sz.y, sz.z, sz.x], [0, 0, Math.PI / 2, sz.y, sz.x, sz.z], [Math.PI / 2, Math.PI / 2, 0, sz.z, sz.x, sz.y]];
+        const e0 = err(sz.x, sz.y, sz.z); let best = tries[0], be = e0;
+        for (const t of tries) { const e = err(t[3], t[4], t[5]); if (e < be - 0.3) { best = t; be = e; } }   // a clear win only: near-cubic pieces keep their file orientation
+        const inner = new THREE.Group(); inner.add(m); inner.rotation.set(best[0], best[1], best[2]); inner.updateMatrixWorld(true);
+        bb = new THREE.Box3().setFromObject(inner); sz = bb.getSize(new THREE.Vector3()); const c = bb.getCenter(new THREE.Vector3());
+        inner.position.sub(c); inner.position.y += sz.y / 2;   // rest on the floor, centred on footprint
         const s = new THREE.Vector3(w / Math.max(sz.x, 1e-3), h / Math.max(sz.y, 1e-3), d / Math.max(sz.z, 1e-3));
-        const wrap = new THREE.Group(); wrap.add(m); wrap.scale.copy(s); it.obj.add(wrap); built = true; it.modelSrc = glbSrc; break;
+        const wrap = new THREE.Group(); wrap.add(inner); wrap.scale.copy(s); it.obj.add(wrap); built = true; it.modelSrc = glbSrc; it.axisFix = best !== tries[0]; break;
       } catch (e) { console.warn('[furnish] model failed', spec.id, glbSrc, e && e.message); }
     }
     if (!built) { it.modelFailed = true; it.problems = it.problems || []; it.problems.push('3D model missing'); }   // never draw a photo-on-a-box: an item without a model is a problem, not a prop
@@ -115,13 +122,20 @@ export class Furnish {
   setClipping(planes) { this.clipPlanes = planes || []; for (const it of this.items) this._applyClip(it.obj); }
   _applyClip(obj) { obj.traverse(o => { if (o.isMesh && o.material && !o.isSprite) { const ms = Array.isArray(o.material) ? o.material : [o.material]; ms.forEach(m => { m.clippingPlanes = this.clipPlanes; m.clipShadows = true; }); } }); }
   setActive(on) { this.active = !!on; if (!on) { this.drag = null; this.select(null); } }
-  _place(it, x, z, rot) { it.spec.x = x; it.spec.z = z; it.spec.rot_deg = ((rot % 360) + 360) % 360; it.obj.position.set(x, 0, z); it.obj.rotation.y = -it.spec.rot_deg * DEG; }
+  _place(it, x, z, rot) { it.spec.x = x; it.spec.z = z; it.spec.rot_deg = ((rot % 360) + 360) % 360; it.obj.position.set(x, +it.spec.y_m || 0, z); it.obj.rotation.y = -it.spec.rot_deg * DEG; this._cord(it); }
+  _cord(it) {   // pendants hang from the ceiling: a thin cord from the top of the shade up to the slab
+    if (it.spec.category !== 'pendant_lamp') return;
+    const ceil = (this.meta && +this.meta.ceiling_m) || 2.6; const top = (+it.spec.y_m || 0) + (+it.spec.h_m || 0); const len = Math.max(0.02, ceil - top);
+    if (!it.cord) { it.cord = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, 1, 6), new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.8 })); it.obj.add(it.cord); }
+    it.cord.scale.y = len; it.cord.position.y = (+it.spec.h_m || 0) + len / 2;
+  }
 
   remove(it) { if (!it) return; this.group.remove(it.obj); this.items = this.items.filter(o => o !== it); if (this.selected === it) this.select(null); this._refresh(); this._touch(); }
   duplicate(it) { if (!it) return; const s = { ...it.spec, x: it.spec.x + 0.3, z: it.spec.z + 0.3 }; this.addItem(s).then(n => this.select(n)); }
   select(it) { this.selected = it; this._refresh(); }
 
   // ---------- geometry helpers ----------
+  _distToPoly(p) { let best = 1e9; for (let i = 0; i < this.poly.length; i++) best = Math.min(best, Furnish.segDist(p, this.poly[i], this.poly[(i + 1) % this.poly.length])); return best; }
   corners(it, x = it.spec.x, z = it.spec.z, rot = it.spec.rot_deg) {
     const w = +it.spec.w_m, d = +it.spec.d_m; const c = Math.cos(-rot * DEG), s = Math.sin(-rot * DEG);
     const pts = [[-w / 2, -d / 2], [w / 2, -d / 2], [w / 2, d / 2], [-w / 2, d / 2]];
@@ -163,9 +177,10 @@ export class Furnish {
     for (const it of this.items) it.problems = [];
     this.items.forEach((it, i) => {
       const fp = fps[i];
-      if (fp.some(c => !Furnish.inPoly(c, this.poly))) it.problems.push('outside the walls');
-      this.items.forEach((o, j) => { if (j > i && Furnish.sat(fp, fps[j]) && it.spec.category !== 'rug' && o.spec.category !== 'rug') { it.problems.push(`overlaps ${o.spec.name}`); o.problems.push(`overlaps ${it.spec.name}`); } });
-      if (it.spec.category !== 'rug') for (const fx of this.fixtures) if (Furnish.sat(fp, this.corners(fx))) it.problems.push(`overlaps the ${fx.spec.name}`);
+      const hung = sp => sp.floor === false || sp.category === 'pendant_lamp' || (+sp.y_m || 0) > 0.3;   // hung or carried: takes no floor, overlaps nothing
+      const out = fp.some(c => !Furnish.inPoly(c, this.poly)); if (out && fp.some(c => Furnish.inPoly(c, this.poly))) { const cen = fp.reduce((a, c) => a.add(c), new THREE.Vector2()).multiplyScalar(0.25); if (Furnish.inPoly(cen, this.poly) && fp.every(c => Furnish.inPoly(c, this.poly) || this._distToPoly(c) < 0.06)) { /* a corner grazing the wall line within 6 cm: fine */ } else it.problems.push('outside the walls'); } else if (out) it.problems.push('outside the walls');
+      if (!hung(it.spec)) this.items.forEach((o, j) => { if (j > i && !hung(o.spec) && Furnish.sat(fp, fps[j]) && it.spec.category !== 'rug' && o.spec.category !== 'rug') { it.problems.push(`overlaps ${o.spec.name}`); o.problems.push(`overlaps ${it.spec.name}`); } });
+      if (it.spec.category !== 'rug' && !hung(it.spec)) for (const fx of this.fixtures) if (Furnish.sat(fp, this.corners(fx))) it.problems.push(`overlaps the ${fx.spec.name}`);
       for (const dsw of this.doors) { // quarter circle: points within w of hinge, on the inward side, within 90deg from the edge direction
         const hit = fp.some(c => { const v = c.clone().sub(dsw.hinge); return v.length() < dsw.w && v.dot(dsw.inward) > -0.02 && v.dot(dsw.dir) > -0.02; }) || Furnish.segDist(dsw.mid, fp[0], fp[1]) < 0.001;
         if (hit && it.spec.category !== 'rug') it.problems.push('in a door swing');
@@ -221,12 +236,13 @@ export class Furnish {
       <span style="float:right">$${total.toFixed(0)}</span></div>` +
       items.map((it, i) => `<div class="fitem ${it === this.selected ? 'sel' : ''} ${it.problems.length ? (it.problems.some(p => !p.startsWith('blocks')) ? 'bad' : 'warn') : ''}" data-i="${i}">
         <span class="fname">${it.spec.name || it.spec.id}</span> <span class="fdim">${(+it.spec.w_m).toFixed(2)}×${(+it.spec.d_m).toFixed(2)}×${(+it.spec.h_m).toFixed(2)} m</span>
-        <span class="fprice">${it.spec.price_usd != null ? '$' + (+it.spec.price_usd).toFixed(0) : ''}</span> ${it.spec.product_url ? `<a href="${it.spec.product_url}" target="_blank">product</a>` : ''}
+        <span class="fprice">${it.spec.price_usd != null ? '$' + (+it.spec.price_usd).toFixed(0) + (it.spec.price_source === 'estimated' ? ' <span class="fdim">est.</span>' : '') : '<span class="fdim">price on request</span>'}</span> ${it.spec.product_url ? `<a href="${it.spec.product_url}" target="_blank">product</a>` : ''}${it.spec.borrowed ? ' <span class="fdim">· from the standard range (few designer pieces in this category)</span>' : ''}
         ${it.problems.length ? `<div class="fprob">${it.problems.join(' · ')}</div>` : ''}</div>`).join('') +
       `<div class="frow"><button id="fsave">Save</button> <button id="fauto">Auto-arrange</button> <button id="freload">Reload</button> <span id="fstatus" class="fdim">${this.dirty ? 'unsaved' : ''}</span></div>
        <div class="fdim"><label><input type="checkbox" id="fikea" ${this.useIkeaModels ? 'checked' : ''}> 3D product models (local cache)</label></div>
        <div class="fdim">click select · drag move · R rotate 90° · [ ] 15° · arrows nudge 5 cm · D duplicate · Del remove · Shift no snap${this.fixtures.length ? ` · ${this.fixtures.length} built-in fixtures are obstacles` : ''}</div>
-       ${items.some(it => String(it.spec.id||'').startsWith('abo-')) ? `<div class="fdim">Amazon items: 3D models and images from the Amazon Berkeley Objects dataset © Amazon.com, CC BY 4.0; resized and compressed; prices marked est. are our estimates from comparable products and are confirmed at the merchant.</div>` : ''}`;
+       ${items.some(it => String(it.spec.id||'').startsWith('abo-')) ? `<div class="fdim">Amazon items: 3D models and images from the Amazon Berkeley Objects dataset © Amazon.com, CC BY 4.0; resized and compressed; prices marked est. are our estimates from comparable products and are confirmed at the merchant.</div>` : ''}
+       ${items.some(it => it.spec.price_source === 'estimated' && String(it.spec.id||'').startsWith('dsg-')) ? `<div class="fdim">Designer prices marked est. are estimated from the brand's and category's listed prices; the final quote comes from the dealer.</div>` : ''}`;
     this.panelEl.querySelectorAll('.fitem').forEach(el => el.onclick = () => this.select(this.items[+el.dataset.i]));
     const b = id => this.panelEl.querySelector('#' + id); b('fsave').onclick = () => this.save(); b('freload').onclick = () => this.loadPlan(); b('fauto').onclick = () => this.auto();
     b('fikea').onchange = e => { this.useIkeaModels = e.target.checked; localStorage.setItem('models3d', e.target.checked ? '1' : '0'); this.loadPlan(); };
@@ -234,39 +250,93 @@ export class Furnish {
 
 
   // ---------- material fallback for untextured models ----------
-  _finishFor(spec) {
+  _finishFor(spec) {   // finish class + colour from the catalogue words (name, colour, materials, description); secondary = legs/frame guess
     const t = [spec.color, spec.colours, spec.materials, spec.name, spec.description].flat().filter(Boolean).join(' ').toLowerCase();
     const has = (...w) => w.some(x => t.includes(x));
-    if (has('walnut', 'smoked oak', 'dark oak', 'wenge', 'black stained')) return { color: 0x4a3222, roughness: 0.55, metalness: 0 };
-    if (has('oak', 'ash', 'birch', 'beech', 'maple', 'natural wood', 'pine')) return { color: 0xc9a977, roughness: 0.6, metalness: 0 };
-    if (has('teak', 'mahogany', 'cherry')) return { color: 0x8a5a33, roughness: 0.55, metalness: 0 };
-    if (has('brass', 'gold')) return { color: 0xc8a24a, roughness: 0.35, metalness: 0.9 };
-    if (has('chrome', 'stainless', 'steel', 'aluminium', 'aluminum', 'metal')) return { color: 0xb8bcc0, roughness: 0.35, metalness: 0.85 };
-    if (has('black leather')) return { color: 0x1e1a18, roughness: 0.5, metalness: 0 };
-    if (has('cognac', 'tan leather', 'brown leather', 'leather')) return { color: 0x8b5a2b, roughness: 0.55, metalness: 0 };
-    if (has('white', 'off-white', 'cream', 'ivory')) return { color: 0xf1ede6, roughness: 0.7, metalness: 0 };
-    if (has('black', 'charcoal', 'anthracite')) return { color: 0x24262a, roughness: 0.65, metalness: 0 };
-    if (has('grey', 'gray')) return { color: 0x8d8f93, roughness: 0.75, metalness: 0 };
-    if (has('green', 'sage', 'olive')) return { color: 0x6f7f62, roughness: 0.8, metalness: 0 };
-    if (has('blue', 'navy')) return { color: 0x3d5370, roughness: 0.8, metalness: 0 };
-    if (has('beige', 'sand', 'linen', 'fabric', 'wool', 'upholster', 'textile', 'boucle')) return { color: 0xc9bca6, roughness: 0.9, metalness: 0 };
-    if (has('glass')) return { color: 0xdfe8ee, roughness: 0.1, metalness: 0, transparent: true, opacity: 0.5 };
-    if (has('marble', 'stone', 'concrete')) return { color: 0xd8d4cc, roughness: 0.4, metalness: 0 };
-    return { color: 0xb9b2a6, roughness: 0.7, metalness: 0 };   // neutral warm grey, never black
+    const legs = has('brass', 'gold') ? ['metal_brass', '#c8a24a'] : has('chrome', 'stainless', 'steel', 'aluminium', 'aluminum') ? ['metal_chrome', '#d9d9d9'] : has('black') ? ['metal_black', '#1d1d1d'] : has('oak', 'ash', 'birch', 'beech', 'maple', 'pine') ? ['wood_light', '#c9a977'] : ['metal_black', '#2a2a2a'];
+    let main;
+    if (has('walnut', 'smoked oak', 'dark oak', 'wenge', 'black stained')) main = ['wood_dark', '#4a3222'];
+    else if (has('oak', 'ash', 'birch', 'beech', 'maple', 'natural wood', 'pine')) main = ['wood_light', '#c9a977'];
+    else if (has('teak', 'mahogany', 'cherry')) main = ['wood_mid', '#8a5a33'];
+    else if (has('black leather')) main = ['leather', '#1e1a18'];
+    else if (has('cognac', 'tan leather', 'brown leather', 'leather')) main = ['leather', '#8b5a2b'];
+    else if (has('boucle', 'bouclé', 'sheepskin', 'shearling')) main = ['boucle', '#e8e2d6'];
+    else if (has('velvet')) main = ['velvet', has('green') ? '#3f5a48' : has('blue') ? '#30405a' : '#7a4a4a'];
+    else if (has('glass')) main = ['glass', '#dfe8ee'];
+    else if (has('opal', 'diffuser')) main = ['glass_opal', '#f4f1ea'];
+    else if (has('marble')) main = ['marble', '#d8d4cc'];
+    else if (has('stone', 'concrete', 'terrazzo')) main = ['stone', '#c9c4bb'];
+    else if (has('brass', 'gold')) main = ['metal_brass', '#c8a24a'];
+    else if (has('chrome', 'stainless', 'steel', 'aluminium', 'aluminum', 'metal')) main = ['metal_chrome', '#b8bcc0'];
+    else if (has('white', 'off-white', 'cream', 'ivory')) main = [has('lamp', 'light', 'pendant') ? 'glass_opal' : has('sofa', 'chair', 'bed', 'pouf', 'ottoman') ? 'fabric' : 'lacquer', '#f1ede6'];
+    else if (has('black', 'charcoal', 'anthracite')) main = [has('sofa', 'chair', 'bed') ? 'fabric' : 'metal_black', '#24262a'];
+    else if (has('grey', 'gray')) main = ['fabric', '#8d8f93'];
+    else if (has('green', 'sage', 'olive')) main = ['fabric', '#6f7f62'];
+    else if (has('blue', 'navy')) main = ['fabric', '#3d5370'];
+    else if (has('beige', 'sand', 'linen', 'fabric', 'wool', 'upholster', 'textile', 'sofa', 'armchair', 'pouf', 'ottoman', 'bed', 'rug')) main = ['fabric', '#c9bca6'];
+    else if (has('lamp', 'light', 'pendant')) main = ['glass_opal', '#f1ede6'];
+    else main = ['plastic', '#b9b2a6'];   // neutral warm grey, never black
+    return { finish: main[0], hex: main[1], secondary: legs[0], secondaryHex: legs[1], color: parseInt(main[1].slice(1), 16), roughness: 0.7, metalness: 0 };
+  }
+  // Finish classes (palette/BRIEF.md) -> PBR parameters. Lamp shades glow a little so lamps read as lamps.
+  static FINISH = {
+    fabric: { roughness: 0.92, metalness: 0, bump: 'fabric' }, boucle: { roughness: 0.95, metalness: 0, bump: 'boucle' }, velvet: { roughness: 0.75, metalness: 0, sheen: 0.6 },
+    leather: { roughness: 0.42, metalness: 0, clearcoat: 0.15 }, wood_light: { roughness: 0.55, metalness: 0 }, wood_mid: { roughness: 0.5, metalness: 0 }, wood_dark: { roughness: 0.5, metalness: 0 }, wood_black: { roughness: 0.45, metalness: 0 },
+    metal_chrome: { roughness: 0.12, metalness: 1, color: '#d9d9d9' }, metal_black: { roughness: 0.4, metalness: 0.85 }, metal_brass: { roughness: 0.28, metalness: 1 }, metal_white: { roughness: 0.45, metalness: 0.3 }, metal_painted: { roughness: 0.45, metalness: 0.35 },
+    plastic: { roughness: 0.4, metalness: 0 }, glass: { roughness: 0.05, metalness: 0, transparent: true, opacity: 0.35 }, glass_opal: { roughness: 0.55, metalness: 0, glow: 0.55 }, paper: { roughness: 0.85, metalness: 0, glow: 0.35 },
+    marble: { roughness: 0.25, metalness: 0 }, stone: { roughness: 0.6, metalness: 0 }, concrete: { roughness: 0.85, metalness: 0 }, ceramic: { roughness: 0.3, metalness: 0 }, lacquer: { roughness: 0.18, metalness: 0, clearcoat: 0.6 },
+    rattan: { roughness: 0.9, metalness: 0 }, cork: { roughness: 0.95, metalness: 0 }, rubber: { roughness: 0.8, metalness: 0 } };
+  static LAMP = new Set(['pendant_lamp', 'table_lamp', 'floor_lamp']);
+  static _data() {   // palette.json (Haiku's reading of each hero photo) and brand_textures.json (Muuto/Hem/Carl Hansen texture packs), fetched once
+    if (!Furnish._dataP) Furnish._dataP = Promise.all([fetch('/furnish/designer/palette.json').then(r => r.ok ? r.json() : {}).catch(() => ({})), fetch('/furnish/designer/brand_textures.json').then(r => r.ok ? r.json() : {}).catch(() => ({}))]).then(([p, b]) => ({ palette: p, brand: b }));
+    return Furnish._dataP;
+  }
+  _matFor(finish, hex, sheen, isLamp) {
+    const f = Furnish.FINISH[finish] || { roughness: 0.6, metalness: 0 };
+    const rough = Math.min(1, Math.max(0.03, f.roughness + (sheen === 'matte' ? 0.12 : sheen === 'gloss' ? -0.2 : 0)));
+    const m = new THREE.MeshPhysicalMaterial({ color: new THREE.Color(f.color || hex || '#b9b2a6'), roughness: rough, metalness: f.metalness, transparent: !!f.transparent, opacity: f.opacity ?? 1, clearcoat: f.clearcoat || 0, sheen: f.sheen || 0, sheenColor: new THREE.Color(0xffffff) });
+    if (f.glow && isLamp) { m.emissive = new THREE.Color(0xfff0d2); m.emissiveIntensity = f.glow; }
+    if (f.bump) Furnish._bump(f.bump).then(t => { if (t) { m.normalMap = t; m.normalScale.set(0.6, 0.6); m.needsUpdate = true; } });
+    return m;
+  }
+  static _bump(kind) {   // a CC0 weave normal map from the material library, tiled; used only on meshes that carry UVs
+    Furnish._bumps = Furnish._bumps || {}; const id = kind === 'boucle' ? 'Fabric022' : 'Fabric019';
+    if (!Furnish._bumps[kind]) Furnish._bumps[kind] = new Promise(res => new THREE.TextureLoader().load(`/furnish/materials/${id}/normal.jpg`, t => { t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(6, 6); res(t); }, undefined, () => res(null)));
+    return Furnish._bumps[kind];
   }
   _dressUntextured(root, spec) {
     let textured = false; root.traverse(o => { if (o.isMesh) { const ms = Array.isArray(o.material) ? o.material : [o.material]; if (ms.some(mm => mm && (mm.map || mm.normalMap))) textured = true; } });
     if (textured) return;
-    const f = this._finishFor(spec); let k = 0;
+    // material groups ordered by size: the viewer assigns the photo's biggest part to the biggest group
+    const groups = new Map(); const v3 = new THREE.Vector3();
     root.traverse(o => {
-      if (!o.isMesh) return; const ms = Array.isArray(o.material) ? o.material : [o.material];
-      if (o.geometry && !o.geometry.attributes.normal) o.geometry.computeVertexNormals();   // some manufacturer exports carry no normals (GLTFLoader hid that with flatShading); a fresh material needs real ones or it lights black
-      const nm = ms.map(mm => { const c = mm && mm.color ? mm.color : null; const hsl = c ? c.getHSL({}) : null; const keepOwn = c && hsl && hsl.s > 0.25 && hsl.l > 0.08 && hsl.l < 0.95;   // a real coloured MTL colour is kept; grey defaults are replaced
-        const mat = new THREE.MeshStandardMaterial({ color: keepOwn ? c : new THREE.Color(f.color), roughness: f.roughness, metalness: f.metalness, transparent: !!f.transparent, opacity: f.opacity ?? 1 });
-        if (!keepOwn) k++; return mat; });
-      o.material = Array.isArray(o.material) ? nm : nm[0];
+      if (!o.isMesh) return; if (o.geometry && !o.geometry.attributes.normal) o.geometry.computeVertexNormals();   // some manufacturer exports carry no normals; a fresh material lights black without them
+      const ms = Array.isArray(o.material) ? o.material : [o.material]; const bb = new THREE.Box3().setFromObject(o); const sz = bb.getSize(v3); const vol = Math.max(1e-6, sz.x * sz.y * sz.z) / ms.length;
+      ms.forEach((mm, i) => { const g = groups.get(mm) || { mat: mm, vol: 0, uses: [], uv: false }; g.vol += vol; g.uses.push([o, i]); g.uv = g.uv || !!(o.geometry && o.geometry.attributes.uv); groups.set(mm, g); });
     });
-    if (k) root.userData.dressed = f;
+    const ordered = [...groups.values()].sort((a, b) => b.vol - a.vol); const isLamp = Furnish.LAMP.has(spec.category); const words = this._finishFor(spec); const wordFinish = words.finish || 'plastic';
+    const chromatic = mm => { const c = mm && mm.color; if (!c) return false; const hsl = c.getHSL({}); return hsl.s > 0.25 && hsl.l > 0.08 && hsl.l < 0.95; };   // a real coloured MTL colour is kept
+    const apply = (g, mat) => { g.uses.forEach(([o, i]) => { if (Array.isArray(o.material)) { const arr = o.material.slice(); arr[i] = mat; o.material = arr; } else o.material = mat; }); };
+    const id = String(spec.id || '').split('#')[0];
+    // first pass, synchronous: product words (never black); then refine from the data files when they arrive
+    ordered.forEach((g, i) => apply(g, chromatic(g.mat) ? this._matFor(wordFinish, '#' + g.mat.color.getHexString(), null, isLamp) : this._matFor(i === 0 ? wordFinish : (words.secondary || wordFinish), i === 0 ? words.hex : (words.secondaryHex || words.hex), null, isLamp)));
+    root.userData.dressed = 'words';
+    Furnish._data().then(({ palette, brand }) => {
+      const bt = brand[id]; const pal = palette[id];
+      if (bt && bt.has_uv && !bt.multi_material && ordered.length) {   // the manufacturer's own texture for the default colourway
+        const def = (bt.variants || []).find(v => v.name === bt.default) || (bt.variants || [])[0];
+        if (def) { const mat = this._matFor(def.finish || wordFinish, def.mean_hex, null, isLamp); ordered.forEach(g => apply(g, mat));
+          new THREE.TextureLoader().load(`/furnish/designer/textures/${id}.webp`, t => { t.colorSpace = THREE.SRGBColorSpace; t.flipY = false; mat.map = t; mat.color.set(0xffffff); mat.needsUpdate = true; });
+          root.userData.dressed = 'brand texture'; return; }
+      }
+      if (pal && pal.parts && pal.parts.length) {   // the hero photo's parts, biggest first, onto the biggest material groups
+        ordered.forEach((g, i) => { const part = pal.parts[Math.min(i, pal.parts.length - 1)]; if (chromatic(g.mat) && i > 0) return; apply(g, this._matFor(part.finish, part.hex, pal.sheen, isLamp)); });
+        root.userData.dressed = 'photo palette'; return;
+      }
+      if (bt && bt.variants && bt.variants.length && ordered.length) {   // multi-material pack: exact colour of the default variant on the main part
+        const def = bt.variants.find(v => v.name === bt.default) || bt.variants[0]; apply(ordered[0], this._matFor(def.finish || wordFinish, def.mean_hex, null, isLamp)); root.userData.dressed = 'brand colour';
+      }
+    });
   }
 
   // ---------- persistence ----------

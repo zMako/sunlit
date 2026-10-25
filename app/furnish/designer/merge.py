@@ -56,3 +56,5 @@ ids = {i["id"] for i in ok}
 cat["items"] = [i for i in before if i["id"] not in ids] + ok
 tmp = CAT.with_suffix(".json.tmp"); json.dump(cat, open(tmp, "w"), indent=1); tmp.replace(CAT)
 print("after", len(cat["items"]), cnt(cat["items"])); print("dims_mismatch flagged", sum(1 for i in ok if i.get("dims_mismatch"))); print("design items merged", len(ok), "of", len(new), "by brand", cnt(ok, "brand"))
+# keep estimated prices for unpriced designer items (idempotent; real prices untouched)
+import prices_estimate; prices_estimate.run(CAT)

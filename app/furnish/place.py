@@ -10,11 +10,40 @@ from shapely.geometry import Polygon, box, Point, LineString
 from shapely.affinity import rotate, translate
 from shapely.ops import unary_union
 
-WALL_BACKED = {"bed": 1, "sofa": 1, "wardrobe": 2, "dresser": 2, "bookcase": 2, "desk": 2, "tv_bench": 2, "nightstand": 3}   # dining tables stand free, chairs go around them
+WALL_BACKED = {"bed": 1, "sofa": 1, "wardrobe": 2, "dresser": 2, "bookcase": 2, "desk": 2, "tv_bench": 2, "nightstand": 3, "mirror": 3}   # dining tables stand free, chairs go around them
 RELATIONAL = {"coffee_table": ("sofa", "front", 0.45), "rug": ("sofa|bed|dining_table", "under", 0.0), "desk_chair": ("desk", "front", 0.10), "floor_lamp": ("sofa|armchair|bed|desk|dining_table|dresser", "side", 0.10),
-              "armchair": ("sofa", "corner", 0.30), "dining_chair": ("dining_table", "around", 0.05)}
+              "armchair": ("sofa", "corner", 0.30), "dining_chair": ("dining_table", "around", 0.05),
+              "side_table": ("sofa|armchair", "side", 0.08), "ottoman": ("armchair|sofa", "front", 0.35), "bench": ("bed", "foot", 0.15),
+              "table_lamp": ("nightstand|side_table|desk|dresser", "on", 0.0), "pendant_lamp": ("dining_table|coffee_table|bed", "above", 0.0)}
+DEPTH = {"table_lamp": 6, "pendant_lamp": 6, "ottoman": 6}            # relational items whose anchor is itself relational go last
+HANG_BOTTOM = {"dining_table": 1.55, "coffee_table": 1.85, "bed": 1.95}   # pendant: height of the shade's bottom above the floor, by what it hangs over
+CORNER_LOVERS = {"plant_pot", "plant", "floor_lamp", "stool"}            # free-standing pieces that look best in a corner
 LOW_UNDER_WINDOW = {"bed", "sofa", "desk", "dining_table", "coffee_table", "rug", "nightstand", "tv_bench", "dining_chair", "desk_chair", "armchair"}
 PATH_W = 0.75
+
+# Catalogue dimensions come from a dozen scrapers that do not agree on which number is width, depth or height (a rug listed
+# 1.7 x 0.003 x 2.4 stands up as a wall). canon_dims() makes them consistent per category before anything is placed.
+WIDE_ON_WALL = {"sofa", "wardrobe", "dresser", "bookcase", "desk", "tv_bench", "nightstand", "bench", "dining_table", "coffee_table"}
+def canon_dims(i):
+    w, d, h = (float(i.get("width_m") or 0), float(i.get("depth_m") or 0), float(i.get("height_m") or 0)); cat = i.get("category")
+    if not (w and d and h): return i
+    v = sorted([w, d, h])
+    if cat == "rug": h = v[0]; w, d = sorted([v[1], v[2]])                       # flat: thickness is the smallest number
+    elif cat == "mirror": d = v[0]; w, h = [x for x in (w, d, h) if x != v[0]][:2] if len({w, d, h}) == 3 else (v[1], v[2])   # thin: depth is the smallest
+    elif cat == "bed": w, d = min(w, d), max(w, d)                               # a bed is longer than it is wide; the headboard is the width
+    elif cat in WIDE_ON_WALL: w, d = max(w, d), min(w, d)                         # wall-backed pieces are wider than deep
+    elif cat in ("floor_lamp", "pendant_lamp", "table_lamp", "plant_pot", "stool", "bar_stool", "dining_chair", "desk_chair", "armchair"):
+        if h < max(w, d) and max(w, d) / max(h, 1e-6) > 1.6 and cat not in ("armchair", "plant_pot", "pendant_lamp"): h, (w, d) = v[2], sorted([v[0], v[1]])   # tall things: height is the largest number
+    i = dict(i); i["width_m"], i["depth_m"], i["height_m"] = round(w, 3), round(d, 3), round(h, 3); return i
+
+# products the keyword classifier filed under the wrong category (name -> category), applied on load
+RECAT = [("hooks", "other"), ("tray", "other"), ("alphabet of light", "other"), ("pot 33", "armchair"), ("ridge", "other"), ("avail", "other"), ("coil", "other"), ("gaze", "other"),
+         ("table + benches", "other"), ("wall mount", "other"), ("floor panel", "other"), ("wall panel", "other"), ("magazine holder", "other"), ("carafe", "other"), ("vase", "other"), ("jug", "other")]
+def fix_item(i):
+    n = (i.get("name") or "").lower()
+    for k, c in RECAT:
+        if k in n and i.get("category") != c: i = dict(i, category=c); break
+    return canon_dims(i)
 
 def footprint(x, z, w, d, rot_deg):
     return translate(rotate(box(-w / 2, -d / 2, w / 2, d / 2), -rot_deg, origin=(0, 0), use_radians=False), x, z)   # yaw is three.js rotation.y: local +z -> (sin, cos); shapely rotates CCW in (x, z)
@@ -67,6 +96,17 @@ class Room:
             if h_m > sill and (t + w_m / 2 > s0 and t - w_m / 2 < s1): return True
         return False
 
+    def openness(self, x, z, inward, r=2.4):
+        """Share of sample points in a half-disc of radius r in front of (x, z) that lie inside the room: ~1 in the open middle of a room, small at a corridor mouth or beside a jog."""
+        from shapely.prepared import prep
+        if not hasattr(self, "_prep"): self._prep = prep(self.poly)
+        side = np.array([inward[1], -inward[0]]); n = 0; k = 0
+        for a in (0.25, 0.6, 0.95):
+            for b in (-0.9, -0.6, -0.3, 0.0, 0.3, 0.6, 0.9):
+                if a * a + b * b > 1.0: continue
+                p = np.array([x, z]) + inward * (a * r) + side * (b * r); n += 1; k += self._prep.contains(Point(p[0], p[1]))
+        return k / max(n, 1)
+
     def door_distance(self, wall, t, w_m):
         best = 9.0
         for d in self.doors:
@@ -81,12 +121,13 @@ def place(R, items):
         rc = fx.get("rect") or {}
         if not rc: continue
         occupied.append({"fp": footprint(rc["x"], rc["z"], rc["w"], rc["d"], rc.get("rot_deg", 0)), "cat": "fixture", "front": None, "name": fx.get("type", "fixture")})
-    def feasible(fp, cat, h_m):
+    ceiling = float(R.get("ceiling_m") or 2.6)
+    def feasible(fp, cat, h_m, ignore=None):
         if not room.poly.buffer(0.03).contains(fp): return False
         for s in room.swings:
             if fp.intersects(s) and cat != "rug": return False
         for o in occupied:
-            if o["cat"] == "rug" or cat == "rug": continue
+            if o["cat"] == "rug" or cat == "rug" or o.get("floor") is False or o is ignore: continue   # rugs, hung and carried pieces take no floor
             if fp.intersects(o["fp"]): return False
         return True
     def walkable(extra=None):
@@ -140,9 +181,11 @@ def place(R, items):
             for w in room.walls:
                 d_ = abs(float((np.array([it["x"], it["z"]]) - w["a"]) @ w["in"]) - it["d_m"] / 2)
                 if d_ < 0.12: o["wall"] = w["i"]; o["t"] = float((np.array([it["x"], it["z"]]) - w["a"]) @ w["dir"]); break
-    order = sorted([it for it in items if not it.get("pinned")], key=lambda it: (WALL_BACKED.get(it["category"], 5 if it["category"] in RELATIONAL else 4), -it["w_m"] * it["d_m"]))
+    order = sorted([it for it in items if not it.get("pinned")], key=lambda it: (DEPTH.get(it["category"]) or WALL_BACKED.get(it["category"], 5 if it["category"] in RELATIONAL else 4), -it["w_m"] * it["d_m"]))
     for it in order:
         cat = it["category"]; w_m, d_m, h_m = it["w_m"], it["d_m"], it["h_m"]
+        if cat == "mirror" and h_m < 1.3:   # wall-hung: centred at eye height, no floor taken
+            it["y_m"] = round(1.55 - h_m / 2, 3); it["floor"] = False
         if cat in WALL_BACKED:
             best = None
             for x, z, yaw, wall, t in room.wall_candidates(w_m, d_m):
@@ -154,6 +197,7 @@ def place(R, items):
                 score = 0.0
                 score += 1.0 if not wall["inferred"] else 0.0                                   # measured walls are real walls
                 score += 0.6 * (1 - abs(t - wall["len"] / 2) / (wall["len"] / 2))                # centred on the wall
+                score += (2.2 if cat in ("sofa", "bed", "tv_bench", "desk") else 1.0) * room.openness(x, z, wall["in"])   # facing the open part of the room, not a corridor mouth
                 score += min(dd, 2.0) * 0.3                                                       # away from doors
                 if cat in ("bed", "sofa"): score += 0.8 * (not room.win_spans.get(wall["i"])) + 0.2 * wall["len"] / 6   # bed/sofa prefer the windowless long wall
                 if cat == "tv_bench":                                                              # opposite the sofa
@@ -173,37 +217,76 @@ def place(R, items):
                 if not walkable(): occupied.remove(o); placed.remove(o); it["unplaced"] = "blocks the walking path"
             else: it["unplaced"] = "no wall position fits"
         elif cat in RELATIONAL:
-            anchor_cats, mode, gap = RELATIONAL[cat]; anchor = next((o for o in placed if o["cat"] in anchor_cats.split("|")), None)
-            if anchor is None: it["unplaced"] = f"needs a {anchor_cats}"; continue
+            anchor_cats, mode, gap = RELATIONAL[cat]; pool = [o for o in placed if o["cat"] in anchor_cats.split("|")]
+            if mode == "on":   # second lamp goes on the second nightstand: skip supports that already carry something (works across the agent's re-runs, where items come back pinned)
+                carried = [Point(q["x"], q["z"]) for q in placed if q.get("floor") is False and q["cat"] in RELATIONAL and RELATIONAL[q["cat"]][1] == "on"]
+                pool = [o for o in pool if not any(o["fp"].buffer(0.02).contains(pt) for pt in carried)]   # every support taken: the lamp is skipped, never stacked
+            if mode == "above":
+                hung = [Point(q["x"], q["z"]) for q in placed if q.get("floor") is False and q["cat"] == "pendant_lamp"]
+                pool = [o for o in pool if not any(o["fp"].buffer(0.3).contains(pt) for pt in hung)] or pool
+            if mode == "on": pool = [o for o in pool if o["h_m"] <= 1.1]                             # a lamp on a dresser is fine, on a wardrobe not
+            anchor = pool[0] if pool else None
+            if anchor is None: it["unplaced"] = f"needs a {anchor_cats.replace('|', ' or ')}"; continue
             yaw = anchor["rot_deg"]; fwd = np.array([math.sin(math.radians(yaw)), math.cos(math.radians(yaw))]); side = np.array([fwd[1], -fwd[0]]); c = np.array([anchor["x"], anchor["z"]])
             cands = []
             if mode == "front":
                 if cat in ("coffee_table", "tv_bench") and d_m > w_m: it["w_m"], it["d_m"] = d_m, w_m; w_m, d_m = d_m, w_m   # long side parallel to the anchor
                 cands = [(c + fwd * (anchor["d_m"] / 2 + gap + d_m / 2), yaw + 180 if cat == "desk_chair" else yaw)]
-            elif mode == "under":   # rug: long side along the anchor, starting under its front third (sofa) or its foot half (bed)
-                along, across = max(w_m, d_m), min(w_m, d_m); it["w_m"], it["d_m"] = along, across; w_m, d_m = along, across
-                start = anchor["d_m"] / 2 - (0.3 if anchor["cat"] != "bed" else 0.9)
-                cands = [(c + fwd * (start + across / 2), yaw), (c + fwd * (start + across / 2 - 0.3), yaw)]
-            elif mode == "side": cands = [(c + side * s * (anchor["w_m"] / 2 + gap + w_m / 2), yaw) for s in (1, -1)]
-            elif mode == "corner": cands = [(c + side * s * (anchor["w_m"] / 2 + gap + w_m / 2) + fwd * (anchor["d_m"] / 2 + 0.2), yaw + s * 60) for s in (1, -1)]
-            elif mode == "around":   # chairs: the two long sides first (split when the table is long), then the two ends; every free spot is tried
-                off = anchor["d_m"] / 2 + gap + d_m / 2; offw = anchor["w_m"] / 2 + gap + d_m / 2
-                if anchor["w_m"] > 1.4: spots = [(c + fwd * off + side * anchor["w_m"] / 4, yaw + 180), (c - fwd * off + side * anchor["w_m"] / 4, yaw), (c + fwd * off - side * anchor["w_m"] / 4, yaw + 180), (c - fwd * off - side * anchor["w_m"] / 4, yaw)]
-                else: spots = [(c + fwd * off, yaw + 180), (c - fwd * off, yaw)]
-                spots += [(c + side * offw, yaw + 90), (c - side * offw, yaw - 90)]
+            elif mode == "under":   # rug: long side along the anchor; under the front third of a sofa, the foot half of a bed, centred under a dining table
+                along, across = max(w_m, d_m), min(w_m, d_m)
+                if anchor["cat"] == "dining_table" and anchor["d_m"] > anchor["w_m"]: along, across = across, along   # follow the table's long side
+                it["w_m"], it["d_m"] = along, across; w_m, d_m = along, across
+                if anchor["cat"] == "dining_table": cands = [(c, yaw)] + [(c + fwd * o, yaw) for o in (0.15, -0.15, 0.3, -0.3)]
+                else:
+                    start = anchor["d_m"] / 2 - (0.3 if anchor["cat"] != "bed" else 0.9)
+                    cands = [(c + fwd * (start + across / 2 - o) + side * l, yaw) for o in (0.0, 0.15, 0.3, 0.45, 0.6, 0.75) for l in (0.0, 0.3, -0.3)]
+            elif mode == "side": cands = [(c + side * s * (anchor["w_m"] / 2 + gap + w_m / 2) + fwd * max(0.0, (anchor["d_m"] - d_m) / 2 - 0.05), yaw) for s in (1, -1)]   # flush with the anchor's front
+            elif mode == "corner": cands = [(c + side * s * (anchor["w_m"] / 2 + gap + w_m / 2) + fwd * (anchor["d_m"] / 2 + 0.2), yaw - s * 60) for s in (1, -1)]   # turned toward the sofa's front, not away
+            elif mode == "foot":   # bench across the foot of the bed, long side along the bed's width
+                if d_m > w_m: it["w_m"], it["d_m"] = d_m, w_m; w_m, d_m = d_m, w_m
+                cands = [(c + fwd * (anchor["d_m"] / 2 + gap + d_m / 2), yaw)]
+            elif mode == "on":     # lamp on top of its support, toward the back, no floor taken
+                it["y_m"] = round(anchor["h_m"], 3); it["floor"] = False
+                back = -fwd * max(0.0, (anchor["d_m"] - d_m) / 2 - 0.05)
+                cands = [(c + back, yaw), (c, yaw)]
+            elif mode == "above":  # pendant over the anchor's centre; shade bottom at a sensible height, never above the ceiling
+                bottom = min(HANG_BOTTOM.get(anchor["cat"], ceiling - h_m - 0.1), ceiling - h_m - 0.02)
+                it["y_m"] = round(max(bottom, 1.2), 3); it["floor"] = False
+                cands = [(c + fwd * (-(anchor["d_m"] / 2 - 0.9) if anchor["cat"] == "bed" else 0.0), yaw)]
+            elif mode == "around":   # chairs facing the table: long sides first (two per side when the side is long), then the ends, then the diagonals of a round table
+                off = anchor["d_m"] / 2 + gap + d_m / 2; offw = anchor["w_m"] / 2 + gap + d_m / 2; spots = []
+                def row(normal, dist, length, face):   # chairs along one side: centred, or split in two when the side is long
+                    along = np.array([normal[1], -normal[0]]); k = max(1, min(4, int(length // 0.65)))
+                    for q in ([0.0] if k == 1 else [((i + 0.5) / k - 0.5) * length * 0.9 for i in range(k)]): spots.append((c + normal * dist + along * q, face))
+                row(fwd, off, anchor["w_m"], yaw + 180); row(-fwd, off, anchor["w_m"], yaw); row(side, offw, anchor["d_m"], yaw - 90); row(-side, offw, anchor["d_m"], yaw + 90)   # faces: chair's front (+z) toward the table
+                if abs(anchor["w_m"] - anchor["d_m"]) < 0.1 and anchor["w_m"] >= 1.1:   # round or square: seats on the diagonals too
+                    for sx, sz in ((1, 1), (1, -1), (-1, 1), (-1, -1)):
+                        dv = (fwd * sz + side * sx); dv = dv / np.linalg.norm(dv); face = math.degrees(math.atan2(-dv[0], -dv[1]))
+                        for r in np.arange(anchor["w_m"] / 2 + gap + d_m / 2, anchor["w_m"] / 2 * 1.42 + gap + d_m / 2 + 0.01, 0.05):   # slide out until clear of the table's square footprint
+                            if not footprint(*(c + dv * r), w_m, d_m, face).intersects(anchor["fp"]): spots.append((c + dv * r, face)); break
+                # interleave: opposite sides first so two chairs face each other before a side fills up
+                spots.sort(key=lambda sp: float(np.linalg.norm(np.array(sp[0]) - c)))
                 cands = spots
             done = False
             for p, y in cands:
                 fp = footprint(p[0], p[1], w_m, d_m, y)
-                if feasible(fp, cat, h_m): commit(it, float(p[0]), float(p[1]), y); done = True; break
-            if not done: it["unplaced"] = "no room next to its anchor"
+                if mode in ("on", "above"): ok = room.poly.buffer(0.03).contains(fp) and (mode == "above" or anchor["fp"].buffer(0.1).contains(fp) or (anchor["fp"].contains(fp.centroid) and fp.area <= anchor["fp"].area * 1.3))   # a lamp may overhang a small table a little
+                else: ok = feasible(fp, cat, h_m)
+                if ok:
+                    o = commit(it, float(p[0]), float(p[1]), y); done = True
+                    if mode in ("on", "above"): anchor["carries"] = o["id"]
+                    break
+            if not done: it["unplaced"] = "no room next to its anchor" if mode not in ("on", "above") else f"does not fit on the {anchor['cat'].replace('_', ' ')}"
         else:   # free-standing: best open spot by distance to walls/items (coarse grid)
             best = None; minx, minz, maxx, maxz = room.poly.bounds
             for x in np.arange(minx + w_m / 2, maxx - w_m / 2, 0.2):
                 for z in np.arange(minz + d_m / 2, maxz - d_m / 2, 0.2):
                     fp = footprint(x, z, w_m, d_m, 0)
                     if not feasible(fp, cat, h_m): continue
-                    dist = min([room.poly.exterior.distance(fp)] + [fp.distance(o["fp"]) for o in occupied if o["cat"] != "rug"]); cen = room.poly.centroid; score = -abs(dist - 0.9) - 0.15 * fp.centroid.distance(cen)
+                    dist = min([room.poly.exterior.distance(fp)] + [fp.distance(o["fp"]) for o in occupied if o["cat"] != "rug" and o.get("floor") is not False]); cen = room.poly.centroid
+                    if cat in CORNER_LOVERS:   # into a corner, off the door swings, away from other pieces
+                        cd = min(Point(px, pz).distance(fp.centroid) for px, pz in room.poly.exterior.coords); score = -cd - 0.5 * max(0.0, 0.5 - min([9] + [fp.distance(o["fp"]) for o in occupied if o["cat"] not in ("rug", "fixture") and o.get("floor") is not False]))
+                    else: score = -abs(dist - 0.9) - 0.15 * fp.centroid.distance(cen)
                     if best is None or score > best[0]: best = (score, float(x), float(z))
             if best: commit(it, best[1], best[2], 0.0)
             else: it["unplaced"] = "no open floor"
