@@ -1,0 +1,22 @@
+{
+ "plans": 20,
+ "weights": "zero-shot",
+ "wall": {
+  "iou": 0.904,
+  "precision": 0.943,
+  "recall": 0.97,
+  "f1": 0.956
+ },
+ "window": {
+  "iou": 0.866,
+  "precision": 0.98,
+  "recall": 0.883,
+  "f1": 0.929
+ },
+ "door": {
+  "iou": 0.956,
+  "precision": 0.992,
+  "recall": 0.966,
+  "f1": 0.979
+ }
+}

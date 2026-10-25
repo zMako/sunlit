@@ -306,3 +306,33 @@ Segmentation + harness -> segmentation-driven layout -> panorama completion -> l
   bedrooms/sqft/annotated per unit. Spend $9.07 / $10.
 - Known: many new plans read poorly (13-16 small rooms, or only a bath found); the 444 -> 359 breadth tile predates the
   library growth and bench.py was re-run after it.
+
+## Oct 24, evening: learned walls
+
+The classical plan reader (thresholded ink) was judged fundamentally wrong on sight: windows on interior walls, baths and
+closets dropped, 1333 Gough's wood textures read as 475 walls, its key plan built instead of the apartment. Zero-shot
+CubiCasa5K (pretrained, no training) found walls far better on 23 test plans, so it now drives the engine:
+- `cubi.py`: walls rescaled to ~12 px, 4-rotation TTA on MPS (~1 s/plan, 982 plans in 15 min); crop = convex hulls of
+  the predicted wall groups >= 1/3 of the largest (drops key plans, logos, margin blotches; keeps both townhouse levels).
+- `plan_engine.extract`: walls = model wall pixels with ink near them (keeps drawn door gaps, hairline walls, double-outline
+  walls closed into one band); model windows/doors placed on their wall pieces; rooms close against the full model mask
+  (diagonal and rotated walls no longer leak); diagonal walls fitted from the leftover mask; thin_walls skipped.
+- `rebuild.py`: offline rebuild (Anthropic ledger is at $9.1 of $10: no paid calls); names, fixtures and materials carried
+  over from the previous layout by pixel overlap; 792/813 rebuilt, 789 promoted (old ones in `layouts_ink/`), 5 units with
+  saved furnishing plans left as they were.
+- `room_names.py`: Apple Vision OCR of the printed labels names 2276 rooms; generic "Room N" names 4216 -> 1380.
+- `labels.py`: 8 Sonnet subagents reviewed 320 plans (300 train, 20 held-out from 20 buildings) and flagged errors in
+  percent coordinates; flags are snapped to the ink into wall/window/door labels for fine-tuning.
+
+## Oct 25 00:40: taste tier (owner's direction)
+- Owner: IKEA reads as cheap; the agent must show taste. Plan: a "Design" catalogue tier scraped from manufacturers'
+  own sites (Vitra, Fritz Hansen, HAY, Muuto, Herman Miller, Knoll, &Tradition, Gubi, Carl Hansen, Cassina, B&B Italia,
+  Poliform, Flexform, Minotti, Moroso, Audo, Normann, Ferm Living, String, Louis Poulsen, Flos, Artemide, Tom Dixon, Hem,
+  Artek, Thonet, USM) with descriptions, dimensions, prices and buy links; OBJ/FBX/3DS converted to GLB and compressed.
+  Owner's policy for this: public pages and public downloads only, polite pacing, no captchas or bot-wall tricks, no
+  account creation by the agent (login-gated brands listed for the owner). Sonnet worker running.
+- Also decided: budget tiers in the agent (Budget = IKEA, Standard = Amazon, Design = manufacturers); a path-traced
+  or SD-polished "Render" step as the archviz finish (SDXL img2img with depth control is ~20-40 s on the M4);
+  Google Earth / Street View outside the windows back on the list for tomorrow within the $5 Maps budget.
+- Catalogue is model-only now (83 IKEA products without models removed); Amazon prices are estimates (IKEA category
+  median x 1.5) labelled "est." in viewer, cart and receipt; dead Amazon links fall back to a search link (checker running).

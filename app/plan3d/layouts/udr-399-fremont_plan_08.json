@@ -3,87 +3,165 @@
  "listing": "udr-399-fremont",
  "plan_image": "/Users/maciejkopiec/sunlit/feasibility/listings/udr-399-fremont/plans/plan_08.png",
  "scale": {
-  "m_per_px": 0.03951,
+  "m_per_px": 0.01378,
   "from": [
    "area:listing sqft 450",
    "door_width"
   ],
   "sqft_listed": null,
   "agreement": null,
-  "door_ref_px": 78.0,
+  "door_ref_px": 102.0,
   "origin_px": [
-   317.0,
-   31.0
+   315.0,
+   27.0
   ],
   "image_scale": 1.0,
-  "rescale_k": 3.582
+  "rescale_k": 1.635
  },
  "ceiling_m": 2.6,
  "walls": [
   {
    "id": "w0",
    "a": [
-    3.75,
-    0.355
+    1.378,
+    0.186
    ],
    "b": [
-    14.653,
-    0.355
+    5.074,
+    0.186
    ],
-   "thickness_m": 0.709,
+   "thickness_m": 0.289,
    "exterior": true
   },
   {
    "id": "w1",
    "a": [
-    1.619,
-    0.652
+    0.041,
+    0.255
    ],
    "b": [
-    3.75,
-    0.652
+    1.378,
+    0.255
    ],
-   "thickness_m": 0.355,
-   "exterior": false
+   "thickness_m": 0.303,
+   "exterior": true
   },
   {
    "id": "w2",
    "a": [
-    0.0,
-    6.418
+    0.041,
+    2.165
    ],
    "b": [
-    6.87,
-    6.418
+    0.731,
+    2.165
    ],
-   "thickness_m": 0.19,
+   "thickness_m": 0.221,
    "exterior": false
   },
   {
    "id": "w3",
    "a": [
-    7.009,
-    6.121
+    0.0,
+    3.364
    ],
    "b": [
-    7.009,
-    11.53
+    2.716,
+    3.364
    ],
-   "thickness_m": 0.276,
-   "exterior": true
+   "thickness_m": 0.193,
+   "exterior": false
   },
   {
    "id": "w4",
    "a": [
-    7.031,
-    0.949
+    2.716,
+    3.364
    ],
    "b": [
-    7.031,
-    6.121
+    4.48,
+    3.364
    ],
-   "thickness_m": 0.315,
+   "thickness_m": 0.116,
    "exterior": false
+  },
+  {
+   "id": "w5",
+   "a": [
+    0.221,
+    4.502
+   ],
+   "b": [
+    1.213,
+    4.502
+   ],
+   "thickness_m": 0.116,
+   "exterior": false
+  },
+  {
+   "id": "w6",
+   "a": [
+    3.97,
+    10.078
+   ],
+   "b": [
+    5.115,
+    10.078
+   ],
+   "thickness_m": 0.116,
+   "exterior": false
+  },
+  {
+   "id": "w7",
+   "a": [
+    0.221,
+    10.292
+   ],
+   "b": [
+    5.074,
+    10.292
+   ],
+   "thickness_m": 0.262,
+   "exterior": true
+  },
+  {
+   "id": "w8",
+   "a": [
+    0.33,
+    0.0
+   ],
+   "b": [
+    0.33,
+    10.41
+   ],
+   "thickness_m": 0.579,
+   "exterior": true
+  },
+  {
+   "id": "w9",
+   "a": [
+    2.482,
+    0.662
+   ],
+   "b": [
+    2.482,
+    2.302
+   ],
+   "thickness_m": 0.116,
+   "exterior": false
+  },
+  {
+   "id": "w10",
+   "a": [
+    4.894,
+    0.069
+   ],
+   "b": [
+    4.894,
+    10.41
+   ],
+   "thickness_m": 0.442,
+   "exterior": true
   }
  ],
  "openings": [
@@ -92,33 +170,32 @@
    "wall": "w0",
    "type": "door",
    "s0": 0.0,
-   "s1": 2.844,
-   "width_m": 2.844,
+   "s1": 0.8,
+   "width_m": 0.8,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "in_left"
   },
   {
    "id": "o1",
-   "wall": "w2",
+   "wall": "w3",
    "type": "door",
-   "s0": 3.238,
-   "s1": 6.87,
-   "width_m": 3.632,
+   "s0": 0.703,
+   "s1": 2.716,
+   "width_m": 2.013,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "in_left"
   },
   {
    "id": "o2",
-   "wall": "w3",
-   "type": "door",
-   "s0": 0.0,
-   "s1": 3.08,
-   "width_m": 3.08,
-   "sill_m": 0.0,
-   "height_m": 2.03,
-   "swing": "out_right"
+   "wall": "w7",
+   "type": "window",
+   "s0": 1.033,
+   "s1": 3.818,
+   "width_m": 2.785,
+   "sill_m": 0.9,
+   "height_m": 1.3
   }
  ],
  "rooms": [
@@ -128,91 +205,161 @@
    "type": "other",
    "polygon": [
     [
-     6.791,
-     0.749
+     2.399,
+     0.386
     ],
     [
-     6.791,
-     6.318
+     2.399,
+     3.239
     ],
     [
-     2.052,
-     6.318
+     0.634,
+     3.239
     ],
     [
-     2.052,
-     0.749
+     0.634,
+     2.399
+    ],
+    [
+     1.269,
+     2.399
+    ],
+    [
+     1.269,
+     2.247
+    ],
+    [
+     0.634,
+     2.247
+    ],
+    [
+     0.634,
+     0.386
     ]
    ],
-   "area_m2": 26.17,
+   "area_m2": 4.97,
    "walls": [],
    "centre_px": [
-    429.0,
-    120.5
-   ]
+    404.5,
+    177.0
+   ],
+   "named_from": "model room class"
   },
   {
    "id": "r1",
-   "name": "Room 2",
-   "type": "other",
+   "name": "Bath",
+   "type": "bathroom",
    "polygon": [
     [
-     3.395,
-     6.594
+     2.592,
+     0.455
     ],
     [
-     6.83,
-     6.594
+     4.646,
+     0.455
     ],
     [
-     6.83,
-     9.28
+     4.646,
+     3.254
     ],
     [
-     3.395,
-     9.28
+     2.592,
+     3.254
     ]
    ],
-   "area_m2": 9.36,
+   "area_m2": 5.91,
    "walls": [],
    "centre_px": [
-    446.5,
-    232.0
-   ]
-  }
- ],
- "fixtures": [
-  {
-   "id": "f0",
-   "type": "block",
-   "rect": {
-    "x": 1.006,
-    "z": 3.259,
-    "w": 2.092,
-    "d": 6.515,
-    "rot_deg": 0
-   },
-   "room": null,
-   "against_wall": null,
-   "height_m": 1.0
+    577.5,
+    161.5
+   ],
+   "named_from": "plan text (OCR)"
   },
   {
-   "id": "f1",
-   "type": "block",
-   "rect": {
-    "x": 1.956,
-    "z": 27.543,
-    "w": 2.883,
-    "d": 4.226,
-    "rot_deg": 0
-   },
-   "room": null,
-   "against_wall": null,
-   "height_m": 1.0
+   "id": "r2",
+   "name": "Kitchen / Living",
+   "type": "kitchen",
+   "polygon": [
+    [
+     4.646,
+     3.475
+    ],
+    [
+     4.646,
+     9.94
+    ],
+    [
+     1.269,
+     10.146
+    ],
+    [
+     1.269,
+     8.864
+    ],
+    [
+     0.634,
+     8.864
+    ],
+    [
+     0.634,
+     6.26
+    ],
+    [
+     1.269,
+     6.26
+    ],
+    [
+     1.269,
+     4.453
+    ],
+    [
+     0.675,
+     4.453
+    ],
+    [
+     0.675,
+     3.475
+    ],
+    [
+     2.468,
+     3.475
+    ],
+    [
+     2.592,
+     4.206
+    ],
+    [
+     2.592,
+     3.475
+    ]
+   ],
+   "area_m2": 24.65,
+   "walls": [],
+   "centre_px": [
+    452.46153846153845,
+    458.53846153846155
+   ],
+   "named_from": "plan text (OCR)"
   }
  ],
+ "fixtures": [],
  "materials": {},
  "review": {
-  "rounds": 0
- }
+  "rounds": 0,
+  "rebuilt": "cubi offline",
+  "named": {
+   "previous layout": 0,
+   "plan reading (cached)": 0,
+   "model room class": 3
+  }
+ },
+ "walls_from": "model+ink (0.96)",
+ "levels_px": [
+  [
+   314.7,
+   0.0,
+   685.3,
+   800.0
+  ]
+ ]
 }

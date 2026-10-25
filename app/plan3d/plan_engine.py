@@ -506,24 +506,95 @@ def model_masks(path, shape):
     return M
 
 def cubi_walls(g, M):
-    """Walls = the model's wall pixels that sit on drawn ink. The model sees through floor textures and drawn furniture; the
-    ink keeps the drawn gaps (doors) and the hairline windows out of the wall. Plans whose walls are hairlines themselves
-    (the ink test would erase them) fall back to the model mask with its window/door pixels cut out.
-    Returns (mask, thickness for geometry, heaviest wall weight)."""
-    mw = M["wall"]; t_model = wall_thickness(mw)
-    k = max(2, int(round(t_model * 0.35))); tol = max(2, int(round(0.25 * t_model)))
-    ink_thick = cv2.morphologyEx((g < 238).astype(np.uint8), cv2.MORPH_OPEN, cv2.getStructuringElement(cv2.MORPH_RECT, (k, k)))
-    wm = ink_thick & cv2.dilate(mw, cv2.getStructuringElement(cv2.MORPH_RECT, (2 * tol + 1, 2 * tol + 1)))
-    icons = cv2.dilate(M["window"] | M["door"], cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3)))
-    covered = float((cv2.dilate(wm, cv2.getStructuringElement(cv2.MORPH_RECT, (2 * tol + 1, 2 * tol + 1))) & mw).sum()) / max(1, int(mw.sum()))
-    if covered < 0.6: wm = mw.copy(); M["wall_source"] = f"model (ink covers {covered:.2f})"
+    """Walls = the model's wall pixels that have drawn ink near them. The model sees through floor textures and drawn
+    furniture (no wall there); the ink keeps drawn door gaps open (blank paper under the model's continuous wall); hairline
+    walls and walls drawn as two outlines stay (closed back into one band inside the model's wall). Windows stay IN the wall
+    here (rooms must close); cubi_openings() puts them on it. Plans where the ink test would drop most predicted walls fall
+    back to the model mask. Returns (mask, thickness for geometry, heaviest wall weight)."""
+    mw = M["wall"]; t_model = wall_thickness(mw); tol = max(2, int(round(0.2 * t_model)))
+    near_ink = cv2.dilate((g < 238).astype(np.uint8), cv2.getStructuringElement(cv2.MORPH_RECT, (2 * tol + 1, 2 * tol + 1)))
+    wm = mw & near_ink
+    kc = max(3, int(round(t_model))) | 1
+    wm = cv2.morphologyEx(wm, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_RECT, (kc, kc))) & mw   # double-outline walls -> one band
+    covered = float(wm.sum()) / max(1, int(mw.sum()))
+    if covered < 0.6: wm = mw.copy(); M["wall_source"] = f"model (ink under {covered:.2f})"
     else: M["wall_source"] = f"model+ink ({covered:.2f})"
-    wm = (wm & (1 - icons)).astype(np.uint8)
-    n, lab, st, _ = cv2.connectedComponentsWithStats(wm, 8); keep = np.zeros_like(wm); t = wall_thickness(wm) if wm.sum() else t_model
+    wm = wm.astype(np.uint8); n, lab, st, _ = cv2.connectedComponentsWithStats(wm, 8); keep = np.zeros_like(wm); t = wall_thickness(wm) if wm.sum() else t_model
     for i in range(1, n):
         if st[i, cv2.CC_STAT_AREA] >= t * t * 2: keep[lab == i] = 1
     ws = wall_thicknesses(keep) if keep.sum() else [t]
-    return keep, float(min(ws)), float(max(ws))
+    # heaviest weight from the thick end of the distribution: wall_rects' kernels must be longer than the heaviest wall is
+    # thick, or a heavy horizontal wall survives the vertical opening and glues two vertical walls into one piece
+    heavy = max(ws)
+    if keep.sum():
+        from skimage.morphology import skeletonize
+        dt = cv2.distanceTransform(keep, cv2.DIST_L2, 5); v = dt[skeletonize(keep.astype(bool))]; v = v[v > 1.2]
+        if v.size >= 50: heavy = max(heavy, float(2 * np.percentile(v, 95)))
+    return keep, float(min(ws)), float(heavy)
+
+def cubi_openings(openings, pieces, M, thick):
+    """Model windows/doors that lie ON a wall piece (windows drawn as hairlines in the wall, doors drawn with a threshold
+    line) become openings on that piece, unless an opening already covers them."""
+    out = list(openings)
+    for kind, mask in (("window", M["window"]), ("door", M["door"])):
+        n, lab, st, _ = cv2.connectedComponentsWithStats(mask, 8)
+        for i in range(1, n):
+            x, y, w, h, area = st[i]
+            if max(w, h) < 1.5 * thick: continue   # specks
+            o = "h" if w >= h else "v"; c = y + h / 2 if o == "h" else x + w / 2; a, b = (x, x + w) if o == "h" else (y, y + h)
+            best = None
+            for j, pc in enumerate(pieces):
+                if pc["o"] != o or abs(pc["c"] - c) > max(pc["t"], thick): continue
+                ov = min(b, pc["s1"]) - max(a, pc["s0"])
+                if ov >= 0.6 * (b - a) and (best is None or ov > best[0]): best = (ov, j)
+            if best is None: continue
+            pc = pieces[best[1]]; a, b = max(a, pc["s0"]), min(b, pc["s1"])
+            if any(q["o"] == o and abs(q["c"] - pc["c"]) <= thick and min(b, q["b"]) - max(a, q["a"]) > 0.5 * (b - a) for q in out): continue
+            out.append({"piece": best[1], "o": o, "c": pc["c"], "a": float(a), "b": float(b), "t": pc["t"], "meets": best[1], "kind": kind, "score": 1.0, "from_model": True})
+    return out
+
+def cubi_diagonals(M, pieces, thick):
+    """Walls the axis-aligned pieces cannot express (diagonal, or a plan drawn slightly rotated): the model's wall pixels left
+    over after the pieces, thinned to centre lines and fitted with straight segments. Each: x0, y0, x1, y1, thickness (px) and
+    window runs [(a, b)] in px along the segment where the model sees glass."""
+    from skimage.morphology import skeletonize
+    H, W = M["wall"].shape; cov = np.zeros((H, W), np.uint8)
+    for pc in pieces:
+        x0, y0, x1, y1 = ext_of(pc); cv2.rectangle(cov, (int(x0 - thick), int(y0 - thick)), (int(math.ceil(x1 + thick)), int(math.ceil(y1 + thick))), 1, -1)
+    res = (M["wall"] & (1 - cov)).astype(np.uint8)
+    res = cv2.morphologyEx(res, cv2.MORPH_OPEN, cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3)))
+    if res.sum() < thick * thick * 4: return []
+    dt = cv2.distanceTransform(res, cv2.DIST_L2, 5); sk = skeletonize(res.astype(bool)).astype(np.uint8)
+    n, lab, st, _ = cv2.connectedComponentsWithStats(sk, 8); out = []
+    win = M["window"]
+    for i in range(1, n):
+        if st[i, cv2.CC_STAT_AREA] < 4 * thick: continue
+        ys, xs = np.nonzero(lab == i); P = np.stack([xs, ys], 1).astype(np.float32)
+        vx, vy, cx, cy = cv2.fitLine(P, cv2.DIST_L2, 0, 0.01, 0.01).ravel()
+        d = np.array([vx, vy]); nrm = np.array([-vy, vx]); rel = P - np.array([cx, cy])
+        if np.median(np.abs(rel @ nrm)) > max(2.0, 0.5 * thick): continue   # curved or branching: not one straight wall
+        ang = abs(math.degrees(math.atan2(vy, vx))) % 180; off = min(ang, abs(ang - 90), abs(ang - 180))
+        if off < 8: continue   # axis-aligned leftovers belong to the pieces
+        t = float(2 * np.median(dt[ys, xs])); proj = rel @ d; lo, hi = float(proj.min()) - t / 2, float(proj.max()) + t / 2
+        if hi - lo < 3 * thick: continue
+        a = np.array([cx, cy]) + lo * d; b = np.array([cx, cy]) + hi * d
+        # glass along the segment: model window pixels within the wall band, projected on the axis
+        L = int(hi - lo); runs = []; onwin = np.zeros(L + 1, bool)
+        for k in range(L + 1):
+            q = a + k * d
+            for off_n in (-t / 2, 0, t / 2):
+                xq, yq = int(round(q[0] + off_n * nrm[0])), int(round(q[1] + off_n * nrm[1]))
+                if 0 <= xq < W and 0 <= yq < H and win[yq, xq]: onwin[k] = True; break
+        k = 0
+        while k <= L:
+            if onwin[k]:
+                j = k
+                while j + 1 <= L and (onwin[j + 1] or (j + 1 + int(thick) <= L and onwin[j + 1:j + 1 + int(thick)].any())): j += 1
+                if j - k >= 2 * thick: runs.append((float(k), float(j)))
+                k = j + 1
+            else: k += 1
+        out.append({"a": [float(a[0]), float(a[1])], "b": [float(b[0]), float(b[1])], "t": max(t, thick * 0.6), "windows": runs})
+    return out
 
 def cubi_kinds(openings, M, thick):
     """Opening types from the model where it has an opinion: window pixels along the gap -> window, door pixels -> door; a
@@ -555,7 +626,7 @@ def extract(path, extra=None):
     pieces, blocks = wall_rects(wm, thick, heavy=max(weights) if weights else None)
     loose = (g < 235).astype(np.uint8)
     closed, openings = bridge(pieces, g.shape, thick, ink=loose)
-    if M is not None: openings = cubi_kinds(openings, M, thick)
+    if M is not None: openings = cubi_openings(cubi_kinds(openings, M, thick), pieces, M, thick)
     # second pass: the typical door width is now known (confident arcs, plausible size); bridges much wider than a door that
     # are not windows are open space, not openings -> rebuild the closed image without them
     dmin, dmax = 0.025 * min(g.shape), 0.12 * min(g.shape)   # a door is 2.5-12% of the plan image regardless of wall weight
@@ -600,6 +671,9 @@ def extract(path, extra=None):
     if M is None: closed, tp, to = thin_walls(closed, thin, thick, pieces); pieces = pieces + tp; openings = openings + to   # the model already has the thin walls; here hairline furniture would become walls
     thin = cv2.subtract(loose, cv2.dilate(closed, cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))))
     closed, openings = repair_leaks(closed, pieces, openings, thin, thick, door_ref)
+    if M is not None:   # rooms close against the model's full wall mask too (it runs through doors and windows and follows diagonal and
+        # slightly rotated walls, which the axis-aligned pieces cannot): no leaks where the pieces leave a slanted gap
+        closed = np.maximum(closed, cv2.dilate(M["wall"], cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))))
     lab, rooms = rooms_from(closed, thick)
     lab, rooms = region_sanity(lab, rooms, closed, pieces, openings, thick, door_ref)
     # keep pieces (and openings) that border a room; everything else is title, legend, logo
@@ -613,7 +687,8 @@ def extract(path, extra=None):
     kept = set(keep); remap = {old: new for new, old in enumerate(keep)}
     openings = [dict(o, piece=remap[o["piece"]], meets=remap[o["meets"]]) for o in openings if o["piece"] in kept and o["meets"] in kept]
     return {"gray": g, "ink": ink, "scale": s, "thick": thick, "pieces": [pieces[i] for i in keep], "piece_index": keep, "openings": openings, "room_labels": lab, "rooms": rooms, "closed": closed, "blocks": blocks,
-            "walls_from": (M or {}).get("wall_source", "ink"), "levels": (M or {}).get("levels", [])}
+            "walls_from": (M or {}).get("wall_source", "ink"), "levels": (M or {}).get("levels", []),
+            "diagonals": cubi_diagonals(M, [pieces[i] for i in keep], thick) if M is not None else []}
 
 def debug_overlay(path, out):
     E = extract(path); g = E["gray"]; rgb = cv2.cvtColor(g, cv2.COLOR_GRAY2BGR)
@@ -717,7 +792,7 @@ def metric_layout(E, unit, listing, plan_image, sqft=None, ceiling_m=2.6):
         if poly: rooms_px.append({"label": r["label"], "poly": poly, "area_px": r["area_px"]})
     rooms_px = valid_polygons(rooms_px, lab, thick)
     unit_area_px = float(sum(r["area_px"] for r in rooms_px))
-    scale_from = []
+    scale_from = []; agreement = None
     if m_per_px: scale_from.append("door_width")
     if sqft:
         m_sq = math.sqrt(sqft * 0.092903 / max(unit_area_px, 1)) if unit_area_px else None
@@ -746,7 +821,13 @@ def metric_layout(E, unit, listing, plan_image, sqft=None, ceiling_m=2.6):
         else: a, b = (pc["c"], lo), (pc["c"], hi); probe = [(int(x0 - thick), int((y0 + y1) / 2)), (int(x1 + thick), int((y0 + y1) / 2))]
         ext = any(0 <= px < W and 0 <= py < H and outside[py, px] for px, py in probe)
         walls.append({"id": f"w{i}", "a": M(*a), "b": M(*b), "thickness_m": round(t * m_per_px, 3), "exterior": bool(ext)})
-    ops = []
+    ops = []; diag_ops = []
+    for k, dg in enumerate(E.get("diagonals", [])):   # diagonal walls (cubi_diagonals): exterior by probing both sides at the middle
+        (ax, ay), (bx, by) = dg["a"], dg["b"]; L = math.hypot(bx - ax, by - ay) or 1; nx, ny = -(by - ay) / L, (bx - ax) / L; mx, my = (ax + bx) / 2, (ay + by) / 2
+        ext = any(0 <= int(px) < W and 0 <= int(py) < H and outside[int(py), int(px)] for px, py in ((mx + nx * 1.5 * thick, my + ny * 1.5 * thick), (mx - nx * 1.5 * thick, my - ny * 1.5 * thick)))
+        wid = f"wd{k}"; walls.append({"id": wid, "a": M(ax, ay), "b": M(bx, by), "thickness_m": round(dg["t"] * m_per_px, 3), "exterior": bool(ext), "diagonal": True})
+        for (r0, r1) in dg["windows"]:
+            diag_ops.append({"wall": wid, "type": "window", "s0": round(r0 * m_per_px, 3), "s1": round(r1 * m_per_px, 3), "width_m": round((r1 - r0) * m_per_px, 3), "sill_m": 0.9, "height_m": 1.3})
     for k, o in enumerate(openings):
         pc = pieces[o["piece"]] if o["piece"] < len(pieces) else None
         lo = span[o["piece"]][0] if pc else 0
@@ -763,6 +844,7 @@ def metric_layout(E, unit, listing, plan_image, sqft=None, ceiling_m=2.6):
             rec["swing"] = f"{inside}_{hinge}"
         else: rec.update({"sill_m": 0.0, "height_m": 2.1})
         ops.append(rec)
+    for o in diag_ops: ops.append(dict(o, id=f"o{len(ops)}"))
     rooms = []
     for k, r in enumerate(rooms_px):
         poly = [M(x, y) for x, y in r["poly"]]
@@ -808,9 +890,12 @@ def weighted_median(cands):
         if acc >= tot / 2: return v
     return cands[-1][0]
 
-def run(plan_path, listing, unit, out_dir, sqft=None, use_reader=True, repair=None):
+def run(plan_path, listing, unit, out_dir, sqft=None, use_reader=True, repair=None, offline=False):
+    """offline: no paid calls at all: plan_reader only from its cache, no annotation (rebuild.py carries names and fixtures
+    over from the previous layout instead)."""
     import os
     repair = os.environ.get("REPAIR", "0") == "1" if repair is None else repair
+    if offline: repair = False
     E = extract(plan_path); R = None; names = {}; anchor = None
     if repair and use_reader:   # review pass: annotate once, re-extract with the openings the VLM says I missed, then the normal pipeline annotates the repaired overlay
         try:
@@ -820,9 +905,9 @@ def run(plan_path, listing, unit, out_dir, sqft=None, use_reader=True, repair=No
     if use_reader:
         try:
             sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "pipeline2")); sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
-            import plan_reader; R = plan_reader.read_plan(plan_path, sqft)
-            cands, names = reader_anchor(E, R); anchor = weighted_median(cands)
-            if sqft is None and R.get("total_sqft_printed"): sqft = float(R["total_sqft_printed"])
+            import plan_reader; R = plan_reader.read_plan(plan_path, sqft, cached_only=offline)
+            if R is not None: cands, names = reader_anchor(E, R); anchor = weighted_median(cands)
+            if R is not None and sqft is None and R.get("total_sqft_printed"): sqft = float(R["total_sqft_printed"])
         except Exception as e: print(f"[engine] reader unavailable: {type(e).__name__} {e}")
     L = metric_layout(E, unit, listing, str(plan_path), sqft=sqft)
     if anchor:   # reader dimensions beat the door estimate: rescale everything by the ratio
@@ -835,8 +920,9 @@ def run(plan_path, listing, unit, out_dir, sqft=None, use_reader=True, repair=No
         for f in L["fixtures"]: f["rect"].update({"x": sc(f["rect"]["x"]), "z": sc(f["rect"]["z"]), "w": sc(f["rect"]["w"]), "d": sc(f["rect"]["d"])})
     for r, er in zip(L["rooms"], E["rooms"]):
         if er["label"] in names: r["name"], r["type"] = names[er["label"]][0] or r["name"], names[er["label"]][1] or r["type"]
-    L["ceiling_m"] = 2.6
-    if use_reader:
+    L["ceiling_m"] = 2.6; L["walls_from"] = E.get("walls_from", "ink")
+    if E.get("levels"): L["levels_px"] = [[round(v / E["scale"], 1) for v in lv["bbox"]] for lv in E["levels"]]   # drawing bboxes in original image px (townhouse levels)
+    if use_reader and not offline:
         try:
             A = vlm_annotate(E, plan_path)
             printed_anchor = bool(R and R.get("has_dimensions"))

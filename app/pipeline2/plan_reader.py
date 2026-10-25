@@ -71,9 +71,15 @@ def _scale_rooms(g, W, H):
             if not rm.get("depth_text") and s: rm["depth_m"] = round((rm["y1_frac"] - rm["y0_frac"]) * H * s, 2)
     return g
 
-def read_plan(path, sqft_total=None, model=V2_MODEL):
+def read_plan(path, sqft_total=None, model=V2_MODEL, cached_only=False):
     path = pathlib.Path(path); key = hashlib.sha1((str(path) + model + "v2").encode()).hexdigest()[:10]; cache = path.parent / f"plan_{key}.json"
     if cache.exists(): return json.load(open(cache))
+    if cached_only:   # offline rebuilds: the cache key holds the path as first given, absolute or repo-relative
+        root = pathlib.Path(__file__).resolve().parents[2]
+        for alt in {str(path.resolve()), str(path.resolve().relative_to(root)) if path.resolve().is_relative_to(root) else str(path)}:
+            c2 = path.parent / f"plan_{hashlib.sha1((alt + model + 'v2').encode()).hexdigest()[:10]}.json"
+            if c2.exists(): return json.load(open(c2))
+        return None
     im0 = Image.open(path).convert("RGB"); W0, H0 = im0.size; im = im0.copy(); im.thumbnail((1600, 1600)); b = io.BytesIO(); im.save(b, "PNG")
     content = [{"type": "text", "text": f"Floor plan image {im.size[0]}x{im.size[1]} px. Listed total: {sqft_total or 'unknown'} sq ft."},
                {"type": "image", "source": {"type": "base64", "media_type": "image/png", "data": base64.standard_b64encode(b.getvalue()).decode()}}]

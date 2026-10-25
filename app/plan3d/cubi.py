@@ -4,13 +4,15 @@ CC BY-NC 4.0) run on our plans. Plans are rescaled so walls are ~12 px thick (th
 dropped; two-level townhouse plans keep both levels).
 
 Cache per plan image, next to it: cubi_<stem>.npz (rooms, icons, crop at inference size) + cubi_<stem>.json (scale, levels).
-Usage: cubi.py predict [--force] [--weights PATH] [plan images ...]   (no images: every feasibility/listings/*/plans/plan_*)"""
+Usage: [CUBI_WEIGHTS=... CUBI_TAG=ft1] cubi.py predict [--force] [plan images ...]   (no images: every feasibility/listings/*/plans/plan_*)"""
 import sys, os, json, glob, pathlib, time
 import numpy as np, cv2
 from PIL import Image
 
 HERE = pathlib.Path(__file__).resolve().parent; ROOT = HERE.parents[1]
-REPO = ROOT / "feasibility" / "cubicasa5k_repo"; WEIGHTS = ROOT / "feasibility" / "weights" / "cubicasa_model_best_val_loss_var.pkl"
+REPO = ROOT / "feasibility" / "cubicasa5k_repo"
+WEIGHTS = pathlib.Path(os.environ.get("CUBI_WEIGHTS") or ROOT / "feasibility" / "weights" / "cubicasa_model_best_val_loss_var.pkl")
+TAG = os.environ.get("CUBI_TAG", "")   # cache suffix for predictions from other weights (fine-tuned): cubi_<stem>_<tag>.npz
 TARGET_T = 12.0; MAX_SIDE = 2200
 ROOM_CLASSES = ["Background", "Outdoor", "Wall", "Kitchen", "Living Room", "Bed Room", "Bath", "Entry", "Railing", "Storage", "Garage", "Undefined"]
 ICON_CLASSES = ["No Icon", "Window", "Door", "Closet", "Electrical Appliance", "Toilet", "Sink", "Sauna Bench", "Fire Place", "Bathtub", "Chimney"]
@@ -72,8 +74,9 @@ def crop_levels(rooms):
     levels.sort(key=lambda L: (L["bbox"][0] // 50, L["bbox"][1]))   # left to right, then top to bottom
     return crop, levels
 
-def cache_paths(path):
-    p = pathlib.Path(path); return p.parent / f"cubi_{p.stem}.npz", p.parent / f"cubi_{p.stem}.json"
+def cache_paths(path, tag=None):
+    p = pathlib.Path(path); t = TAG if tag is None else tag; sfx = f"_{t}" if t else ""
+    return p.parent / f"cubi_{p.stem}{sfx}.npz", p.parent / f"cubi_{p.stem}{sfx}.json"
 
 def predict(path, force=False):
     npz, meta = cache_paths(path)
@@ -88,8 +91,8 @@ def predict(path, force=False):
          "weights": str(WEIGHTS.name), "sec": round(time.time() - t0, 2)}
     json.dump(M, open(meta, "w"), indent=1); return load(path)
 
-def load(path):
-    npz, meta = cache_paths(path)
+def load(path, tag=None):
+    npz, meta = cache_paths(path, tag)
     if not (npz.exists() and meta.exists()): return None
     d = np.load(npz); M = json.load(open(meta)); M.update(rooms=d["rooms"], icons=d["icons"], crop=d["crop"]); return M
 
@@ -120,7 +123,6 @@ if __name__ == "__main__":
     args = sys.argv[1:]
     if args and args[0] == "predict":
         force = "--force" in args; rest = [a for a in args[1:] if not a.startswith("--")]
-        if "--weights" in args: WEIGHTS = pathlib.Path(args[args.index("--weights") + 1]); rest = [a for a in rest if a != str(WEIGHTS)]
         paths = rest or sorted(p for p in glob.glob(str(ROOT / "feasibility/listings/*/plans/plan_*.*")) if p.lower().endswith((".jpg", ".jpeg", ".png", ".webp")))
         load_model(); t0 = time.time(); n_ok = 0
         for i, p in enumerate(paths):
