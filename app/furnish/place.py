@@ -48,6 +48,13 @@ def _orient():
         try: _ORIENT = json.load(open(pathlib.Path(__file__).parent / "designer" / "orient.json"))
         except Exception: _ORIENT = {}
     return _ORIENT
+_RECAT = None
+def _recat():   # per-product category corrections, reviewed against renders (designer/recat.json)
+    global _RECAT
+    if _RECAT is None:
+        try: _RECAT = json.load(open(pathlib.Path(__file__).parent / "designer" / "recat.json"))
+        except Exception: _RECAT = {}
+    return _RECAT
 _FLAGS = None
 def _flags():   # the owner's corrections from gallery.html (up_fix / yaw_fix and the box measured in that orientation)
     global _FLAGS
@@ -85,6 +92,8 @@ def fix_item(i):
         w, d, h = od["dims_after_m"]; i = dict(i, width_m=w, depth_m=d, height_m=h)
     for k, c in RECAT:
         if k in n and i.get("category") != c: i = dict(i, category=c); break
+    rc = _recat().get(i.get("id") or "")
+    if rc: i = dict(i, category=rc["category"])
     fl = _flags().get(i.get("id") or "")
     if fl and fl.get("up_fix") and fl.get("dims_m"):   # the owner set it upright in the gallery: that box is measured, not guessed
         w, d, h = fl["dims_m"]; return dict(i, width_m=round(w, 3), depth_m=round(d, 3), height_m=round(h, 3))
