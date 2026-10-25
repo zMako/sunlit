@@ -493,13 +493,69 @@ def colourful(path, max_side=400):
     im = Image.open(path).convert("RGB"); im.thumbnail((max_side, max_side)); a = np.asarray(im).astype(np.int16)
     sat = (a.max(2) - a.min(2)); return float((sat > 40).mean())
 
+def model_masks(path, shape):
+    """CubiCasa wall/window/door masks for this plan at the work image size (cubi.py cache), or None (PLAN_WALLS=ink, no cache,
+    or no walls predicted) -> the classical ink path."""
+    import os
+    if os.environ.get("PLAN_WALLS", "cubi") != "cubi": return None
+    try:
+        sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent)); import cubi
+        M = cubi.masks_at(path, shape)
+    except Exception as e: print(f"[engine] cubi masks unavailable: {type(e).__name__} {e}"); return None
+    if M is None or M["wall"].sum() < 200: return None
+    return M
+
+def cubi_walls(g, M):
+    """Walls = the model's wall pixels that sit on drawn ink. The model sees through floor textures and drawn furniture; the
+    ink keeps the drawn gaps (doors) and the hairline windows out of the wall. Plans whose walls are hairlines themselves
+    (the ink test would erase them) fall back to the model mask with its window/door pixels cut out.
+    Returns (mask, thickness for geometry, heaviest wall weight)."""
+    mw = M["wall"]; t_model = wall_thickness(mw)
+    k = max(2, int(round(t_model * 0.35))); tol = max(2, int(round(0.25 * t_model)))
+    ink_thick = cv2.morphologyEx((g < 238).astype(np.uint8), cv2.MORPH_OPEN, cv2.getStructuringElement(cv2.MORPH_RECT, (k, k)))
+    wm = ink_thick & cv2.dilate(mw, cv2.getStructuringElement(cv2.MORPH_RECT, (2 * tol + 1, 2 * tol + 1)))
+    icons = cv2.dilate(M["window"] | M["door"], cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3)))
+    covered = float((cv2.dilate(wm, cv2.getStructuringElement(cv2.MORPH_RECT, (2 * tol + 1, 2 * tol + 1))) & mw).sum()) / max(1, int(mw.sum()))
+    if covered < 0.6: wm = mw.copy(); M["wall_source"] = f"model (ink covers {covered:.2f})"
+    else: M["wall_source"] = f"model+ink ({covered:.2f})"
+    wm = (wm & (1 - icons)).astype(np.uint8)
+    n, lab, st, _ = cv2.connectedComponentsWithStats(wm, 8); keep = np.zeros_like(wm); t = wall_thickness(wm) if wm.sum() else t_model
+    for i in range(1, n):
+        if st[i, cv2.CC_STAT_AREA] >= t * t * 2: keep[lab == i] = 1
+    ws = wall_thicknesses(keep) if keep.sum() else [t]
+    return keep, float(min(ws)), float(max(ws))
+
+def cubi_kinds(openings, M, thick):
+    """Opening types from the model where it has an opinion: window pixels along the gap -> window, door pixels -> door; a
+    hairline 'window' the model does not see (interior walls, counters, tub edges) is a plain opening."""
+    H, W = M["window"].shape; out = []
+    for o in openings:
+        a, b, c = int(o["a"]), int(math.ceil(o["b"])), o["c"]; half = int(max(o.get("t", thick), thick) / 2 + thick)
+        lo, hi = max(0, int(c - half)), int(c + half) + 1
+        if b <= a: out.append(o); continue
+        win = M["window"][lo:hi, a:b] if o["o"] == "h" else M["window"][a:b, lo:hi]; door = M["door"][lo:hi, a:b] if o["o"] == "h" else M["door"][a:b, lo:hi]
+        fw = float((win.any(axis=0) if o["o"] == "h" else win.any(axis=1)).mean()) if win.size else 0.0
+        fd = float((door.any(axis=0) if o["o"] == "h" else door.any(axis=1)).mean()) if door.size else 0.0
+        o = dict(o, model_window=round(fw, 2), model_door=round(fd, 2))
+        if fw >= 0.4 and fw >= fd: o.update(kind="window", score=max(o.get("score", 0), fw))
+        elif fd >= 0.25: o.update(kind="door", score=max(o.get("score", 0), 0.5))
+        elif o["kind"] == "window" and fw < 0.1: o.update(kind="opening")
+        out.append(o)
+    return out
+
 def extract(path, extra=None):
     """extra: list of {'type', 'x0','y0','x1','y1'} in image FRACTIONS to force-bridge (from the VLM review)."""
     g, ink, s = load_ink(path)
     if not is_plan(g) or softness(path) > 3.0: raise ValueError(f"not a floor plan (white {float((g > 235).mean()):.2f}, ink {float((g < 190).mean()):.2f}, mid {float(((g > 70) & (g < 215)).mean()):.2f}, colour {colourful(path):.2f})")
-    weights = []; wm, thick = walls_two_tone(g, weights); pieces, blocks = wall_rects(wm, thick, heavy=max(weights) if weights else None)
+    M = model_masks(path, g.shape)
+    if M is not None:   # learned walls (cubi.py): whiten everything outside the main drawing(s), walls from the model on the ink
+        g = np.where(M["crop"] > 0, g, 255).astype(np.uint8); ink = (g < 190).astype(np.uint8)
+        wm, thick, heavy = cubi_walls(g, M); weights = [heavy]
+    else: weights = []; wm, thick = walls_two_tone(g, weights)
+    pieces, blocks = wall_rects(wm, thick, heavy=max(weights) if weights else None)
     loose = (g < 235).astype(np.uint8)
     closed, openings = bridge(pieces, g.shape, thick, ink=loose)
+    if M is not None: openings = cubi_kinds(openings, M, thick)
     # second pass: the typical door width is now known (confident arcs, plausible size); bridges much wider than a door that
     # are not windows are open space, not openings -> rebuild the closed image without them
     dmin, dmax = 0.025 * min(g.shape), 0.12 * min(g.shape)   # a door is 2.5-12% of the plan image regardless of wall weight
@@ -541,7 +597,7 @@ def extract(path, extra=None):
             if i >= 0: openings.append({"piece": i, "o": o, "c": c, "a": float(a), "b": float(b), "t": pieces[i]["t"], "meets": i, "kind": e["type"], "score": 1.0, "from_review": True})
     for b in blocks: cv2.rectangle(closed, (b["x0"], b["y0"]), (b["x1"] - 1, b["y1"] - 1), 1, -1)   # columns, fireplaces: solid, rooms end at them
     thin = cv2.subtract(loose, cv2.dilate(closed, cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))))
-    closed, tp, to = thin_walls(closed, thin, thick, pieces); pieces = pieces + tp; openings = openings + to
+    if M is None: closed, tp, to = thin_walls(closed, thin, thick, pieces); pieces = pieces + tp; openings = openings + to   # the model already has the thin walls; here hairline furniture would become walls
     thin = cv2.subtract(loose, cv2.dilate(closed, cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))))
     closed, openings = repair_leaks(closed, pieces, openings, thin, thick, door_ref)
     lab, rooms = rooms_from(closed, thick)
@@ -556,7 +612,8 @@ def extract(path, extra=None):
         if sub.size and sub.any(): keep.append(i)
     kept = set(keep); remap = {old: new for new, old in enumerate(keep)}
     openings = [dict(o, piece=remap[o["piece"]], meets=remap[o["meets"]]) for o in openings if o["piece"] in kept and o["meets"] in kept]
-    return {"gray": g, "ink": ink, "scale": s, "thick": thick, "pieces": [pieces[i] for i in keep], "piece_index": keep, "openings": openings, "room_labels": lab, "rooms": rooms, "closed": closed, "blocks": blocks}
+    return {"gray": g, "ink": ink, "scale": s, "thick": thick, "pieces": [pieces[i] for i in keep], "piece_index": keep, "openings": openings, "room_labels": lab, "rooms": rooms, "closed": closed, "blocks": blocks,
+            "walls_from": (M or {}).get("wall_source", "ink"), "levels": (M or {}).get("levels", [])}
 
 def debug_overlay(path, out):
     E = extract(path); g = E["gray"]; rgb = cv2.cvtColor(g, cv2.COLOR_GRAY2BGR)
