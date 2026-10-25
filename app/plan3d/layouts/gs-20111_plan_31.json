@@ -351,23 +351,29 @@
    "id": "o0",
    "wall": "w1",
    "type": "door",
-   "s0": 0.0,
-   "s1": 0.526,
-   "width_m": 0.526,
+   "s0": 0.05,
+   "s1": 0.867,
+   "width_m": 0.817,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_left",
+   "width_drawn_m": 0.526,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o1",
    "wall": "w5",
    "type": "door",
-   "s0": 1.229,
-   "s1": 1.756,
-   "width_m": 0.526,
+   "s0": 0.946,
+   "s1": 1.706,
+   "width_m": 0.76,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "in_right",
+   "width_drawn_m": 0.527,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o2",
@@ -383,45 +389,57 @@
    "id": "o3",
    "wall": "w13",
    "type": "door",
-   "s0": 0.0,
-   "s1": 0.702,
-   "width_m": 0.702,
+   "s0": 0.05,
+   "s1": 0.96,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_left",
+   "width_drawn_m": 0.702,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o4",
    "wall": "w15",
    "type": "door",
-   "s0": 0.761,
-   "s1": 1.327,
-   "width_m": 0.566,
+   "s0": 0.567,
+   "s1": 1.277,
+   "width_m": 0.71,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_left"
+   "swing": "in_left",
+   "width_drawn_m": 0.566,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o5",
    "wall": "w19",
    "type": "door",
-   "s0": 0.0,
-   "s1": 0.898,
-   "width_m": 0.898,
+   "s0": 0.05,
+   "s1": 0.96,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_left"
+   "swing": "in_left",
+   "width_drawn_m": 0.898,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o6",
    "wall": "w21",
    "type": "door",
-   "s0": 0.0,
-   "s1": 0.546,
-   "width_m": 0.546,
+   "s0": 0.05,
+   "s1": 0.856,
+   "width_m": 0.806,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_left",
+   "width_drawn_m": 0.546,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o7",
@@ -458,18 +476,21 @@
    "wall": "w21",
    "type": "door",
    "s0": 0.936,
-   "s1": 1.327,
-   "width_m": 0.39,
+   "s1": 1.51,
+   "width_m": 0.574,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "in_right",
+   "width_drawn_m": 0.391,
+   "leaves": 1,
+   "swing_from": "rule"
   }
  ],
  "rooms": [
   {
    "id": "r0",
-   "name": "Room 1",
-   "type": "other",
+   "name": "Primary Bedroom",
+   "type": "bedroom",
    "polygon": [
     [
      0.254,
@@ -518,7 +539,7 @@
     342.3,
     249.5
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r1",
@@ -548,7 +569,7 @@
     453.0,
     230.0
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r2",
@@ -602,12 +623,12 @@
     594.6,
     323.2
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r3",
-   "name": "Room 2",
-   "type": "other",
+   "name": "Closet",
+   "type": "closet",
    "polygon": [
     [
      3.999,
@@ -656,7 +677,7 @@
     411.5,
     352.2
    ],
-   "named_from": "model room class"
+   "named_from": "size"
   },
   {
    "id": "r4",
@@ -686,11 +707,11 @@
     246.0,
     440.0
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r5",
-   "name": "Living Room",
+   "name": "Living / Kitchen",
    "type": "living",
    "polygon": [
     [
@@ -768,7 +789,7 @@
     422.1764705882353,
     532.8235294117648
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   }
  ],
  "fixtures": [],
@@ -780,6 +801,14 @@
    "previous layout": 0,
    "plan reading (cached)": 0,
    "model room class": 6
+  },
+  "doors": {
+   "widened": 6,
+   "arc": 4,
+   "rule": 3,
+   "cased": 0,
+   "two_leaf": 0,
+   "duplicates_removed": 0
   }
  },
  "walls_from": "model+ink (0.96)",
@@ -790,5 +819,6 @@
    673.0,
    702.0
   ]
- ]
+ ],
+ "door_style": "shaker"
 }

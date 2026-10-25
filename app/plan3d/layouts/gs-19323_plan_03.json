@@ -337,57 +337,73 @@
   {
    "id": "o0",
    "wall": "w5",
-   "type": "door",
-   "s0": 0.0,
-   "s1": 1.078,
+   "type": "closet_door",
+   "s0": 0.05,
+   "s1": 1.128,
    "width_m": 1.078,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_left",
+   "width_drawn_m": 1.078,
+   "leaves": 2,
+   "style": "bifold",
+   "swing_from": "rule"
   },
   {
    "id": "o1",
    "wall": "w6",
    "type": "door",
-   "s0": 3.404,
-   "s1": 4.144,
-   "width_m": 0.74,
+   "s0": 3.284,
+   "s1": 4.094,
+   "width_m": 0.81,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "out_right",
+   "width_drawn_m": 0.74,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o2",
    "wall": "w15",
    "type": "door",
-   "s0": 2.452,
-   "s1": 3.425,
-   "width_m": 0.972,
+   "s0": 2.464,
+   "s1": 3.374,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_left"
+   "swing": "in_left",
+   "width_drawn_m": 0.973,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o3",
    "wall": "w17",
    "type": "door",
-   "s0": 1.48,
-   "s1": 2.22,
+   "s0": 1.429,
+   "s1": 2.169,
    "width_m": 0.74,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "out_right",
+   "width_drawn_m": 0.74,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o4",
    "wall": "w20",
    "type": "door",
-   "s0": 0.422,
-   "s1": 1.162,
-   "width_m": 0.74,
+   "s0": 0.203,
+   "s1": 1.113,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_left"
+   "swing": "in_left",
+   "width_drawn_m": 0.74,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o5",
@@ -443,45 +459,57 @@
    "id": "o10",
    "wall": "w12",
    "type": "door",
-   "s0": 1.586,
-   "s1": 2.262,
-   "width_m": 0.676,
+   "s0": 1.469,
+   "s1": 2.379,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "out_right",
+   "width_drawn_m": 0.676,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o11",
    "wall": "w11",
    "type": "door",
-   "s0": 3.256,
-   "s1": 3.848,
-   "width_m": 0.592,
+   "s0": 3.166,
+   "s1": 4.051,
+   "width_m": 0.885,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "out_right",
+   "width_drawn_m": 0.592,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o12",
    "wall": "w10",
    "type": "door",
-   "s0": 0.254,
-   "s1": 0.74,
-   "width_m": 0.486,
+   "s0": 0.05,
+   "s1": 0.96,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "in_right",
+   "width_drawn_m": 0.486,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o13",
    "wall": "w10",
    "type": "door",
-   "s0": 4.63,
-   "s1": 5.243,
-   "width_m": 0.613,
+   "s0": 4.71,
+   "s1": 5.362,
+   "width_m": 0.652,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "out_right",
+   "width_drawn_m": 0.613,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o14",
@@ -573,7 +601,7 @@
     404.3333333333333,
     322.6666666666667
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r1",
@@ -615,8 +643,8 @@
   },
   {
    "id": "r2",
-   "name": "Room 2",
-   "type": "other",
+   "name": "Closet",
+   "type": "closet",
    "polygon": [
     [
      5.285,
@@ -641,11 +669,11 @@
     502.0,
     345.5
    ],
-   "named_from": "model room class"
+   "named_from": "size"
   },
   {
    "id": "r3",
-   "name": "Living Room",
+   "name": "Living 00",
    "type": "living",
    "polygon": [
     [
@@ -703,7 +731,7 @@
     506.25,
     489.6666666666667
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   }
  ],
  "fixtures": [
@@ -744,6 +772,14 @@
    "previous layout": 0,
    "plan reading (cached)": 0,
    "model room class": 4
+  },
+  "doors": {
+   "widened": 7,
+   "arc": 5,
+   "rule": 4,
+   "cased": 0,
+   "two_leaf": 1,
+   "duplicates_removed": 0
   }
  },
  "walls_from": "model+ink (0.96)",
@@ -754,5 +790,6 @@
    671.0,
    625.0
   ]
- ]
+ ],
+ "door_style": "shaker"
 }

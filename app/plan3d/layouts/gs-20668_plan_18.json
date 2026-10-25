@@ -288,56 +288,71 @@
    "id": "o0",
    "wall": "w4",
    "type": "door",
-   "s0": 0.312,
-   "s1": 0.777,
-   "width_m": 0.467,
+   "s0": 0.05,
+   "s1": 0.728,
+   "width_m": 0.678,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_left",
+   "width_drawn_m": 0.465,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o1",
    "wall": "w5",
    "type": "door",
-   "s0": 1.045,
-   "s1": 1.778,
+   "s0": 0.995,
+   "s1": 1.728,
    "width_m": 0.733,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_left"
+   "swing": "in_right",
+   "width_drawn_m": 0.733,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o2",
    "wall": "w7",
    "type": "door",
-   "s0": 0.622,
-   "s1": 1.622,
-   "width_m": 1.001,
+   "s0": 0.717,
+   "s1": 1.527,
+   "width_m": 0.81,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_left"
+   "swing": "in_right",
+   "width_drawn_m": 1.0,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o3",
    "wall": "w8",
    "type": "door",
-   "s0": 1.001,
-   "s1": 1.578,
-   "width_m": 0.578,
+   "s0": 0.767,
+   "s1": 1.527,
+   "width_m": 0.76,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_left"
+   "swing": "in_left",
+   "width_drawn_m": 0.577,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o4",
    "wall": "w10",
    "type": "door",
-   "s0": 0.0,
-   "s1": 0.8,
-   "width_m": 0.8,
+   "s0": 0.05,
+   "s1": 0.96,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "out_right",
+   "width_drawn_m": 0.8,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o5",
@@ -694,6 +709,14 @@
    "previous layout": 4,
    "plan reading (cached)": 1,
    "model room class": 0
+  },
+  "doors": {
+   "widened": 4,
+   "arc": 3,
+   "rule": 2,
+   "cased": 0,
+   "two_leaf": 0,
+   "duplicates_removed": 0
   }
  },
  "walls_from": "model+ink (0.96)",
@@ -704,5 +727,6 @@
    298.0,
    496.7
   ]
- ]
+ ],
+ "door_style": "slab"
 }

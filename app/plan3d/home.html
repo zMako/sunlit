@@ -1,0 +1,142 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>Your apartment · Move-in</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- Customer apartment page: the light scene + one design sheet. Reuses build.js, furnish.js, walk.js and agent.js unchanged;
+     agent.js keeps its own panel (hidden here) and is driven through its element ids. Engineering view: apartment.html. -->
+<link rel="stylesheet" href="/ui/movein.css">
+<script type="importmap">{"imports":{"three":"/vendor/three/build/three.module.js","three/addons/":"/vendor/three/jsm/"}}</script>
+<style>
+html,body{height:100%;overflow:hidden}
+body{background:radial-gradient(120% 90% at 30% 20%,#ffffff 0%,#f4f4f2 60%,#ecebe8 100%)}
+#scene{position:fixed;inset:0}
+#scene canvas{display:block}
+/* reused modules' own chrome: hidden or restyled */
+#ai,#furn{display:none !important}
+#bWalk{display:none}
+#walkhud{background:rgba(255,255,255,.7) !important;color:var(--ink) !important;-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);border-radius:999px !important;padding:8px 16px !important;bottom:96px !important;box-shadow:var(--shadow);font:13px/1.3 var(--sans) !important}
+#walkhud span{color:var(--graphite) !important}
+
+/* top left: where you are */
+.where{position:fixed;left:20px;top:20px;display:flex;align-items:center;gap:4px;padding:6px 18px 6px 6px;border-radius:999px;z-index:10}
+.where h1{font-family:var(--serif);font-optical-sizing:none;font-variation-settings:"opsz" 28;font-weight:400;font-size:21px;line-height:1;margin:0 10px 0 4px;white-space:nowrap}
+.where .muted{font-size:13px;white-space:nowrap}
+
+/* bottom centre: view controls */
+.dock{position:fixed;left:calc((100vw - var(--sheet)) / 2);bottom:22px;transform:translateX(-50%);display:flex;align-items:center;gap:6px;padding:6px;border-radius:999px;z-index:10}
+.dock .seg{background:rgba(29,29,31,.06)}
+.dock .pill.ghost{box-shadow:none;padding:9px 14px;font-size:13px}
+.dock .pill.ghost[aria-pressed="true"]{background:rgba(29,29,31,.07)}
+.dock .sep{width:1px;align-self:stretch;margin:6px 2px;background:var(--hair)}
+
+/* right: the design sheet */
+:root{--sheet:404px}
+.sheet{position:fixed;right:16px;top:16px;bottom:16px;width:calc(var(--sheet) - 32px);border-radius:28px;display:flex;flex-direction:column;z-index:10;background:rgba(255,255,255,.78)}
+.sheet header{padding:22px 22px 0}
+.sheet h2{font-family:var(--serif);font-optical-sizing:none;font-variation-settings:"opsz" 28;font-weight:400;font-size:30px;line-height:1;letter-spacing:-.01em;margin:0 0 4px}
+.sheet .controls{display:grid;grid-template-columns:126px 1fr;gap:14px;padding:18px 22px 4px}
+.sheet .controls .stepper button{width:30px;height:34px}
+.sheet .controls .wide{grid-column:1 / -1}
+.sheet .go{padding:14px 22px 6px;display:flex;gap:8px}
+.sheet .go .pill{flex:1}
+.sheet .status{padding:10px 22px 0}
+.sheet .status .row{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;margin-bottom:8px}
+.sheet .status .row b{font-weight:500;font-size:15px;font-variant-numeric:tabular-nums}
+.feed{flex:1;overflow:auto;padding:12px 14px 8px;margin-top:6px;border-top:1px solid var(--hair);scrollbar-width:thin}
+.feed .room{font-size:12px;color:var(--graphite);margin:14px 8px 6px;display:flex;justify-content:space-between}
+.feed .room:first-child{margin-top:4px}
+.item{display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;padding:8px;border-radius:16px;cursor:pointer}
+.item:hover{background:rgba(29,29,31,.04)}
+.item.sel{background:rgba(29,29,31,.07)}
+.item .ph{width:56px;height:56px;border-radius:12px;background:#fff center/contain no-repeat;box-shadow:inset 0 0 0 1px rgba(29,29,31,.06)}
+.item .ph.none{display:grid;place-items:center;background:var(--mist);font-family:var(--serif);font-variation-settings:"opsz" 28;font-size:22px;color:var(--graphite)}
+.item .nm{font-size:14px;line-height:1.25;font-weight:500}
+.item .vr{font-size:12.5px;color:var(--graphite);line-height:1.3;margin-top:1px}
+.item .why{font-size:12.5px;color:var(--graphite);line-height:1.35;margin-top:4px}
+.item .warn{font-size:12.5px;color:var(--warn);margin-top:4px}
+.item .pr{font-size:14px;font-variant-numeric:tabular-nums;text-align:right}
+.item .acts{display:flex;gap:12px;margin-top:6px;font-size:12.5px}
+.item .acts button{background:none;border:0;padding:0;color:var(--graphite);cursor:pointer;font:inherit}
+.item .acts button:hover{color:var(--ink)}
+.line{font-size:13px;color:var(--graphite);padding:5px 8px;line-height:1.4}
+.line.placed{color:var(--ink)}.line.rejected{color:var(--bad)}
+.line.agent,.line.you{background:rgba(29,29,31,.045);border-radius:14px;padding:10px 12px;margin:6px 0;color:var(--ink)}
+.line.you{background:var(--ink);color:#fff;margin-left:40px}
+.empty{padding:26px 10px;color:var(--graphite);font-size:14px;line-height:1.5;text-align:center}
+.ask{display:flex;gap:6px;padding:10px 14px;border-top:1px solid var(--hair)}
+.ask .icon-btn{flex:none;width:42px;height:42px}
+.sheet footer{padding:6px 14px 14px}
+.sheet footer .pill{width:100%;padding:16px 22px;font-size:15px;justify-content:space-between}
+.sheet footer .pill.off{opacity:1;background:rgba(29,29,31,.06);color:var(--graphite)}
+
+/* floor plan card */
+.plan{position:fixed;left:20px;bottom:22px;padding:10px;border-radius:22px;z-index:9;line-height:0}
+.plan .pb{position:relative;border-radius:12px;overflow:hidden;background:#fff}
+.plan img{display:block;max-width:250px;max-height:210px}
+.plan svg{position:absolute;inset:0;width:100%;height:100%}
+
+.hint{position:fixed;left:calc((100vw - var(--sheet)) / 2);top:50%;transform:translate(-50%,-50%);border-radius:22px;padding:18px 24px;text-align:center;z-index:12;font-size:14px;line-height:1.6;transition:opacity .4s}
+.hint b{font-weight:500;display:block;font-size:16px;margin-bottom:4px}
+.help{right:auto;bottom:80px;font-size:13px;line-height:1.7;padding:16px 18px;border-radius:20px;width:300px}
+.help b{font-weight:500}
+.cross{position:fixed;left:calc((100vw - var(--sheet)) / 2);top:50%;width:6px;height:6px;margin:-3px;border-radius:50%;background:rgba(255,255,255,.9);box-shadow:0 0 0 1px rgba(29,29,31,.25);z-index:9;pointer-events:none}
+.loading{position:fixed;inset:0;display:grid;place-items:center;z-index:30;transition:opacity .6s;pointer-events:none}
+.loading .serif{font-size:28px}
+.loading .muted{font-size:14px;margin-top:6px;text-align:center}
+
+@media (max-width:900px){
+  :root{--sheet:0px}
+  .sheet{left:10px;right:10px;top:auto;bottom:10px;width:auto;height:46vh;border-radius:24px}
+  .dock{bottom:calc(46vh + 22px)}
+  .plan,.where .muted{display:none}
+}
+</style></head>
+<body class="mi">
+<div id="scene" role="img" aria-label="The apartment in 3D"></div>
+<div class="loading" id="loading"><div><div class="serif">Building your apartment</div><div class="muted">from the landlord's floor plan</div></div></div>
+
+<nav class="where glass">
+  <a class="icon-btn" href="landing.html" aria-label="Back to Move-in"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+  <h1 id="title">Your apartment</h1><span class="muted" id="meta"></span>
+</nav>
+
+<div class="dock glass" role="toolbar" aria-label="View">
+  <div class="seg" role="group" aria-label="View mode"><button id="vDoll" aria-pressed="true">Overview</button><button id="vWalk" aria-pressed="false">Walk</button></div>
+  <span class="sep"></span>
+  <button class="pill ghost" id="roomsBtn" aria-haspopup="menu" aria-expanded="false">Rooms</button>
+  <button class="pill ghost" id="planBtn" aria-pressed="true">Plan</button>
+  <button class="icon-btn" id="helpBtn" aria-label="Controls" aria-expanded="false">?</button>
+</div>
+<div class="menu glass" id="roomsMenu" role="menu" hidden></div>
+<div class="hint glass help" id="help" hidden>
+  <b>Overview</b> drag to turn, scroll to zoom<br>
+  <b>Walk</b> click to look around, W A S D to move, E for doors, Esc to leave<br>
+  <b>Furniture</b> drag to move, R to rotate, Delete to remove
+</div>
+
+<aside class="sheet glass" aria-label="Design with AI">
+  <header><h2>Design</h2><div class="muted" id="sub">An agent picks real pieces that fit, within your budget.</div></header>
+  <div class="controls">
+    <div class="field"><span class="label" id="budgetL">Budget</span>
+      <div class="stepper" role="group" aria-labelledby="budgetL"><button id="bMinus" aria-label="Less">&minus;</button><output id="budget">$3,500</output><button id="bPlus" aria-label="More">+</button></div></div>
+    <div class="field"><label for="style">Style</label>
+      <select class="select" id="style"><option value="warm scandinavian">Warm Scandinavian</option><option value="japandi">Japandi</option><option value="mid-century modern">Mid-century</option><option value="quiet minimal">Quiet minimal</option><option value="coastal">Coastal</option></select></div>
+    <div class="field wide"><span class="label">Price range</span>
+      <div class="seg block" id="tier" role="group" aria-label="Price range"><button data-v="any" aria-pressed="true">Any</button><button data-v="budget" aria-pressed="false">Budget</button><button data-v="standard" aria-pressed="false">Standard</button><button data-v="design" aria-pressed="false">Design</button></div></div>
+  </div>
+  <div class="go"><button class="pill lg" id="goRoom">Furnish this room</button><button class="pill lg ghost" id="goAll">Whole home</button><button class="pill lg ghost" id="stop" hidden>Stop</button></div>
+  <div class="status"><div class="row"><span class="muted" id="spentL">Spent</span><b id="spent">$0</b></div><div class="meter" id="meter"><i></i></div></div>
+  <div class="feed" id="feed" aria-live="polite"></div>
+  <form class="ask" id="ask"><input class="input" id="msg" placeholder="Ask for changes" autocomplete="off" aria-label="Ask the designer for changes"><button class="icon-btn dark" aria-label="Send"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></form>
+  <footer><a class="pill off" id="order" href="#"><span>Review order</span><span id="orderTotal"></span></a></footer>
+</aside>
+
+<div class="plan glass" id="plan"><div class="pb"><img id="planImg" alt="Floor plan"><svg id="planSvg"></svg></div></div>
+<div class="hint glass" id="walkHint" hidden><b>Walk through</b>Click to look around. W A S D to move, Esc to leave.</div>
+<div class="cross" id="cross" hidden></div>
+<div class="toast glass" id="toast"></div><div class="tip glass" id="tip" hidden></div>
+<button id="bWalk" tabindex="-1" aria-hidden="true"></button><div id="furn"></div>
+
+<script type="module" src="home/home.js"></script>
+<script type="module" src="../furnish/agent.js"></script>
+<script type="module" src="walk.js"></script>
+</body></html>

@@ -236,12 +236,15 @@
    "id": "o0",
    "wall": "w12",
    "type": "door",
-   "s0": 0.0,
-   "s1": 1.227,
-   "width_m": 1.227,
+   "s0": 0.159,
+   "s1": 1.069,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_left"
+   "swing": "in_left",
+   "width_drawn_m": 1.227,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o1",
@@ -257,12 +260,16 @@
    "id": "o2",
    "wall": "w9",
    "type": "door",
-   "s0": 0.0,
-   "s1": 2.199,
+   "s0": 0.05,
+   "s1": 2.249,
    "width_m": 2.199,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "out_left",
+   "width_drawn_m": 2.199,
+   "leaves": 2,
+   "style": "glass",
+   "swing_from": "rule"
   }
  ],
  "rooms": [
@@ -440,6 +447,14 @@
    "previous layout": 0,
    "plan reading (cached)": 0,
    "model room class": 2
+  },
+  "doors": {
+   "widened": 1,
+   "arc": 1,
+   "rule": 1,
+   "cased": 0,
+   "two_leaf": 1,
+   "duplicates_removed": 0
   }
  },
  "walls_from": "model+ink (0.83)",
@@ -450,5 +465,6 @@
    253.3,
    365.0
   ]
- ]
+ ],
+ "door_style": "wood"
 }

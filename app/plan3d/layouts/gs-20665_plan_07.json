@@ -223,56 +223,71 @@
    "id": "o0",
    "wall": "w3",
    "type": "door",
-   "s0": 0.784,
-   "s1": 1.352,
-   "width_m": 0.568,
+   "s0": 0.392,
+   "s1": 1.302,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_right",
+   "width_drawn_m": 0.568,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o1",
    "wall": "w4",
    "type": "door",
-   "s0": 1.785,
-   "s1": 2.759,
-   "width_m": 0.974,
+   "s0": 1.798,
+   "s1": 2.708,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "in_right",
+   "width_drawn_m": 0.974,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o2",
    "wall": "w6",
    "type": "door",
-   "s0": 0.0,
-   "s1": 1.055,
-   "width_m": 1.055,
+   "s0": 0.072,
+   "s1": 0.982,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "out_right",
+   "width_drawn_m": 1.055,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o3",
    "wall": "w9",
    "type": "door",
-   "s0": 4.625,
-   "s1": 5.49,
-   "width_m": 0.866,
+   "s0": 4.529,
+   "s1": 5.439,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "out_right",
+   "width_drawn_m": 0.865,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o4",
    "wall": "w11",
    "type": "door",
-   "s0": 0.0,
-   "s1": 0.798,
-   "width_m": 0.798,
+   "s0": 0.05,
+   "s1": 0.96,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "in_left",
+   "width_drawn_m": 0.798,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o5",
@@ -568,6 +583,14 @@
    "previous layout": 2,
    "plan reading (cached)": 1,
    "model room class": 0
+  },
+  "doors": {
+   "widened": 5,
+   "arc": 3,
+   "rule": 2,
+   "cased": 0,
+   "two_leaf": 0,
+   "duplicates_removed": 0
   }
  },
  "walls_from": "model+ink (0.95)",
@@ -578,5 +601,6 @@
    330.7,
    369.3
   ]
- ]
+ ],
+ "door_style": "slab"
 }

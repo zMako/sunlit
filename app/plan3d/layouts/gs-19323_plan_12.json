@@ -244,34 +244,43 @@
    "id": "o1",
    "wall": "w4",
    "type": "door",
-   "s0": 0.0,
-   "s1": 0.601,
-   "width_m": 0.601,
+   "s0": 0.05,
+   "s1": 0.96,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "out_left",
+   "width_drawn_m": 0.601,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o2",
    "wall": "w7",
    "type": "door",
-   "s0": 0.0,
-   "s1": 1.076,
-   "width_m": 1.076,
+   "s0": 0.083,
+   "s1": 0.993,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_left",
+   "width_drawn_m": 1.076,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o3",
    "wall": "w10",
    "type": "door",
-   "s0": 2.303,
-   "s1": 3.305,
-   "width_m": 1.001,
+   "s0": 2.345,
+   "s1": 3.255,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "in_right",
+   "width_drawn_m": 1.002,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o4",
@@ -287,12 +296,15 @@
    "id": "o5",
    "wall": "w13",
    "type": "door",
-   "s0": 0.601,
-   "s1": 1.615,
-   "width_m": 1.014,
+   "s0": 0.653,
+   "s1": 1.563,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "out_right",
+   "width_drawn_m": 1.014,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o6",
@@ -338,12 +350,15 @@
    "id": "o10",
    "wall": "w11",
    "type": "door",
-   "s0": 0.3,
-   "s1": 0.951,
-   "width_m": 0.651,
+   "s0": 0.17,
+   "s1": 1.081,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "out_left",
+   "width_drawn_m": 0.651,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o11",
@@ -415,12 +430,12 @@
     298.0,
     146.5
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r2",
-   "name": "Room 2",
-   "type": "other",
+   "name": "Dining / Living",
+   "type": "dining",
    "polygon": [
     [
      0.275,
@@ -453,7 +468,7 @@
     234.66666666666666,
     326.3333333333333
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   }
  ],
  "fixtures": [],
@@ -465,6 +480,14 @@
    "previous layout": 0,
    "plan reading (cached)": 0,
    "model room class": 3
+  },
+  "doors": {
+   "widened": 5,
+   "arc": 3,
+   "rule": 2,
+   "cased": 0,
+   "two_leaf": 0,
+   "duplicates_removed": 0
   }
  },
  "walls_from": "model+ink (0.94)",
@@ -475,5 +498,6 @@
    425.5,
    415.0
   ]
- ]
+ ],
+ "door_style": "shaker"
 }

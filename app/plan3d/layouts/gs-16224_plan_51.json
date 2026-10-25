@@ -182,67 +182,86 @@
    "id": "o0",
    "wall": "w1",
    "type": "door",
-   "s0": 0.0,
-   "s1": 2.485,
-   "width_m": 2.485,
+   "s0": 0.05,
+   "s1": 2.45,
+   "width_m": 2.4,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "out_left",
+   "width_drawn_m": 2.485,
+   "leaves": 2,
+   "style": "glass",
+   "swing_from": "rule"
   },
   {
    "id": "o1",
    "wall": "w2",
-   "type": "door",
+   "type": "opening",
    "s0": 0.0,
    "s1": 3.604,
    "width_m": 3.604,
    "sill_m": 0.0,
-   "height_m": 2.03,
-   "swing": "out_left"
+   "height_m": 2.1
   },
   {
    "id": "o2",
    "wall": "w3",
    "type": "door",
-   "s0": 0.0,
-   "s1": 2.173,
+   "s0": 0.05,
+   "s1": 2.223,
    "width_m": 2.173,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "in_left",
+   "width_drawn_m": 2.173,
+   "leaves": 2,
+   "style": "glass",
+   "swing_from": "rule"
   },
   {
    "id": "o3",
    "wall": "w4",
    "type": "door",
-   "s0": 1.988,
-   "s1": 3.789,
-   "width_m": 1.8,
+   "s0": 1.937,
+   "s1": 3.738,
+   "width_m": 1.801,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_right",
+   "width_drawn_m": 1.801,
+   "leaves": 2,
+   "style": "glass",
+   "swing_from": "rule"
   },
   {
    "id": "o4",
    "wall": "w5",
    "type": "door",
-   "s0": 0.0,
-   "s1": 3.107,
-   "width_m": 3.107,
+   "s0": 0.354,
+   "s1": 2.753,
+   "width_m": 2.4,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_left",
+   "width_drawn_m": 3.107,
+   "leaves": 2,
+   "style": "glass",
+   "swing_from": "rule"
   },
   {
    "id": "o5",
    "wall": "w10",
    "type": "door",
-   "s0": 0.0,
-   "s1": 4.907,
-   "width_m": 4.907,
+   "s0": 1.254,
+   "s1": 3.654,
+   "width_m": 2.4,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "in_left",
+   "width_drawn_m": 4.907,
+   "leaves": 2,
+   "style": "glass",
+   "swing_from": "rule"
   },
   {
    "id": "o6",
@@ -420,6 +439,14 @@
    "previous layout": 0,
    "plan reading (cached)": 0,
    "model room class": 3
+  },
+  "doors": {
+   "widened": 3,
+   "arc": 0,
+   "rule": 5,
+   "cased": 1,
+   "two_leaf": 5,
+   "duplicates_removed": 0
   }
  },
  "walls_from": "model+ink (0.99)",
@@ -430,5 +457,6 @@
    397.0,
    389.5
   ]
- ]
+ ],
+ "door_style": "shaker"
 }

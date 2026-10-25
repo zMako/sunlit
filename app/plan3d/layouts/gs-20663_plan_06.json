@@ -286,45 +286,57 @@
    "id": "o0",
    "wall": "w6",
    "type": "door",
-   "s0": 0.0,
-   "s1": 0.985,
-   "width_m": 0.985,
+   "s0": 0.05,
+   "s1": 0.96,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_left",
+   "width_drawn_m": 0.985,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o1",
    "wall": "w12",
    "type": "door",
-   "s0": 3.253,
-   "s1": 3.999,
-   "width_m": 0.746,
+   "s0": 3.139,
+   "s1": 3.949,
+   "width_m": 0.81,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "in_right",
+   "width_drawn_m": 0.746,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o2",
    "wall": "w14",
    "type": "door",
-   "s0": 0.0,
-   "s1": 0.746,
-   "width_m": 0.746,
+   "s0": 0.05,
+   "s1": 0.86,
+   "width_m": 0.81,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_left",
+   "width_drawn_m": 0.746,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o3",
    "wall": "w14",
    "type": "door",
-   "s0": 5.073,
-   "s1": 5.819,
-   "width_m": 0.746,
+   "s0": 5.009,
+   "s1": 5.769,
+   "width_m": 0.76,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_left",
+   "width_drawn_m": 0.746,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o4",
@@ -420,8 +432,8 @@
  "rooms": [
   {
    "id": "r0",
-   "name": "Room 1",
-   "type": "other",
+   "name": "Bedroom 1",
+   "type": "bedroom",
    "polygon": [
     [
      0.985,
@@ -454,12 +466,12 @@
     132.33333333333334,
     81.0
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r1",
-   "name": "Room 2",
-   "type": "other",
+   "name": "Living / Kitchen",
+   "type": "living",
    "polygon": [
     [
      9.758,
@@ -532,7 +544,7 @@
     247.25,
     228.875
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r2",
@@ -566,7 +578,7 @@
   },
   {
    "id": "r3",
-   "name": "Bedroom",
+   "name": "Bedroom 2",
    "type": "bedroom",
    "polygon": [
     [
@@ -600,7 +612,7 @@
     324.6666666666667,
     259.6666666666667
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r4",
@@ -638,7 +650,7 @@
     311.6666666666667,
     418.6666666666667
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   }
  ],
  "fixtures": [],
@@ -650,6 +662,14 @@
    "previous layout": 0,
    "plan reading (cached)": 0,
    "model room class": 5
+  },
+  "doors": {
+   "widened": 3,
+   "arc": 3,
+   "rule": 1,
+   "cased": 0,
+   "two_leaf": 0,
+   "duplicates_removed": 0
   }
  },
  "walls_from": "model+ink (0.97)",
@@ -660,5 +680,6 @@
    373.5,
    480.0
   ]
- ]
+ ],
+ "door_style": "slab"
 }

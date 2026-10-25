@@ -48,15 +48,18 @@ for (const o of layout.openings) {
   const hinge = fr.a.clone().add(fr.d.clone().multiplyScalar(hingeS)); const centre = fr.a.clone().add(fr.d.clone().multiplyScalar((o.s0 + o.s1) / 2));
   let pivot = null; apt.group.traverse(obj => { if (obj.userData && obj.userData.kind === 'door' && obj.userData.opening === o.id) pivot = obj; });
   const closedAngle = -Math.atan2(fr.d.y, fr.d.x);   // fr.angle in build.js
-  const d = { id: o.id, o, fr, side, dir, hinge, centre, lw, pivot, closedAngle, openDelta: -dir * side * Math.PI / 2, open: false, t: 0, anim: null, closet: o.type === 'closet_door' };
-  if (pivot) pivot.rotation.y = closedAngle;   // start closed (the builder leaves it 9 deg ajar)
+  const d = { id: o.id, o, fr, side, dir, hinge, centre, lw, pivot, pair, closedAngle, openDelta: -dir * side * Math.PI / 2, open: false, t: 0, anim: null, closet: o.type === 'closet_door' };
+  const pair = pivot && pivot.userData.pair ? pivot.userData.pair : null;   // two leaves (doors.py): hinged at both jambs
+  if (pair) for (const pv of pair) pv.rotation.y = closedAngle; else if (pivot) pivot.rotation.y = closedAngle;   // start closed (the builder leaves it 9 deg ajar)
   doors.set(o.id, d);
 }
 function doorAngle(d) { const k = d.t; return d.closedAngle + d.openDelta * (1 - Math.cos(Math.PI * k)) / 2; }   // eased 0..1
 function toggleDoor(id) { const d = doors.get(id); if (!d) return false; d.open = !d.open; d.anim = { from: d.t, to: d.open ? 1 : 0, start: performance.now() }; dirty = true; click(d.open ? 520 : 380); return d.open; }
 function animateDoors(now) {
   for (const d of doors.values()) {
-    if (d.anim) { const k = Math.min(1, (now - d.anim.start) / (DOOR_TIME * 1000)); d.t = d.anim.from + (d.anim.to - d.anim.from) * k; if (k >= 1) { d.anim = null; dirty = true; } if (d.pivot) d.pivot.rotation.y = doorAngle(d); }
+    if (d.anim) { const k = Math.min(1, (now - d.anim.start) / (DOOR_TIME * 1000)); d.t = d.anim.from + (d.anim.to - d.anim.from) * k; if (k >= 1) { d.anim = null; dirty = true; }
+      if (d.pair) { const e = (1 - Math.cos(Math.PI * d.t)) / 2; d.pair[0].rotation.y = d.closedAngle - d.side * Math.PI / 2 * e; d.pair[1].rotation.y = d.closedAngle + d.side * Math.PI / 2 * e; }
+      else if (d.pivot) d.pivot.rotation.y = doorAngle(d); }
   }
 }
 
@@ -85,7 +88,7 @@ function wallColliders() {   // every wall as a box; open doors and cased openin
   }
   // the leaf of an open (or opening) door stands into the room from its hinge
   for (const d of doors.values()) {
-    if (d.t <= 0.05) continue;
+    if (d.t <= 0.05 || d.pair) continue;   // two-leaf doors fold back to the jambs: no leaf in the way
     const ang = doorAngle(d) - d.closedAngle; const leafDir = d.fr.d.clone().multiplyScalar(d.dir);
     const rot = new THREE.Vector2(leafDir.x * Math.cos(-ang) - leafDir.y * Math.sin(-ang), leafDir.x * Math.sin(-ang) + leafDir.y * Math.cos(-ang));
     const c = d.hinge.clone().add(rot.clone().multiplyScalar(d.lw / 2)); out.push(obb(c, rot.clone().normalize(), d.lw / 2, 0.03, d.fr.id));

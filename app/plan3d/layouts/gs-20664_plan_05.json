@@ -194,24 +194,27 @@
   {
    "id": "o0",
    "wall": "w9",
-   "type": "door",
-   "s0": 0.544,
-   "s1": 2.263,
-   "width_m": 1.718,
+   "type": "closet_door",
+   "s0": 0.494,
+   "s1": 2.213,
+   "width_m": 1.719,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "in_right",
+   "width_drawn_m": 1.719,
+   "leaves": 2,
+   "style": "bifold",
+   "swing_from": "rule"
   },
   {
    "id": "o1",
    "wall": "w11",
-   "type": "door",
+   "type": "opening",
    "s0": 0.576,
    "s1": 2.257,
    "width_m": 1.68,
    "sill_m": 0.0,
-   "height_m": 2.03,
-   "swing": "in_right"
+   "height_m": 2.1
   },
   {
    "id": "o2",
@@ -277,12 +280,15 @@
    "id": "o8",
    "wall": "w6",
    "type": "door",
-   "s0": 3.252,
-   "s1": 4.18,
-   "width_m": 0.928,
+   "s0": 3.261,
+   "s1": 4.171,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "out_right",
+   "width_drawn_m": 0.928,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o9",
@@ -293,14 +299,17 @@
    "width_m": 0.761,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "in_left",
+   "width_drawn_m": 0.761,
+   "leaves": 1,
+   "swing_from": "rule"
   }
  ],
  "rooms": [
   {
    "id": "r0",
-   "name": "Room 1",
-   "type": "other",
+   "name": "Bedroom",
+   "type": "bedroom",
    "polygon": [
     [
      0.384,
@@ -349,12 +358,12 @@
     496.6,
     350.7
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r1",
-   "name": "Room 2",
-   "type": "other",
+   "name": "Living / Kitchen",
+   "type": "living",
    "polygon": [
     [
      0.199,
@@ -459,12 +468,12 @@
     972.375,
     696.25
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r2",
-   "name": "Room 3",
-   "type": "other",
+   "name": "Bath",
+   "type": "bathroom",
    "polygon": [
     [
      0.185,
@@ -489,7 +498,7 @@
     333.5,
     961.0
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r3",
@@ -531,6 +540,14 @@
    "previous layout": 0,
    "plan reading (cached)": 0,
    "model room class": 4
+  },
+  "doors": {
+   "widened": 0,
+   "arc": 0,
+   "rule": 3,
+   "cased": 1,
+   "two_leaf": 1,
+   "duplicates_removed": 0
   }
  },
  "walls_from": "model+ink (1.00)",
@@ -541,5 +558,6 @@
    2203.5,
    1657.1
   ]
- ]
+ ],
+ "door_style": "slab"
 }

@@ -274,34 +274,44 @@
    "id": "o0",
    "wall": "w6",
    "type": "door",
-   "s0": 2.439,
-   "s1": 3.344,
-   "width_m": 0.904,
+   "s0": 2.484,
+   "s1": 3.294,
+   "width_m": 0.81,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_left",
+   "width_drawn_m": 0.905,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o1",
    "wall": "w7",
    "type": "door",
-   "s0": 1.666,
-   "s1": 3.034,
+   "s0": 1.615,
+   "s1": 2.983,
    "width_m": 1.368,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "in_right",
+   "width_drawn_m": 1.368,
+   "leaves": 2,
+   "style": "glass",
+   "swing_from": "rule"
   },
   {
    "id": "o2",
    "wall": "w15",
    "type": "door",
-   "s0": 0.964,
-   "s1": 1.63,
-   "width_m": 0.666,
+   "s0": 0.769,
+   "s1": 1.579,
+   "width_m": 0.81,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_right",
+   "width_drawn_m": 0.666,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o3",
@@ -327,23 +337,29 @@
    "id": "o5",
    "wall": "w4",
    "type": "door",
-   "s0": 1.237,
-   "s1": 2.332,
-   "width_m": 1.095,
+   "s0": 1.329,
+   "s1": 2.24,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "out_left",
+   "width_drawn_m": 1.095,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o6",
    "wall": "w10",
    "type": "door",
-   "s0": 2.285,
-   "s1": 3.426,
-   "width_m": 1.142,
+   "s0": 2.401,
+   "s1": 3.311,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "out_left",
+   "width_drawn_m": 1.141,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o7",
@@ -581,6 +597,14 @@
    "previous layout": 0,
    "plan reading (cached)": 0,
    "model room class": 4
+  },
+  "doors": {
+   "widened": 4,
+   "arc": 2,
+   "rule": 3,
+   "cased": 0,
+   "two_leaf": 1,
+   "duplicates_removed": 0
   }
  },
  "walls_from": "model+ink (0.97)",
@@ -591,5 +615,6 @@
    854.0,
    778.0
   ]
- ]
+ ],
+ "door_style": "slab"
 }

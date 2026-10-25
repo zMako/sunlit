@@ -182,23 +182,15 @@
    "id": "o0",
    "wall": "w0",
    "type": "door",
-   "s0": 0.0,
-   "s1": 0.732,
-   "width_m": 0.732,
+   "s0": 0.05,
+   "s1": 0.96,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
-  },
-  {
-   "id": "o1",
-   "wall": "w9",
-   "type": "door",
-   "s0": 0.0,
-   "s1": 0.999,
-   "width_m": 0.999,
-   "sill_m": 0.0,
-   "height_m": 2.03,
-   "swing": "in_left"
+   "swing": "in_left",
+   "width_drawn_m": 0.732,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o2",
@@ -214,19 +206,22 @@
    "id": "o3",
    "wall": "w8",
    "type": "door",
-   "s0": 0.459,
-   "s1": 1.184,
-   "width_m": 0.725,
+   "s0": 0.366,
+   "s1": 1.276,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "in_right",
+   "width_drawn_m": 0.725,
+   "leaves": 1,
+   "swing_from": "rule"
   }
  ],
  "rooms": [
   {
    "id": "r0",
-   "name": "Room 1",
-   "type": "other",
+   "name": "Kitchen / Living",
+   "type": "kitchen",
    "polygon": [
     [
      3.67,
@@ -319,12 +314,12 @@
     385.76190476190476,
     563.7142857142857
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r1",
-   "name": "Closet",
-   "type": "closet",
+   "name": "Laundry",
+   "type": "laundry",
    "polygon": [
     [
      0.311,
@@ -349,12 +344,12 @@
     119.0,
     111.0
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r2",
-   "name": "Room 2",
-   "type": "other",
+   "name": "Bath",
+   "type": "bathroom",
    "polygon": [
     [
      0.311,
@@ -399,7 +394,7 @@
     164.44444444444446,
     347.1111111111111
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   }
  ],
  "fixtures": [],
@@ -411,6 +406,14 @@
    "previous layout": 0,
    "plan reading (cached)": 0,
    "model room class": 3
+  },
+  "doors": {
+   "widened": 2,
+   "arc": 0,
+   "rule": 2,
+   "cased": 0,
+   "two_leaf": 0,
+   "duplicates_removed": 1
   }
  },
  "walls_from": "model+ink (0.97)",
@@ -421,5 +424,6 @@
    668.9,
    2023.0
   ]
- ]
+ ],
+ "door_style": "shaker"
 }

@@ -1,0 +1,37 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Find a home · Move-in</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- Customer map. Runs map.js unchanged (same element ids as map.html); find.css restyles what it renders, and links to the
+     engineering pages are pointed at the customer ones (home.html, order.html) when clicked. Engineering view: map.html. -->
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css"><link rel="stylesheet" href="/ui/movein.css"><link rel="stylesheet" href="find.css"></head>
+<body class="mi">
+<header class="bar glass">
+  <a class="mark" href="../plan3d/landing.html">Move-in</a>
+  <input class="input" id="q" placeholder="Street, building or neighborhood" aria-label="Search">
+  <div class="price"><input class="input" id="pmin" type="number" placeholder="Min $" step="100" min="0" aria-label="Minimum rent"><input class="input" id="pmax" type="number" placeholder="Max $" step="100" min="0" aria-label="Maximum rent"></div>
+  <select class="select" id="beds" aria-label="Bedrooms"><option value="">Any size</option><option value="0">Studio</option><option value="1">1 bedroom</option><option value="2">2 bedrooms</option><option value="3">3+ bedrooms</option></select>
+</header>
+<div class="wrap"><div id="map"></div>
+  <div class="side">
+    <div class="sidehead"><div><b id="count">…</b> <span id="count2" class="muted"></span></div>
+      <div class="opts"><label class="ck"><input type="checkbox" id="fbounds" checked> This area only</label>
+        <select class="select sm" id="sort" aria-label="Sort"><option value="3d">Recommended</option><option value="plo">Price, low to high</option><option value="phi">Price, high to low</option><option value="size">Largest first</option></select></div></div>
+    <div class="feed" id="feed"><div class="empty">Finding homes…</div></div>
+  </div>
+</div>
+<div class="legend glass"><span><i class="d3"></i>Ready in 3D</span><span><i></i>Floor plans</span></div>
+<aside class="drawer" id="drawer"><div class="dhead" id="dhead"></div><div class="dbody" id="dbody"></div></aside>
+<div class="tray glass" id="tray"></div><div class="cmp" id="cmp"></div>
+<div class="lightbox" id="lb"><img id="lbimg" alt=""></div>
+<script src="vendor/leaflet/leaflet.js"></script><script src="map.js"></script>
+<script type="module">
+import { enhanceAll } from '/ui/glass.js'; enhanceAll();
+// customer routes: the engineering pages map.js links to -> the customer pages, same tab
+const route = a => { const h = a.getAttribute('href') || ''; let n = h.replace('/plan3d/apartment.html', '/plan3d/home.html').replace('/checkout/checkout.html', '/checkout/order.html').replace('../plan3d/index.html', '../plan3d/landing.html');
+  if (n !== h) { a.setAttribute('href', n); a.removeAttribute('target'); } };
+for (const ev of ['pointerover', 'focusin', 'click']) document.addEventListener(ev, e => { const a = e.target.closest && e.target.closest('a[href]'); if (a) route(a); }, true);
+// customer wording for map.js's button labels
+const words = { 'Open 3D': 'View in 3D', 'Walk': 'Walk through', 'Furnish': 'Furnish', '+ compare': 'Compare', '✓ comparing': 'Comparing' };
+new MutationObserver(() => { for (const b of document.querySelectorAll('.unit .btn, .dhead .btn')) { const t = b.textContent.trim(); if (words[t] && words[t] !== t) b.textContent = words[t]; } })
+  .observe(document.getElementById('drawer'), { childList: true, subtree: true });
+</script>
+</body></html>

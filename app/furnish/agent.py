@@ -57,8 +57,11 @@ def catalog(tier="any"):
 def fits_room(i, info):
     return min(i["width_m"], i["depth_m"]) <= info["short_m"] - 0.5 and max(i["width_m"], i["depth_m"]) <= info["long_m"] - 0.3
 
+ASSEMBLED_IN_PLACE = {"bed", "wardrobe", "dining_table", "desk", "bookcase", "dresser", "tv_bench", "nightstand", "side_table", "coffee_table", "rug", "curtain", "mattress", "mirror", "pendant_lamp", "table_lamp", "floor_lamp", "plant_pot", "bench", "stool", "bar_stool"}
 def passes_door(i, door_w):
-    """The item's two smallest dimensions must fit the door opening (width, height); the third goes through lengthwise."""
+    """Upholstered one-piece items (sofas, armchairs, ottomans) must pass the door: their two smallest dimensions must fit the
+    opening (width, height). Beds, case goods, tables and lamps arrive flat-packed or in parts and are assembled in the room."""
+    if i.get("category") in ASSEMBLED_IN_PLACE: return True
     a, b, c = sorted([i["width_m"], i["depth_m"], i["height_m"]])
     return a <= door_w + 0.02 and b <= DOOR_H
 
@@ -86,9 +89,14 @@ SHORTLIST_SCHEMA = {"type": "object", "additionalProperties": False, "properties
 def shortlist(info, budget, style, by, wanted, hint=""):
     cands = []
     for cat in dict.fromkeys(wanted):
-        opts = [i for i in by.get(cat, []) if fits_room(i, info) and i.get("price_usd") and (budget is None or i["price_usd"] <= budget)]
-        opts.sort(key=lambda i: i["price_usd"]); step = max(1, len(opts) // 14)
-        for i in opts[::step][:14]:
+        pool = [i for i in by.get(cat, []) if fits_room(i, info) and (budget is None or (i.get("price_usd") or 0) <= budget)]
+        priced = [i for i in pool if i.get("price_usd")]; opts = priced if len(priced) >= 3 else pool   # designer pieces without a shop price are allowed when the category is thin ("price on request")
+        words = set(re.findall(r"[a-z]+", (style or "").lower())) - {"and", "with", "the", "a", "of", "in", "style"}
+        def rel(i):   # style retrieval: overlap between the brief and the product's tags/description/materials, then price spread
+            txt = " ".join(str(i.get(k) or "") for k in ("style_tags", "description", "materials", "colours", "color", "name", "designer", "brand")).lower()
+            return sum(1 for w in words if w in txt)
+        opts.sort(key=lambda i: (-rel(i), i.get("price_usd") or 10 ** 6)); top = opts[:8]; rest = opts[8:]; step = max(1, len(rest) // 6)
+        for i in top + rest[::step][:6]:
             cands.append({"id": i["id"], "cat": cat, "name": (i.get("name") or i.get("id"))[:70], "brand": i.get("brand"), "designer": i.get("designer"), "w": i["width_m"], "d": i["depth_m"], "h": i["height_m"], "usd": i["price_usd"], "color": i.get("color"), "tags": i.get("style_tags"), "desc": (i.get("description") or "")[:120]})
     system = ("You are a senior interior designer furnishing an EMPTY rental room with real catalogue products. Fill the requested slots within the TOTAL budget "
               "(sum of your first picks must be <= budget; leave 5-10% slack), in ONE coherent style: one wood tone, one accent colour, matching textiles. "
@@ -137,8 +145,9 @@ def run_furnish(room, budget, style, drama=False, tier="any"):
         repeated = any(x["category"] == (slot.get("category") or "") for x in placed)   # a 3rd/4th chair that found no spot: do not churn through the catalogue
         if not done and not repeated:   # last resort for the slot: the cheapest in-budget product of the category that fits the room and the door
             cat = slot.get("category") or ""; tried = {p["id"] for p in picks}; remaining = (budget - spent) if budget else None
+            core = slot is sl.get("slots", [{}])[0] or cat in ("bed", "sofa", "dining_table", "desk")
             fb = sorted([c for c in by.get(cat, []) if c["id"] not in tried and fits_room(c, info) and (remaining is None or (c.get("price_usd") or 0) <= remaining) and (cat in ("rug",) or passes_door(c, info["door_w"]))], key=lambda c: c.get("price_usd") or 0)
-            for c in fb[:2]:
+            for c in fb[:(12 if core else 2)]:   # a core piece (bed, sofa, table, desk) is never left out while any candidate can be placed
                 k += 1; it = to_item(c, k, "practical fallback that fits"); it["slot"] = slot.get("slot"); emit("consider", item=it)
                 res, walk = place.place(R, [dict(x, pinned=True) for x in placed] + [dict(it)]); new = next((r for r in res if r["id"] == it["id"]), None)
                 if new is None or new.get("x") is None or not walk: emit("reject", item=it, reason=(new or {}).get("unplaced") or "blocks the walking path from the door"); continue

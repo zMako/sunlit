@@ -195,45 +195,58 @@
    "id": "o0",
    "wall": "w1",
    "type": "door",
-   "s0": 1.177,
-   "s1": 2.009,
-   "width_m": 0.832,
+   "s0": 1.049,
+   "s1": 1.959,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_right",
+   "width_drawn_m": 0.832,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o1",
    "wall": "w2",
    "type": "door",
-   "s0": 0.0,
-   "s1": 1.177,
-   "width_m": 1.177,
+   "s0": 0.134,
+   "s1": 1.044,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_left",
+   "width_drawn_m": 1.177,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o2",
    "wall": "w3",
    "type": "door",
-   "s0": 0.0,
-   "s1": 0.819,
+   "s0": 0.05,
+   "s1": 0.869,
    "width_m": 0.819,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_left",
+   "width_drawn_m": 0.819,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o3",
    "wall": "w11",
-   "type": "door",
-   "s0": 1.536,
-   "s1": 3.122,
+   "type": "closet_door",
+   "s0": 1.486,
+   "s1": 3.072,
    "width_m": 1.586,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "in_right",
+   "width_drawn_m": 1.586,
+   "leaves": 2,
+   "style": "bifold",
+   "swing_from": "rule"
   },
   {
    "id": "o4",
@@ -343,8 +356,8 @@
   },
   {
    "id": "r1",
-   "name": "Room 2",
-   "type": "other",
+   "name": "Bedroom",
+   "type": "bedroom",
    "polygon": [
     [
      3.685,
@@ -397,7 +410,7 @@
     356.8181818181818,
     260.90909090909093
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r2",
@@ -469,6 +482,14 @@
    "previous layout": 0,
    "plan reading (cached)": 0,
    "model room class": 4
+  },
+  "doors": {
+   "widened": 2,
+   "arc": 2,
+   "rule": 2,
+   "cased": 0,
+   "two_leaf": 1,
+   "duplicates_removed": 0
   }
  },
  "walls_from": "model+ink (0.97)",
@@ -479,5 +500,6 @@
    413.5,
    384.5
   ]
- ]
+ ],
+ "door_style": "shaker"
 }

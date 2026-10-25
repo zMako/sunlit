@@ -195,12 +195,16 @@
    "id": "o0",
    "wall": "w2",
    "type": "door",
-   "s0": 0.0,
-   "s1": 1.924,
+   "s0": 0.05,
+   "s1": 1.974,
    "width_m": 1.924,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_left"
+   "swing": "out_left",
+   "width_drawn_m": 1.924,
+   "leaves": 2,
+   "style": "glass",
+   "swing_from": "rule"
   },
   {
    "id": "o1",
@@ -216,12 +220,16 @@
    "id": "o2",
    "wall": "w11",
    "type": "door",
-   "s0": 1.016,
-   "s1": 2.41,
-   "width_m": 1.392,
+   "s0": 0.965,
+   "s1": 2.359,
+   "width_m": 1.394,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "in_right",
+   "width_drawn_m": 1.394,
+   "leaves": 2,
+   "style": "glass",
+   "swing_from": "rule"
   },
   {
    "id": "o3",
@@ -247,7 +255,7 @@
  "rooms": [
   {
    "id": "r0",
-   "name": "Living Room",
+   "name": "Living / Dining",
    "type": "living",
    "polygon": [
     [
@@ -297,7 +305,7 @@
     420.3,
     493.4
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r1",
@@ -327,7 +335,7 @@
     546.0,
     300.5
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   }
  ],
  "fixtures": [],
@@ -339,6 +347,14 @@
    "previous layout": 0,
    "plan reading (cached)": 0,
    "model room class": 2
+  },
+  "doors": {
+   "widened": 0,
+   "arc": 0,
+   "rule": 2,
+   "cased": 0,
+   "two_leaf": 2,
+   "duplicates_removed": 0
   }
  },
  "walls_from": "model+ink (0.99)",
@@ -349,5 +365,6 @@
    647.0,
    695.0
   ]
- ]
+ ],
+ "door_style": "shaker"
 }

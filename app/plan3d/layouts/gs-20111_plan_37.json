@@ -195,40 +195,49 @@
    "id": "o0",
    "wall": "w3",
    "type": "door",
-   "s0": 0.0,
-   "s1": 0.561,
-   "width_m": 0.561,
+   "s0": 0.05,
+   "s1": 0.76,
+   "width_m": 0.71,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_left",
+   "width_drawn_m": 0.561,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o1",
    "wall": "w3",
    "type": "door",
-   "s0": 1.213,
-   "s1": 1.729,
-   "width_m": 0.516,
+   "s0": 0.919,
+   "s1": 1.679,
+   "width_m": 0.76,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "out_right",
+   "width_drawn_m": 0.516,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o2",
    "wall": "w8",
    "type": "door",
-   "s0": 0.788,
-   "s1": 1.376,
-   "width_m": 0.589,
+   "s0": 0.415,
+   "s1": 1.325,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "out_right",
+   "width_drawn_m": 0.588,
+   "leaves": 1,
+   "swing_from": "plan arc"
   }
  ],
  "rooms": [
   {
    "id": "r0",
-   "name": "Closet",
+   "name": "Walk-in Closet",
    "type": "closet",
    "polygon": [
     [
@@ -254,12 +263,12 @@
     178.5,
     225.5
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r1",
-   "name": "Room 1",
-   "type": "other",
+   "name": "Kitchen / Living",
+   "type": "kitchen",
    "polygon": [
     [
      6.725,
@@ -292,12 +301,12 @@
     509.3333333333333,
     487.6666666666667
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r2",
-   "name": "Room 2",
-   "type": "other",
+   "name": "Bath",
+   "type": "bathroom",
    "polygon": [
     [
      2.082,
@@ -322,7 +331,7 @@
     417.5,
     315.5
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   }
  ],
  "fixtures": [],
@@ -334,6 +343,14 @@
    "previous layout": 0,
    "plan reading (cached)": 0,
    "model room class": 3
+  },
+  "doors": {
+   "widened": 3,
+   "arc": 3,
+   "rule": 0,
+   "cased": 0,
+   "two_leaf": 0,
+   "duplicates_removed": 0
   }
  },
  "walls_from": "model+ink (0.96)",
@@ -344,5 +361,6 @@
    832.8,
    900.0
   ]
- ]
+ ],
+ "door_style": "shaker"
 }

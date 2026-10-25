@@ -338,89 +338,114 @@
    "id": "o0",
    "wall": "w9",
    "type": "door",
-   "s0": 1.737,
-   "s1": 2.414,
-   "width_m": 0.676,
+   "s0": 1.604,
+   "s1": 2.364,
+   "width_m": 0.76,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "out_right",
+   "width_drawn_m": 0.677,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o1",
    "wall": "w10",
    "type": "door",
-   "s0": 0.0,
-   "s1": 0.784,
-   "width_m": 0.784,
+   "s0": 0.05,
+   "s1": 0.96,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "in_left",
+   "width_drawn_m": 0.784,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o2",
    "wall": "w12",
    "type": "door",
-   "s0": 0.0,
-   "s1": 0.738,
-   "width_m": 0.738,
+   "s0": 0.05,
+   "s1": 0.96,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_left",
+   "width_drawn_m": 0.738,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o3",
    "wall": "w16",
    "type": "door",
-   "s0": 1.721,
-   "s1": 2.214,
-   "width_m": 0.492,
+   "s0": 1.253,
+   "s1": 2.163,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "in_right",
+   "width_drawn_m": 0.493,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o4",
    "wall": "w18",
    "type": "door",
-   "s0": 0.0,
-   "s1": 1.106,
-   "width_m": 1.106,
+   "s0": 0.098,
+   "s1": 1.008,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "out_right",
+   "width_drawn_m": 1.106,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o5",
    "wall": "w18",
    "type": "door",
-   "s0": 1.937,
-   "s1": 2.644,
-   "width_m": 0.707,
+   "s0": 1.784,
+   "s1": 2.594,
+   "width_m": 0.81,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_right",
+   "width_drawn_m": 0.707,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o6",
    "wall": "w19",
    "type": "door",
-   "s0": 1.906,
-   "s1": 2.506,
-   "width_m": 0.6,
+   "s0": 1.645,
+   "s1": 2.455,
+   "width_m": 0.81,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "out_right",
+   "width_drawn_m": 0.6,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o7",
    "wall": "w20",
-   "type": "door",
-   "s0": 0.492,
-   "s1": 1.537,
+   "type": "closet_door",
+   "s0": 0.443,
+   "s1": 1.488,
    "width_m": 1.045,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_left"
+   "swing": "out_right",
+   "width_drawn_m": 1.045,
+   "leaves": 2,
+   "style": "bifold",
+   "swing_from": "rule"
   },
   {
    "id": "o8",
@@ -456,8 +481,8 @@
  "rooms": [
   {
    "id": "r0",
-   "name": "Room 1",
-   "type": "other",
+   "name": "Living / Kitchen",
+   "type": "living",
    "polygon": [
     [
      3.351,
@@ -530,12 +555,12 @@
     406.0,
     353.25
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r1",
-   "name": "Room 2",
-   "type": "other",
+   "name": "Bedroom",
+   "type": "bedroom",
    "polygon": [
     [
      3.598,
@@ -568,7 +593,7 @@
     518.3333333333334,
     161.66666666666666
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r2",
@@ -662,8 +687,8 @@
   },
   {
    "id": "r5",
-   "name": "Room 6",
-   "type": "other",
+   "name": "Bath",
+   "type": "bathroom",
    "polygon": [
     [
      4.259,
@@ -688,7 +713,7 @@
     566.5,
     733.5
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   }
  ],
  "fixtures": [],
@@ -700,6 +725,14 @@
    "previous layout": 0,
    "plan reading (cached)": 0,
    "model room class": 6
+  },
+  "doors": {
+   "widened": 7,
+   "arc": 4,
+   "rule": 4,
+   "cased": 0,
+   "two_leaf": 1,
+   "duplicates_removed": 0
   }
  },
  "walls_from": "model+ink (0.96)",
@@ -710,5 +743,6 @@
    617.0,
    866.0
   ]
- ]
+ ],
+ "door_style": "shaker"
 }

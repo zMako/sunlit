@@ -479,26 +479,19 @@
    "height_m": 2.1
   },
   {
-   "id": "o4",
-   "wall": "w6",
-   "type": "door",
-   "s0": 0.257,
-   "s1": 0.971,
-   "width_m": 0.714,
-   "sill_m": 0.0,
-   "height_m": 2.03,
-   "swing": "out_right"
-  },
-  {
    "id": "o5",
    "wall": "w8",
-   "type": "door",
-   "s0": 1.118,
-   "s1": 2.308,
-   "width_m": 1.191,
+   "type": "closet_door",
+   "s0": 1.069,
+   "s1": 2.259,
+   "width_m": 1.19,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "in_right",
+   "width_drawn_m": 1.19,
+   "leaves": 2,
+   "style": "bifold",
+   "swing_from": "rule"
   },
   {
    "id": "o6",
@@ -514,89 +507,85 @@
    "id": "o7",
    "wall": "w11",
    "type": "door",
-   "s0": 0.0,
-   "s1": 1.072,
-   "width_m": 1.072,
+   "s0": 0.081,
+   "s1": 0.991,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
-  },
-  {
-   "id": "o8",
-   "wall": "w12",
-   "type": "door",
-   "s0": 0.0,
-   "s1": 1.072,
-   "width_m": 1.072,
-   "sill_m": 0.0,
-   "height_m": 2.03,
-   "swing": "out_right"
-  },
-  {
-   "id": "o9",
-   "wall": "w13",
-   "type": "door",
-   "s0": 0.0,
-   "s1": 1.072,
-   "width_m": 1.072,
-   "sill_m": 0.0,
-   "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "out_right",
+   "width_drawn_m": 1.072,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o10",
    "wall": "w14",
    "type": "door",
-   "s0": 0.0,
-   "s1": 0.879,
-   "width_m": 0.879,
+   "s0": 0.05,
+   "s1": 0.96,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_left",
+   "width_drawn_m": 0.879,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o11",
    "wall": "w18",
    "type": "door",
-   "s0": 0.0,
-   "s1": 0.641,
-   "width_m": 0.641,
+   "s0": 0.05,
+   "s1": 0.738,
+   "width_m": 0.688,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "in_left",
+   "width_drawn_m": 0.641,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o12",
    "wall": "w21",
    "type": "door",
-   "s0": 0.99,
-   "s1": 1.686,
-   "width_m": 0.696,
+   "s0": 0.825,
+   "s1": 1.635,
+   "width_m": 0.81,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "in_right",
+   "width_drawn_m": 0.696,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o13",
    "wall": "w25",
    "type": "door",
-   "s0": 0.0,
-   "s1": 0.33,
-   "width_m": 0.33,
+   "s0": 0.05,
+   "s1": 0.536,
+   "width_m": 0.486,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_left"
+   "swing": "in_left",
+   "width_drawn_m": 0.33,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o14",
    "wall": "w29",
    "type": "door",
-   "s0": 0.146,
-   "s1": 0.806,
-   "width_m": 0.66,
+   "s0": 0.05,
+   "s1": 0.756,
+   "width_m": 0.706,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_left"
+   "swing": "out_left",
+   "width_drawn_m": 0.66,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o15",
@@ -758,8 +747,8 @@
   },
   {
    "id": "r1",
-   "name": "Room 2",
-   "type": "other",
+   "name": "Closet",
+   "type": "closet",
    "polygon": [
     [
      0.092,
@@ -792,12 +781,12 @@
     173.83333333333334,
     261.6666666666667
    ],
-   "named_from": "model room class"
+   "named_from": "size"
   },
   {
    "id": "r2",
-   "name": "Room 3",
-   "type": "other",
+   "name": "Closet",
+   "type": "closet",
    "polygon": [
     [
      0.092,
@@ -826,7 +815,7 @@
     189.0,
     279.8
    ],
-   "named_from": "model room class"
+   "named_from": "size"
   },
   {
    "id": "r3",
@@ -876,8 +865,8 @@
   },
   {
    "id": "r4",
-   "name": "Room 5",
-   "type": "other",
+   "name": "Closet",
+   "type": "closet",
    "polygon": [
     [
      2.584,
@@ -902,12 +891,12 @@
     275.0,
     403.5
    ],
-   "named_from": "model room class"
+   "named_from": "size"
   },
   {
    "id": "r5",
-   "name": "Room 6",
-   "type": "other",
+   "name": "Closet",
+   "type": "closet",
    "polygon": [
     [
      5.551,
@@ -936,12 +925,12 @@
     466.0,
     415.2
    ],
-   "named_from": "model room class"
+   "named_from": "size"
   },
   {
    "id": "r6",
-   "name": "Room 7",
-   "type": "other",
+   "name": "Closet",
+   "type": "closet",
    "polygon": [
     [
      0.752,
@@ -966,7 +955,7 @@
     166.5,
     428.5
    ],
-   "named_from": "model room class"
+   "named_from": "size"
   }
  ],
  "fixtures": [],
@@ -978,6 +967,14 @@
    "previous layout": 0,
    "plan reading (cached)": 0,
    "model room class": 7
+  },
+  "doors": {
+   "widened": 6,
+   "arc": 2,
+   "rule": 5,
+   "cased": 0,
+   "two_leaf": 1,
+   "duplicates_removed": 3
   }
  },
  "walls_from": "model+ink (0.93)",
@@ -988,5 +985,6 @@
    532.0,
    452.7
   ]
- ]
+ ],
+ "door_style": "slab"
 }

@@ -1,0 +1,76 @@
+/* Move-in design system: the customer pages share these tokens and components (landing, apartment, order, map).
+   Light, restrained, one accent (black until decided). Display serif = Bodoni Moda at a fixed optical size; UI = the system sans. */
+@font-face{font-family:"Bodoni Moda";src:url(/vendor/fonts/bodoni-moda.woff2) format("woff2");font-weight:400 600;font-style:normal;font-display:swap}
+:root{
+  --paper:#ffffff; --mist:#f5f5f4; --ink:#1d1d1f; --graphite:#6e6e73; --hair:#e4e4e1; --accent:var(--ink);
+  --ok:#2f7d57; --warn:#a2621b; --bad:#b3261e;
+  --serif:"Bodoni Moda","Didot","Bodoni 72",Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --gap:6px; --shadow:0 10px 30px rgba(29,29,31,.08),0 1px 3px rgba(29,29,31,.06);
+}
+.mi *{box-sizing:border-box}
+.mi{margin:0;background:var(--paper);color:var(--ink);font:15px/1.45 var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+/* zero specificity so component colours (white text on .pill links) win */
+:where(.mi) a{color:inherit}
+.mi :focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:6px}
+.mi .serif{font-family:var(--serif);font-weight:400;font-optical-sizing:none;font-variation-settings:"opsz" 28}
+.mi .muted{color:var(--graphite)}
+.mi [hidden]{display:none !important}
+
+/* glass: frosted base everywhere; ui/glass.js adds edge refraction in Chromium */
+.glass{position:relative;background:rgba(255,255,255,.62);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.95),inset 0 -1px 1px rgba(255,255,255,.4),var(--shadow)}
+.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
+  background:linear-gradient(140deg,rgba(255,255,255,1),rgba(255,255,255,.2) 38%,rgba(29,29,31,.07) 62%,rgba(255,255,255,.85));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+
+/* buttons */
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:#fff;border:0;border-radius:999px;padding:10px 18px;font:500 14px/1 var(--sans);text-decoration:none;cursor:pointer;white-space:nowrap}
+.pill:hover{filter:brightness(1.18)}
+.pill:disabled,.pill.off{opacity:.35;cursor:default;filter:none;pointer-events:none}
+.pill.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--hair)}
+.pill.ghost:hover{background:rgba(29,29,31,.04);filter:none}
+.pill.lg{padding:15px 22px;font-size:15px}
+.icon-btn{width:36px;height:36px;border-radius:50%;border:0;background:transparent;display:inline-grid;place-items:center;cursor:pointer;color:var(--ink);font:500 15px/1 var(--sans)}
+.icon-btn:hover{background:rgba(29,29,31,.06)}
+.icon-btn.dark{background:var(--accent);color:#fff}
+.icon-btn.dark:hover{filter:brightness(1.18);background:var(--accent)}
+.link{background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;text-decoration:none;border-bottom:1px solid var(--hair)}
+.link:hover{border-color:currentColor}
+
+/* segmented control: the thumb is the selected button; concentric with its track */
+.seg{display:inline-flex;padding:3px;border-radius:999px;background:rgba(29,29,31,.06);gap:2px}
+.seg button{border:0;background:transparent;border-radius:999px;padding:7px 14px;font:500 13px/1 var(--sans);color:var(--graphite);cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(29,29,31,.12),0 0 0 .5px rgba(29,29,31,.06)}
+.seg.block{display:flex}.seg.block button{flex:1}
+
+/* fields */
+.field{display:flex;flex-direction:column;gap:6px}
+.field > label,.field > .label{font-size:12px;color:var(--graphite)}
+.select{appearance:none;-webkit-appearance:none;width:100%;border:0;border-radius:12px;background-color:rgba(29,29,31,.05);font:500 15px/1.2 var(--sans);color:var(--ink);padding:11px 34px 11px 14px;cursor:pointer;
+  background-image:linear-gradient(45deg,transparent 50%,var(--graphite) 50%),linear-gradient(135deg,var(--graphite) 50%,transparent 50%);background-position:right 18px center,right 14px center;background-size:4px 4px;background-repeat:no-repeat}
+.stepper{display:flex;align-items:center;border-radius:12px;background:rgba(29,29,31,.05);padding:4px}
+.stepper button{width:34px;height:34px;border:0;border-radius:9px;background:transparent;font:400 20px/1 var(--sans);color:var(--ink);cursor:pointer}
+.stepper button:hover{background:#fff;box-shadow:0 1px 3px rgba(29,29,31,.1)}
+.stepper output{flex:1;text-align:center;font:500 15px/1 var(--sans);font-variant-numeric:tabular-nums}
+.input{width:100%;border:0;border-radius:999px;background:rgba(29,29,31,.05);font:400 15px/1.2 var(--sans);color:var(--ink);padding:12px 16px}
+.input::placeholder{color:#8e8e93}
+
+/* budget meter */
+.meter{height:4px;border-radius:2px;background:rgba(29,29,31,.08);overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:var(--ink);border-radius:2px;transition:width .5s ease}
+.meter.over i{background:var(--bad)}
+
+/* popover menu */
+.menu{position:absolute;min-width:220px;border-radius:18px;padding:6px;z-index:40}
+.menu button{display:flex;justify-content:space-between;gap:16px;width:100%;border:0;background:transparent;border-radius:12px;padding:10px 12px;font:400 14px/1.2 var(--sans);color:var(--ink);cursor:pointer;text-align:left}
+.menu button:hover,.menu button[aria-current="true"]{background:rgba(29,29,31,.06)}
+.menu button span{color:var(--graphite);font-variant-numeric:tabular-nums}
+
+/* toast + tooltip */
+.toast{position:fixed;left:50%;top:22px;transform:translate(-50%,-8px);opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:60;border-radius:999px;padding:10px 18px;font-size:14px}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.tip{position:fixed;pointer-events:none;z-index:50;border-radius:12px;padding:8px 12px;font-size:13px;line-height:1.35;max-width:240px;transform:translate(14px,14px)}
+.tip b{font-weight:500;display:block}
+
+@media (prefers-reduced-motion:reduce){.meter i,.toast{transition:none}}

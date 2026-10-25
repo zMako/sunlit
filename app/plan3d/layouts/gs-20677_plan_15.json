@@ -260,45 +260,57 @@
    "id": "o0",
    "wall": "w5",
    "type": "door",
-   "s0": 0.0,
-   "s1": 1.232,
-   "width_m": 1.232,
+   "s0": 0.161,
+   "s1": 1.071,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_left",
+   "width_drawn_m": 1.232,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o1",
    "wall": "w6",
    "type": "door",
-   "s0": 0.741,
-   "s1": 1.502,
-   "width_m": 0.76,
+   "s0": 0.542,
+   "s1": 1.452,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "out_right",
+   "width_drawn_m": 0.761,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o2",
    "wall": "w13",
    "type": "door",
-   "s0": 0.0,
-   "s1": 0.729,
+   "s0": 0.05,
+   "s1": 0.779,
    "width_m": 0.729,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_left"
+   "swing": "in_left",
+   "width_drawn_m": 0.729,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o3",
    "wall": "w14",
    "type": "door",
-   "s0": 0.666,
-   "s1": 1.407,
+   "s0": 0.617,
+   "s1": 1.358,
    "width_m": 0.741,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "in_right",
+   "width_drawn_m": 0.741,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o4",
@@ -314,19 +326,22 @@
    "id": "o5",
    "wall": "w1",
    "type": "door",
-   "s0": 0.239,
-   "s1": 0.93,
-   "width_m": 0.692,
+   "s0": 0.13,
+   "s1": 1.04,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "in_left",
+   "width_drawn_m": 0.691,
+   "leaves": 1,
+   "swing_from": "rule"
   }
  ],
  "rooms": [
   {
    "id": "r0",
-   "name": "Room 1",
-   "type": "other",
+   "name": "Kitchen",
+   "type": "kitchen",
    "polygon": [
     [
      0.245,
@@ -383,12 +398,12 @@
     529.1666666666666,
     481.4166666666667
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r1",
-   "name": "Room 2",
-   "type": "other",
+   "name": "Walk-in Closet",
+   "type": "closet",
    "polygon": [
     [
      0.245,
@@ -417,12 +432,12 @@
     242.4,
     894.6
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r2",
-   "name": "Bath",
-   "type": "bathroom",
+   "name": "Laundry",
+   "type": "laundry",
    "polygon": [
     [
      2.715,
@@ -463,12 +478,12 @@
     264.75,
     1168.0
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r3",
    "name": "Entry",
-   "type": "hallway",
+   "type": "entry",
    "polygon": [
     [
      4.757,
@@ -493,7 +508,7 @@
     608.5,
     1288.5
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   }
  ],
  "fixtures": [],
@@ -505,6 +520,14 @@
    "previous layout": 0,
    "plan reading (cached)": 0,
    "model room class": 4
+  },
+  "doors": {
+   "widened": 3,
+   "arc": 0,
+   "rule": 5,
+   "cased": 0,
+   "two_leaf": 0,
+   "duplicates_removed": 0
   }
  },
  "walls_from": "model+ink (0.95)",
@@ -515,5 +538,6 @@
    800.0,
    1513.0
   ]
- ]
+ ],
+ "door_style": "shaker"
 }

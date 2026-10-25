@@ -179,23 +179,29 @@
    "id": "o1",
    "wall": "w4",
    "type": "door",
-   "s0": 1.324,
-   "s1": 2.256,
-   "width_m": 0.932,
+   "s0": 1.296,
+   "s1": 2.206,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_left"
+   "swing": "in_right",
+   "width_drawn_m": 0.932,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o2",
    "wall": "w6",
    "type": "door",
-   "s0": 4.488,
-   "s1": 5.407,
-   "width_m": 0.919,
+   "s0": 4.447,
+   "s1": 5.357,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "out_right",
+   "width_drawn_m": 0.919,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o3",
@@ -241,8 +247,8 @@
  "rooms": [
   {
    "id": "r0",
-   "name": "Room 1",
-   "type": "other",
+   "name": "Living / Kitchen",
+   "type": "living",
    "polygon": [
     [
      0.294,
@@ -311,12 +317,12 @@
     442.6666666666667,
     503.3333333333333
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r1",
-   "name": "Room 2",
-   "type": "other",
+   "name": "Bath",
+   "type": "bathroom",
    "polygon": [
     [
      0.27,
@@ -341,7 +347,7 @@
     322.5,
     703.5
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   }
  ],
  "fixtures": [],
@@ -353,6 +359,14 @@
    "previous layout": 0,
    "plan reading (cached)": 0,
    "model room class": 2
+  },
+  "doors": {
+   "widened": 0,
+   "arc": 1,
+   "rule": 1,
+   "cased": 0,
+   "two_leaf": 0,
+   "duplicates_removed": 0
   }
  },
  "walls_from": "model+ink (0.98)",
@@ -363,5 +377,6 @@
    683.3,
    830.0
   ]
- ]
+ ],
+ "door_style": "shaker"
 }

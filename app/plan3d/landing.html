@@ -125,8 +125,8 @@ footer a{text-decoration:none}footer a:hover{text-decoration:underline}
 <body>
 <nav class="glass" aria-label="Main">
   <a class="mark" href="#top">Move-in</a>
-  <span class="links"><a href="#homes">Homes</a><a href="#how">How it works</a><a href="../map/map.html">Map</a></span>
-  <a class="pill" href="../map/map.html">Find a home</a>
+  <span class="links"><a href="#homes">Homes</a><a href="#how">How it works</a><a href="../map/find.html">Map</a></span>
+  <a class="pill" href="../map/find.html">Find a home</a>
 </nav>
 
 <header class="hero" id="top">
@@ -171,7 +171,7 @@ footer a{text-decoration:none}footer a:hover{text-decoration:underline}
 
 <section class="close"><div class="wrap">
   <h2>Your next home is already on the map.</h2>
-  <a class="pill" href="../map/map.html">Open the map</a>
+  <a class="pill" href="../map/find.html">Open the map</a>
   <a class="alt" href="index.html">or browse every apartment</a>
 </div></section>
 
@@ -191,7 +191,7 @@ const HERO = 'gs-22612_plan_03';
 const HOMES = ['gs-22612_plan_01', 'gs-22612_plan_00', 'gs-18149_plan_03', 'gs-22612_plan_05', 'gs-22535_plan_07', 'gs-18149_plan_02'];
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const livingRoom = u => (u.rooms.find(r => r.type === 'living') || [...u.rooms].sort((a, b) => b.area_m2 - a.area_m2)[0] || { id: 'r0' }).id;
-const furnishUrl = (u, budget = 3500, style = 'warm scandinavian') => `apartment.html?unit=${encodeURIComponent(u.unit)}&agent=${livingRoom(u)}&budget=${budget}&style=${encodeURIComponent(style.toLowerCase())}&drama=1`;
+const furnishUrl = (u, budget = 3500, style = 'warm scandinavian') => `home.html?unit=${encodeURIComponent(u.unit)}&agent=${livingRoom(u)}&budget=${budget}&style=${encodeURIComponent(style.toLowerCase())}&drama=1`;
 const beds = u => { const n = u.rooms.filter(r => r.type === 'bedroom').length; return n ? `${n} bedroom${n > 1 ? 's' : ''}` : 'Studio'; };
 
 // move-in three weeks out, delivery two days before
@@ -227,7 +227,7 @@ $('grid').innerHTML = HOMES.map(id => byId[id]).filter(Boolean).map(u => `
     <a class="img" href="${furnishUrl(u)}"><img src="landing/thumbs/${u.unit}-furnished.jpg" alt="${esc(u.building)} ${esc(u.plan_name)} in 3D" loading="lazy"></a>
     <h3>${esc(u.building.replace(/ Apartments.*$/, ''))}, ${esc(u.plan_name)}</h3>
     <div class="meta">${beds(u)}, ${Math.round(u.area_m2)} m²</div>
-    <div class="acts"><a href="${furnishUrl(u)}">Furnish</a><a href="apartment.html?unit=${encodeURIComponent(u.unit)}&view=walk">Walk through</a></div>
+    <div class="acts"><a href="${furnishUrl(u)}">Furnish</a><a href="home.html?unit=${encodeURIComponent(u.unit)}&view=walk">Walk through</a></div>
   </article>`).join('');
 
 // ---------- liquid glass: edge refraction through an SVG displacement map, Chromium only (Safari/Firefox keep the frosted base) ----------

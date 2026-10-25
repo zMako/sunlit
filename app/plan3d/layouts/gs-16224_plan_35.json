@@ -208,23 +208,29 @@
    "id": "o0",
    "wall": "w4",
    "type": "door",
-   "s0": 0.0,
-   "s1": 0.821,
-   "width_m": 0.821,
+   "s0": 0.05,
+   "s1": 0.86,
+   "width_m": 0.81,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_left",
+   "width_drawn_m": 0.821,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o1",
    "wall": "w7",
    "type": "door",
-   "s0": 2.463,
-   "s1": 3.257,
-   "width_m": 0.793,
+   "s0": 2.296,
+   "s1": 3.206,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "out_right",
+   "width_drawn_m": 0.794,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o2",
@@ -240,8 +246,8 @@
  "rooms": [
   {
    "id": "r0",
-   "name": "Room 1",
-   "type": "other",
+   "name": "Kitchen / Living",
+   "type": "kitchen",
    "polygon": [
     [
      0.274,
@@ -330,7 +336,7 @@
     296.6,
     344.4
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r1",
@@ -372,6 +378,14 @@
    "previous layout": 0,
    "plan reading (cached)": 0,
    "model room class": 2
+  },
+  "doors": {
+   "widened": 1,
+   "arc": 1,
+   "rule": 1,
+   "cased": 0,
+   "two_leaf": 0,
+   "duplicates_removed": 0
   }
  },
  "walls_from": "model+ink (0.98)",
@@ -382,5 +396,6 @@
    564.0,
    431.1
   ]
- ]
+ ],
+ "door_style": "shaker"
 }

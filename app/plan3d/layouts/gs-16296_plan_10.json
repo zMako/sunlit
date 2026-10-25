@@ -222,34 +222,43 @@
    "id": "o0",
    "wall": "w1",
    "type": "door",
-   "s0": 1.094,
-   "s1": 2.22,
-   "width_m": 1.126,
+   "s0": 1.202,
+   "s1": 2.112,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "in_right",
+   "width_drawn_m": 1.126,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o1",
    "wall": "w2",
    "type": "door",
-   "s0": 1.102,
-   "s1": 1.917,
-   "width_m": 0.815,
+   "s0": 0.956,
+   "s1": 1.866,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_left"
+   "swing": "in_right",
+   "width_drawn_m": 0.815,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o2",
    "wall": "w8",
    "type": "door",
-   "s0": 0.328,
-   "s1": 1.022,
-   "width_m": 0.695,
+   "s0": 0.061,
+   "s1": 0.971,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "in_right",
+   "width_drawn_m": 0.694,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o3",
@@ -544,6 +553,14 @@
    "previous layout": 2,
    "plan reading (cached)": 1,
    "model room class": 0
+  },
+  "doors": {
+   "widened": 3,
+   "arc": 0,
+   "rule": 3,
+   "cased": 0,
+   "two_leaf": 0,
+   "duplicates_removed": 0
   }
  },
  "walls_from": "model+ink (0.88)",
@@ -560,5 +577,6 @@
    1067.7,
    1347.0
   ]
- ]
+ ],
+ "door_style": "slab"
 }

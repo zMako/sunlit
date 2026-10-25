@@ -160,20 +160,51 @@ export class Apartment {
       for (const [cw, ch, cx, cy] of [[0.07, h + 0.07, -w / 2 - 0.035, (h + 0.07) / 2], [0.07, h + 0.07, w / 2 + 0.035, (h + 0.07) / 2], [w + 0.14, 0.07, 0, h + 0.035]]) { const m = new THREE.Mesh(metricBox(cw, ch, 0.016), trim); m.position.set(cx, cy, cz); m.castShadow = m.receiveShadow = true; cas.add(m); }
       this.tgt.add(cas);
     }
-    // leaf: hinge at the left (s0) or right (s1) end, opening to the 'in' side (+n) or 'out' side (-n), ajar
-    const sw = o.swing || 'in_left'; const hingeS = sw.endsWith('left') ? o.s0 + 0.02 : o.s1 - 0.02; const side = sw.startsWith('out') ? -1 : 1; const dir = sw.endsWith('left') ? 1 : -1;
-    const pivot = new THREE.Group(); const hc = fr.a.clone().add(fr.d.clone().multiplyScalar(hingeS)); pivot.position.set(hc.x, 0, hc.y); pivot.rotation.y = fr.angle;
-    const lw = w - 0.05, lh = h - 0.03; const leafMat = this.doorLeafMat(o);
-    const leaf = new THREE.Mesh(metricBox(lw, lh, 0.04), leafMat); leaf.position.set(dir * lw / 2, lh / 2, 0); leaf.castShadow = true; leaf.receiveShadow = true;
-    for (const [py, ph] of [[0.62, 0.72], [0.28, 0.42]]) for (const zs of [1, -1]) {   // two recessed panels per face
-      const panel = new THREE.Mesh(metricBox(lw - 0.22, lh * ph - 0.12, 0.012), leafMat); panel.position.set(0, -lh / 2 + lh * py, zs * 0.016); leaf.add(panel);
-      const inset = new THREE.Mesh(metricBox(lw - 0.3, lh * ph - 0.2, 0.004), new THREE.MeshStandardMaterial({ color: 0xe3e0da, roughness: 0.75 })); inset.position.set(0, -lh / 2 + lh * py, zs * 0.024); leaf.add(inset);
+    // leaves (doors.py): one, hinged at s0 ('left') or s1 ('right'), or two (closet bifold, balcony glass) hinged at both jambs;
+    // opening to the 'in' side (+n) or 'out' side (-n); style from the listing photos (layout.door_style) or the opening itself
+    const sw = o.swing || 'in_left'; const side = sw.startsWith('out') ? -1 : 1; const style = o.style || this.layout.door_style || 'shaker';
+    const two = (o.leaves || 1) >= 2; const lh = h - 0.03; const leafMat = this.doorLeafMat(o, style);
+    const makePivot = (s, dir, lw) => {
+      const pv = new THREE.Group(); const hc = fr.a.clone().add(fr.d.clone().multiplyScalar(s)); pv.position.set(hc.x, 0, hc.y); pv.rotation.y = fr.angle;
+      const leaf = this.doorLeaf(style, lw, lh, leafMat, dir); leaf.position.set(dir * lw / 2, lh / 2, 0); pv.add(leaf);
+      for (const hy of [0.25, lh / 2 + 0.05, lh - 0.25]) { const k = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.09, 8), this.lib.plain('steel')); k.position.set(0, hy, side * 0.022); pv.add(k); }   // hinge knuckles on the hinge edge
+      return pv;
+    };
+    if (two) {
+      const lw = (w - 0.05) / 2; const pair = new THREE.Group(); const L_ = makePivot(o.s0 + 0.02, 1, lw), R_ = makePivot(o.s1 - 0.02, -1, lw);
+      pair.add(L_, R_); pair.userData = { kind: 'door', opening: o.id, pair: [L_, R_] }; this.tgt.add(pair);
+    } else {
+      const left = sw.endsWith('left'); const dir = left ? 1 : -1; const pivot = makePivot(left ? o.s0 + 0.02 : o.s1 - 0.02, dir, w - 0.05);
+      pivot.rotation.y += -dir * side * THREE.MathUtils.degToRad(9);   // nearly closed: reads as a door in its frame
+      pivot.userData = { kind: 'door', opening: o.id }; this.tgt.add(pivot);
     }
-    for (const zs of [1, -1]) { const knob = new THREE.Mesh(new THREE.SphereGeometry(0.028, 16, 12), this.lib.plain('steel')); knob.position.set(dir * (lw - 0.1), 1.0 - lh / 2, zs * 0.05); leaf.add(knob); }
-    pivot.add(leaf); pivot.rotation.y += -dir * side * THREE.MathUtils.degToRad(o.type === 'closet_door' ? 0 : 9);   // nearly closed: reads as a door in its frame
-    pivot.userData = { kind: 'door', opening: o.id }; this.tgt.add(pivot);
   }
-  doorLeafMat(o) {   // doors: the photo-matched door material when it is a plausible door finish (wood/laminate), otherwise the unit's trim colour
+  /** one door leaf centred on its own origin, width lw, height lh; dir: +1 handle at +x end (hinge at -x), -1 mirrored */
+  doorLeaf(style, lw, lh, mat, dir) {
+    const g = new THREE.Group(); const T = 0.04;
+    const add = (geo, m, x, y, z) => { const me = new THREE.Mesh(geo, m); me.position.set(x, y, z); me.castShadow = me.receiveShadow = true; g.add(me); return me; };
+    const steel = this.lib.plain('steel'); const shade = new THREE.MeshStandardMaterial({ color: 0xd8d4cc, roughness: 0.8 });
+    if (style === 'glass') {   // aluminium frame around a glass pane
+      const fm = new THREE.MeshStandardMaterial({ color: 0x2b2f33, roughness: 0.45, metalness: 0.6 }); const f = 0.06;
+      add(metricBox(lw, f, T), fm, 0, -lh / 2 + f / 2, 0); add(metricBox(lw, f, T), fm, 0, lh / 2 - f / 2, 0); add(metricBox(f, lh, T), fm, -lw / 2 + f / 2, 0, 0); add(metricBox(f, lh, T), fm, lw / 2 - f / 2, 0, 0);
+      add(new THREE.BoxGeometry(lw - 2 * f, lh - 2 * f, 0.01), this.glassMat(), 0, 0, 0);
+      add(metricBox(0.02, 0.35, 0.03), steel, dir * (lw / 2 - 0.09), 0, 0.03); return g;
+    }
+    add(metricBox(lw, lh, T), mat, 0, 0, 0);
+    const recess = (w, hgt, y) => { for (const zs of [1, -1]) { add(metricBox(w, hgt, 0.004), shade, 0, y, zs * (T / 2 + 0.001)); add(metricBox(w - 0.03, hgt - 0.03, 0.006), mat, 0, y, zs * (T / 2 + 0.003)); } };
+    if (style === 'shaker') recess(lw - 0.2, lh - 0.36, 0.02);                                               // one tall recessed panel per face
+    else if (style === 'panel') { for (const [y, hh] of [[lh * 0.29, lh * 0.3], [-lh * 0.05, lh * 0.2], [-lh * 0.32, lh * 0.24]]) for (const x of [-lw * 0.22, lw * 0.22]) for (const zs of [1, -1]) { add(metricBox(lw * 0.34, hh, 0.012), mat, x, y, zs * (T / 2 + 0.004)); add(metricBox(lw * 0.3, hh - 0.05, 0.004), shade, x, y, zs * (T / 2 + 0.011)); } }   // six raised panels
+    else if (style === 'bifold') { for (const x of [-lw / 4, lw / 4]) for (const zs of [1, -1]) for (let k = 0; k < 14; k++) add(metricBox(lw / 2 - 0.05, 0.012, 0.004), shade, x, -lh / 2 + 0.25 + k * (lh - 0.5) / 13, zs * (T / 2 + 0.002)); add(metricBox(0.006, lh, T + 0.004), shade, 0, 0, 0); }   // louvred, folding at the middle
+    // handle: a lever on modern doors, a knob on traditional ones, a small pull on closet bifolds
+    for (const zs of [1, -1]) {
+      if (style === 'panel') add(new THREE.SphereGeometry(0.028, 16, 12), steel, dir * (lw / 2 - 0.08), 1.0 - lh / 2, zs * 0.05);
+      else if (style === 'bifold') add(new THREE.SphereGeometry(0.015, 10, 8), steel, dir * (lw / 2 - 0.05), 1.0 - lh / 2, zs * 0.03);
+      else { add(metricBox(0.03, 0.03, 0.05), steel, dir * (lw / 2 - 0.08), 1.0 - lh / 2, zs * 0.04); add(metricBox(0.13, 0.018, 0.018), steel, dir * (lw / 2 - 0.08) - dir * 0.05, 1.0 - lh / 2, zs * 0.065); }
+    }
+    return g;
+  }
+  doorLeafMat(o, style) {   // doors: stained wood for the 'wood' style; else the photo-matched door material when it is a plausible door finish (wood/laminate), otherwise the unit's trim colour
+    if (style === 'wood') return (this._woodDoor ||= new THREE.MeshStandardMaterial({ color: 0x5b3b24, roughness: 0.55 }));
     const mats = this.layout.materials || {}; const id = o.room && mats.door ? mats.door[o.room] : null; const entry = id && this.lib.index ? this.lib.index.get(id) : null;
     if (entry && (entry.category === 'laminate' || entry.category === 'wood_floor')) return this.lib.get(id, 'door');
     return this.trimMat();

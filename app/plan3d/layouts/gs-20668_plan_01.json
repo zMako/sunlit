@@ -288,56 +288,72 @@
    "id": "o0",
    "wall": "w4",
    "type": "door",
-   "s0": 0.311,
-   "s1": 0.765,
-   "width_m": 0.455,
+   "s0": 0.05,
+   "s1": 0.717,
+   "width_m": 0.667,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_left",
+   "width_drawn_m": 0.454,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o1",
    "wall": "w5",
    "type": "door",
-   "s0": 1.078,
-   "s1": 1.795,
-   "width_m": 0.719,
+   "s0": 1.028,
+   "s1": 1.745,
+   "width_m": 0.717,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_left"
+   "swing": "in_right",
+   "width_drawn_m": 0.717,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o2",
    "wall": "w7",
-   "type": "door",
-   "s0": 0.622,
-   "s1": 1.652,
+   "type": "closet_door",
+   "s0": 0.572,
+   "s1": 1.602,
    "width_m": 1.03,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_left"
+   "swing": "in_right",
+   "width_drawn_m": 1.03,
+   "leaves": 2,
+   "style": "bifold",
+   "swing_from": "rule"
   },
   {
    "id": "o3",
    "wall": "w8",
    "type": "door",
-   "s0": 1.005,
-   "s1": 1.58,
-   "width_m": 0.574,
+   "s0": 0.77,
+   "s1": 1.53,
+   "width_m": 0.76,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_left"
+   "swing": "in_left",
+   "width_drawn_m": 0.575,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o4",
    "wall": "w10",
    "type": "door",
-   "s0": 2.61,
-   "s1": 3.376,
-   "width_m": 0.765,
+   "s0": 2.416,
+   "s1": 3.326,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "out_right",
+   "width_drawn_m": 0.766,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o5",
@@ -726,6 +742,14 @@
    "previous layout": 4,
    "plan reading (cached)": 1,
    "model room class": 1
+  },
+  "doors": {
+   "widened": 3,
+   "arc": 2,
+   "rule": 3,
+   "cased": 0,
+   "two_leaf": 1,
+   "duplicates_removed": 0
   }
  },
  "walls_from": "model+ink (0.96)",
@@ -736,5 +760,6 @@
    277.5,
    462.0
   ]
- ]
+ ],
+ "door_style": "slab"
 }

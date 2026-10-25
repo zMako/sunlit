@@ -57,7 +57,7 @@ export class Furnish {
     it.obj.userData.item = it;
     const w = +spec.w_m || 0.5, d = +spec.d_m || 0.5, h = +spec.h_m || 0.5;
     let built = false;
-    this.useIkeaModels = this.useIkeaModels ?? (localStorage.getItem('ikeaModels') !== '0');   // default ON: models are cached locally (owner's decision)
+    this.useIkeaModels = this.useIkeaModels ?? (localStorage.getItem('models3d') !== '0');   // default ON: models are cached locally (owner's decision)
     const recorded = spec.model_glb ? (/^(https?:)?\//.test(spec.model_glb) ? spec.model_glb : '/' + spec.model_glb.replace(/^\.?\//, '')) : null;
     const byId = spec.id ? `/furnish/models/${String(spec.id).split('#')[0]}.glb` : null;   // the catalogue caches IKEA models locally by product id
     const remote = spec.model_glb_url ? `/api/model?u=${encodeURIComponent(spec.model_glb_url)}` : null;
@@ -227,7 +227,7 @@ export class Furnish {
        ${items.some(it => String(it.spec.id||'').startsWith('abo-')) ? `<div class="fdim">Amazon items: 3D models and images from the Amazon Berkeley Objects dataset © Amazon.com, CC BY 4.0; resized and compressed; prices marked est. are our estimates from comparable products and are confirmed at the merchant.</div>` : ''}`;
     this.panelEl.querySelectorAll('.fitem').forEach(el => el.onclick = () => this.select(this.items[+el.dataset.i]));
     const b = id => this.panelEl.querySelector('#' + id); b('fsave').onclick = () => this.save(); b('freload').onclick = () => this.loadPlan(); b('fauto').onclick = () => this.auto();
-    b('fikea').onchange = e => { this.useIkeaModels = e.target.checked; localStorage.setItem('ikeaModels', e.target.checked ? '1' : '0'); this.loadPlan(); };
+    b('fikea').onchange = e => { this.useIkeaModels = e.target.checked; localStorage.setItem('models3d', e.target.checked ? '1' : '0'); this.loadPlan(); };
   }
 
 

@@ -194,13 +194,12 @@
   {
    "id": "o0",
    "wall": "w3",
-   "type": "door",
+   "type": "opening",
    "s0": 0.0,
    "s1": 1.545,
    "width_m": 1.545,
    "sill_m": 0.0,
-   "height_m": 2.03,
-   "swing": "in_left"
+   "height_m": 2.1
   },
   {
    "id": "o1",
@@ -231,25 +230,31 @@
    "width_m": 0.81,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "out_right",
+   "width_drawn_m": 0.81,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o4",
    "wall": "w5",
    "type": "door",
-   "s0": 0.963,
-   "s1": 1.849,
-   "width_m": 0.887,
+   "s0": 0.951,
+   "s1": 1.861,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "out_left",
+   "width_drawn_m": 0.886,
+   "leaves": 1,
+   "swing_from": "rule"
   }
  ],
  "rooms": [
   {
    "id": "r0",
-   "name": "Room 1",
-   "type": "other",
+   "name": "Living / Kitchen",
+   "type": "living",
    "polygon": [
     [
      0.201,
@@ -318,12 +323,12 @@
     342.73333333333335,
     840.5333333333333
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r1",
-   "name": "Room 2",
-   "type": "other",
+   "name": "Entry",
+   "type": "entry",
    "polygon": [
     [
      2.224,
@@ -376,7 +381,7 @@
     216.0,
     1376.5454545454545
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r2",
@@ -406,7 +411,7 @@
     569.5,
     1362.5
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   }
  ],
  "fixtures": [],
@@ -418,6 +423,14 @@
    "previous layout": 0,
    "plan reading (cached)": 0,
    "model room class": 3
+  },
+  "doors": {
+   "widened": 0,
+   "arc": 0,
+   "rule": 2,
+   "cased": 1,
+   "two_leaf": 0,
+   "duplicates_removed": 0
   }
  },
  "walls_from": "model+ink (1.00)",
@@ -428,5 +441,6 @@
    774.7,
    1705.0
   ]
- ]
+ ],
+ "door_style": "slab"
 }

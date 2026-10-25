@@ -1,0 +1,155 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>Your order · Move-in</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- Customer order page. Same checkout server as checkout.html (:8766: /cart, /agent/run SSE, /order/<id>/confirm); the
+     agent's full step log and the x402 payloads stay one click away under "Every step". Engineering view: checkout.html. -->
+<link rel="stylesheet" href="/ui/movein.css">
+<style>
+.top{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:18px 28px;background:rgba(255,255,255,.8);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+.top .where{display:flex;align-items:center;gap:6px;text-decoration:none}
+.top .where span{font-size:14px}
+.top .mark{font-family:var(--serif);font-variation-settings:"opsz" 28;font-size:22px;text-decoration:none}
+main{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:64px;width:min(1180px,100vw - 56px);margin:24px auto 80px;align-items:start}
+h1{font-family:var(--serif);font-variation-settings:"opsz" 28;font-weight:400;font-size:clamp(44px,5vw,64px);line-height:1;letter-spacing:-.02em;margin:0 0 8px}
+.lede{color:var(--graphite);font-size:17px;margin:0 0 40px}
+.room{display:flex;justify-content:space-between;font-size:13px;color:var(--graphite);padding:28px 0 10px;border-bottom:1px solid var(--hair)}
+.row{display:grid;grid-template-columns:76px minmax(0,1fr) auto;gap:18px;align-items:center;padding:16px 0;border-bottom:1px solid var(--hair)}
+.row .ph{width:76px;height:76px;border-radius:14px;background:#fff center/contain no-repeat;box-shadow:inset 0 0 0 1px rgba(29,29,31,.06)}
+.row .ph.none{display:grid;place-items:center;background:var(--mist);font-family:var(--serif);font-size:24px;color:var(--graphite)}
+.row .nm{font-weight:500;font-size:16px;line-height:1.3}
+.row .vr{color:var(--graphite);font-size:14px;margin-top:2px}
+.row .acts{display:flex;gap:16px;margin-top:8px;font-size:13px}
+.row .acts button,.row .acts a{background:none;border:0;padding:0;color:var(--graphite);cursor:pointer;font:inherit;text-decoration:none}
+.row .acts button:hover,.row .acts a:hover{color:var(--ink)}
+.row .pr{font-size:16px;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.row .pr small{display:block;color:var(--graphite);font-size:12px}
+.row.out{opacity:.4}.row.out .nm{text-decoration:line-through}
+.empty{padding:40px 0;color:var(--graphite)}
+.summary{position:sticky;top:96px;background:var(--mist);border-radius:28px;padding:28px}
+.summary .total{font-family:var(--serif);font-variation-settings:"opsz" 28;font-size:56px;line-height:1;letter-spacing:-.02em;font-variant-numeric:lining-nums}
+.summary .of{color:var(--graphite);font-size:14px;margin:8px 0 12px}
+.summary .meter{background:rgba(29,29,31,.1)}
+.summary .field{margin-top:22px}
+.summary input[type=date]{width:100%;border:0;border-radius:12px;background:#fff;font:500 15px/1.2 var(--sans);color:var(--ink);padding:12px 14px}
+.summary .seg{background:rgba(29,29,31,.07)}
+.summary .when{margin-top:22px;font-size:14px;line-height:1.5}
+.summary .when b{font-weight:500}
+.summary .go{margin-top:24px;display:flex;flex-direction:column;gap:10px}
+.summary .go .pill{width:100%;padding:16px 22px;font-size:15px}
+.summary .trust{font-size:12.5px;color:var(--graphite);margin-top:14px;line-height:1.5}
+.steps{list-style:none;margin:22px 0 0;padding:0;font-size:14px}
+.steps li{display:grid;grid-template-columns:14px 1fr;gap:10px;padding:5px 0;line-height:1.4}
+.steps li::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ink);margin-top:6px}
+.steps li.warn::before{background:var(--warn)}.steps li.bad::before{background:var(--bad)}.steps li.bad{color:var(--bad)}
+.steps li:last-child.live::before{animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.25}}
+.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:22px}
+.timeline div{background:#fff;border-radius:16px;padding:12px;font-size:12px;color:var(--graphite);line-height:1.35}
+.timeline b{display:block;color:var(--ink);font-weight:500;font-size:14px;margin-top:4px}
+details.every{margin-top:20px;font-size:13px}
+details.every summary{cursor:pointer;color:var(--graphite)}
+details.every pre{white-space:pre-wrap;font:11.5px/1.5 ui-monospace,Menlo,monospace;background:#fff;border-radius:12px;padding:12px;max-height:260px;overflow:auto;margin:10px 0 0}
+.done-mark{font-family:var(--serif);font-variation-settings:"opsz" 28;font-size:40px;line-height:1;margin-bottom:6px}
+@media (max-width:960px){main{grid-template-columns:1fr;gap:32px}.summary{position:static}}
+@media (prefers-reduced-motion:reduce){.steps li:last-child.live::before{animation:none}}
+</style></head>
+<body class="mi">
+<header class="top"><a class="where" id="back" href="/plan3d/landing.html"><span class="icon-btn" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span id="backL">Back</span></a>
+  <a class="mark" href="/plan3d/landing.html">Move-in</a><span style="width:80px"></span></header>
+<main>
+  <section>
+    <h1>Your order</h1><p class="lede" id="lede">Everything the designer picked, ready before you move in.</p>
+    <div id="cart"><div class="empty">Loading your order…</div></div>
+  </section>
+  <aside class="summary" id="summary" aria-live="polite">
+    <div class="total" id="total">$0</div><div class="of" id="of"></div><div class="meter" id="meter"><i></i></div>
+    <div id="pre">
+      <div class="field"><label for="movein">Move-in day</label><input type="date" id="movein"></div>
+      <div class="field"><span class="label">Pay with</span><div class="seg block" id="rail" role="group" aria-label="Payment"><button data-v="card" aria-pressed="true">Card</button><button data-v="x402" aria-pressed="false">USDC</button></div></div>
+      <div class="when" id="when"></div>
+      <div class="go"><button class="pill" id="run">Place order</button></div>
+      <div class="trust">Your budget is a hard limit. Nothing is charged until you confirm.</div>
+    </div>
+    <ul class="steps" id="steps" hidden></ul>
+    <div class="go" id="confirmBox" hidden><button class="pill" id="confirm">Confirm purchase</button><div class="trust" style="margin-top:0">The payment is held. It's taken only when you confirm.</div></div>
+    <div id="done" hidden></div>
+    <details class="every" id="every" hidden><summary>Every step</summary><pre id="raw"></pre></details>
+  </aside>
+</main>
+<script type="module">
+import { enhanceAll } from '/ui/glass.js'; enhanceAll();
+const API = 'http://127.0.0.1:8766', Q = new URLSearchParams(location.search), rooms = (Q.get('rooms') || '').split(',').filter(Boolean);
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const money = (v, cents) => '$' + (+v || 0).toLocaleString('en-US', { minimumFractionDigits: cents ? 2 : 0, maximumFractionDigits: cents ? 2 : 0 });
+const day = s => new Date(s + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric' });
+const budget = +(Q.get('budget') || 3500); let rail = Q.get('rail') || 'card', items = [], excluded = new Set(), orderId = null, raw = [];
+$('movein').value = Q.get('movein') || new Date(Date.now() + 21 * 864e5).toISOString().slice(0, 10);
+const unit = [...new Set(rooms.map(r => r.split('__')[0]))][0];
+if (unit) { $('back').href = `/plan3d/home.html?unit=${encodeURIComponent(unit)}`; $('backL').textContent = 'Back to your apartment'; }
+for (const b of $('rail').querySelectorAll('button')) { b.setAttribute('aria-pressed', b.dataset.v === rail); b.onclick = () => { rail = b.dataset.v; for (const x of $('rail').querySelectorAll('button')) x.setAttribute('aria-pressed', x === b); }; }
+
+function shortName(full) { const s = String(full || ''), i = s.indexOf(' - '); let v = i > 0 ? s.slice(i + 3) : ''; v = v.split('/')[0].replace(/\s*\d[\d\s\/x'".,½¼¾]*["']?\s*$/, '').trim(); return { name: i > 0 ? s.slice(0, i) : s, variant: v }; }
+const cap = s => String(s).charAt(0).toUpperCase() + String(s).slice(1);
+function img(u) { if (!u) return ''; return /^https?:/.test(u) ? `/api/img?u=${encodeURIComponent(u)}` : '/' + u.replace(/^\.?\//, ''); }
+function live() { return items.filter(i => !excluded.has(i.id)); }
+function render() {
+  const L = live(), total = L.reduce((s, i) => s + (i.price_known === false ? 0 : +i.price_usd || 0), 0), pct = budget ? total / budget * 100 : 0;
+  $('total').textContent = money(total); $('of').textContent = `of your ${money(budget)} budget, ${L.length} piece${L.length === 1 ? '' : 's'}`;
+  $('meter').querySelector('i').style.width = Math.min(100, pct) + '%'; $('meter').classList.toggle('over', pct > 100);
+  const mv = $('movein').value, d = new Date(new Date(mv + 'T12:00:00') - 2 * 864e5).toISOString().slice(0, 10);
+  $('when').innerHTML = mv ? `Arrives <b>${day(d)}</b>, two days before you move in.` : '';
+  $('run').disabled = !L.length;
+  const byRoom = {}; for (const i of items) (byRoom[i.room] ||= []).push(i);
+  let h = '';
+  for (const its of Object.values(byRoom)) {
+    const sub = its.filter(i => !excluded.has(i.id)).reduce((s, i) => s + (+i.price_usd || 0), 0);
+    h += `<div class="room"><span>${esc(cap(its[0].room_label || 'Room'))}</span><span>${money(sub)}</span></div>`;
+    for (const i of its) { const n = shortName(i.name), out = excluded.has(i.id), src = img(i.image);
+      h += `<div class="row${out ? ' out' : ''}">${src ? `<div class="ph" style="background-image:url('${esc(src)}')"></div>` : `<div class="ph none" aria-hidden="true">${esc(n.name.charAt(0))}</div>`}
+        <div><div class="nm">${esc(n.name)}</div>${n.variant ? `<div class="vr">${esc(n.variant)}</div>` : ''}
+          <div class="acts"><button data-id="${esc(i.id)}">${out ? 'Add back' : 'Remove'}</button>${i.product_url ? `<a href="${esc(i.product_url)}" target="_blank" rel="noopener">View product</a>` : ''}</div></div>
+        <div class="pr">${i.price_known === false ? '<small>price at the store</small>' : money(i.price_usd, true) + (i.price_source === 'estimated' ? '<small>estimate</small>' : '')}</div></div>`; }
+  }
+  $('cart').innerHTML = h || `<div class="empty">Nothing here yet. Furnish a room first.</div>`;
+}
+$('cart').addEventListener('click', e => { const b = e.target.closest('button[data-id]'); if (!b) return; const id = b.dataset.id; excluded.has(id) ? excluded.delete(id) : excluded.add(id); render(); });
+$('movein').oninput = render;
+
+fetch(`${API}/cart?rooms=${encodeURIComponent(rooms.join(','))}`).then(r => r.json()).then(c => { items = c.items || []; raw.push(`merchant ${c.merchant} · ${c.network} · facilitator ${c.facilitator}`); render(); })
+  .catch(() => { $('cart').innerHTML = `<div class="empty">The order service isn't reachable right now.</div>`; });
+
+// placing the order: the checkout agent streams its steps; card stops at Confirm, USDC settles through x402
+function step(text, cls = '') { const ul = $('steps'); ul.hidden = false; for (const li of ul.querySelectorAll('li.live')) li.classList.remove('live'); const li = document.createElement('li'); li.className = cls + ' live'; li.textContent = text; ul.appendChild(li); }
+function rawLine(s) { raw.push(s); $('raw').textContent = raw.join('\n'); $('every').hidden = false; }
+$('run').onclick = () => {
+  $('pre').hidden = true; $('steps').innerHTML = ''; $('done').hidden = true; $('confirmBox').hidden = true;
+  const url = `${API}/agent/run?rooms=${encodeURIComponent(rooms.join(','))}&budget=${budget}&movein=${$('movein').value}&rail=${rail}&exclude=${encodeURIComponent([...excluded].join(','))}`;
+  const es = new EventSource(url);
+  es.onmessage = e => { const d = JSON.parse(e.data); orderId = d.order_id || orderId; rawLine(`[${d.event}] ${d.text || ''}`);
+    if (d.event === 'drop') { excluded.add(d.item); render(); }
+    if (d.text && !/^x402_(challenge|paid_header|settled)$/.test(d.event)) step(d.text, /error|failed/.test(d.event) ? 'bad' : /drop|risk/.test(d.event) ? 'warn' : '');
+    if (d.event === 'x402_challenge') rawLine(JSON.stringify(d.challenge, null, 1));
+    if (d.event === 'x402_paid_header') rawLine(JSON.stringify(d.payment, null, 1));
+    if (d.event === 'x402_settled') { rawLine(JSON.stringify(d.settlement, null, 1)); step(d.tx ? 'Paid in USDC on Base Sepolia.' : 'USDC payment settled.'); if (d.tx) rawLine(`tx ${d.tx} ${d.explorer || ''}`); }
+    if (d.event === 'await_confirm') $('confirmBox').hidden = false;
+    if (d.event === 'schedule') schedule = d.schedule;
+    if (d.event === 'done') { es.close(); for (const li of $('steps').querySelectorAll('li.live')) li.classList.remove('live'); if (d.order && d.order.status.startsWith('paid')) finished(d.order); else if (!orderId || $('confirmBox').hidden) { $('pre').hidden = false; } } };
+  es.onerror = () => { es.close(); step('The connection closed. Try again.', 'bad'); $('pre').hidden = false; };
+};
+let schedule = null;
+$('confirm').onclick = async () => {
+  $('confirm').disabled = true;
+  const r = await fetch(`${API}/order/${orderId}/confirm`, { method: 'POST' }); const j = await r.json(); rawLine(JSON.stringify(j, null, 1));
+  if (!r.ok) { step('The payment could not be completed.', 'bad'); $('confirm').disabled = false; return; }
+  $('confirmBox').hidden = true; finished(await (await fetch(`${API}/order/${orderId}`)).json());
+};
+function finished(o) {
+  const s = o.schedule || schedule || {};
+  $('done').hidden = false;
+  $('done').innerHTML = `<div class="done-mark">Ordered.</div><div class="muted">${money(o.total_usd, true)} with ${o.rail === 'x402' ? 'USDC' : 'card'}. Order ${esc(o.id)}.</div>
+    ${s.delivery_date ? `<div class="timeline"><div>Order by<b>${esc(s.latest_order_by || '')}</b></div><div>Delivery<b>${esc(s.delivery_date)}</b>${esc(s.delivery_window || '')}</div><div>Assembly<b>${esc(s.assembly_date || '')}</b>${esc(s.assembly_window || '')}</div><div>Move-in<b>${esc(s.move_in || '')}</b></div></div>` : ''}`;
+}
+if (Q.get('order')) fetch(`${API}/order/${Q.get('order')}`).then(r => r.json()).then(o => { $('pre').hidden = true; finished(o); });
+render();
+</script></body></html>

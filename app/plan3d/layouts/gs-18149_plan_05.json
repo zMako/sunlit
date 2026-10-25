@@ -235,56 +235,71 @@
    "id": "o0",
    "wall": "w4",
    "type": "door",
-   "s0": 0.0,
-   "s1": 0.927,
-   "width_m": 0.927,
+   "s0": 0.058,
+   "s1": 0.869,
+   "width_m": 0.81,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_left",
+   "width_drawn_m": 0.927,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o1",
    "wall": "w6",
    "type": "door",
-   "s0": 4.195,
-   "s1": 5.157,
-   "width_m": 0.963,
+   "s0": 4.197,
+   "s1": 5.107,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_right",
+   "width_drawn_m": 0.962,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o2",
    "wall": "w8",
    "type": "door",
-   "s0": 0.0,
-   "s1": 0.666,
-   "width_m": 0.666,
+   "s0": 0.05,
+   "s1": 0.96,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_left"
+   "swing": "out_left",
+   "width_drawn_m": 0.666,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o3",
    "wall": "w8",
    "type": "door",
-   "s0": 8.343,
-   "s1": 9.187,
-   "width_m": 0.843,
+   "s0": 8.227,
+   "s1": 9.137,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_right",
+   "width_drawn_m": 0.844,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o4",
    "wall": "w11",
    "type": "door",
-   "s0": 7.796,
-   "s1": 8.569,
-   "width_m": 0.772,
+   "s0": 7.709,
+   "s1": 8.519,
+   "width_m": 0.81,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "in_right",
+   "width_drawn_m": 0.773,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o5",
@@ -310,12 +325,15 @@
    "id": "o7",
    "wall": "w14",
    "type": "door",
-   "s0": 1.712,
-   "s1": 2.401,
-   "width_m": 0.689,
+   "s0": 1.676,
+   "s1": 2.436,
+   "width_m": 0.76,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "out_right",
+   "width_drawn_m": 0.689,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o8",
@@ -807,6 +825,14 @@
    "previous layout": 0,
    "plan reading (cached)": 5,
    "model room class": 0
+  },
+  "doors": {
+   "widened": 6,
+   "arc": 1,
+   "rule": 5,
+   "cased": 0,
+   "two_leaf": 0,
+   "duplicates_removed": 0
   }
  },
  "walls_from": "model+ink (0.95)",
@@ -817,5 +843,6 @@
    4704.8,
    4829.7
   ]
- ]
+ ],
+ "door_style": "slab"
 }

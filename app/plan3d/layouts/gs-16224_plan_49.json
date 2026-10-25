@@ -156,34 +156,45 @@
    "id": "o0",
    "wall": "w0",
    "type": "door",
-   "s0": 10.373,
-   "s1": 11.316,
-   "width_m": 0.943,
+   "s0": 10.355,
+   "s1": 11.265,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_left"
+   "swing": "in_right",
+   "width_drawn_m": 0.943,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o1",
    "wall": "w6",
    "type": "door",
-   "s0": 0.0,
-   "s1": 1.467,
+   "s0": 0.05,
+   "s1": 1.517,
    "width_m": 1.467,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_left"
+   "swing": "out_left",
+   "width_drawn_m": 1.467,
+   "leaves": 2,
+   "style": "glass",
+   "swing_from": "rule"
   },
   {
    "id": "o2",
    "wall": "w6",
    "type": "door",
-   "s0": 2.462,
-   "s1": 3.877,
-   "width_m": 1.414,
+   "s0": 2.412,
+   "s1": 3.827,
+   "width_m": 1.415,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "out_right",
+   "width_drawn_m": 1.415,
+   "leaves": 2,
+   "style": "glass",
+   "swing_from": "rule"
   },
   {
    "id": "o3",
@@ -209,12 +220,15 @@
    "id": "o5",
    "wall": "w9",
    "type": "door",
-   "s0": 2.358,
-   "s1": 3.406,
-   "width_m": 1.048,
+   "s0": 2.427,
+   "s1": 3.337,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "out_left",
+   "width_drawn_m": 1.048,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o6",
@@ -290,8 +304,8 @@
   },
   {
    "id": "r2",
-   "name": "Room 3",
-   "type": "other",
+   "name": "Kitchen",
+   "type": "kitchen",
    "polygon": [
     [
      1.31,
@@ -364,7 +378,7 @@
     349.125,
     266.125
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   }
  ],
  "fixtures": [],
@@ -376,6 +390,14 @@
    "previous layout": 0,
    "plan reading (cached)": 0,
    "model room class": 3
+  },
+  "doors": {
+   "widened": 2,
+   "arc": 1,
+   "rule": 3,
+   "cased": 0,
+   "two_leaf": 2,
+   "duplicates_removed": 0
   }
  },
  "walls_from": "model+ink (0.98)",
@@ -386,5 +408,6 @@
    436.0,
    330.0
   ]
- ]
+ ],
+ "door_style": "shaker"
 }

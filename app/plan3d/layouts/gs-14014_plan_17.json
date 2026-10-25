@@ -456,34 +456,43 @@
    "id": "o0",
    "wall": "w4",
    "type": "door",
-   "s0": 0.306,
-   "s1": 1.062,
-   "width_m": 0.756,
+   "s0": 0.202,
+   "s1": 1.012,
+   "width_m": 0.81,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "out_right",
+   "width_drawn_m": 0.756,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o1",
    "wall": "w10",
    "type": "door",
-   "s0": 0.434,
-   "s1": 1.19,
-   "width_m": 0.756,
+   "s0": 0.23,
+   "s1": 1.14,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "out_right"
+   "swing": "out_right",
+   "width_drawn_m": 0.756,
+   "leaves": 1,
+   "swing_from": "rule"
   },
   {
    "id": "o2",
    "wall": "w28",
    "type": "door",
-   "s0": 0.563,
-   "s1": 1.319,
-   "width_m": 0.756,
+   "s0": 0.36,
+   "s1": 1.27,
+   "width_m": 0.91,
    "sill_m": 0.0,
    "height_m": 2.03,
-   "swing": "in_right"
+   "swing": "in_right",
+   "width_drawn_m": 0.756,
+   "leaves": 1,
+   "swing_from": "plan arc"
   },
   {
    "id": "o3",
@@ -569,8 +578,8 @@
  "rooms": [
   {
    "id": "r0",
-   "name": "Room 1",
-   "type": "other",
+   "name": "Bedroom",
+   "type": "bedroom",
    "polygon": [
     [
      0.128,
@@ -655,12 +664,12 @@
     167.26315789473685,
     461.36842105263156
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r1",
-   "name": "Room 2",
-   "type": "other",
+   "name": "Dining",
+   "type": "dining",
    "polygon": [
     [
      5.147,
@@ -737,7 +746,7 @@
     576.1176470588235,
     495.94117647058823
    ],
-   "named_from": "model room class"
+   "named_from": "plan text (OCR)"
   },
   {
    "id": "r2",
@@ -803,6 +812,14 @@
    "previous layout": 0,
    "plan reading (cached)": 0,
    "model room class": 3
+  },
+  "doors": {
+   "widened": 3,
+   "arc": 1,
+   "rule": 2,
+   "cased": 0,
+   "two_leaf": 0,
+   "duplicates_removed": 0
   }
  },
  "walls_from": "model+ink (0.95)",
@@ -819,5 +836,6 @@
    858.7,
    623.3
   ]
- ]
+ ],
+ "door_style": "shaker"
 }
