@@ -16,16 +16,16 @@ HAIKU, SONNET = "claude-haiku-5-5", "claude-sonnet-5-5"
 # degrades in a known order (decor first, then the second armchair, the bench...), never the core piece. Layers: core,
 # companions (relational: around / beside / facing / on / under / above), light, soft and decor.
 TEMPLATES = {
-    "living": [("sofa", 0), ("rug", 0), ("coffee_table", 0), ("floor_lamp", 0), ("armchair", 11), ("side_table", 9), ("tv_bench", 9), ("pendant_lamp", 0),
+    "living": [("sofa", 0), ("rug", 0), ("coffee_table", 0), ("floor_lamp", 0), ("armchair", 11), ("side_table", 9), ("tv_bench", 9), ("pendant_lamp", 0), ("ceiling_lamp", 0),
                ("bookcase", 12), ("table_lamp", 10), ("plant_pot", 9), ("armchair", 19), ("ottoman", 15), ("mirror", 13), ("plant_pot", 22)],
-    "bedroom": [("bed", 0), ("nightstand", 0), ("nightstand", 8), ("table_lamp", 0), ("table_lamp", 8), ("rug", 8), ("pendant_lamp", 0), ("dresser", 10),
+    "bedroom": [("bed", 0), ("nightstand", 0), ("nightstand", 8), ("table_lamp", 0), ("table_lamp", 8), ("rug", 8), ("pendant_lamp", 0), ("wall_lamp", 10), ("wall_lamp", 10), ("dresser", 10),
                 ("mirror", 0), ("bench", 13), ("wardrobe", 12), ("floor_lamp", 11), ("plant_pot", 11)],
-    "dining": [("dining_table", 0), ("dining_chair", 0), ("dining_chair", 0), ("dining_chair", 0), ("dining_chair", 0), ("pendant_lamp", 0), ("dining_chair", 13), ("dining_chair", 13),
+    "dining": [("dining_table", 0), ("dining_chair", 0), ("dining_chair", 0), ("dining_chair", 0), ("dining_chair", 0), ("pendant_lamp", 0), ("ceiling_lamp", 0), ("dining_chair", 13), ("dining_chair", 13),
                ("rug", 9), ("dresser", 11), ("plant_pot", 10), ("floor_lamp", 14), ("mirror", 12)],
-    "kitchen": [("bar_stool", 0), ("bar_stool", 0), ("dining_table", 8), ("dining_chair", 8), ("dining_chair", 8), ("pendant_lamp", 8), ("plant_pot", 6)],
-    "office": [("desk", 0), ("desk_chair", 0), ("table_lamp", 0), ("bookcase", 7), ("rug", 9), ("armchair", 11), ("floor_lamp", 9), ("plant_pot", 7), ("pendant_lamp", 0)],
-    "hallway": [("bench", 0), ("mirror", 0), ("plant_pot", 3), ("side_table", 4)],
-    "bathroom": [], "closet": [], "laundry": [], "balcony": [],
+    "kitchen": [("ceiling_lamp", 0), ("bar_stool", 0), ("bar_stool", 0), ("dining_table", 8), ("dining_chair", 8), ("dining_chair", 8), ("pendant_lamp", 8), ("plant_pot", 6)],
+    "office": [("desk", 0), ("desk_chair", 0), ("table_lamp", 0), ("ceiling_lamp", 0), ("bookcase", 7), ("rug", 9), ("armchair", 11), ("floor_lamp", 9), ("plant_pot", 7), ("pendant_lamp", 0)],
+    "hallway": [("ceiling_lamp", 0), ("mirror", 0), ("wall_lamp", 2), ("bench", 0), ("plant_pot", 3), ("side_table", 4)],
+    "bathroom": [("ceiling_lamp", 0), ("wall_lamp", 0)], "closet": [], "laundry": [("ceiling_lamp", 0)], "balcony": [],
     "other": [("sofa", 0), ("rug", 0), ("coffee_table", 0), ("floor_lamp", 0), ("armchair", 12), ("side_table", 9), ("plant_pot", 9)]}
 def slots_for(room_type, area_m2):
     t = TEMPLATES.get(room_type, TEMPLATES["other"]); return [c for c, a in t if area_m2 >= a]
@@ -75,7 +75,7 @@ def catalog(tier="any"):
 def fits_room(i, info):
     return min(i["width_m"], i["depth_m"]) <= info["short_m"] - 0.5 and max(i["width_m"], i["depth_m"]) <= info["long_m"] - 0.3
 
-ASSEMBLED_IN_PLACE = {"bed", "wardrobe", "dining_table", "desk", "bookcase", "dresser", "tv_bench", "nightstand", "side_table", "coffee_table", "rug", "curtain", "mattress", "mirror", "pendant_lamp", "table_lamp", "floor_lamp", "plant_pot", "bench", "stool", "bar_stool"}
+ASSEMBLED_IN_PLACE = {"bed", "wardrobe", "dining_table", "desk", "bookcase", "dresser", "tv_bench", "nightstand", "side_table", "coffee_table", "rug", "curtain", "mattress", "mirror", "pendant_lamp", "table_lamp", "floor_lamp", "plant_pot", "bench", "stool", "bar_stool", "wall_lamp", "ceiling_lamp"}
 def passes_door(i, door_w):
     """Upholstered one-piece items (sofas, armchairs, ottomans) must pass the door: their two smallest dimensions must fit the
     opening (width, height). Beds, case goods, tables and lamps arrive flat-packed or in parts and are assembled in the room."""

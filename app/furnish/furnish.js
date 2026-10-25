@@ -103,6 +103,7 @@ export class Furnish {
     // front marker (local +z face is the front: it carries the product photo)
     const fm = new THREE.Mesh(new THREE.PlaneGeometry(Math.min(w, 0.6) * 0.5, 0.03), new THREE.MeshBasicMaterial({ color: 0x9fe3c0, side: THREE.DoubleSide })); fm.rotation.x = -Math.PI / 2; fm.position.set(0, 0.006, d / 2 + 0.04); it.obj.add(fm); it.fm = fm;
     this._place(it, +spec.x || 0, +spec.z || 0, +spec.rot_deg || 0);
+    this._lamp(it);
     this._applyClip(it.obj);
     this.group.add(it.obj); this.items.push(it);
     if (markDirty) { this._refresh(); this._touch(); }
@@ -301,7 +302,35 @@ export class Furnish {
     plastic: { roughness: 0.4, metalness: 0 }, glass: { roughness: 0.05, metalness: 0, transparent: true, opacity: 0.35 }, glass_opal: { roughness: 0.55, metalness: 0, glow: 0.55 }, paper: { roughness: 0.85, metalness: 0, glow: 0.35 },
     marble: { roughness: 0.25, metalness: 0 }, stone: { roughness: 0.6, metalness: 0 }, concrete: { roughness: 0.85, metalness: 0 }, ceramic: { roughness: 0.3, metalness: 0 }, lacquer: { roughness: 0.18, metalness: 0, clearcoat: 0.6 },
     rattan: { roughness: 0.9, metalness: 0 }, cork: { roughness: 0.95, metalness: 0 }, rubber: { roughness: 0.8, metalness: 0 } };
-  static LAMP = new Set(['pendant_lamp', 'table_lamp', 'floor_lamp']);
+  static LAMP = new Set(['pendant_lamp', 'table_lamp', 'floor_lamp', 'wall_lamp', 'ceiling_lamp']);
+  // ---------- real light from lamps ----------
+  // Every lamp carries a warm point light (a spot for downlights and track spots), a soft additive halo at the shade, and
+  // its shade's emissive glow. lampLevel scales all three: ~0.8 by day (lamps read as on, the sun dominates), ~2.5 at dusk.
+  static lampLevel = 0.8;
+  static setLampLevel(m) { Furnish.lampLevel = m; for (const f of (window.furnishInstances || [])) for (const it of f.items) f._lampLevel(it); }
+  static _haloTex() {
+    if (Furnish._halo) return Furnish._halo; const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d');
+    const r = g.createRadialGradient(64, 64, 0, 64, 64, 64); r.addColorStop(0, 'rgba(255,255,255,1)'); r.addColorStop(0.2, 'rgba(255,255,255,0.5)'); r.addColorStop(0.6, 'rgba(255,255,255,0.08)'); r.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = r; g.fillRect(0, 0, 128, 128); Furnish._halo = new THREE.CanvasTexture(c); return Furnish._halo;
+  }
+  _lamp(it) {
+    const cat = it.spec.category; if (!Furnish.LAMP.has(cat) || it.lamp || it.modelFailed) return;
+    const h = +it.spec.h_m || 0.5, w = +it.spec.w_m || 0.3; const name = it.spec.name || '';
+    const base = { pendant_lamp: 6, ceiling_lamp: 8, floor_lamp: 4, table_lamp: 2.2, wall_lamp: 2.4 }[cat] || 2;   // candela (three r155+ physical units)
+    const spot = cat === 'ceiling_lamp' && /spot|track|downlight|recessed/i.test(name);
+    const y = cat === 'pendant_lamp' ? h * 0.35 : cat === 'ceiling_lamp' ? Math.max(0.02, h * 0.4) : cat === 'floor_lamp' ? h * 0.85 : cat === 'table_lamp' ? h * 0.7 : h * 0.5;   // above the item's own bottom
+    let light;
+    if (spot) { light = new THREE.SpotLight(0xffe3bf, base, 8, 0.6, 0.55, 2); light.position.set(0, y, 0); light.target.position.set(0, -3, 0); it.obj.add(light.target); }
+    else { light = new THREE.PointLight(0xffe3bf, base, 8, 2); light.position.set(0, y, cat === 'wall_lamp' ? Math.max(0.1, (+it.spec.d_m || 0.2) * 0.6) : 0); }
+    if ((cat === 'pendant_lamp' || cat === 'ceiling_lamp') && window.__quality !== 'low' && !this.items.some(o => o.lamp && o.lamp.light.castShadow)) { light.castShadow = true; light.shadow.mapSize.set(512, 512); light.shadow.bias = -0.003; light.shadow.camera.near = 0.1; }   // one shadow-casting lamp per room
+    const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: Furnish._haloTex(), color: 0xffd8a6, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, depthTest: true }));
+    halo.scale.setScalar(Math.max(0.45, Math.min(w, 1.2) * 2.0)); halo.position.copy(light.position); halo.renderOrder = 20; halo.raycast = () => {};
+    it.lamp = { light, halo, base }; it.obj.add(light); it.obj.add(halo); this._lampLevel(it);
+  }
+  _lampLevel(it) {
+    if (!it.lamp) return; const m = Furnish.lampLevel; it.lamp.light.intensity = it.lamp.base * m; it.lamp.halo.material.opacity = Math.min(0.85, 0.1 * m);
+    it.obj.traverse(o => { if (o.isMesh && o.material && o.material.emissive && o.material.userData && o.material.userData.glow) o.material.emissiveIntensity = o.material.userData.glow * (0.4 + 1.0 * m); });
+  }
   static _data() {   // palette.json (Haiku's reading of each hero photo) and brand_textures.json (Muuto/Hem/Carl Hansen texture packs), fetched once
     if (!Furnish._dataP) Furnish._dataP = Promise.all([fetch('/furnish/designer/palette.json').then(r => r.ok ? r.json() : {}).catch(() => ({})), fetch('/furnish/designer/brand_textures.json').then(r => r.ok ? r.json() : {}).catch(() => ({})), fetch('/furnish/designer/orient.json').then(r => r.ok ? r.json() : {}).catch(() => ({})), fetch('/api/gallery_flags').then(r => r.ok ? r.json() : {}).catch(() => ({}))]).then(([p, b, o, f]) => ({ palette: p, brand: b, orient: o, flags: f }));
     return Furnish._dataP;
@@ -310,7 +339,7 @@ export class Furnish {
     const f = Furnish.FINISH[finish] || { roughness: 0.6, metalness: 0 };
     const rough = Math.min(1, Math.max(0.03, f.roughness + (sheen === 'matte' ? 0.12 : sheen === 'gloss' ? -0.2 : 0)));
     const m = new THREE.MeshPhysicalMaterial({ color: new THREE.Color(f.color || hex || '#b9b2a6'), roughness: rough, metalness: f.metalness, transparent: !!f.transparent, opacity: f.opacity ?? 1, clearcoat: f.clearcoat || 0, sheen: f.sheen || 0, sheenColor: new THREE.Color(0xffffff) });
-    if (f.glow && isLamp) { m.emissive = new THREE.Color(0xfff0d2); m.emissiveIntensity = f.glow; }
+    if (f.glow && isLamp) { m.emissive = new THREE.Color(0xfff0d2); m.emissiveIntensity = f.glow * (0.4 + Furnish.lampLevel); m.userData.glow = f.glow; }
     if (f.bump) Furnish._bump(f.bump).then(t => { if (t) { m.normalMap = t; m.normalScale.set(0.6, 0.6); m.needsUpdate = true; } });
     return m;
   }

@@ -10,7 +10,7 @@ from shapely.geometry import Polygon, box, Point, LineString
 from shapely.affinity import rotate, translate
 from shapely.ops import unary_union
 
-WALL_BACKED = {"bed": 1, "sofa": 1, "wardrobe": 2, "dresser": 2, "bookcase": 2, "desk": 2, "tv_bench": 2, "nightstand": 3, "mirror": 3}   # dining tables stand free, chairs go around them
+WALL_BACKED = {"bed": 1, "sofa": 1, "wardrobe": 2, "dresser": 2, "bookcase": 2, "desk": 2, "tv_bench": 2, "nightstand": 3, "mirror": 3, "wall_lamp": 3}   # dining tables stand free, chairs go around them
 RELATIONAL = {"coffee_table": ("sofa", "front", 0.45), "rug": ("sofa|bed|dining_table", "under", 0.0), "desk_chair": ("desk", "front", 0.10), "floor_lamp": ("sofa|armchair|bed|desk|dining_table|dresser", "side", 0.10),
               "armchair": ("sofa", "corner", 0.30), "dining_chair": ("dining_table", "around", 0.05),
               "side_table": ("sofa|armchair", "side", 0.08), "ottoman": ("armchair|sofa", "front", 0.35), "bench": ("bed", "foot", 0.15),
@@ -63,8 +63,13 @@ def _sibling_category(i):
     for name, c in _SIBLINGS.get(i.get("brand") or "", []):
         if n != name and n.startswith(name) and (best is None or len(name) > len(best[0])): best = (name, c)
     return best[1] if best else None
+import re as _re
+LIGHT_RE = [(_re.compile(r"\b(wall|parete|sconce|applique)\b", _re.I), "wall_lamp"), (_re.compile(r"\b(ceiling|soffitto|plafon|recessed|downlight|spot|spots)\b", _re.I), "ceiling_lamp")]
 def fix_item(i):
     n = (i.get("name") or "").lower()
+    if i.get("category") in ("other", "table_lamp", "pendant_lamp", "floor_lamp") and i.get("id", "").startswith("dsg-"):   # lights the keyword classifier could not place: wall and ceiling fixtures
+        for rx, c in LIGHT_RE:
+            if rx.search(i.get("name") or ""): i = dict(i, category=c); break
     if i.get("category") == "other" and i.get("id", "").startswith("dsg-"):
         c = _sibling_category(i)
         if c: i = dict(i, category=c)
@@ -121,6 +126,7 @@ class Room:
                 yield float(c[0]), float(c[1]), self.yaw_for_inward(w["in"]), w, float(t)
 
     def blocks_window(self, wall, t, w_m, h_m, cat):
+        if cat in ("mirror", "wall_lamp"): return any(t + w_m / 2 > s0 and t - w_m / 2 < s1 for s0, s1, _ in self.win_spans.get(wall["i"], []))   # hung at eye height: never on the glass
         if cat in LOW_UNDER_WINDOW and h_m <= 1.1: return False
         for s0, s1, sill in self.win_spans.get(wall["i"], []):
             if h_m > sill and (t + w_m / 2 > s0 and t - w_m / 2 < s1): return True
@@ -162,7 +168,7 @@ def place(R, items):
         return True
     def walkable(extra=None):
         # 10 cm grid BFS from each door; every item's front cell must be reachable
-        SMALL = {"rug", "fixture_small", "nightstand", "side_table", "floor_lamp", "table_lamp", "mirror", "plant_pot", "plant", "stool", "ottoman", "pendant_lamp"}   # you step around these: they neither block a corridor nor need one
+        SMALL = {"rug", "fixture_small", "nightstand", "side_table", "floor_lamp", "table_lamp", "mirror", "plant_pot", "plant", "stool", "ottoman", "pendant_lamp", "wall_lamp", "ceiling_lamp"}   # you step around these: they neither block a corridor nor need one
         big = lambda o: o["cat"] not in SMALL and o["fp"].area >= 0.3
         fps = [o["fp"] for o in occupied if big(o)] + ([extra] if extra is not None else [])
         minx, minz, maxx, maxz = room.poly.bounds; g = 0.1; nx, nz = int((maxx - minx) / g) + 1, int((maxz - minz) / g) + 1
@@ -216,6 +222,12 @@ def place(R, items):
         cat = it["category"]; w_m, d_m, h_m = it["w_m"], it["d_m"], it["h_m"]
         if cat == "mirror" and h_m < 1.3:   # wall-hung: centred at eye height, no floor taken
             it["y_m"] = round(1.55 - h_m / 2, 3); it["floor"] = False
+        if cat == "wall_lamp": it["y_m"] = round(1.75 - h_m / 2, 3); it["floor"] = False   # sconce height
+        if cat == "ceiling_lamp":   # one fixture per room, in the open middle of the ceiling; skipped when a pendant already lights a small room
+            if any(o["cat"] in ("pendant_lamp", "ceiling_lamp") for o in placed) and room.poly.area < 20: it["unplaced"] = "the room already has a ceiling light"; continue
+            core = room.poly.buffer(-0.9); core = max(core.geoms, key=lambda g: g.area) if hasattr(core, "geoms") else core
+            c0 = (core if not core.is_empty else room.poly).representative_point(); it["y_m"] = round(max(1.9, ceiling - h_m - 0.02), 3); it["floor"] = False
+            commit(it, float(c0.x), float(c0.y), 0.0); continue
         if cat in WALL_BACKED:
             best = None
             for x, z, yaw, wall, t in room.wall_candidates(w_m, d_m):
@@ -239,6 +251,12 @@ def place(R, items):
                     gap = abs(t - bed["t"]) - bed["w_m"] / 2 - w_m / 2
                     if not (0.0 <= gap <= 0.12): continue
                     score += 3.0 - 10 * gap
+                if cat == "wall_lamp":   # above a nightstand or beside the bed or mirror; two sconces go to opposite sides of the bed
+                    near = [o for o in placed if o["cat"] in ("nightstand", "bed", "mirror", "desk", "sofa")]
+                    if near:
+                        dmin = min(math.hypot(x - o["x"], z - o["z"]) for o in near); score += 2.0 * max(0.0, 1.0 - dmin / 1.6)
+                        if any(o["cat"] == "wall_lamp" and math.hypot(x - o["x"], z - o["z"]) < 1.2 for o in placed): score -= 3.0
+                    else: score -= 1.0
                 if cat == "desk": score += 1.0 * bool(room.win_spans.get(wall["i"]))                # desks like windows
                 if cat == "dining_table": score += 0.5 * (h_m <= 0.8)
                 if best is None or score > best[0]: best = (score, x, z, yaw, wall, t)
