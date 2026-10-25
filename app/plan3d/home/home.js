@@ -145,7 +145,7 @@ addEventListener('keydown', e => {
 // (our furniture drawn into the photo from its camera). Renders start in the background when the furniture settles, so the
 // furnished photo is usually waiting by the time Photos opens.
 const STAGE = window.MOVEIN_STAGE || 'http://127.0.0.1:8772', STAGE_V = 1;
-let PH = null, phIdx = 0, phRect = null, phHfov = 75, phSplit = 0.5;
+let PH = null, phIdx = 0, phRect = null, phHfov = 75, phSplit = 0.5, phReady = false;
 const adjOf = i => JSON.parse(localStorage.getItem(`photoAdj:${unit}:${PH.photos[i].src}`) || '{"dy":0,"dp":0,"df":0}');
 fetch(`photos/${unit}.json`, { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(j => {
   if (!j || !j.photos || !j.photos.length) return; PH = j; $('vPhoto').hidden = false;
@@ -172,7 +172,7 @@ function setStaged(on) {
   if (on === staged) return; staged = on; $('pBack').hidden = !on;
   if (on) { outside?.enable(false); seal?.setWalk(false); stageMats(true); stageLight(); } else stageMats(false);
 }
-function leavePhoto() { if (mode !== 'photo') return; setStaged(false); $('photos').hidden = true; document.body.classList.remove('photomode'); renderer.domElement.style.clipPath = ''; setFurnVisible(true); }
+function leavePhoto() { if (mode !== 'photo') return; setStaged(false); $('photos').hidden = true; document.body.classList.remove('photomode'); renderer.domElement.style.clipPath = ''; renderer.domElement.style.visibility = ''; setFurnVisible(true); }
 function setPhoto(i) {
   if (!PH) return; phIdx = (i + PH.photos.length) % PH.photos.length;
   if (mode !== 'photo') {
@@ -181,7 +181,8 @@ function setPhoto(i) {
     document.body.classList.add('walking', 'photomode');
     for (const f of Object.values(furn)) { f.select(null); f.setActive(false); }
     $('photos').hidden = false; $('tip').hidden = true; $('walkHint').hidden = true; $('cross').hidden = true;
-    setFurnVisible(true); setStaged(true);
+    setFurnVisible(true); outside?.enable(false); seal?.setWalk(false);
+    renderer.domElement.style.visibility = 'hidden';   // photos only: the listing photo and, once rendered, the furnished photo
   }
   const p = PH.photos[phIdx], room = layout.rooms.find(r => r.id === p.room);
   $('pPhoto').onload = layoutPhotos; $('pPhoto').src = p.src; $('pBackImg').src = p.src; $('pCount').textContent = `${phIdx + 1} of ${PH.photos.length}`;
@@ -205,13 +206,12 @@ function layoutPhotos() {   // one frame at the photo's aspect: listing photo le
   for (const id of ['pBox', 'p3d', 'pStagedBox', 'pBack']) place($(id), x, y, w, h);
   const c = ph.crop || [0, 0, 1, 1], iw = w / (c[2] - c[0]), ih = h / (c[3] - c[1]), st = { width: iw + 'px', height: ih + 'px', left: (-c[0] * iw) + 'px', top: (-c[1] * ih) + 'px' };
   Object.assign($('pPhoto').style, st); Object.assign($('pBackImg').style, st);
-  $('pBox').style.clipPath = `inset(0 ${((1 - phSplit) * 100).toFixed(2)}% 0 0 round 16px 0 0 16px)`;
-  place($('pHandle'), x + w * phSplit, y, 0, h);
+  $('pBox').style.clipPath = phReady ? `inset(0 ${((1 - phSplit) * 100).toFixed(2)}% 0 0 round 16px 0 0 16px)` : '';   // the slider only once the furnished photo exists
+  $('pHandle').hidden = !phReady; $('p3d').style.pointerEvents = phReady ? '' : 'none'; place($('pHandle'), x + w * phSplit, y, 0, h);
   Object.assign($('pCapL').style, { left: x + 'px', top: (y + h + 10) + 'px' });
   Object.assign($('pCapR').style, { left: (x + w) + 'px', top: (y + h + 10) + 'px', transform: 'translateX(-100%)', textAlign: 'right' });
   $('pNote').style.top = (y + h + 34) + 'px'; $('pNote').style.maxWidth = Math.min(w, 720) + 'px';
   Object.assign($('pStatus').style, { left: (x + w - 14) + 'px', top: (y + 14) + 'px' });
-  renderer.domElement.style.clipPath = `inset(${y}px ${innerWidth - x - w}px ${H - y - h}px ${x}px round 16px)`;
 }
 addEventListener('resize', () => { if (mode === 'photo') layoutPhotos(); });
 { let drag = false; const at = e => { phSplit = Math.min(1, Math.max(0, (e.clientX - phRect.x) / phRect.w)); layoutPhotos(); };   // drag anywhere on the frame
@@ -299,12 +299,12 @@ function showStaged() {
   const key = stageKey(phIdx), st = stageState[key], chip = $('pStatus');
   if (st === 'done') {
     const url = `${STAGE}/staged/${key}.jpg`;
-    if ($('pStaged').dataset.key !== key) { $('pStaged').dataset.key = key; $('pStaged').onload = () => { if ($('pStaged').dataset.key === stageKey(phIdx)) $('pStagedBox').hidden = false; }; $('pStaged').src = url; }
-    else $('pStagedBox').hidden = false;
+    const ready = () => { if ($('pStaged').dataset.key !== stageKey(phIdx)) return; $('pStagedBox').hidden = false; if (!phReady) { phReady = true; layoutPhotos(); } };
+    if ($('pStaged').dataset.key !== key) { $('pStaged').dataset.key = key; $('pStaged').onload = ready; $('pStaged').src = url; } else ready();
     chip.hidden = true; return;
   }
-  $('pStagedBox').hidden = true;
-  const msg = !hasFurniture() ? 'Furnish the room to see it here' : st === 'offline' ? 'Live preview' : st === 'error' ? 'Render failed, live preview'
+  $('pStagedBox').hidden = true; if (phReady) { phReady = false; layoutPhotos(); }
+  const msg = !hasFurniture() ? 'Furnish the room to see it furnished here' : st === 'offline' ? 'Photo rendering is not running' : st === 'error' ? 'The render failed, try Render photo'
     : st === 'running' ? 'Rendering the furnished photo' : 'Preparing the furnished photo';
   const busy = ['capturing', 'queued', 'running', undefined].includes(st) && hasFurniture();
   chip.innerHTML = (busy ? '<span class="spin"></span>' : '') + esc(msg); chip.hidden = false;
@@ -361,7 +361,7 @@ renderer.setAnimationLoop(() => {
   else if ((roomTick += dt) > 0.5) { roomTick = 0; const r = currentRoom(); if (r && r !== activeRoom) activateRoom(r); }
   if (mode === 'walk' || mode === 'photo') outside?.update();
   if (captureReq) { const c = captureReq; captureReq = null; try { c.res(doCapture(c.i)); } catch (e) { console.warn('[stage] capture', e); c.res(Promise.reject(e)); } }
-  if (mode === 'photo') renderPhotoFrame(); else renderer.render(scene, camera);
+  if (mode !== 'photo') renderer.render(scene, camera);   // photos mode draws no 3D (captures above still run)
   drawPlanMarker();
 });
 addEventListener('resize', frameView);

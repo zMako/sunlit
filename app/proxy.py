@@ -198,7 +198,20 @@ class H(http.server.SimpleHTTPRequestHandler):
         return super().do_GET()
     do_POST = do_GET
 
+def start_side_services():
+    """The platform's side services start with it: the photo staging worker (Stable Diffusion, :8772) and the Google 3D
+    tiles proxy for the view out of the windows (:8771). Skipped when already listening; detached, so a platform restart
+    keeps the model warm. Logs in app/stage.log and app/tiles.log."""
+    import socket
+    for name, script, port in (("stage", "plan3d/photos/stage_server.py", 8772), ("tiles", "plan3d/outside/tiles_server.py", 8771)):
+        with socket.socket() as s:
+            if s.connect_ex(("127.0.0.1", port)) == 0: print(f"[{name}] already running on :{port}"); continue
+        if not (ROOT / script).exists(): continue
+        subprocess.Popen([PY, str(ROOT / script), str(port)], cwd=str(ROOT), env=dict(os.environ), stdout=open(ROOT / f"{name}.log", "a"), stderr=subprocess.STDOUT, start_new_session=True)
+        print(f"[{name}] started on :{port} (log app/{name}.log)")
+
 if __name__ == "__main__":
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 8765
+    start_side_services()
     threading.Thread(target=worker, daemon=True).start()
     print(f"rooms platform on http://127.0.0.1:{port}/"); http.server.ThreadingHTTPServer.request_queue_size = 256; http.server.ThreadingHTTPServer(("127.0.0.1", port), H).serve_forever()   # the gallery fires a hundred requests at once; the default backlog of 5 resets connections
