@@ -320,7 +320,7 @@ export class Apartment {
         const nd = Math.max(1, Math.round(w / 0.6)); const seam = new THREE.MeshStandardMaterial({ color: 0x3a3630, roughness: 0.9 });
         for (let i = 0; i < nd; i++) { this.box(0.12, 0.012, 0.02, steel, -w / 2 + (i + 0.5) * w / nd, h - 0.25, d / 2 + 0.01, g); if (i) this.box(0.006, h - 0.12, 0.004, seam, -w / 2 + i * w / nd, 0.11, d / 2 + 0.002, g); }   // handles + door seams (front = +z)
         this.box(w, 0.006, 0.004, seam, 0, h - 0.04, d / 2 + 0.002, g);   // drawer line under the slab
-        if (f.type === 'vanity') { const basin = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.15, 0.12, 24), porc); basin.position.set(0, h + 0.04 - 0.06, 0); g.add(basin); this.tap(g, 0, h + 0.04, -d / 2 + 0.08); }
+        if (f.type === 'vanity') { const basin = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.15, 0.12, 24), porc); basin.position.set(0, h + 0.04 - 0.06 + 0.003, 0); g.add(basin); /* rim 3 mm proud of the slab: flush tops z-fight */ this.tap(g, 0, h + 0.04, -d / 2 + 0.08); }
         break; }
       case 'sink': { const rim = this.box(Math.min(w, 0.6), 0.015, Math.min(d, 0.45), steel, 0, (H || 0.9) + 0.0, 0, g); const basin = this.box(Math.min(w, 0.6) - 0.06, 0.02, Math.min(d, 0.45) - 0.06, dark, 0, (H || 0.9) + 0.015, 0, g); this.tap(g, 0, (H || 0.9) + 0.015, -Math.min(d, 0.45) / 2 + 0.04); break; }
       case 'stove': { this.box(w, (H || 0.9), d, steel, 0, 0, 0, g); const topm = this.box(w - 0.02, 0.012, d - 0.02, dark, 0, (H || 0.9), 0, g);
