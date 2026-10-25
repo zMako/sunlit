@@ -86,6 +86,10 @@ export class Apartment {
     this.layout = layout; this.lib = lib; this.group = new THREE.Group(); this.group.name = 'apartment';
     this.ceil = layout.ceiling_m || 2.6; this.roomMeshes = {}; this.wallMeshes = []; this.ceilingMeshes = []; this.labels = []; this.lights = [];
     this.bounds = new THREE.Box3(); this.walls = new Map(layout.walls.map(w => [w.id, w]));
+    // levels (townhouses, levels.py): one group per level lifted to its elevation; elements carry "level"; single-level plans
+    // build straight into the apartment group
+    this.levels = (layout.levels && layout.levels.length > 1) ? layout.levels : null; this.levelGroups = []; this.tgt = this.group;
+    if (this.levels) for (const lv of this.levels) { const g = new THREE.Group(); g.name = 'level_' + lv.id; g.position.y = lv.elevation_m; g.userData = { level: lv.id }; this.group.add(g); this.levelGroups[lv.id] = g; }
     this.build();
   }
   roomOf(point) { let best = null, bd = Infinity; for (const r of this.layout.rooms) { const d = distToPoly(point, r.polygon); if (d < bd) { bd = d; best = r; } } return bd < 0.6 ? best : null; }
@@ -98,10 +102,17 @@ export class Apartment {
       if (spec && spec.sill_m != null && spec.head_m != null && spec.head_m > spec.sill_m + 0.4) { o.sill_m = Math.max(0.15, Math.min(spec.sill_m, this.ceil - 1.0)); o.height_m = Math.min(spec.head_m, this.ceil - 0.08) - o.sill_m; o.room = r.id; }
       else if (r) o.room = r.id;
     }
-    for (const w of L.walls) this.buildWall(w, L.openings.filter(o => o.wall === w.id));
-    for (const r of L.rooms) this.buildRoom(r);
-    for (const f of L.fixtures || []) this.buildFixture(f);
-    this.bounds.setFromObject(this.group);
+    const at = (el) => { this.tgt = (this.levels && this.levelGroups[el.level || 0]) || this.group; };
+    for (const w of L.walls) { at(w); this.buildWall(w, L.openings.filter(o => o.wall === w.id)); }
+    for (const r of L.rooms) { at(r); this.buildRoom(r); }
+    for (const f of L.fixtures || []) { at(f); this.buildFixture(f); }
+    for (const st of L.stairs || []) { at({ level: st.from_level }); this.buildStair(st); }
+    if (this.levels) for (const lv of this.levels) {   // slabs: the level's footprint as floor (above ground) and ceiling, stairwells open
+      const g = this.levelGroups[lv.id];
+      if (lv.id > 0 && lv.floor_slab && lv.floor_slab.length) { const m = new THREE.Mesh(this.shapeGeo(lv.floor_slab), this.lib.get(null, 'floor', 'living')); m.position.y = -0.002; m.receiveShadow = true; m.userData = { kind: 'floor', slab: lv.id }; g.add(m); }
+      if (lv.ceiling_slab && lv.ceiling_slab.length) { const cm = this.lib.get(null, 'ceiling').clone(); cm.side = THREE.BackSide; const m = new THREE.Mesh(this.shapeGeo(lv.ceiling_slab), cm); m.position.y = this.ceil + 0.004; m.userData = { kind: 'ceiling', slab: lv.id }; g.add(m); this.ceilingMeshes.push(m); }
+    }
+    this.tgt = this.group; this.bounds.setFromObject(this.group);
   }
 
   // ---------- walls ----------
@@ -128,7 +139,7 @@ export class Apartment {
     }
     if (fr.len + t / 2 > s + 1e-3) pieces.push({ s, len: fr.len + t / 2 - s, y: 0, h: H + 0.03 });
     const wallOff = hash01(w.id) * 3.1;   // per-wall texture phase, so neighbouring walls never share a visible repeat
-    for (const p of pieces) { const m = this.placeAlong(fr, p.s + p.len / 2, p.y, p.h, p.len, t, 0, p.s + wallOff, p.y); m.userData = { kind: 'wall', wall: w.id, exterior: !!w.exterior, mid: m.position.clone(), y0: p.y, h: p.h }; this.group.add(m); this.wallMeshes.push(m); }
+    for (const p of pieces) { const m = this.placeAlong(fr, p.s + p.len / 2, p.y, p.h, p.len, t, 0, p.s + wallOff, p.y); m.userData = { kind: 'wall', wall: w.id, exterior: !!w.exterior, mid: m.position.clone(), y0: p.y, h: p.h }; this.tgt.add(m); this.wallMeshes.push(m); }
     for (const o of ops) { if (o.type === 'window') this.buildWindow(fr, o); else if (o.type === 'door' || o.type === 'closet_door') this.buildDoor(fr, o); else this.buildOpeningTrim(fr, o); }
   }
   trimMat() { if (!this._trim) { const base = this.lib.get(null, 'trim'); let rgb = (this.layout.materials || {}).trim_rgb; if (rgb && !Array.isArray(rgb)) rgb = Object.values(rgb).find(v => Array.isArray(v)) || null;
@@ -137,17 +148,17 @@ export class Apartment {
       this._trim = (c && hsl.s > 0.35 && hsl.l < 0.5) ? this.lib.tinted(base, rgb, 'trim') : base; } return this._trim; }
   buildOpeningTrim(fr, o) {   // cased opening: thin jambs
     const trim = this.trimMat(); const h = o.height_m ?? 2.2; const t = fr.t + 0.02;
-    for (const s of [o.s0 + 0.03, o.s1 - 0.03]) { const m = new THREE.Mesh(metricBox(0.06, h, t), trim); const c = fr.a.clone().add(fr.d.clone().multiplyScalar(s)); m.position.set(c.x, h / 2, c.y); m.rotation.y = fr.angle; this.group.add(m); }
+    for (const s of [o.s0 + 0.03, o.s1 - 0.03]) { const m = new THREE.Mesh(metricBox(0.06, h, t), trim); const c = fr.a.clone().add(fr.d.clone().multiplyScalar(s)); m.position.set(c.x, h / 2, c.y); m.rotation.y = fr.angle; this.tgt.add(m); }
   }
   buildDoor(fr, o) {
     const trim = this.trimMat(); const h = o.height_m ?? 2.03; const w = o.s1 - o.s0; const t = fr.t + 0.02;
-    const jamb = (s) => { const m = new THREE.Mesh(metricBox(0.05, h + 0.05, t), trim); const c = fr.a.clone().add(fr.d.clone().multiplyScalar(s)); m.position.set(c.x, (h + 0.05) / 2, c.y); m.rotation.y = fr.angle; m.castShadow = true; this.group.add(m); };
+    const jamb = (s) => { const m = new THREE.Mesh(metricBox(0.05, h + 0.05, t), trim); const c = fr.a.clone().add(fr.d.clone().multiplyScalar(s)); m.position.set(c.x, (h + 0.05) / 2, c.y); m.rotation.y = fr.angle; m.castShadow = true; this.tgt.add(m); };
     jamb(o.s0 + 0.025); jamb(o.s1 - 0.025);
-    const head = new THREE.Mesh(metricBox(w, 0.06, t), trim); const cm = fr.a.clone().add(fr.d.clone().multiplyScalar((o.s0 + o.s1) / 2)); head.position.set(cm.x, h + 0.03, cm.y); head.rotation.y = fr.angle; this.group.add(head);
+    const head = new THREE.Mesh(metricBox(w, 0.06, t), trim); const cm = fr.a.clone().add(fr.d.clone().multiplyScalar((o.s0 + o.s1) / 2)); head.position.set(cm.x, h + 0.03, cm.y); head.rotation.y = fr.angle; this.tgt.add(head);
     for (const side of [1, -1]) {   // casing (architrave) on both faces of the wall
       const cas = new THREE.Group(); cas.position.set(cm.x, 0, cm.y); cas.rotation.y = fr.angle; const cz = side * (fr.t / 2 + 0.008);
       for (const [cw, ch, cx, cy] of [[0.07, h + 0.07, -w / 2 - 0.035, (h + 0.07) / 2], [0.07, h + 0.07, w / 2 + 0.035, (h + 0.07) / 2], [w + 0.14, 0.07, 0, h + 0.035]]) { const m = new THREE.Mesh(metricBox(cw, ch, 0.016), trim); m.position.set(cx, cy, cz); m.castShadow = m.receiveShadow = true; cas.add(m); }
-      this.group.add(cas);
+      this.tgt.add(cas);
     }
     // leaf: hinge at the left (s0) or right (s1) end, opening to the 'in' side (+n) or 'out' side (-n), ajar
     const sw = o.swing || 'in_left'; const hingeS = sw.endsWith('left') ? o.s0 + 0.02 : o.s1 - 0.02; const side = sw.startsWith('out') ? -1 : 1; const dir = sw.endsWith('left') ? 1 : -1;
@@ -160,7 +171,7 @@ export class Apartment {
     }
     for (const zs of [1, -1]) { const knob = new THREE.Mesh(new THREE.SphereGeometry(0.028, 16, 12), this.lib.plain('steel')); knob.position.set(dir * (lw - 0.1), 1.0 - lh / 2, zs * 0.05); leaf.add(knob); }
     pivot.add(leaf); pivot.rotation.y += -dir * side * THREE.MathUtils.degToRad(o.type === 'closet_door' ? 0 : 9);   // nearly closed: reads as a door in its frame
-    pivot.userData = { kind: 'door', opening: o.id }; this.group.add(pivot);
+    pivot.userData = { kind: 'door', opening: o.id }; this.tgt.add(pivot);
   }
   doorLeafMat(o) {   // doors: the photo-matched door material when it is a plausible door finish (wood/laminate), otherwise the unit's trim colour
     const mats = this.layout.materials || {}; const id = o.room && mats.door ? mats.door[o.room] : null; const entry = id && this.lib.index ? this.lib.index.get(id) : null;
@@ -184,7 +195,7 @@ export class Apartment {
     // casing around the opening on the room side
     const cz = t / 2 + 0.008; bar(0.07, h + 0.07, -w / 2 - 0.035, sill + h / 2 + 0.035, 0.016, cz); bar(0.07, h + 0.07, w / 2 + 0.035, sill + h / 2 + 0.035, 0.016, cz); bar(w + 0.14, 0.07, 0, sill + h + 0.035, 0.016, cz);
     const glass = new THREE.Mesh(new THREE.PlaneGeometry(w - 0.1, h - 0.1), this.glassMat()); glass.position.set(0, sill + h / 2, z0); glass.name = 'pglass'; frame.add(glass);
-    frame.userData = { kind: 'window', opening: o.id }; this.group.add(frame);
+    frame.userData = { kind: 'window', opening: o.id }; this.tgt.add(frame);
   }
   glassMat() {
     if (!this._glass) this._glass = this.lib.lowQuality
@@ -194,19 +205,22 @@ export class Apartment {
   }
 
   // ---------- rooms: floor, ceiling, baseboard, light, label ----------
+  shapeGeo(rings) {   // [{outer, holes}] in (x, z) -> one flat geometry at y 0 (uv = metres)
+    const shapes = rings.map(rg => { const sh = new THREE.Shape(rg.outer.map(p => new THREE.Vector2(p[0], -p[1]))); for (const h of rg.holes || []) sh.holes.push(new THREE.Path(h.map(p => new THREE.Vector2(p[0], -p[1])))); return sh; });
+    const g = new THREE.ShapeGeometry(shapes); g.rotateX(-Math.PI / 2); return g;
+  }
   buildRoom(r) {
-    const pts = r.polygon.map(p => new THREE.Vector2(p[0], -p[1])); const shape = new THREE.Shape(pts);
-    const geo = new THREE.ShapeGeometry(shape); geo.rotateX(-Math.PI / 2);   // (x, -z) -> (x, 0, z); uv = metres
+    const geo = this.shapeGeo(r.floor_cut || [{ outer: r.polygon }]);   // (x, -z) -> (x, 0, z); an upper floor keeps the stairwell open
     const mats = this.layout.materials || {}; const floorMat = this.lib.get((mats.floor || {})[r.id] || null, 'floor', r.type);
     // planks run along the direction seen in the photos (room.floor_direction EW|NS), else along the room's long axis; texture planks are taken to run along V
     { const xs = r.polygon.map(p => p[0]), zs = r.polygon.map(p => p[1]); const longX = r.floor_direction ? r.floor_direction === 'EW' : (Math.max(...xs) - Math.min(...xs)) >= (Math.max(...zs) - Math.min(...zs));
       const ang = (floorMat.userData.category === 'wood_floor' || String(floorMat.userData.materialId).startsWith('default:wood')) && longX ? Math.PI / 2 : 0;
       const ox = hash01(r.id + 'x') * 1.7, oz = hash01(r.id + 'z') * 1.7; const uv = geo.attributes.uv; const ca = Math.cos(ang), sa = Math.sin(ang);
       for (let i = 0; i < uv.count; i++) { const u = uv.getX(i), v = uv.getY(i); uv.setXY(i, ca * u - sa * v + ox, sa * u + ca * v + oz); } uv.needsUpdate = true; }
-    const floor = new THREE.Mesh(geo, floorMat); floor.receiveShadow = true; floor.position.y = 0.001; floor.name = 'pfloor_' + r.id; floor.userData = { kind: 'floor', room: r.id }; this.group.add(floor);
+    const floor = new THREE.Mesh(geo, floorMat); floor.receiveShadow = true; floor.position.y = 0.001; floor.name = 'pfloor_' + r.id; floor.userData = { kind: 'floor', room: r.id }; this.tgt.add(floor);
     const perRoom = (v) => (v && !Array.isArray(v) && typeof v === 'object') ? v[r.id] : v;   // fields may be per-room dicts or unit-level arrays
     const ceilBase = this.lib.get(mats.ceiling || null, 'ceiling'); const ceilMat = ceilBase.clone(); ceilMat.side = THREE.BackSide;   // ceilings: white (photo ceiling colours are exposure, not paint)
-    const ceil = new THREE.Mesh(geo.clone(), ceilMat); ceil.position.y = this.ceil; ceil.name = 'pceil_' + r.id; ceil.userData = { kind: 'ceiling', room: r.id }; this.group.add(ceil); this.ceilingMeshes.push(ceil);
+    const ceil = new THREE.Mesh(r.ceiling_cut ? this.shapeGeo(r.ceiling_cut) : geo.clone(), ceilMat); ceil.position.y = this.ceil; ceil.name = 'pceil_' + r.id; ceil.userData = { kind: 'ceiling', room: r.id }; this.tgt.add(ceil); this.ceilingMeshes.push(ceil);
     const wrgb = perRoom(mats.wall_rgb) || r.wall_rgb; const wallId = (mats.wall || {})[r.id] || null;
     const wallMat = this.lib.tinted(this.lib.get(wallId, 'wall'), wrgb, 'wall' + r.id);
     if (wallId || wrgb) this.recolourRoomWalls(r, wallMat);
@@ -217,16 +231,17 @@ export class Apartment {
       const nIn = new THREE.Vector2(-d.y, d.x);   // CCW polygon in (x,z) with z down: interior is to the right-hand side; test and flip
       const mid = a.clone().add(b).multiplyScalar(0.5); const probe = mid.clone().add(nIn.clone().multiplyScalar(0.05));
       if (!pointInPoly(probe, r.polygon)) nIn.negate();
-      const m = new THREE.Mesh(metricBox(len, 0.1, 0.012), bb); const c = mid.clone().add(nIn.clone().multiplyScalar(0.006)); m.position.set(c.x, 0.05, c.y); m.rotation.y = -Math.atan2(d.y, d.x); m.castShadow = true; this.group.add(m);
+      const m = new THREE.Mesh(metricBox(len, 0.1, 0.012), bb); const c = mid.clone().add(nIn.clone().multiplyScalar(0.006)); m.position.set(c.x, 0.05, c.y); m.rotation.y = -Math.atan2(d.y, d.x); m.castShadow = true; this.tgt.add(m);
     }
     const c = centroid(r.polygon); const area = r.area_m2 || polyArea(r.polygon);
-    const light = new THREE.PointLight(0xfff1dc, Math.min(6, 0.55 * area), Math.max(4, Math.sqrt(area) * 2.4), 2); light.position.set(c.x, this.ceil - 0.25, c.y); light.userData = { room: r.id }; this.group.add(light); this.lights.push(light);
+    const light = new THREE.PointLight(0xfff1dc, Math.min(6, 0.55 * area), Math.max(4, Math.sqrt(area) * 2.4), 2); light.position.set(c.x, this.ceil - 0.25, c.y); light.userData = { room: r.id }; this.tgt.add(light); this.lights.push(light);
     if (area > 2.5 && pointInPoly(c, r.polygon)) {   // flush-mount ceiling fixture: a shallow disc that reads as the light source
       const fix = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.19, 0.07, 32), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xfff2dc, emissiveIntensity: 1.6, roughness: 0.6 }));
-      fix.position.set(c.x, this.ceil - 0.035, c.y); fix.name = 'pceilfix_' + r.id; fix.userData = { kind: 'ceiling', room: r.id }; this.group.add(fix); this.ceilingMeshes.push(fix);
+      fix.position.set(c.x, this.ceil - 0.035, c.y); fix.name = 'pceilfix_' + r.id; fix.userData = { kind: 'ceiling', room: r.id }; this.tgt.add(fix); this.ceilingMeshes.push(fix);
     }
-    const label = makeLabel(`${r.name}  ${area.toFixed(1)} m²`); label.position.set(c.x, this.ceil + 0.25, c.y); label.userData = { room: r.id }; this.group.add(label); this.labels.push(label);
-    this.roomMeshes[r.id] = { floor, ceiling: ceil, light, label, room: r, center: new THREE.Vector3(c.x, 0, c.y) };
+    const label = makeLabel(`${r.name}  ${area.toFixed(1)} m²`); label.position.set(c.x, this.ceil + 0.25, c.y); label.userData = { room: r.id }; this.tgt.add(label); this.labels.push(label);
+    const elev = this.levels ? (this.levels.find(v => v.id === (r.level || 0)) || {}).elevation_m || 0 : 0;
+    this.roomMeshes[r.id] = { floor, ceiling: ceil, light, label, room: r, level: r.level || 0, center: new THREE.Vector3(c.x, elev, c.y) };
   }
   /** dollhouse section: cut every wall piece at height hCut with a solid top (scale, not clip): pieces starting above hCut are hidden */
   section(hCut) {
@@ -235,6 +250,26 @@ export class Apartment {
   }
   recolourRoomWalls(r, mat) {   // per-room wall material: applies to wall pieces whose inside face is on this room (approximate: midpoint within 0.3 m of the polygon)
     for (const m of this.wallMeshes) { const p = new THREE.Vector2(m.position.x, m.position.z); if (distToPoly(p, r.polygon) < 0.3) m.material = mat; }
+  }
+
+  // ---------- stairs (levels.py): a straight run of solid steps in the compartment, climbing along st.climb ----------
+  stairSteps(st) {   // [{x, z, w, d, top}] world x/z, top above the lower level's floor; shared with walk.js
+    const lo = this.levels.find(v => v.id === st.from_level), hi = this.levels.find(v => v.id === st.to_level); const rise = hi.elevation_m - lo.elevation_m;
+    const R = st.rect, alongX = Math.abs(st.climb[0]) > 0.5, run = alongX ? R.w : R.d, wid = alongX ? R.d : R.w, sgn = alongX ? st.climb[0] : st.climb[1];
+    const n = Math.max(8, Math.round(rise / 0.18)), tread = run / n, out = [];
+    for (let i = 0; i < n; i++) {   // step i covers [i, i+1) treads from the bottom end; its top is (i+1) risers up
+      const s = -run / 2 + (i + 0.5) * tread; const cx = R.x + (alongX ? sgn * s : 0), cz = R.z + (alongX ? 0 : sgn * s);
+      out.push({ x: cx, z: cz, w: alongX ? tread : wid, d: alongX ? wid : tread, top: (i + 1) * rise / n });
+    }
+    return out;
+  }
+  buildStair(st) {
+    const tread = this.lib.get(null, 'floor', 'living'), riser = this.trimMat ? this.trimMat() : this.lib.plain('wood_trim'); const g = new THREE.Group(); g.userData = { kind: 'stair' };
+    for (const s of this.stairSteps(st)) {
+      const body = new THREE.Mesh(metricBox(s.w, s.top - 0.03, s.d), riser); body.position.set(s.x, (s.top - 0.03) / 2, s.z); body.castShadow = body.receiveShadow = true; g.add(body);
+      const top = new THREE.Mesh(metricBox(s.w + 0.02, 0.03, s.d + 0.02), tread); top.position.set(s.x, s.top - 0.015, s.z); top.castShadow = top.receiveShadow = true; g.add(top);
+    }
+    this.tgt.add(g); (this.stairGroups = this.stairGroups || []).push(g);
   }
 
   // ---------- fixtures ----------
@@ -272,7 +307,7 @@ export class Apartment {
       case 'washer': { this.box(w, H || 0.85, d, steel, 0, 0, 0, g); const door = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 0.02, 24), dark); door.rotation.x = Math.PI / 2; door.position.set(0, 0.45, d / 2 + 0.01); g.add(door); break; }
       default: this.box(w, H || 0.8, d, cab, 0, 0, 0, g);
     }
-    this.group.add(g);
+    this.tgt.add(g);
   }
   tap(g, x, y, z) { const steel = this.lib.plain('steel'); const base = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.02, 0.18, 12), steel); base.position.set(x, y + 0.09, z); g.add(base); const spout = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.01, 0.14, 10), steel); spout.rotation.x = Math.PI / 2; spout.position.set(x, y + 0.18, z + 0.07); g.add(spout); }
 }

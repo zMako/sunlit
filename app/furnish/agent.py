@@ -32,12 +32,23 @@ def room_info(R):
             "ceiling_m": R.get("ceiling_m") or 2.6, "n_windows": len(R.get("windows", [])), "n_doors": len(doors), "door_w": round(max((d["width_m"] for d in doors if d.get("width_m", 0) >= 0.7), default=DOOR_W_DEFAULT), 2),   # the door you carry furniture through: the widest real door (closet doors are narrower)
             "fixtures": [f.get("type") for f in R.get("fixtures", []) or []]}
 
-def catalog():
+
+TIERS = {"budget": ("ikea",), "standard": ("ikea", "amazon-abo"), "design": ("design",), "any": None}
+def item_tier(i):
+    src = (i.get("source") or ""); t = i.get("tier")
+    if t == "design" or src.startswith("dsg") or i.get("id", "").startswith("dsg-"): return "design"
+    if src == "amazon-abo" or i.get("id", "").startswith("abo-"): return "amazon-abo"
+    return "ikea"
+def tier_filter(items, tier):
+    allowed = TIERS.get(tier or "any")
+    return items if allowed is None else [i for i in items if item_tier(i) in allowed]
+
+def catalog(tier="any"):
     c = json.load(open(HERE / "catalog.json")); by = {}
     for i in c["items"]:
         if i.get("width_m") and i.get("depth_m") and i.get("height_m"): by.setdefault(i["category"], []).append(i)
     for k, v in by.items():   # prefer products with a real 3D model; model-less ones only where the category has no modelled product
-        by[k] = [i for i in v if i.get("model_glb")]   # strict: never pick a product without a 3D model
+        by[k] = tier_filter([i for i in v if i.get("model_glb")], tier)   # strict: never pick a product without a 3D model; tier = brands allowed
     return by
 
 def fits_room(i, info):
@@ -84,9 +95,9 @@ def shortlist(info, budget, style, by, wanted, hint=""):
     j, usd = claude_json(system, text, SHORTLIST_SCHEMA, HAIKU, 6000, f"agent shortlist {info['type']}")
     return j, usd, {c["id"]: c for cat in by.values() for c in cat}
 
-def run_furnish(room, budget, style, drama=False):
-    R = load_room(room); info = room_info(R); by = catalog(); wanted = [s for s in SLOTS.get(info["type"], SLOTS["other"]) if s in by]
-    emit("start", room=room, type=info["type"], budget=budget, style=style, slots=wanted, door_w=info["door_w"])
+def run_furnish(room, budget, style, drama=False, tier="any"):
+    R = load_room(room); info = room_info(R); by = catalog(tier); wanted = [s for s in SLOTS.get(info["type"], SLOTS["other"]) if s in by]
+    emit("start", room=room, type=info["type"], budget=budget, style=style, slots=wanted, door_w=info["door_w"], tier=tier)
     sl, usd, by_id = shortlist(info, budget, style, by, wanted)
     if drama and sl.get("slots"):   # demo mode: the agent first reaches for the showpiece of the main slot (the bulkiest or priciest real product);
         # the real door / fit / budget checks then decide, so the rejection the audience sees is genuine
@@ -188,10 +199,10 @@ def run_chat(room, message, plan, budget, style):
     return {"reply": j.get("reply", "Done."), "ops": ops, "notes": notes, "plan": plan, "usd": round(usd, 4)}
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(); ap.add_argument("mode", choices=["furnish", "chat"]); ap.add_argument("room"); ap.add_argument("--budget", type=float); ap.add_argument("--style", default=""); ap.add_argument("--drama", action="store_true")
+    ap = argparse.ArgumentParser(); ap.add_argument("mode", choices=["furnish", "chat"]); ap.add_argument("room"); ap.add_argument("--budget", type=float); ap.add_argument("--style", default=""); ap.add_argument("--drama", action="store_true"); ap.add_argument("--tier", default="any", choices=["budget", "standard", "design", "any"])
     a = ap.parse_args()
     if a.mode == "furnish":
-        try: run_furnish(a.room, a.budget, a.style, drama=a.drama)
+        try: run_furnish(a.room, a.budget, a.style, drama=a.drama, tier=a.tier)
         except Exception as e: emit("error", message=f"{type(e).__name__}: {e}")
     else:
         req = json.loads(sys.stdin.read() or "{}")

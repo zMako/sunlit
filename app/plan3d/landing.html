@@ -1,0 +1,261 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>Move-in · furnished before you move in</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- Light landing (draft next to index.html). Try ?paper=warm to compare warm whites, ?accent=8a6a4f to try an accent. -->
+<script type="importmap">{"imports":{"three":"/vendor/three/build/three.module.js","three/addons/":"/vendor/three/jsm/"}}</script>
+<style>
+@font-face{font-family:"Bodoni Moda";src:url(/vendor/fonts/bodoni-moda.woff2) format("woff2");font-weight:400 600;font-style:normal;font-display:swap}
+:root{
+  --paper:#ffffff;      /* page */
+  --mist:#f5f5f4;       /* quiet sections and image tiles (thumbnails are rendered on this) */
+  --ink:#1d1d1f;        /* text, primary buttons */
+  --graphite:#6e6e73;   /* secondary text */
+  --hair:#e4e4e1;       /* hairlines */
+  --accent:var(--ink);  /* one accent, undecided: ?accent=hex */
+  --serif:"Bodoni Moda","Didot","Bodoni 72",Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --wrap:min(1240px,100vw - 80px);
+}
+:root.warm{--paper:#faf8f4;--mist:#f2efe9;--hair:#e6e1d8}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.5 var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:6px}
+.wrap{width:var(--wrap);margin:0 auto}
+.serif{font-family:var(--serif);font-weight:400;font-optical-sizing:auto}
+
+/* ---------- glass: frosted base everywhere, edge refraction added in Chromium by enhanceGlass() ---------- */
+.glass{position:relative;background:rgba(255,255,255,.5);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.95),inset 0 -1px 1px rgba(255,255,255,.4),0 10px 30px rgba(29,29,31,.08),0 1px 3px rgba(29,29,31,.06)}
+.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
+  background:linear-gradient(140deg,rgba(255,255,255,1),rgba(255,255,255,.2) 38%,rgba(29,29,31,.07) 62%,rgba(255,255,255,.85));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+
+/* ---------- nav ---------- */
+nav{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:20;display:flex;align-items:center;gap:6px;padding:6px 6px 6px 22px;border-radius:999px;white-space:nowrap}
+nav .mark{font-family:var(--serif);font-size:22px;letter-spacing:-.01em;text-decoration:none;margin-right:18px}
+nav .links a{font-size:14px;text-decoration:none;color:var(--ink);padding:8px 12px;border-radius:999px;opacity:.78}
+nav .links a:hover{opacity:1}
+.pill{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;border:0;border-radius:999px;padding:10px 18px;font:500 14px/1 var(--sans);text-decoration:none;cursor:pointer}
+.pill:hover{filter:brightness(1.15)}
+
+/* ---------- hero ---------- */
+.hero{position:relative;height:100svh;min-height:720px;overflow:hidden}
+#stage{position:absolute;inset:0;opacity:0;transition:opacity 1.4s ease}
+#stage[data-ready]{opacity:1}
+#stage canvas{display:block;cursor:grab}
+#stage canvas:active{cursor:grabbing}
+.hero .copy{position:absolute;left:max(40px,(100vw - 1240px)/2);bottom:11svh;width:min(600px,100vw - 80px);pointer-events:none}
+.hero .copy > *{pointer-events:auto}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(56px,7.4vw,112px);line-height:.94;letter-spacing:-.025em;margin:0 0 28px}
+.lede{font-size:20px;line-height:1.45;color:var(--graphite);max-width:30ch;margin:0 0 34px}
+.ask{display:flex;align-items:center;border-radius:999px;padding:6px;width:max-content;max-width:100%}
+.ask .field{display:flex;flex-direction:column;padding:6px 22px 6px 20px;border-right:1px solid var(--hair)}
+.ask .field:nth-of-type(2){border-right:0}
+.ask label{font-size:12px;color:var(--graphite)}
+.ask select{appearance:none;-webkit-appearance:none;border:0;background:transparent;font:500 16px/1.3 var(--sans);color:var(--ink);padding:0 18px 0 0;cursor:pointer;
+  background-image:linear-gradient(45deg,transparent 50%,var(--graphite) 50%),linear-gradient(135deg,var(--graphite) 50%,transparent 50%);background-position:right 4px center,right 0 center;background-size:4px 4px;background-repeat:no-repeat}
+.ask .pill{padding:15px 22px;font-size:15px;margin-left:6px}
+.caption{position:absolute;right:max(40px,(100vw - 1240px)/2);bottom:11svh;text-align:right;font-size:13px;line-height:1.5;color:var(--graphite);max-width:28ch}
+.caption b{display:block;font-weight:500;color:var(--ink)}
+
+/* ---------- sections ---------- */
+section{padding:150px 0}
+.proof p.big{font-family:var(--serif);font-size:clamp(34px,4.2vw,58px);line-height:1.12;letter-spacing:-.015em;max-width:22ch;margin:0}
+.proof .fine{margin:34px 0 0;color:var(--graphite);font-size:15px;max-width:60ch}
+h2{font-family:var(--serif);font-weight:400;font-size:clamp(40px,4.6vw,64px);line-height:1;letter-spacing:-.02em;margin:0}
+.head{display:flex;justify-content:space-between;align-items:baseline;gap:24px;margin-bottom:56px}
+.head a{font-size:15px;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px;white-space:nowrap}
+
+.how{background:var(--mist)}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;list-style:none;margin:0;padding:0;counter-reset:step}
+.steps li{counter-increment:step}
+.steps .tile{aspect-ratio:4/5;border-radius:18px;overflow:hidden;background:var(--mist);display:grid;place-items:center}
+.steps .tile img{width:100%;height:100%;object-fit:cover;display:block}
+.steps .tile.sheet{background:#fff;padding:22px}
+.steps .tile.sheet img{object-fit:contain;mix-blend-mode:multiply}
+.steps .tile.date{background:#fff;text-align:center;align-content:center}
+.steps .tile.date .day{font-family:var(--serif);font-size:88px;line-height:1;letter-spacing:-.02em}
+.steps .tile.date .mon{font-size:15px;color:var(--graphite);margin-top:10px}
+.steps h3{font:500 17px/1.3 var(--sans);margin:22px 0 6px}
+.steps h3::before{content:counter(step);color:var(--graphite);font-weight:400;margin-right:10px}
+.steps p{margin:0;color:var(--graphite);font-size:15px;max-width:30ch}
+
+.homes .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:56px 28px}
+.home .img{display:block;aspect-ratio:4/3;border-radius:18px;overflow:hidden;background:var(--mist)}
+.home .img img{width:100%;height:100%;object-fit:cover;display:block}
+.home h3{font-family:var(--serif);font-weight:400;font-size:28px;line-height:1.1;letter-spacing:-.01em;margin:20px 0 4px}
+.home .meta{color:var(--graphite);font-size:15px}
+.home .acts{display:flex;gap:22px;margin-top:12px;font-size:15px}
+.home .acts a{text-decoration:none;border-bottom:1px solid var(--hair);padding-bottom:2px}
+.home .acts a:first-child{border-color:currentColor}
+.home .acts a:hover{border-color:currentColor}
+
+.close{text-align:center;padding:170px 0 150px;border-top:1px solid var(--hair)}
+.close h2{font-size:clamp(44px,5.6vw,80px);max-width:14ch;margin:0 auto 40px}
+.close .pill{padding:16px 26px;font-size:16px}
+.close .alt{display:block;margin-top:22px;font-size:15px;color:var(--graphite)}
+footer{padding:28px 0 40px;color:var(--graphite);font-size:13px}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer a{text-decoration:none}footer a:hover{text-decoration:underline}
+
+@media (max-width:980px){
+  nav .links{display:none}
+  .steps{grid-template-columns:repeat(2,1fr)}
+  .homes .grid{grid-template-columns:repeat(2,1fr)}
+  .caption{display:none}
+}
+@media (max-width:700px){
+  :root{--wrap:calc(100vw - 40px)}
+  .hero{height:auto;min-height:0;padding-top:76px}
+  #stage{position:relative;height:56svh}
+  .hero .copy{position:static;width:var(--wrap);margin:0 auto 64px}
+  .ask{flex-wrap:wrap;border-radius:24px;width:100%}
+  .ask .field{flex:1;border-right:0}
+  .ask .pill{width:100%;justify-content:center;margin:6px 0 0}
+  section{padding:96px 0}
+  .steps,.homes .grid{grid-template-columns:1fr}
+  .head{flex-direction:column}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}#stage{transition:none}}
+</style></head>
+<body>
+<nav class="glass" aria-label="Main">
+  <a class="mark" href="#top">Move-in</a>
+  <span class="links"><a href="#homes">Homes</a><a href="#how">How it works</a><a href="../map/map.html">Map</a></span>
+  <a class="pill" href="../map/map.html">Find a home</a>
+</nav>
+
+<header class="hero" id="top">
+  <div id="stage" role="img" aria-label="A San Francisco apartment rebuilt in 3D from its floor plan and furnished, seen from above in late-afternoon sun. Drag to turn it."></div>
+  <div class="copy">
+    <h1>Furnished before you move in.</h1>
+    <p class="lede">Real San Francisco rentals, rebuilt in 3D from the landlord's floor plan and furnished with real pieces, within your budget.</p>
+    <form class="ask glass" id="ask">
+      <div class="field"><label for="budget">Budget</label>
+        <select id="budget"><option value="1500">$1,500</option><option value="2500">$2,500</option><option value="3500" selected>$3,500</option><option value="5000">$5,000</option><option value="8000">$8,000</option></select></div>
+      <div class="field"><label for="style">Style</label>
+        <select id="style"><option>Warm Scandinavian</option><option>Japandi</option><option>Mid-century</option><option>Quiet minimal</option><option>Coastal</option></select></div>
+      <button class="pill" type="submit">Furnish this home</button>
+    </form>
+  </div>
+  <div class="caption" id="caption"><b>1000 Green, Sutro</b>91 m², rebuilt from the landlord's drawing</div>
+</header>
+
+<section class="proof"><div class="wrap">
+  <p class="big" id="proof">Hundreds of real apartments, each rebuilt from the plan its landlord published, in seconds.</p>
+  <p class="fine" id="fine">Floor plans and photos as the listing publishes them; nothing is generated.</p>
+</div></section>
+
+<section class="how" id="how"><div class="wrap">
+  <div class="head"><h2>From floor plan to front door.</h2></div>
+  <ol class="steps">
+    <li><div class="tile sheet"><img id="planimg" alt="The landlord's floor plan of the 1000 Green Sutro unit"></div>
+      <h3>The plan</h3><p>Walls, doors and windows, read from the landlord's drawing.</p></li>
+    <li><div class="tile"><img src="landing/thumbs/gs-22612_plan_03.jpg" alt="The same unit rebuilt in 3D, empty"></div>
+      <h3>The apartment</h3><p>Measured from the printed dimensions and built in 3D.</p></li>
+    <li><div class="tile"><img src="landing/thumbs/gs-22612_plan_03-furnished.jpg" alt="The same unit furnished"></div>
+      <h3>Furnished</h3><p>An agent picks real pieces that fit each room and your budget, and tells you why.</p></li>
+    <li><div class="tile date"><div><div class="day" id="day">12</div><div class="mon" id="mon">November</div></div></div>
+      <h3>Delivered</h3><p id="delivp">Ordered to arrive two days before you get your keys.</p></li>
+  </ol>
+</div></section>
+
+<section class="homes" id="homes"><div class="wrap">
+  <div class="head"><h2>Ready to furnish.</h2><a href="index.html" id="allLink">All apartments</a></div>
+  <div class="grid" id="grid"></div>
+</div></section>
+
+<section class="close"><div class="wrap">
+  <h2>Your next home is already on the map.</h2>
+  <a class="pill" href="../map/map.html">Open the map</a>
+  <a class="alt" href="index.html">or browse every apartment</a>
+</div></section>
+
+<footer><div class="wrap">
+  <span>Move-in, built at Cal Hacks 13.0 from public listings.</span>
+  <span><a href="polish/polish.html">Photo next to render</a> &nbsp; <a href="metrics/METRICS.md">How we measured</a></span>
+</div></footer>
+
+<script type="module">
+import { mountStage } from './landing/stage.js';
+const $ = id => document.getElementById(id);
+const Q = new URLSearchParams(location.search);
+if (Q.get('paper') === 'warm') document.documentElement.classList.add('warm');
+if (/^[0-9a-f]{6}$/i.test(Q.get('accent') || '')) document.documentElement.style.setProperty('--accent', '#' + Q.get('accent'));
+
+const HERO = 'gs-22612_plan_03';
+const HOMES = ['gs-22612_plan_01', 'gs-22612_plan_00', 'gs-18149_plan_03', 'gs-22612_plan_05', 'gs-22535_plan_07', 'gs-18149_plan_02'];
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const livingRoom = u => (u.rooms.find(r => r.type === 'living') || [...u.rooms].sort((a, b) => b.area_m2 - a.area_m2)[0] || { id: 'r0' }).id;
+const furnishUrl = (u, budget = 3500, style = 'warm scandinavian') => `apartment.html?unit=${encodeURIComponent(u.unit)}&agent=${livingRoom(u)}&budget=${budget}&style=${encodeURIComponent(style.toLowerCase())}&drama=1`;
+const beds = u => { const n = u.rooms.filter(r => r.type === 'bedroom').length; return n ? `${n} bedroom${n > 1 ? 's' : ''}` : 'Studio'; };
+
+// move-in three weeks out, delivery two days before
+const movein = new Date(Date.now() + 21 * 864e5), deliv = new Date(movein - 2 * 864e5);
+$('day').textContent = deliv.getDate(); $('mon').textContent = deliv.toLocaleDateString('en-US', { month: 'long' });
+$('delivp').textContent = `Ordered to arrive two days before you get your keys on ${movein.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}.`;
+
+const stageOpts = () => matchMedia('(max-width:700px)').matches ? { shiftX: 0, fit: 0.95 } : { shiftX: 0.17, shiftY: 0.03, fit: 0.86 };
+mountStage($('stage'), { unit: HERO, furnish: true, view: 35, pitch: 48, sway: 14, interactive: true, ...stageOpts() })
+  .catch(e => { console.warn('stage', e); $('stage').style.background = `center/contain no-repeat url(landing/thumbs/${HERO}-furnished.jpg)`; $('stage').dataset.ready = '1'; });
+
+const units = await (await fetch('layouts/index.json')).json();
+const byId = Object.fromEntries(units.map(u => [u.unit, u]));
+const hero = byId[HERO];
+if (hero) {
+  $('planimg').src = hero.plan_image;
+  $('caption').innerHTML = `<b>${esc(hero.building)}, ${esc(hero.plan_name)}</b>${Math.round(hero.area_m2)} m², rebuilt from the landlord's drawing`;
+  $('ask').onsubmit = e => { e.preventDefault(); location.href = furnishUrl(hero, $('budget').value, $('style').value); };
+}
+$('allLink').textContent = `All ${units.length} apartments`;
+
+// proof in one sentence, numbers from the metrics worker when present
+try {
+  const M = Object.fromEntries((await (await fetch('metrics/summary.json', { cache: 'no-store' })).json()).map(m => [m.key, m]));
+  const n = (M.walkable_units?.value ?? units.length).toLocaleString('en-US'), b = M.walkable_units?.n ?? new Set(units.map(u => u.building)).size;
+  const s = M.plan_to_walkable_s ? Math.round(M.plan_to_walkable_s.value) : null;
+  $('proof').textContent = `${n} apartments in ${b} buildings, each rebuilt from the plan its landlord published${s ? `, in about ${s} seconds` : ''}.`;
+  if (M.door_scale_error) $('fine').innerHTML = `Scale read from door widths alone lands within ${M.door_scale_error.value.toFixed(1)}% of the printed dimensions (median of ${M.door_scale_error.n} plans). Floor plans and photos as the listing publishes them; nothing is generated. <a href="metrics/METRICS.md">How we measured</a>`;
+} catch (e) {}
+
+$('grid').innerHTML = HOMES.map(id => byId[id]).filter(Boolean).map(u => `
+  <article class="home">
+    <a class="img" href="${furnishUrl(u)}"><img src="landing/thumbs/${u.unit}-furnished.jpg" alt="${esc(u.building)} ${esc(u.plan_name)} in 3D" loading="lazy"></a>
+    <h3>${esc(u.building.replace(/ Apartments.*$/, ''))}, ${esc(u.plan_name)}</h3>
+    <div class="meta">${beds(u)}, ${Math.round(u.area_m2)} m²</div>
+    <div class="acts"><a href="${furnishUrl(u)}">Furnish</a><a href="apartment.html?unit=${encodeURIComponent(u.unit)}&view=walk">Walk through</a></div>
+  </article>`).join('');
+
+// ---------- liquid glass: edge refraction through an SVG displacement map, Chromium only (Safari/Firefox keep the frosted base) ----------
+const chromium = navigator.userAgentData?.brands?.some(b => /Chromium/.test(b.brand));
+if (chromium) {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('width', 0); svg.setAttribute('height', 0); svg.style.position = 'absolute'; document.body.appendChild(svg);
+  let k = 0;
+  function mapFor(w, h, r, bezel) {   // R,G = sampling offset toward the inside, strongest at the rim of a rounded box
+    const c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d'), img = g.createImageData(w, h), d = img.data;
+    const hw = w / 2, hh = h / 2;
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      const px = x + .5 - hw, py = y + .5 - hh, qx = Math.abs(px) - (hw - r), qy = Math.abs(py) - (hh - r);
+      const out = Math.hypot(Math.max(qx, 0), Math.max(qy, 0)), sdf = out + Math.min(Math.max(qx, qy), 0) - r, depth = -sdf;
+      let nx = 0, ny = 0; if (qx > 0 && qy > 0) { nx = qx / out * Math.sign(px); ny = qy / out * Math.sign(py); } else if (qx > qy) nx = Math.sign(px); else ny = Math.sign(py);
+      const t = depth < bezel && depth > 0 ? 1 - depth / bezel : 0, m = 1 - Math.sqrt(1 - t * t);   // circular lens profile: flat in the middle, bending hard at the rim
+      const i = (y * w + x) * 4; d[i] = 128 - nx * m * 127; d[i + 1] = 128 - ny * m * 127; d[i + 2] = 128; d[i + 3] = 255;
+    }
+    g.putImageData(img, 0, 0); return c.toDataURL();
+  }
+  function enhanceGlass(el, { scale = 46, bezel = 18, blur = 6 } = {}) {
+    const id = 'lg' + (k++); const f = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+    f.setAttribute('id', id); f.setAttribute('color-interpolation-filters', 'sRGB'); f.setAttribute('x', 0); f.setAttribute('y', 0); f.setAttribute('width', '100%'); f.setAttribute('height', '100%');
+    f.innerHTML = `<feImage result="map" preserveAspectRatio="none"/><feDisplacementMap in="SourceGraphic" in2="map" scale="${scale}" xChannelSelector="R" yChannelSelector="G"/>`; svg.appendChild(f);
+    const im = f.querySelector('feImage');
+    const redo = () => { const w = Math.round(el.offsetWidth), h = Math.round(el.offsetHeight); if (!w || !h) return; const r = Math.min(parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0, h / 2, w / 2);
+      im.setAttribute('href', mapFor(w, h, r, Math.min(bezel, r || bezel))); im.setAttribute('width', w); im.setAttribute('height', h);
+      el.style.backdropFilter = `url(#${id}) blur(${blur}px) saturate(180%)`; };
+    new ResizeObserver(redo).observe(el); redo();
+  }
+  for (const el of document.querySelectorAll('.glass')) enhanceGlass(el);
+}
+</script>
+</body></html>

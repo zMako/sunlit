@@ -1,0 +1,14 @@
+<!doctype html><html><head><meta charset="utf-8"><title>stage</title>
+<!-- one apartment on the light stage, for landing thumbnails: stage.html?unit=..&furnish=0&bg=f5f5f4&view=35&pitch=50&cut=1.2&fit=1 -->
+<style>html,body{margin:0;height:100%;overflow:hidden}#s{position:fixed;inset:0}</style>
+<script type="importmap">{"imports":{"three":"/vendor/three/build/three.module.js","three/addons/":"/vendor/three/jsm/"}}</script></head>
+<body><div id="s"></div><script type="module">
+import { mountStage } from './landing/stage.js';
+const Q = new URLSearchParams(location.search), num = (k, d) => Q.has(k) ? +Q.get(k) : d;
+document.body.style.background = '#' + (Q.get('bg') || 'ffffff');
+try {
+  await mountStage(document.getElementById('s'), { unit: Q.get('unit') || 'gs-22612_plan_03', furnish: Q.get('furnish') !== '0', view: num('view', 35), pitch: num('pitch', 50),
+    cut: num('cut', 1.2), fit: num('fit', 1), sunTurn: num('sun', 65), sunElevation: num('sunel', 30), exposure: num('exp', 1), preserve: true, pixelRatio: num('dpr', 1) });
+  document.title = 'ready';
+} catch (e) { document.title = 'error: ' + e.message; console.error(e); }
+</script></body></html>

@@ -13,7 +13,7 @@ const style = document.createElement('style'); style.textContent = css; document
 
 const el = document.createElement('div'); el.id = 'ai'; el.innerHTML = `
 <h3>Design with AI <span class="dim" id="aiRoom"></span></h3>
-<div class="row"><div style="flex:1"><label>Budget (USD)</label><input id="aiBudget" type="number" value="3500" min="200" step="100"></div><div style="flex:2"><label>Style</label><input id="aiStyle" value="warm scandinavian"></div></div>
+<div class="row"><div style="flex:1"><label>Budget (USD)</label><input id="aiBudget" type="number" value="3500" min="200" step="100"></div><div style="flex:2"><label>Style</label><input id="aiStyle" value="warm scandinavian"></div><div style="flex:1"><label>Tier</label><select id="aiTier"><option value="any">any</option><option value="budget">Budget (IKEA)</option><option value="standard">Standard (+Amazon)</option><option value="design">Design (manufacturers)</option></select></div></div>
 <div class="row"><button id="aiGo">Furnish this room</button><button id="aiAll" class="sec">Whole apartment</button><button id="aiStop" class="sec" style="display:none">Stop</button></div>
 <div class="bar"><i id="aiBar"></i></div><div class="dim" id="aiSpent">no plan yet</div>
 <div class="log" id="aiLog"></div><div id="aiCard"></div>
@@ -96,7 +96,7 @@ async function furnishRoom(roomId) {
   f.clear(); topDown(roomId); $('aiLog').innerHTML = ''; $('aiCard').innerHTML = ''; setSpent(0); $('aiGo').disabled = true; $('aiAll').disabled = true; $('aiStop').style.display = '';
   const from = doorPoint(f); let queue = Promise.resolve();
   return new Promise(resolve => {
-    es = new EventSource(`/api/agent/furnish?room=${encodeURIComponent(f.room)}&budget=${budget}&style=${encodeURIComponent(styleTxt)}${Q.has('drama') ? '&drama=1' : ''}`);
+    es = new EventSource(`/api/agent/furnish?room=${encodeURIComponent(f.room)}&budget=${budget}&style=${encodeURIComponent(styleTxt)}${Q.has('drama') ? '&drama=1' : ''}&tier=${encodeURIComponent((document.getElementById('aiTier')||{}).value || Q.get('tier') || 'any')}`);
     let gotEnd = false;
     es.onmessage = ev => { const e = JSON.parse(ev.data); if (e.event === 'end') { gotEnd = true; es && es.close(); } queue = queue.catch(() => {}).then(async () => {
       if (e.event === 'shortlist') log(`<b>Palette:</b> ${e.palette || ''} · wood: ${e.wood || ''} · accent: ${e.accent || ''}`);

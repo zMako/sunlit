@@ -8,6 +8,17 @@ import place
 SETS = {"bedroom": ["bed", "nightstand", "nightstand", "dresser", "rug", "floor_lamp"], "living": ["sofa", "coffee_table", "tv_bench", "rug", "bookcase", "floor_lamp", "armchair"],
         "dining": ["dining_table", "dining_chair", "dining_chair", "dining_chair", "dining_chair"], "kitchen": ["dining_table", "dining_chair", "dining_chair"],
         "office": ["desk", "desk_chair", "bookcase", "floor_lamp"], "other": ["sofa", "coffee_table", "rug"]}
+
+TIERS = {"budget": ("ikea",), "standard": ("ikea", "amazon-abo"), "design": ("design",), "any": None}
+def item_tier(i):
+    src = (i.get("source") or ""); t = i.get("tier")
+    if t == "design" or src.startswith("dsg") or i.get("id", "").startswith("dsg-"): return "design"
+    if src == "amazon-abo" or i.get("id", "").startswith("abo-"): return "amazon-abo"
+    return "ikea"
+def tier_filter(items, tier):
+    allowed = TIERS.get(tier or "any")
+    return items if allowed is None else [i for i in items if item_tier(i) in allowed]
+
 MODELS = {"haiku": "claude-haiku-5-5", "sonnet": "claude-sonnet-5-5", "opus": "claude-opus-5-5"}
 
 def room_info(R):
@@ -59,7 +70,7 @@ def pick_claude(cat_items, wanted, info, budget, style, model, room_type, listin
     return chosen, f"claude {model} ${usd:.4f}; palette: {j.get('palette')}; {j.get('notes', '')[:200]}"
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("room"); ap.add_argument("--budget", type=float); ap.add_argument("--style", default=""); ap.add_argument("--model", default="haiku"); ap.add_argument("--no-claude", action="store_true")
+    ap = argparse.ArgumentParser(); ap.add_argument("room"); ap.add_argument("--budget", type=float); ap.add_argument("--style", default=""); ap.add_argument("--model", default="haiku"); ap.add_argument("--tier", default="any", choices=["budget", "standard", "design", "any"]); ap.add_argument("--no-claude", action="store_true")
     a = ap.parse_args(); R = place.normalize(json.load(open(ROOT / "rooms" / f"{a.room}.json"))); info = room_info(R)
     m = re.match(r"p2_(.+?)_([a-z_]+)_(\d+)(?:_[AB])?$", a.room); room_type = R.get("type") or (m.group(2) if m else "other")   # plan-engine rooms carry their type; legacy names encode it
     listing_hint = ""
@@ -70,14 +81,14 @@ def main():
     cat = json.load(open(HERE / "catalog.json")); cat_items = {}
     for i in cat["items"]: cat_items.setdefault(i["category"], []).append(i)
     for k, v in cat_items.items():   # prefer products with a real 3D model; keep model-less ones only where a category has no modelled product
-        cat_items[k] = [i for i in v if i.get("model_glb")]   # strict: never pick a product without a 3D model
+        cat_items[k] = tier_filter([i for i in v if i.get("model_glb")], a.tier)   # strict: never pick a product without a 3D model; tier = brands allowed
     wanted = SETS.get(room_type, SETS["other"])
     chosen, how = (None, "skipped") if a.no_claude else pick_claude(cat_items, wanted, info, a.budget, a.style, MODELS.get(a.model, a.model), room_type, listing_hint)
     if not chosen: chosen, how = pick_deterministic(cat_items, wanted, info, a.budget)
     items = [{"id": c["id"] + (f"#{k}" if sum(1 for x in chosen[:k] if x["id"] == c["id"]) else ""), "name": c["name"], "category": c["category"], "w_m": c["width_m"], "d_m": c["depth_m"], "h_m": c["height_m"],
               "price_usd": c.get("price_usd"), "product_url": c["product_url"], "image": c.get("image"), "model_glb_url": c.get("model_glb_url"), "model_glb": c.get("model_glb"), "price_source": c.get("price_source", "listed"), "search_url": c.get("search_url"), "why": c.get("why")} for k, c in enumerate(chosen)]
     placed, walkable = place.place(R, items)
-    plan = {"room": a.room, "room_type": room_type, "items": placed, "total_usd": round(sum(i.get("price_usd") or 0 for i in placed if "x" in i), 2), "walkable": walkable, "picker": how, "room_info": info}
+    plan = {"room": a.room, "room_type": room_type, "items": placed, "total_usd": round(sum(i.get("price_usd") or 0 for i in placed if "x" in i), 2), "walkable": walkable, "picker": how, "room_info": info, "tier": a.tier}
     (HERE / "plans").mkdir(exist_ok=True); json.dump(plan, open(HERE / "plans" / f"{a.room}.json", "w"), indent=1)
     print(json.dumps({"room": a.room, "items": len(placed), "placed": sum(1 for i in placed if "x" in i), "total_usd": plan["total_usd"], "walkable": walkable, "picker": how[:120]}))
 

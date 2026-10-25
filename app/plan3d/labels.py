@@ -137,7 +137,7 @@ def apply_all(plans):
 def score(plans, tag=None):
     """Held-out agreement of a prediction (zero-shot cache, or CUBI_TAG fine-tuned cache) with the corrected labels, on the
     reviewed region: IoU per class, and boundary-tolerant F1 (a pixel within 2 px of the other mask counts)."""
-    acc = {k: {"i": 0, "u": 0, "pt": 0, "pn": 0, "lt": 0, "ln": 0} for k in ("wall", "window", "door")}; n = 0
+    acc = {k: {"i": 0, "u": 0, "pt": 0, "pn": 0, "lt": 0, "ln": 0, "fix": 0, "nfix": 0, "brk": 0, "nok": 0} for k in ("wall", "window", "door")}; n = 0
     for path in plans:
         lp = label_path(path)
         if not lp.exists(): continue
@@ -147,15 +147,21 @@ def score(plans, tag=None):
         ok = Lb["ignore"] == 0; crop = P["crop"].astype(bool); n += 1
         pred = {"wall": (P["rooms"] == cubi.WALL) & crop, "window": (P["icons"] == cubi.WINDOW) & crop, "door": (P["icons"] == cubi.DOOR) & crop}
         k3 = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+        Z = cubi.load(path, tag="")   # zero-shot prediction the labels started from: where the reviewers changed it
+        zero = {"wall": (Z["rooms"] == cubi.WALL) & Z["crop"].astype(bool), "window": (Z["icons"] == cubi.WINDOW) & Z["crop"].astype(bool), "door": (Z["icons"] == cubi.DOOR) & Z["crop"].astype(bool)}
         for c in acc:
             a = pred[c] & ok; b = Lb[c].astype(bool) & ok
+            changed = (zero[c] != Lb[c].astype(bool)) & ok; same = (~changed) & ok
+            acc[c]["fix"] += int(((a == b) & changed).sum()); acc[c]["nfix"] += int(changed.sum())   # corrected pixels now right
+            acc[c]["brk"] += int(((a != b) & same).sum()); acc[c]["nok"] += int(same.sum())          # already-right pixels now wrong
             acc[c]["i"] += int((a & b).sum()); acc[c]["u"] += int((a | b).sum())
             bd = cv2.dilate(b.astype(np.uint8), k3).astype(bool); ad = cv2.dilate(a.astype(np.uint8), k3).astype(bool)
             acc[c]["pt"] += int((a & bd).sum()); acc[c]["pn"] += int(a.sum()); acc[c]["lt"] += int((b & ad).sum()); acc[c]["ln"] += int(b.sum())
     out = {"plans": n, "weights": tag or "zero-shot"}
     for c, v in acc.items():
         pr = v["pt"] / max(1, v["pn"]); rc = v["lt"] / max(1, v["ln"])
-        out[c] = {"iou": round(v["i"] / max(1, v["u"]), 3), "precision": round(pr, 3), "recall": round(rc, 3), "f1": round(2 * pr * rc / max(1e-9, pr + rc), 3)}
+        out[c] = {"iou": round(v["i"] / max(1, v["u"]), 3), "precision": round(pr, 3), "recall": round(rc, 3), "f1": round(2 * pr * rc / max(1e-9, pr + rc), 3),
+                  "fix_rate": round(v["fix"] / max(1, v["nfix"]), 3), "corrected_px": v["nfix"], "regression_rate": round(v["brk"] / max(1, v["nok"]), 4)}
     return out
 
 if __name__ == "__main__":

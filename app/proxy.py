@@ -115,6 +115,7 @@ class H(http.server.SimpleHTTPRequestHandler):
             if q.get("budget"): cmd += ["--budget", q["budget"]]
             if q.get("style"): cmd += ["--style", q["style"]]
             if q.get("drama") == "1": cmd += ["--drama"]
+            if q.get("tier") in ("budget", "standard", "design", "any"): cmd += ["--tier", q["tier"]]
             self.send_response(200); self.send_header("Content-Type", "text/event-stream"); self.send_header("Cache-Control", "no-store"); self.send_header("Connection", "close"); self.end_headers()
             proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, cwd=str(ROOT.parent), env=dict(os.environ), bufsize=1)
             try:
