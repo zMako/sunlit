@@ -415,3 +415,38 @@ gs-16169_plan_00 shifted by the level offset.
 - Templates. `agent.TEMPLATES`: layered slot lists per room type with minimum areas (core, companions, light, soft, decor), degrade from the end. Relations added: lamp on nightstand/side table (y_m), pendant above table/bed with a cord to the ceiling, bench at the bed's foot, side tables beside seating, corner-loving plants and lamps, wall-hung mirrors at eye height. Wall positions are scored by the open room in front of them (a sofa no longer sits at a corridor mouth). Design tier borrows IKEA/Amazon in categories with fewer than 20 designer models, labelled in the panel.
 - Prices. 2,728 unpriced designer items got estimates (brand x category medians with width scaling, `designer/prices_estimate.py`), stored exactly like the Amazon estimates (`price_source: estimated`), labelled est. in the panel and checkout.
 - Test unit gs-22612_plan_07, design tier: dining 13 items (table, 6 chairs facing it, pendant, rug under, cabinet, lamp, plant, mirror), bedroom 11, living 12. Spend cap raised to $20 by the owner; agent runs cost about half a cent each.
+
+## Oct 24/25 night: real stairs, side-by-side overview, solid floors
+
+User review: the overview must show the levels side by side as on the plan; walking stacks them; lower walls showed
+through the upper floor; stairs were straight where the plans draw U / L shapes. Now:
+- `build.js arrangeLevels('plan'|'stack')`: dollhouse = every level at ground height where its drawing sits on the plan
+  (stairs included); walk = stacked. Upper levels sit at k x (ceiling + 0.30 m) on a solid extruded slab (footprint minus the
+  stairwell; rooms on a mezzanine), between the white ceiling below and the room floors, so lower walls end inside it.
+- `levels.py make_stair`: flights read from the drawn treads, upper level's drawing first (it shows the whole stair from
+  above), lower drawing as a second source; detection = thin ink on the local background (fills too), walls removed,
+  tread-length strokes per orientation, smeared into blocks, validated by even spacing 0.18-0.36 m (a Hough-line reader as
+  fallback). Flight pieces merged; the stair = the subset (1-4 flights) whose risers match the height (~0.18 m), chained
+  in walking order with landings (corner square for L, both widths for U, the gap for straight), continuous by
+  construction. Walking order: among equally short chains (a U can turn at either end), the one whose first flight the
+  lower drawing shows, with UP at the bottom and DN at the top. Arrival pad at the top. Steps solid near the floor,
+  35 cm treads higher up (rooms under a stair keep their walls); the upper floor opens only where headroom needs it
+  (steps >= 0.75 m); walls cut with their thickness, upper level only over the opening; search clamped to each level's own
+  drawing. No legible treads -> no stair is invented (the levels still stack). Handrails on open flight sides.
+- `walk.js`: edge guard (no stepping off a stair side or into the stairwell), walls under a stair ignored while on it,
+  a stair overhead not in the way, steps from the layout.
+- Result: 38 stacked units, 20 with stairs (10 U, 8 L, 6 straight); a headless harness walks every stair along its
+  steps: 22 of 24 reach the next floor (gs-15582_plan_14, gs-22226_plan_03 still stop partway).
+
+## Oct 25: thick exterior corners swallowed rooms
+
+1333 Gough "C" (gs-18149_plan_02) had no kitchen / dining and no south or east wall there. `plan_engine.wall_rects` treated
+compact blobs of thick ink as solid blocks (columns, fireplaces) by their bounding box only; two thick exterior walls
+meeting in an L have a square box, so the box was filled in as wall and swallowed the kitchen and dining, and the walls
+around a non-room were then dropped. A block must now fill >= 60% of its box. All units rebuilt in staging: 713 single-level
+units unchanged, 26 regained substantial area (up to 3.9x: halves of apartments were missing), 3 lost a little; the 61
+changed units were promoted (none had saved furniture) and renamed / leveled / doors redone.
+
+## Oct 25, before dawn: gallery and lights
+- `furnish/gallery.html`: every product in live 3D through the viewer's own addItem (model, dressing, orientation, fit), 100 per page, beside its hero photo; filters by source, brand, category, dressing source, orientation confidence; flip / rotate / flag per product saved through `POST /api/gallery_flags` to `furnish/gallery_flags.json`, and the viewer applies the owner's yaw fixes on load. The first HAY page exposed upholstered chair variants filed as "other" with height and depth swapped (lying on their backs): categories now inherit from a sibling product whose name is a prefix ("AAC 121" -> "AAC 121 Soft"), and chairs are forced taller than deep.
+- Lights. `wall_lamp` and `ceiling_lamp` categories from names (wall / parete / sconce; ceiling / soffitto / recessed / spot); sconces hang at 1.75 m beside beds, nightstands and mirrors, never on glass; one ceiling fixture per room in the open middle of the ceiling, skipped when a pendant already lights a small room; lamp slots in every room template (kitchen, hallway, bathroom and laundry get a ceiling light). In the viewer every lamp carries a warm point light (a spot for downlights), a soft additive halo and a scalable shade glow; one pendant per room casts shadows outside low quality. The apartment page has an **evening** button (`?evening=1`): sun to the horizon, dusk sky, environment down, bloom up, the builder's generic per-room fill lights step back and the agent's lamps carry the room (`Furnish.setLampLevel`). Headless check: kitchen mean brightness 207 by day, 161 at dusk, warm pools under the pendant and the ceiling fixture.

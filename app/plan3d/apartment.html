@@ -22,7 +22,7 @@ body.hasplan #furn{max-height:calc(100vh - 380px)}
 <script type="importmap">{"imports":{"three":"/vendor/three/build/three.module.js","three/addons/":"/vendor/three/jsm/"}}</script>
 </head><body>
 <div id="ui"><b>Apartment</b> <span id="unit" class="dim"></span><br>
-<div style="margin:6px 0"><button id="bDoll" class="on">dollhouse</button><button id="bWalk">walk</button> <span class="dim">section height</span> <input id="clip" type="range" min="0.6" max="2.8" step="0.05" value="1.55"> <span id="clipv" class="dim">1.55 m</span></div>
+<div style="margin:6px 0"><button id="bDoll" class="on">dollhouse</button><button id="bWalk">walk</button> <button id="bEvening" title="dusk outside, lamps on">evening</button> <span class="dim">section height</span> <input id="clip" type="range" min="0.6" max="2.8" step="0.05" value="1.55"> <span id="clipv" class="dim">1.55 m</span></div>
 <div id="levelsUi" style="margin:4px 0;display:none"><span class="dim">levels</span> </div>
 <div class="rooms" id="rooms"></div>
 <div id="info" class="dim"></div>
@@ -143,8 +143,8 @@ function applyClip(on) { const planes = on ? [clipPlane] : []; apt.group.travers
 function setDoll() {
   mode = 'doll'; if (walk.isLocked) walk.unlock(); document.getElementById('bDoll').classList.add('on'); document.getElementById('bWalk').classList.remove('on'); document.getElementById('hint').style.display = 'none'; document.getElementById('cross').style.display = 'none';
   apt.ceilingMeshes.forEach(m => m.visible = false); apt.labels.forEach(l => l.visible = true); applyClip(true); setFurnClip([clipPlane]); orbit.enabled = true; labelOcclusion(false); renderer.toneMappingExposure = 0.92;
-  camera.fov = 45; camera.position.set(center.x + ext * 0.75, ext * 0.95 + 2 + (apt.levels ? 3 : 0), center.z + ext * 0.9); orbit.target.set(center.x, apt.levels ? 2.2 : 0.6, center.z); camera.updateProjectionMatrix(); orbit.update();
-  if (apt.levels) showLevels(levelView);
+  if (apt.levels) showLevels(levelView);   // side by side before framing: center / ext are the plan layout's
+  camera.fov = 45; camera.position.set(center.x + ext * 0.75, ext * 0.95 + 2, center.z + ext * 0.9); orbit.target.set(center.x, 0.6, center.z); camera.updateProjectionMatrix(); orbit.update();
 }
 function setWalk(roomId, yawDeg) {
   mode = 'walk'; document.getElementById('bWalk').classList.add('on'); document.getElementById('bDoll').classList.remove('on'); document.getElementById('hint').style.display = 'block'; document.getElementById('cross').style.display = 'block';
@@ -154,24 +154,38 @@ function setWalk(roomId, yawDeg) {
   showLevels('walk'); camera.position.set(c.x, c.y + 1.6, c.z); const yaw = THREE.MathUtils.degToRad(yawDeg ?? 35); camera.rotation.set(0, 0, 0); camera.lookAt(c.x + Math.sin(yaw), c.y + 1.5, c.z + Math.cos(yaw));
   if (!Q.has('nolock')) renderer.domElement.requestPointerLock?.();
 }
-// ---------- levels (townhouses): dollhouse shows one level cut at the section height, or all of them lifted apart ----------
+// ---------- levels (townhouses): the dollhouse shows the levels side by side as on the plan (stairs included), walking stacks them ----------
 let levelView = 'all';
 function showLevels(mode) {
   if (!apt.levels) return; if (mode !== 'walk') levelView = mode;
-  const v = mode === 'walk' ? 'walk' : levelView; const cut = +document.getElementById('clip').value;
-  for (const lv of apt.levels) { const g = apt.levelGroups[lv.id]; g.position.y = lv.elevation_m + (v === 'all' ? lv.id * 2.2 : 0); g.visible = v === 'walk' || v === 'all' || lv.id <= v; }
-  if (v === 'walk') return;
-  clipPlane.constant = v === 'all' ? 1e4 : apt.levels[v].elevation_m + cut;   // non-wall meshes: a world plane through the shown level; walls: per-level section
-  for (const lv of apt.levels) { const g = apt.levelGroups[lv.id]; g.traverse(o => { if (o.userData && o.userData.kind === 'wall') { const { y0, h } = o.userData; const hc = (v === 'all' || lv.id === v) ? cut : null; if (hc == null) { o.visible = true; o.scale.y = 1; o.position.y = y0 + h / 2; } else if (y0 >= hc - 0.02) o.visible = false; else { o.visible = true; const nh = Math.min(h, hc - y0); o.scale.y = nh / h; o.position.y = y0 + nh / 2; } } }); }
+  if (mode === 'walk') { apt.arrangeLevels('stack'); return; }
+  apt.arrangeLevels('plan');   // side by side, all at ground height: one section plane cuts every level alike
+  for (const lv of apt.levels) apt.levelGroups[lv.id].visible = levelView === 'all' || lv.id === levelView;
+  clipPlane.constant = +document.getElementById('clip').value; apt.section(clipPlane.constant);
   document.querySelectorAll('#levelsUi button').forEach(b => b.classList.toggle('on', b.dataset.lv === String(levelView)));
 }
 if (apt.levels) {
   const ui = document.getElementById('levelsUi'); ui.style.display = 'block';
-  ui.innerHTML += apt.levels.map(lv => `<button data-lv="${lv.id}">${lv.name}</button>`).join('') + '<button data-lv="all">all, apart</button>';
+  ui.innerHTML += '<button data-lv="all">side by side</button>' + apt.levels.map(lv => `<button data-lv="${lv.id}">${lv.name}</button>`).join('');
   ui.querySelectorAll('button').forEach(b => b.onclick = () => { if (mode !== 'doll') setDoll(); showLevels(b.dataset.lv === 'all' ? 'all' : +b.dataset.lv); });
 }
 document.getElementById('bDoll').onclick = setDoll; document.getElementById('bWalk').onclick = () => setWalk(currentRoom());
-document.getElementById('clip').oninput = e => { clipPlane.constant = +e.target.value; document.getElementById('clipv').textContent = (+e.target.value).toFixed(2) + ' m'; if (mode === 'doll') { apt.section(clipPlane.constant); if (apt.levels) showLevels(levelView); } };
+// evening: the sun drops to the horizon, the sky goes dusk, the lamps the agent placed carry the room (furnish.js lampLevel)
+let evening = false; const dayState = { sun: sun.intensity, hemi: hemi.intensity, env: scene.environmentIntensity, exposure: renderer.toneMappingExposure, sunPos: sky.material.uniforms.sunPosition.value.clone(), bloom: bloom ? bloom.strength : 0 };
+window.__quality = QUALITY;
+function setEvening(on) {
+  evening = on; document.getElementById('bEvening').classList.toggle('on', on);
+  sun.intensity = on ? 0.16 : dayState.sun; hemi.intensity = on ? 0.1 : dayState.hemi; scene.environmentIntensity = on ? 0.14 : dayState.env; renderer.toneMappingExposure = on ? 0.95 : dayState.exposure;
+  const sp = dayState.sunPos.clone(); if (on) { sp.y = -0.03 * sp.length(); sun.color.set(0xffc38a); } else sun.color.set(0xfff7ec);
+  sky.material.uniforms.sunPosition.value.copy(sp); sky.material.uniforms.turbidity.value = on ? 6 : 3.5; sky.material.uniforms.rayleigh.value = on ? 2.4 : 1.3;
+  if (bloom) bloom.strength = on ? 0.32 : dayState.bloom;
+  // the builder's generic per-room fill lights (build.js) step back at dusk so the agent's lamps carry the room; rooms without lamps keep a faint glow
+  const lit = new Set(); for (const f of (window.furnishInstances || [])) if (f.items.some(it => it.lamp)) lit.add(f.room);
+  scene.traverse(o => { if (o.isPointLight && o.userData && o.userData.room) { o.userData.base ??= o.intensity; const roomLit = [...lit].some(k => String(k).endsWith('__' + o.userData.room) || k === o.userData.room); o.intensity = on ? o.userData.base * (roomLit ? 0.08 : 0.35) : o.userData.base; } });
+  Furnish.setLampLevel(on ? 2.6 : 0.8);
+}
+document.getElementById('bEvening').onclick = () => setEvening(!evening); window.setEvening = setEvening; if (Q.get('evening') === '1') setEvening(true);
+document.getElementById('clip').oninput = e => { clipPlane.constant = +e.target.value; document.getElementById('clipv').textContent = (+e.target.value).toFixed(2) + ' m'; if (mode === 'doll') apt.section(clipPlane.constant); };
 renderer.domElement.addEventListener('click', () => { if (mode === 'walk' && !walk.isLocked && !Q.has('nolock')) walk.lock(); });
 function levelAtY(y) { if (!apt.levels) return 0; let k = 0; for (const lv of apt.levels) if (y >= lv.elevation_m + 0.5) k = lv.id; return k; }
 function currentRoom() { const lv = levelAtY(camera.position.y); let best = null, bd = Infinity; for (const [id, r] of Object.entries(apt.roomMeshes)) { if ((r.level || 0) !== lv) continue; const d = r.center.distanceTo(new THREE.Vector3(camera.position.x, r.center.y, camera.position.z)); if (d < bd) { bd = d; best = id; } } return best; }
@@ -202,7 +216,7 @@ function labelOcclusion(walkMode) { for (const f of Object.values(furn)) f.group
 let roomTick = 0;
 (function loop() { requestAnimationFrame(loop); const dt = Math.min(clock.getDelta(), 0.05); if (mode !== 'walk' && apt && apt.ceilingMeshes) for (const m of apt.ceilingMeshes) m.visible = false; /* guard: nothing may re-show ceilings in dollhouse (they render as black slabs from above) */ if (mode === 'walk') { stepWalk(dt); if ((roomTick += dt) > 0.5) { roomTick = 0; const r = currentRoom(); if (r && r !== activeRoom && furn[r]) activateRoom(r); } } else orbit.update(); if (contextLost) return; if (LOW || postFailed) renderer.render(scene, camera); else { try { composer.render(); } catch (e) { postFailed = true; console.warn('post-processing disabled', e); } } })();
 if (Q.has('furn')) activateRoom(Q.get('furn'));
-window.setWalk = setWalk; window.setDoll = setDoll; window.__cam = { camera, orbit, layout: () => layout };   // headless screenshots position the camera through this
+window.setWalk = setWalk; window.setDoll = setDoll; window.__cam = { camera, orbit, scene, sun, hemi, renderer, layout: () => layout };   // headless screenshots position the camera through this
 
 // ---------- plan window: the source floor plan, with the rebuilt layout drawn over it in plan pixels (debug: does the 3D match?) ----------
 (function planWindow() {

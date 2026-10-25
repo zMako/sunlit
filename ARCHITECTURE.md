@@ -55,6 +55,11 @@ front, under, side, corner, around (chairs face the table), foot (bench at the b
 - Catalogue dims and categories are repaired on load by `place.fix_item` (`canon_dims`, `RECAT`); `catalog.json` is raw.
 - Designer prices: `prices_estimate.py` fills unpriced items with brand x category medians (`price_source: estimated`).
 
+- `gallery.html` + `catalog_fixed.json` (made by `catalog_fixed.py`, gitignored): the catalogue as the planner sees it, for eyeballing; the
+  owner's corrections live in `gallery_flags.json` {id: {flag, yaw_fix}} via `/api/gallery_flags` and are applied by the viewer.
+- Lights: categories `wall_lamp`, `ceiling_lamp` (from names in `place.LIGHT_RE`), `pendant_lamp`, `floor_lamp`, `table_lamp`. The viewer
+  attaches a point/spot light, halo and glow to each (`Furnish._lamp`); `Furnish.setLampLevel(m)` scales them (apartment.html evening mode).
+
 ## Catalogue sources
 - IKEA US product pages (facts + the product's own GLB cached locally; the owner accepted IKEA's terms risk for the demo).
 - Amazon Berkeley Objects (`app/furnish/abo/`, source `amazon-abo`, CC BY 4.0 with attribution, no prices, ASIN links of which roughly half are dead; models compressed with gltf-transform (Draco + WebP) into abo/models_opt). Planner and
