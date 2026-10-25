@@ -2,119 +2,50 @@
  "unit": "gs-22612_plan_03",
  "photos": [
   {
-   "src": "/listings/gs-22612/00.jpg",
-   "room": "r6",
-   "pos": [
-    12.0,
-    1.45,
-    10.592
-   ],
-   "yaw": 90.0,
-   "pitch": -8.0,
-   "hfov": 75.0,
-   "aspect": 1.3333,
-   "confidence": 0.3,
-   "source": "claude (claude-sonnet-5-5)",
-   "visible": "left: north wall with cabinets; centre: east wall with fridge, sink and dishwasher; right: range and south counter",
-   "why": "White cabinet kitchen with fridge, sink/dishwasher and range matches the kitchen's L-shaped appliance layout in r6, though the exact direction is uncertain.",
-   "crop": [
-    0.3,
-    0.0,
-    0.7,
-    1.0
-   ]
-  },
-  {
    "src": "/listings/gs-22612/03.jpg",
    "room": "r0",
    "pos": [
-    5.944,
-    1.637,
-    5.077
+    6.816,
+    1.56,
+    4.174
    ],
-   "yaw": 229.46,
-   "pitch": -11.0,
-   "hfov": 72.82,
-   "aspect": 1.3292,
-   "confidence": 0.9,
-   "source": "metrology",
-   "why": "single-view metrology (floor and ceiling lines)",
-   "crop": [
-    0.3006,
-    0.0,
-    0.6994,
-    1.0
-   ]
-  },
-  {
-   "src": "/listings/gs-22612/04.jpg",
-   "room": "r0",
-   "pos": [
-    7.0,
-    1.4,
-    4.8
-   ],
-   "yaw": 200.0,
-   "pitch": -5.0,
-   "hfov": 80.0,
+   "yaw": 224.3,
+   "pitch": -14,
+   "hfov": 89,
    "aspect": 1.3333,
-   "confidence": 0.2,
-   "source": "claude (claude-sonnet-5-5)",
-   "visible": "left: closet door; centre: window wall; right: plain wall",
-   "why": "The triple window on the far wall and the louvered door on the left loosely fit the living room's top window and the closet door, but the fit is uncertain.",
    "crop": [
     0.3,
     0.0,
     0.7,
     1.0
-   ]
-  },
-  {
-   "src": "/listings/gs-22612/06.jpg",
-   "room": "r4",
-   "pos": [
-    9.0,
-    1.4,
-    6.3
    ],
-   "yaw": 270.0,
-   "pitch": -15.0,
-   "hfov": 65.0,
-   "aspect": 1.25,
-   "confidence": 0.35,
-   "source": "claude (claude-sonnet-5-5)",
-   "visible": "left: mirror and shower reflection; centre: sink vanity; right: white cabinets and wall",
-   "why": "A bathroom vanity with a sink matches the sink on the west wall of r4, though the shower enclosure differs from the tub on the plan.",
-   "crop": [
-    0.35,
-    0.0,
-    0.65,
-    1.0
-   ]
+   "confidence": 0.634,
+   "source": "fit",
+   "why": "label match (analysis by synthesis)"
   },
   {
-   "src": "/listings/gs-22612/07.jpg",
-   "room": "r4",
+   "src": "/listings/gs-22612/04.jpg",
+   "room": "r3",
    "pos": [
-    8.556,
+    13.182,
     1.5,
-    5.405
+    3.578
    ],
-   "yaw": 270.0,
-   "pitch": -5.0,
-   "hfov": 70.0,
-   "aspect": 1.25,
-   "confidence": 0.2,
-   "source": "claude (claude-sonnet-5-5)",
-   "visible": "tiled shower walls with niche at centre, shower head at upper left, glass panel at right",
-   "why": "The photo shows a walk-in tiled shower, which best matches the small shower stall by the bath, entered from the hallway, though the fit is uncertain.",
+   "yaw": 166.6,
+   "pitch": -11,
+   "hfov": 101,
+   "aspect": 1.3333,
    "crop": [
-    0.35,
+    0.3,
     0.0,
-    0.65,
+    0.7,
     1.0
-   ]
+   ],
+   "confidence": 0.671,
+   "source": "fit",
+   "why": "label match (analysis by synthesis)"
   }
  ],
- "model": "claude-sonnet-5-5"
+ "model": "fit (deterministic)",
+ "standpoints": 246
 }

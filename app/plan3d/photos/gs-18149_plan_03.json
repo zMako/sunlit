@@ -2,85 +2,16 @@
  "unit": "gs-18149_plan_03",
  "photos": [
   {
-   "src": "/listings/gs-18149/03.jpg",
-   "room": "r0",
-   "pos": [
-    6.621,
-    1.4,
-    9.659
-   ],
-   "yaw": 90.0,
-   "pitch": -8.0,
-   "hfov": 75.0,
-   "aspect": 1.4709,
-   "crop": [
-    0.2481,
-    0.0,
-    0.7519,
-    1.0
-   ],
-   "confidence": 0.5,
-   "source": "claude (claude-sonnet-5-5)",
-   "visible": "left: fridge and wall; centre: end wall with artwork and oven; right: counter with sink, dishwasher and cooktop",
-   "why": "The galley kitchen with the counter along the south wall and the appliance order of sink, dishwasher, cooktop and oven matches the plan's kitchen, viewed from the west entrance looking east."
-  },
-  {
-   "src": "/listings/gs-18149/04.jpg",
-   "room": "r0",
-   "pos": [
-    5.126,
-    1.4,
-    7.756
-   ],
-   "yaw": 10.0,
-   "pitch": -8.0,
-   "hfov": 70.0,
-   "aspect": 1.4664,
-   "crop": [
-    0.2475,
-    0.0,
-    0.7525,
-    1.0
-   ],
-   "confidence": 0.4,
-   "source": "claude (claude-sonnet-5-5)",
-   "visible": "left: wall oven and cabinets; centre: cooktop, dishwasher, sink under cabinets; right: fridge and peninsula counter",
-   "why": "The kitchen appliance run of oven, cooktop, dishwasher and sink with the fridge at the right matches the plan's kitchen inside the open living area."
-  },
-  {
-   "src": "/listings/gs-18149/05.jpg",
-   "room": "r0",
-   "pos": [
-    4.9,
-    1.5,
-    8.0
-   ],
-   "yaw": 100.0,
-   "pitch": -8.0,
-   "hfov": 70.0,
-   "aspect": 0.7498,
-   "crop": [
-    0.0,
-    0.0,
-    1.0,
-    1.0
-   ],
-   "confidence": 0.35,
-   "source": "claude (claude-sonnet-5-5)",
-   "visible": "left: fridge/open passage; centre: end wall with corner; right: counter with stove, sink and upper cabinets",
-   "why": "The galley kitchen with stove, sink and fridge matches the kitchen area in the plan, though the order of stove and sink does not match exactly."
-  },
-  {
    "src": "/listings/gs-18149/06.jpg",
-   "room": "r2",
+   "room": "r0",
    "pos": [
-    12.4,
-    1.4,
-    7.5
+    8.221,
+    1.5,
+    8.44
    ],
-   "yaw": 170.0,
-   "pitch": -5.0,
-   "hfov": 70.0,
+   "yaw": 168,
+   "pitch": -11,
+   "hfov": 75,
    "aspect": 0.739,
    "crop": [
     0.0,
@@ -88,57 +19,11 @@
     1.0,
     1.0
    ],
-   "confidence": 0.3,
-   "source": "claude (claude-sonnet-5-5)",
-   "visible": "left: doorway to bathroom with toilet and vanity; centre: wall between; right: louvered bifold closet doors",
-   "why": "Carpeted space with a bathroom doorway beside a louvered closet matches the primary bedroom's bath and closet area."
-  },
-  {
-   "src": "/listings/gs-18149/08.jpg",
-   "room": "r7",
-   "pos": [
-    10.0,
-    1.45,
-    8.8
-   ],
-   "yaw": 0.0,
-   "pitch": -8.0,
-   "hfov": 70.0,
-   "aspect": 1.3492,
-   "crop": [
-    0.2681,
-    0.0,
-    0.7319,
-    1.0
-   ],
-   "confidence": 0.55,
-   "source": "claude (claude-sonnet-5-5)",
-   "visible": "left: tub and shower wall; centre: toilet against back wall; right: vanity with mirror",
-   "why": "Tub, toilet and vanity layout matches the narrow bathroom r7, viewed from its north door looking south."
-  },
-  {
-   "src": "/listings/gs-18149/09.jpg",
-   "room": "r7",
-   "pos": [
-    9.9,
-    1.4,
-    10.7
-   ],
-   "yaw": 180.0,
-   "pitch": -8.0,
-   "hfov": 65.0,
-   "aspect": 0.6941,
-   "crop": [
-    0.0,
-    0.0,
-    1.0,
-    1.0
-   ],
-   "confidence": 0.35,
-   "source": "claude (claude-sonnet-5-5)",
-   "visible": "left: toilet and side wall; centre: vanity with medicine cabinet; right: wall corner",
-   "why": "A bathroom with a vanity facing the camera and a toilet at left fits r7 when viewed from its south end looking north."
+   "confidence": 0.725,
+   "source": "fit",
+   "why": "label match (analysis by synthesis)"
   }
  ],
- "model": "claude-sonnet-5-5"
+ "model": "fit (deterministic)",
+ "standpoints": 331
 }

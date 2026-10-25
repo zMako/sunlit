@@ -167,6 +167,7 @@ function setPhoto(i) {
   $('pPhoto').onload = layoutPhotos; $('pPhoto').src = p.src; $('pCount').textContent = `${phIdx + 1} of ${PH.photos.length}`;
   $('pCapR').textContent = `${room ? room.name : 'The room'}, rebuilt in 3D from the same camera`;
   $('pNote').textContent = p.source === 'metrology' ? "Camera measured from the photo's floor and ceiling lines." :
+    p.source === 'fit' ? "Camera found by matching the photo's floor, walls, windows and doors to the 3D model. Drag the 3D view to fine-tune." :
     `Camera estimated from the photo${p.confidence < 0.5 ? '; approximate, and the gallery may show another unit with this plan' : ''}. Drag the 3D view to fine-tune.`;
   for (const b of $('pStrip').children) b.setAttribute('aria-current', String(+b.dataset.i === phIdx));
   if (room && furn[room.id]) activateRoom(room.id);
