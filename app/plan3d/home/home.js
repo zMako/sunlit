@@ -69,7 +69,7 @@ window.apartment = { layout, roomMeshes: apt.roomMeshes, floorPlane, scene, came
 
 // ---------- furniture: one Furnish per room; only models are shown (labels, footprints and fit colours are editing aids) ----------
 const furn = {}; let activeRoom = null, changeQueued = false;
-function changed() { if (changeQueued) return; changeQueued = true; requestAnimationFrame(() => { changeQueued = false; hideAids(); renderItems(); }); }
+function changed() { if (changeQueued) return; changeQueued = true; requestAnimationFrame(() => { changeQueued = false; hideAids(); renderItems(); if (typeof stageSoon === 'function') stageSoon(); }); }
 function hideAids() { for (const f of Object.values(furn)) for (const it of f.items) { if (it.label) it.label.visible = false; if (it.fp) it.fp.visible = false; if (it.fm) it.fm.visible = false; } }
 const roomJobs = layout.rooms.map(async r => {
   try { const res = await fetch(`../rooms/${layout.unit}__${r.id}.json`); if (!res.ok) return;
@@ -80,7 +80,7 @@ const roomJobs = layout.rooms.map(async r => {
 function activateRoom(id) {
   if (!id || activeRoom === id) { refreshRoomUi(); return; }
   for (const [rid, f] of Object.entries(furn)) if (rid !== id && f.active) { f.setActive(false); f.panelEl = null; }
-  activeRoom = id; const f = furn[id]; if (f) { f.panelEl = $('furn'); if (mode !== 'walk') f.setActive(true); }   // editing (drag, R, D, Delete) only in the overview: D is also strafe-right
+  activeRoom = id; const f = furn[id]; if (f) { f.panelEl = $('furn'); if (mode === 'doll') f.setActive(true); }   // editing (drag, R, D, Delete) only in the overview: D is also strafe-right
   refreshRoomUi(); renderItems();
 }
 const roomName = id => (layout.rooms.find(r => r.id === id) || {}).name || 'this room';
@@ -139,97 +139,185 @@ addEventListener('keydown', e => {
   if (mode === 'photo' && !/INPUT|TEXTAREA|SELECT/.test(e.target.tagName) && (e.code === 'ArrowLeft' || e.code === 'ArrowRight')) { e.preventDefault(); setPhoto(phIdx + (e.code === 'ArrowLeft' ? -1 : 1)); }
 });
 
-// ---------- photos: each listing photo next to the 3D view from the same camera (photos/<unit>.json, photocams.py) ----------
-let PH = null, phIdx = 0, phMode = 'side', phRect = null, phHfov = 75, phSplit = 0.5;
-const phKey = () => `photoAdj:${unit}:${PH.photos[phIdx].src}`, phAdj = () => JSON.parse(localStorage.getItem(phKey()) || '{"dy":0,"dp":0,"df":0}');
+// ---------- photos: a slider between each listing photo and the same photo, furnished (photos/<unit>.json) ----------
+// Right of the slider: the photo furnished by the staging worker (photos/stage_server.py: Stable Diffusion restyles only our
+// furniture and its shadows, strength 0.3, the rest of the photo is copied back), and until that is ready the live overlay
+// (our furniture drawn into the photo from its camera). Renders start in the background when the furniture settles, so the
+// furnished photo is usually waiting by the time Photos opens.
+const STAGE = window.MOVEIN_STAGE || 'http://127.0.0.1:8772', STAGE_V = 1;
+let PH = null, phIdx = 0, phRect = null, phHfov = 75, phSplit = 0.5;
+const adjOf = i => JSON.parse(localStorage.getItem(`photoAdj:${unit}:${PH.photos[i].src}`) || '{"dy":0,"dp":0,"df":0}');
 fetch(`photos/${unit}.json`, { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(j => {
   if (!j || !j.photos || !j.photos.length) return; PH = j; $('vPhoto').hidden = false;
   $('pStrip').innerHTML = j.photos.map((p, i) => `<button data-i="${i}" aria-label="Photo ${i + 1}" style="background-image:url('${p.src}')"></button>`).join('');
+  stageSoon(3000);
 }).catch(() => {});
 $('vPhoto').onclick = () => setPhoto(phIdx);
 $('pStrip').onclick = e => { const b = e.target.closest('[data-i]'); if (b) setPhoto(+b.dataset.i); };
 $('pPrev').onclick = () => setPhoto(phIdx - 1); $('pNext').onclick = () => setPhoto(phIdx + 1);
-for (const b of document.querySelectorAll('[data-pm]')) b.onclick = () => { phMode = b.dataset.pm; for (const x of document.querySelectorAll('[data-pm]')) x.setAttribute('aria-pressed', String(x === b)); layoutPhotos(); };
-$('pFurn').onclick = () => { const on = $('pFurn').getAttribute('aria-pressed') !== 'true'; $('pFurn').setAttribute('aria-pressed', on); setFurnVisible(on); };
+$('pRender').onclick = () => { if (PH) requestStage(phIdx, true); };
 function setFurnVisible(on) { for (const f of Object.values(furn)) f.group.visible = on; }
-// staged: the real photo behind the 3D frame; our walls, ceilings, doors and fixtures turn into invisible occluders, the
-// floors into shadow catchers, so only the furniture (and its shadows) is drawn, in the photo's own perspective
+
+// staged materials: walls, ceilings, doors, fixtures become invisible depth occluders (and cast no shadow), floors catch
+// the furniture's shadows; with the warm, low window light of the listing photos
 let staged = false; const stageSaved = new Map();
 const OCCLUDE = new THREE.MeshBasicMaterial({ colorWrite: false }), CATCH = new THREE.ShadowMaterial({ color: 0x24180e, opacity: 0.5 });
-function setStaged(on) {
-  if (on === staged) return; staged = on; $('pStage').setAttribute('aria-pressed', on); $('pBack').hidden = !on;
-  if (on) {
-    outside?.enable(false); seal?.setWalk(false);
-    apt.group.traverse(o => { if (!o.isMesh || o.userData.item) return; stageSaved.set(o, o.material);
-      o.userData.castWas = o.castShadow; if (!/^pfloor_/.test(o.name)) o.castShadow = false;   // invisible walls must not shade the real floor
-      o.material = /^pfloor_/.test(o.name) ? CATCH : OCCLUDE; });
-    renderer.toneMappingExposure = 0.82; setSun(24, 0xffd9ae, 2.6); hemi.intensity = 0.45; scene.environmentIntensity = 0.5;   // the listing photo's warm, low window light
-  } else {
-    for (const [o, m] of stageSaved) { o.material = m; if (o.userData.castWas != null) o.castShadow = o.userData.castWas; } stageSaved.clear();
-    if (mode === 'photo') { outside?.enable(true); seal?.setWalk(true); renderer.toneMappingExposure = 1.05; setSun(38, 0xfff0dc, 2.4); }
-  }
-  $('pCapR').textContent = on ? 'The photo, furnished in 3D (furniture added digitally)' : `${(layout.rooms.find(r => r.id === PH.photos[phIdx].room) || {}).name || 'The room'}, rebuilt in 3D from the same camera`;
-  layoutPhotos();
+function stageMats(on) {
+  if (on) apt.group.traverse(o => { if (!o.isMesh || o.userData.item || stageSaved.has(o)) return; stageSaved.set(o, o.material); o.userData.castWas = o.castShadow;
+    const floor = /^pfloor_/.test(o.name); if (!floor) o.castShadow = false; o.material = floor ? CATCH : OCCLUDE; });
+  else { for (const [o, m] of stageSaved) { o.material = m; if (o.userData.castWas != null) o.castShadow = o.userData.castWas; } stageSaved.clear(); }
 }
-$('pStage').onclick = () => setStaged(!staged);
+function stageLight() { renderer.toneMappingExposure = 0.82; setSun(24, 0xffd9ae, 2.6); hemi.intensity = 0.45; scene.environmentIntensity = 0.5; sun.visible = true; }
+function setStaged(on) {
+  if (on === staged) return; staged = on; $('pBack').hidden = !on;
+  if (on) { outside?.enable(false); seal?.setWalk(false); stageMats(true); stageLight(); } else stageMats(false);
+}
 function leavePhoto() { if (mode !== 'photo') return; setStaged(false); $('photos').hidden = true; document.body.classList.remove('photomode'); renderer.domElement.style.clipPath = ''; setFurnVisible(true); }
 function setPhoto(i) {
   if (!PH) return; phIdx = (i + PH.photos.length) % PH.photos.length;
   if (mode !== 'photo') {
     if (look.isLocked) look.unlock(); mode = 'photo'; $('bWalk').classList.remove('on'); pressMode('vPhoto'); closeMenus();
-    apt.ceilingMeshes.forEach(m => m.visible = true); applyClip(false); orbit.enabled = false; renderer.toneMappingExposure = 1.05; setSun(38, 0xfff0dc, 2.4);
-    outside?.enable(true); document.body.classList.add('walking', 'photomode'); seal?.setWalk(true);
+    apt.ceilingMeshes.forEach(m => m.visible = true); applyClip(false); orbit.enabled = false;
+    document.body.classList.add('walking', 'photomode');
     for (const f of Object.values(furn)) { f.select(null); f.setActive(false); }
     $('photos').hidden = false; $('tip').hidden = true; $('walkHint').hidden = true; $('cross').hidden = true;
-    setFurnVisible($('pFurn').getAttribute('aria-pressed') === 'true');
+    setFurnVisible(true); setStaged(true);
   }
   const p = PH.photos[phIdx], room = layout.rooms.find(r => r.id === p.room);
   $('pPhoto').onload = layoutPhotos; $('pPhoto').src = p.src; $('pBackImg').src = p.src; $('pCount').textContent = `${phIdx + 1} of ${PH.photos.length}`;
-  $('pCapR').textContent = staged ? 'The photo, furnished in 3D (furniture added digitally)' : `${room ? room.name : 'The room'}, rebuilt in 3D from the same camera`;
-  $('pNote').textContent = p.source === 'metrology' ? "Camera measured from the photo's floor and ceiling lines." :
-    p.source === 'fit' ? "Camera found by matching the photo's floor, walls, windows and doors to the 3D model. Drag the 3D view to fine-tune." :
-    `Camera estimated from the photo${p.confidence < 0.5 ? '; approximate, and the gallery may show another unit with this plan' : ''}. Drag the 3D view to fine-tune.`;
+  $('pNote').textContent = (p.source === 'metrology' ? "Camera measured from the photo." : "Camera matched to the photo's floor, walls, windows and doors.") + ` ${room ? room.name : ''}`;
   for (const b of $('pStrip').children) b.setAttribute('aria-current', String(+b.dataset.i === phIdx));
   if (room && furn[room.id]) activateRoom(room.id);
-  layoutPhotos(); applyPhotoCam();
+  layoutPhotos(); applyPhotoCam(); showStaged(); requestStage(phIdx);
 }
-function applyPhotoCam() {
-  const p = PH.photos[phIdx], a = phAdj(), yaw = THREE.MathUtils.degToRad(p.yaw + a.dy), pitch = THREE.MathUtils.degToRad(p.pitch + a.dp);
-  camera.position.set(p.pos[0], p.pos[1], p.pos[2]); camera.rotation.set(0, 0, 0);
-  camera.lookAt(p.pos[0] + Math.sin(yaw) * Math.cos(pitch), p.pos[1] + Math.sin(pitch), p.pos[2] + Math.cos(yaw) * Math.cos(pitch));
-  phHfov = Math.min(115, Math.max(35, p.hfov + a.df));
+function photoCam(i, cam) {   // the photo's camera (with any saved fine-tune) applied to cam; returns the horizontal lens
+  const p = PH.photos[i], a = adjOf(i), yaw = THREE.MathUtils.degToRad(p.yaw + a.dy), pitch = THREE.MathUtils.degToRad(p.pitch + a.dp);
+  cam.position.set(p.pos[0], p.pos[1], p.pos[2]); cam.rotation.set(0, 0, 0);
+  cam.lookAt(p.pos[0] + Math.sin(yaw) * Math.cos(pitch), p.pos[1] + Math.sin(pitch), p.pos[2] + Math.cos(yaw) * Math.cos(pitch));
+  return Math.min(115, Math.max(35, p.hfov + a.df));
 }
+function applyPhotoCam() { phHfov = photoCam(phIdx, camera); }
 function place(el, x, y, w, h) { Object.assign(el.style, { left: x + 'px', top: y + 'px', width: w + 'px', height: h + 'px' }); }
-function layoutPhotos() {   // frames at the photo's aspect inside the scene area: toolbar on top, captions, filmstrip and dock below
+function layoutPhotos() {   // one frame at the photo's aspect: listing photo left of the slider, furnished photo right of it
   if (!PH || mode !== 'photo') return;
-  const ph = PH.photos[phIdx], aspect = ph.aspect || 1.5, W = innerWidth - sheetW(), H = innerHeight, top = 146, bottom = 222, gap = 18, availH = Math.max(160, H - top - bottom);
-  let w, xL, xR;
-  if (phMode === 'side') { w = Math.min((W - gap * 3) / 2, availH * aspect); xL = (W - 2 * w - gap) / 2; xR = xL + w + gap; }
-  else { w = Math.min(W - gap * 2, availH * aspect); xL = xR = (W - w) / 2; }
-  const h = w / aspect, y = top + (availH - h) / 2; phRect = { x: xR, y, w, h };
-  place($('pBox'), xL, y, w, h); place($('p3d'), xR, y, w, h);
-  const img = $('pPhoto'), c = ph.crop || [0, 0, 1, 1], iw = w / (c[2] - c[0]), ih = h / (c[3] - c[1]);   // the crop box fills the frame
-  Object.assign(img.style, { width: iw + 'px', height: ih + 'px', left: (-c[0] * iw) + 'px', top: (-c[1] * ih) + 'px' });
-  place($('pBack'), xR, y, w, h); Object.assign($('pBackImg').style, { width: iw + 'px', height: ih + 'px', left: (-c[0] * iw) + 'px', top: (-c[1] * ih) + 'px' });
-  const swipe = phMode === 'swipe'; $('photos').classList.toggle('swipe', swipe); $('pHandle').hidden = !swipe;
-  $('pBox').style.clipPath = swipe ? `inset(0 ${((1 - phSplit) * 100).toFixed(2)}% 0 0 round 16px 0 0 16px)` : '';
-  if (swipe) place($('pHandle'), xR + w * phSplit, y, 0, h);
-  Object.assign($('pCapL').style, { left: xL + 'px', top: (y + h + 10) + 'px', textAlign: 'left' });
-  Object.assign($('pCapR').style, swipe ? { left: (xR + w) + 'px', top: (y + h + 10) + 'px', transform: 'translateX(-100%)', textAlign: 'right' } : { left: xR + 'px', top: (y + h + 10) + 'px', transform: '', textAlign: 'left' });
-  $('pNote').style.top = (y + h + 34) + 'px'; $('pNote').style.maxWidth = Math.min(w * (swipe ? 1 : 2), 720) + 'px';
-  renderer.domElement.style.clipPath = `inset(${y}px ${innerWidth - xR - w}px ${H - y - h}px ${xR}px round 16px)`;
+  const ph = PH.photos[phIdx], aspect = ph.aspect || 1.5, W = innerWidth - sheetW(), H = innerHeight, top = 146, bottom = 222, availH = Math.max(160, H - top - bottom);
+  const w = Math.min(W - 36, availH * aspect), h = w / aspect, x = (W - w) / 2, y = top + (availH - h) / 2; phRect = { x, y, w, h };
+  for (const id of ['pBox', 'p3d', 'pStagedBox', 'pBack']) place($(id), x, y, w, h);
+  const c = ph.crop || [0, 0, 1, 1], iw = w / (c[2] - c[0]), ih = h / (c[3] - c[1]), st = { width: iw + 'px', height: ih + 'px', left: (-c[0] * iw) + 'px', top: (-c[1] * ih) + 'px' };
+  Object.assign($('pPhoto').style, st); Object.assign($('pBackImg').style, st);
+  $('pBox').style.clipPath = `inset(0 ${((1 - phSplit) * 100).toFixed(2)}% 0 0 round 16px 0 0 16px)`;
+  place($('pHandle'), x + w * phSplit, y, 0, h);
+  Object.assign($('pCapL').style, { left: x + 'px', top: (y + h + 10) + 'px' });
+  Object.assign($('pCapR').style, { left: (x + w) + 'px', top: (y + h + 10) + 'px', transform: 'translateX(-100%)', textAlign: 'right' });
+  $('pNote').style.top = (y + h + 34) + 'px'; $('pNote').style.maxWidth = Math.min(w, 720) + 'px';
+  Object.assign($('pStatus').style, { left: (x + w - 14) + 'px', top: (y + 14) + 'px' });
+  renderer.domElement.style.clipPath = `inset(${y}px ${innerWidth - x - w}px ${H - y - h}px ${x}px round 16px)`;
 }
 addEventListener('resize', () => { if (mode === 'photo') layoutPhotos(); });
-{ // fine-tune: drag turns, wheel changes the lens, double-click resets; remembered per photo in this browser
-  let drag = null; const save = a => { localStorage.setItem(phKey(), JSON.stringify(a)); applyPhotoCam(); };
-  $('p3d').addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY, a: phAdj() }; $('p3d').setPointerCapture(e.pointerId); });
-  $('p3d').addEventListener('pointermove', e => { if (!drag) return; const k = phHfov / Math.max(200, phRect.w); save({ ...drag.a, dy: drag.a.dy - (e.clientX - drag.x) * k, dp: drag.a.dp + (e.clientY - drag.y) * k }); });
-  $('p3d').addEventListener('pointerup', () => { drag = null; });
-  $('p3d').addEventListener('wheel', e => { e.preventDefault(); const a = phAdj(); save({ ...a, df: a.df + e.deltaY * 0.03 }); }, { passive: false });
-  $('p3d').addEventListener('dblclick', () => save({ dy: 0, dp: 0, df: 0 }));
-  let hd = false; $('pHandle').addEventListener('pointerdown', e => { hd = true; $('pHandle').setPointerCapture(e.pointerId); });
-  $('pHandle').addEventListener('pointermove', e => { if (!hd) return; phSplit = Math.min(1, Math.max(0, (e.clientX - phRect.x) / phRect.w)); layoutPhotos(); });
-  $('pHandle').addEventListener('pointerup', () => { hd = false; });
+{ let drag = false; const at = e => { phSplit = Math.min(1, Math.max(0, (e.clientX - phRect.x) / phRect.w)); layoutPhotos(); };   // drag anywhere on the frame
+  $('p3d').addEventListener('pointerdown', e => { drag = true; $('p3d').setPointerCapture(e.pointerId); at(e); });
+  $('p3d').addEventListener('pointermove', e => { if (drag) at(e); });
+  $('p3d').addEventListener('pointerup', () => { drag = false; }); }
+
+// ---------- staging: capture (inside the render loop, so nothing flickers), send, poll, show ----------
+const stageState = {}, polling = new Set(), background = new Set();
+function furnSig() { const a = []; for (const f of Object.values(furn)) for (const it of f.items) { const s = it.spec; a.push(`${s.id}|${(+s.x || 0).toFixed(2)}|${(+s.z || 0).toFixed(2)}|${Math.round(+s.rot_deg || 0)}|${(+s.y_m || 0).toFixed(2)}`); } return a.sort().join(';'); }
+function hash(str) { let h = 2166136261 >>> 0; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h.toString(36); }
+function stageKey(i) { const p = PH.photos[i]; return `${unit}_${p.src.split('/').pop().replace(/\.jpg$/, '')}_${hash(furnSig() + JSON.stringify([p.pos, p.yaw, p.pitch, p.hfov, adjOf(i), STAGE_V]))}`; }
+const hasFurniture = () => Object.values(furn).some(f => f.items.some(it => it.spec.category !== 'fixture'));
+function stagePrompt(i) {
+  const p = PH.photos[i], room = layout.rooms.find(r => r.id === p.room), kind = (room && room.type && room.type !== 'other' ? room.type.replace('living', 'living room') : 'room');
+  const COL = /\b(white|black|beige|grey|gray|oak|birch|walnut|natural|green|blue|pink|brown|cream|ash|bamboo|rattan|linen|velvet|leather|jute|wool|brass|glass)\b/gi;
+  const src = (furn[p.room] && furn[p.room].items.length ? [furn[p.room]] : Object.values(furn)).flatMap(f => f.items).filter(it => it.spec.category !== 'fixture')
+    .sort((a, b) => (+b.spec.w_m || 0) * (+b.spec.d_m || 0) - (+a.spec.w_m || 0) * (+a.spec.d_m || 0));
+  const items = [...new Set(src.map(it => { const n = shortName(it.spec.name), cols = [...new Set((n.variant.match(COL) || []).map(x => x.toLowerCase()))].slice(0, 2).join(' ');
+    return `${cols} ${String(it.spec.category || n.name).replace(/_/g, ' ')}`.trim(); }))].slice(0, 9);
+  return `professional real estate photograph of a bright ${kind}, ${items.join(', ')}, warm natural window light, soft natural shadows, photorealistic, sharp, high detail`;
+}
+let captureReq = null;
+const captureStage = i => new Promise(res => { captureReq = { i, res }; });
+function loadImg(src) { return new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = src; }); }
+function doCapture(i) {   // called from the render loop: furniture layer from the photo's camera, read back, then restore
+  const p = PH.photos[i], aspect = p.aspect || 1.5, cw = renderer.domElement.width, ch = renderer.domElement.height, pr = renderer.getPixelRatio();
+  let W = Math.min(1024, cw), H = Math.round(W / aspect); if (H > ch) { H = ch; W = Math.round(H * aspect); }
+  const keep = new Set([apt.group, sun, sun.target, hemi, ...Object.values(furn).map(f => f.group)]), vis = new Map(), ceil = apt.ceilingMeshes.map(m => m.visible);
+  const save = { pos: camera.position.clone(), quat: camera.quaternion.clone(), fov: camera.fov, aspect: camera.aspect, exp: renderer.toneMappingExposure, sunPos: sun.position.clone(),
+    sunCol: sun.color.clone(), sunI: sun.intensity, sunV: sun.visible, hemiI: hemi.intensity, env: scene.environmentIntensity, fog: scene.fog ? scene.fog.density : 0, clip: clip.constant };
+  const wasStaged = staged;
+  for (const o of scene.children) { vis.set(o, o.visible); o.visible = keep.has(o); }
+  apt.ceilingMeshes.forEach(m => m.visible = true); clip.constant = 1e6; apt.section(null); if (scene.fog) scene.fog.density = 0;
+  if (!wasStaged) stageMats(true); stageLight();
+  const f = photoCam(i, camera); camera.clearViewOffset(); camera.aspect = aspect; camera.fov = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(f) / 2) / aspect)); camera.updateProjectionMatrix();
+  renderer.setRenderTarget(null); renderer.setScissorTest(true); renderer.setViewport(0, 0, W / pr, H / pr); renderer.setScissor(0, 0, W / pr, H / pr);
+  renderer.setClearColor(0x000000, 0); renderer.clear(); renderer.render(scene, camera);
+  const gl = renderer.getContext(), buf = new Uint8Array(W * H * 4); gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+  renderer.setScissorTest(false); renderer.setViewport(0, 0, innerWidth, innerHeight);
+  if (!wasStaged) stageMats(false);
+  for (const [o, v] of vis) o.visible = v; apt.ceilingMeshes.forEach((m, k) => m.visible = ceil[k]);
+  clip.constant = save.clip; apt.section(mode === 'doll' ? CUT : null); if (scene.fog) scene.fog.density = save.fog;
+  renderer.toneMappingExposure = save.exp; sun.position.copy(save.sunPos); sun.color.copy(save.sunCol); sun.intensity = save.sunI; sun.visible = save.sunV; hemi.intensity = save.hemiI; scene.environmentIntensity = save.env;
+  camera.position.copy(save.pos); camera.quaternion.copy(save.quat); camera.fov = save.fov; camera.aspect = save.aspect; if (mode === 'photo') camera.updateProjectionMatrix(); else frameView();
+  return (async () => {   // photo crop + furniture layer (premultiplied, bottom-up) -> photo, composite and mask
+    const img = await loadImg(p.src), c = p.crop || [0, 0, 1, 1], mk = n => Object.assign(document.createElement('canvas'), { width: W, height: H });
+    const ph = mk(); ph.getContext('2d').drawImage(img, c[0] * img.naturalWidth, c[1] * img.naturalHeight, (c[2] - c[0]) * img.naturalWidth, (c[3] - c[1]) * img.naturalHeight, 0, 0, W, H);
+    const layer = new ImageData(W, H), mask = new ImageData(W, H);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const s = ((H - 1 - y) * W + x) * 4, d = (y * W + x) * 4, a = buf[s + 3];
+      if (a) { const k = 255 / a; layer.data[d] = Math.min(255, buf[s] * k); layer.data[d + 1] = Math.min(255, buf[s + 1] * k); layer.data[d + 2] = Math.min(255, buf[s + 2] * k); layer.data[d + 3] = a; }
+      const m = a > 8 ? 255 : 0; mask.data[d] = mask.data[d + 1] = mask.data[d + 2] = m; mask.data[d + 3] = 255;
+    }
+    const lc = mk(); lc.getContext('2d').putImageData(layer, 0, 0); const comp = mk(), cx = comp.getContext('2d'); cx.drawImage(ph, 0, 0); cx.drawImage(lc, 0, 0);
+    const mc = mk(); mc.getContext('2d').putImageData(mask, 0, 0);
+    return { photo: ph.toDataURL('image/jpeg', 0.95), composite: comp.toDataURL('image/jpeg', 0.95), mask: mc.toDataURL('image/png') };
+  })();
+}
+async function requestStage(i, force = false) {
+  if (!PH || !hasFurniture()) { showStaged(); return; }
+  const key = stageKey(i), st = stageState[key];
+  if (!force && st && !['error', 'offline'].includes(st)) { if (st !== 'done') poll(key); showStaged(); return; }
+  try { const s = await (await fetch(`${STAGE}/status/${key}`, { cache: 'no-store' })).json();
+    if (!force && s.status === 'done') { stageState[key] = 'done'; showStaged(); return; }
+    if (s.status === 'queued' || s.status === 'running') { stageState[key] = s.status; poll(key); showStaged(); return; } }
+  catch (e) { stageState[key] = 'offline'; showStaged(); return; }
+  stageState[key] = 'capturing'; showStaged();
+  let pay; try { pay = await captureStage(i); } catch (e) { stageState[key] = 'error'; showStaged(); return; }
+  try { const r = await (await fetch(`${STAGE}/stage`, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ key, ...pay, prompt: stagePrompt(i) }) })).json();
+    stageState[key] = r.status === 'done' ? 'done' : 'queued'; } catch (e) { stageState[key] = 'offline'; }
+  showStaged(); if (stageState[key] !== 'done' && stageState[key] !== 'offline') poll(key);
+}
+function poll(key) {
+  if (polling.has(key)) return; polling.add(key);
+  const t = setInterval(async () => {
+    let s; try { s = await (await fetch(`${STAGE}/status/${key}`, { cache: 'no-store' })).json(); } catch (e) { return; }
+    if (s.status === 'queued' || s.status === 'running') { if (stageState[key] !== s.status) { stageState[key] = s.status; showStaged(); } return; }
+    clearInterval(t); polling.delete(key); stageState[key] = s.status === 'done' ? 'done' : 'error'; showStaged();
+    if (s.status === 'done' && background.has(key) && mode !== 'photo') toast('Furnished photo ready in Photos');
+  }, 1500);
+}
+function showStaged() {
+  if (!PH || mode !== 'photo') return;
+  const key = stageKey(phIdx), st = stageState[key], chip = $('pStatus');
+  if (st === 'done') {
+    const url = `${STAGE}/staged/${key}.jpg`;
+    if ($('pStaged').dataset.key !== key) { $('pStaged').dataset.key = key; $('pStaged').onload = () => { if ($('pStaged').dataset.key === stageKey(phIdx)) $('pStagedBox').hidden = false; }; $('pStaged').src = url; }
+    else $('pStagedBox').hidden = false;
+    chip.hidden = true; return;
+  }
+  $('pStagedBox').hidden = true;
+  const msg = !hasFurniture() ? 'Furnish the room to see it here' : st === 'offline' ? 'Live preview' : st === 'error' ? 'Render failed, live preview'
+    : st === 'running' ? 'Rendering the furnished photo' : 'Preparing the furnished photo';
+  const busy = ['capturing', 'queued', 'running', undefined].includes(st) && hasFurniture();
+  chip.innerHTML = (busy ? '<span class="spin"></span>' : '') + esc(msg); chip.hidden = false;
+}
+function stageSoon(delay = 2500) {   // background: the best photo of each furnished room, the active room first
+  clearTimeout(stageSoon.t); stageSoon.t = setTimeout(() => {
+    if (!PH || running || homeRun || !hasFurniture()) return;
+    const byRoom = {}; PH.photos.forEach((p, i) => (byRoom[p.room] ||= []).push(i));
+    const picks = Object.entries(byRoom).filter(([rid]) => furn[rid] && furn[rid].items.length).map(([, idx]) =>
+      idx.sort((a, b) => (PH.photos[b].source === 'metrology') - (PH.photos[a].source === 'metrology') || (PH.photos[b].confidence || 0) - (PH.photos[a].confidence || 0))[0]);
+    picks.sort((a, b) => (PH.photos[b].room === activeRoom) - (PH.photos[a].room === activeRoom));
+    for (const i of picks) { background.add(stageKey(i)); requestStage(i); }
+  }, delay);
 }
 function renderPhotoFrame() {   // the 3D view only inside the right-hand frame, with the photo's lens
   const r = phRect, H = innerHeight; if (!r) return;
@@ -272,6 +360,7 @@ renderer.setAnimationLoop(() => {
   if (mode === 'doll') orbit.update();
   else if ((roomTick += dt) > 0.5) { roomTick = 0; const r = currentRoom(); if (r && r !== activeRoom) activateRoom(r); }
   if (mode === 'walk' || mode === 'photo') outside?.update();
+  if (captureReq) { const c = captureReq; captureReq = null; try { c.res(doCapture(c.i)); } catch (e) { console.warn('[stage] capture', e); c.res(Promise.reject(e)); } }
   if (mode === 'photo') renderPhotoFrame(); else renderer.render(scene, camera);
   drawPlanMarker();
 });

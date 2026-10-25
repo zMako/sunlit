@@ -91,9 +91,13 @@ body{background:radial-gradient(120% 90% at 30% 20%,#ffffff 0%,#f4f4f2 60%,#eceb
 .pcount{font-size:13px;color:var(--graphite);min-width:46px;text-align:center;font-variant-numeric:tabular-nums}
 .pphoto{position:absolute;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);background:var(--mist)}
 .pphoto img{position:absolute;display:block;max-width:none}   /* positioned so the photo's own box (listing images are padded) fills the frame */
-.p3d{position:absolute;border-radius:16px;box-shadow:inset 0 0 0 1px rgba(29,29,31,.08);cursor:grab}
+.p3d{position:absolute;border-radius:16px;box-shadow:inset 0 0 0 1px rgba(29,29,31,.08);cursor:ew-resize;touch-action:none}
 .p3d:active{cursor:grabbing}
-.photos.swipe .pphoto{box-shadow:none;pointer-events:none}
+.photos .pphoto{box-shadow:none;pointer-events:none}
+#pStaged{position:absolute;inset:0;width:100%;height:100%;display:block}
+.pstatus{position:absolute;transform:translateX(-100%);display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.9);box-shadow:var(--shadow);font-size:12.5px;color:var(--ink);white-space:nowrap;pointer-events:none}
+.pstatus .spin{width:10px;height:10px;border:2px solid var(--graphite);border-right-color:transparent;border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
 .phandle{position:absolute;width:44px;margin-left:-22px;cursor:ew-resize;display:flex;justify-content:center}
 .phandle i{width:2px;height:100%;background:#fff;box-shadow:0 0 0 1px rgba(29,29,31,.18),0 0 12px rgba(0,0,0,.18)}
 .phandle::after{content:"";position:absolute;top:50%;width:34px;height:34px;margin-top:-17px;border-radius:50%;background:#fff;box-shadow:var(--shadow)}
@@ -161,15 +165,16 @@ body.walking .glass{backdrop-filter:none !important;-webkit-backdrop-filter:none
 
 <section class="photos" id="photos" hidden aria-label="Listing photos next to the 3D apartment">
   <div class="ptool glass">
-    <div class="seg" role="group" aria-label="Comparison"><button data-pm="side" aria-pressed="true">Side by side</button><button data-pm="swipe" aria-pressed="false">Swipe</button></div>
-    <button class="pill ghost" id="pFurn" aria-pressed="true">Furniture</button><button class="pill ghost" id="pStage" aria-pressed="false" title="Our furniture drawn into the real photo">On the photo</button>
-    <span class="sep"></span>
     <button class="icon-btn" id="pPrev" aria-label="Previous photo">&#8249;</button><span class="pcount" id="pCount"></span><button class="icon-btn" id="pNext" aria-label="Next photo">&#8250;</button>
+    <span class="sep"></span>
+    <button class="pill ghost" id="pRender" title="Render this photo again with the furniture as it is now">Render photo</button>
   </div>
+  <div class="pphoto" id="pStagedBox" hidden><img id="pStaged" alt="The listing photo, furnished"></div>
   <div class="pphoto" id="pBox"><img id="pPhoto" alt="Listing photo"></div>
-  <div class="p3d" id="p3d" title="Drag to fine-tune the camera, scroll to change the lens, double-click to reset"></div>
-  <div class="phandle" id="pHandle" hidden><i></i></div>
-  <div class="pcap" id="pCapL">Listing photo</div><div class="pcap" id="pCapR">Rebuilt in 3D, same camera</div>
+  <div class="p3d" id="p3d" title="Drag to compare"></div>
+  <div class="phandle" id="pHandle"><i></i></div>
+  <div class="pstatus" id="pStatus" hidden></div>
+  <div class="pcap" id="pCapL">Listing photo</div><div class="pcap" id="pCapR">Furnished, furniture added digitally</div>
   <div class="pnote" id="pNote"></div>
   <div class="pstrip" id="pStrip"></div>
 </section>
