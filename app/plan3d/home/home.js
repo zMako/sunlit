@@ -154,8 +154,11 @@ function closeMenus() { $('roomsMenu').hidden = true; $('roomsBtn').setAttribute
 function placeAbove(menu, btn) { const r = btn.getBoundingClientRect(); menu.hidden = false; menu.style.left = Math.max(12, r.left + r.width / 2 - menu.offsetWidth / 2) + 'px'; menu.style.top = (r.top - menu.offsetHeight - 12) + 'px'; }
 function refreshRoomUi() {
   $('roomsMenu').innerHTML = ROOMS.map(r => `<button role="menuitem" data-r="${r.id}" aria-current="${r.id === activeRoom}">${esc(r.name)}<span>${(r.area_m2 || 0).toFixed(1)} m²</span></button>`).join('');
-  $('goRoom').textContent = activeRoom ? `Furnish ${roomName(activeRoom).toLowerCase()}` : 'Furnish this room';
-  $('goRoom').disabled = !furn[activeRoom];
+  const rn = activeRoom ? roomName(activeRoom) : 'This room';
+  $('scopeRoom').textContent = rn; $('budgetL').textContent = scope === 'home' ? 'Budget, whole home' : `Budget, ${rn.toLowerCase()}`;
+  $('go').textContent = scope === 'home' ? 'Furnish whole home' : `Furnish ${rn.toLowerCase()}`;
+  $('go').disabled = scope === 'home' ? !homeRooms().length : !furn[activeRoom];
+  renderTotals();
 }
 $('roomsBtn').onclick = e => { e.stopPropagation(); const open = $('roomsMenu').hidden; closeMenus(); if (open) { refreshRoomUi(); placeAbove($('roomsMenu'), $('roomsBtn')); $('roomsBtn').setAttribute('aria-expanded', 'true'); } };
 $('roomsMenu').onclick = e => { const b = e.target.closest('[data-r]'); if (!b) return; closeMenus(); const id = b.dataset.r; activateRoom(id); if (mode === 'walk') setWalk(id); else flyToRoom(id); };
@@ -204,14 +207,15 @@ renderer.domElement.addEventListener('pointerleave', () => { $('tip').hidden = t
 
 // ---------- the design sheet ----------
 const ag = id => document.getElementById(id);   // agent.js elements (its panel is hidden)
-let budget = Math.max(500, +(Q.get('budget') || 3500)), tier = Q.get('tier') || 'any';
+let budget = Math.max(500, +(Q.get('budget') || 3500)), tier = Q.get('tier') || 'any', scope = Q.get('scope') === 'home' || Q.get('furnish') === 'home' ? 'home' : 'room', homeRun = null;
 const styleQ = Q.get('style'); if (styleQ && ![...$('style').options].some(o => o.value === styleQ.toLowerCase())) $('style').add(new Option(styleQ.replace(/\b\w/g, c => c.toUpperCase()), styleQ.toLowerCase()), 0);
 if (styleQ) $('style').value = styleQ.toLowerCase();
-function syncAgent() { if (ag('aiBudget')) ag('aiBudget').value = budget; if (ag('aiStyle')) ag('aiStyle').value = $('style').value; if (ag('aiTier')) ag('aiTier').value = tier; }
+function syncAgent() { if (ag('aiBudget')) ag('aiBudget').value = Math.max(0, Math.floor(scope === 'home' ? budget - spendOutside(activeRoom) : budget)); if (ag('aiStyle')) ag('aiStyle').value = $('style').value; if (ag('aiTier')) ag('aiTier').value = tier; }
 function drawBudget() { $('budget').textContent = money(budget); renderTotals(); }
 $('bMinus').onclick = () => { budget = Math.max(500, budget - 250); drawBudget(); syncAgent(); };
 $('bPlus').onclick = () => { budget = Math.min(25000, budget + 250); drawBudget(); syncAgent(); };
 $('style').onchange = syncAgent;
+for (const b of $('scope').querySelectorAll('button')) { b.setAttribute('aria-pressed', b.dataset.v === scope); b.onclick = () => { if (homeRun) return; scope = b.dataset.v; for (const x of $('scope').querySelectorAll('button')) x.setAttribute('aria-pressed', x === b); refreshRoomUi(); syncAgent(); }; }
 for (const b of $('tier').querySelectorAll('button')) { b.setAttribute('aria-pressed', b.dataset.v === tier); b.onclick = () => { tier = b.dataset.v; for (const x of $('tier').querySelectorAll('button')) x.setAttribute('aria-pressed', x === b); syncAgent(); }; }
 
 const why = {}, rejected = {}, chat = []; let status = '', running = false;
@@ -223,9 +227,12 @@ function shortName(full) {   // "BESTÅ TV bench with drawers - white stained oa
 function imgSrc(spec) { const s = spec.image; if (!s) return ''; return /^https?:\/\//.test(s) ? `/api/img?u=${encodeURIComponent(s)}` : '/' + s.replace(/^\.?\//, ''); }   // plan paths are relative to app/
 function friendlyProblem(p) { if (/model missing/.test(p)) return null; if (/walking path|blocks/.test(p)) return 'Blocks the walkway'; if (/outside/.test(p)) return 'Sits outside the walls'; if (/overlap/.test(p)) return 'Overlaps another piece'; if (/door/.test(p)) return 'In the way of a door'; if (/window/.test(p)) return 'In front of a window'; return p.charAt(0).toUpperCase() + p.slice(1); }
 function totals() { let sum = 0, n = 0; const rooms = []; for (const [rid, f] of Object.entries(furn)) { const items = f.items.filter(it => it.spec.category !== 'fixture'); if (!items.length) continue; rooms.push(f.room); for (const it of items) { sum += +it.spec.price_usd || 0; n++; } } return { sum, n, rooms }; }
+const roomSpend = rid => (furn[rid]?.items || []).filter(it => it.spec.category !== 'fixture').reduce((s, it) => s + (+it.spec.price_usd || 0), 0);
+const spendOutside = rid => Object.keys(furn).filter(k => k !== rid).reduce((s, k) => s + roomSpend(k), 0);
 function renderTotals() {
-  const t = totals(), pct = budget ? t.sum / budget * 100 : 0;
-  $('spent').textContent = `${money(t.sum)} of ${money(budget)}`; $('spentL').textContent = running && status ? status : (t.n ? `${t.n} piece${t.n > 1 ? 's' : ''}` : 'Nothing yet');
+  const t = totals(), shown = scope === 'home' ? t.sum : roomSpend(activeRoom), pct = budget ? shown / budget * 100 : 0;
+  const n = scope === 'home' ? t.n : (furn[activeRoom]?.items || []).filter(it => it.spec.category !== 'fixture').length;
+  $('spent').textContent = `${money(shown)} of ${money(budget)}`; $('spentL').textContent = (running || homeRun) && status ? status : (n ? `${n} piece${n > 1 ? 's' : ''}${scope === 'home' ? '' : ` in the ${roomName(activeRoom).toLowerCase()}`}` : 'Nothing yet');
   $('meter').querySelector('i').style.width = Math.min(100, pct) + '%'; $('meter').classList.toggle('over', pct > 100);
   const movein = new Date(Date.now() + 21 * 864e5).toISOString().slice(0, 10);
   $('order').classList.toggle('off', !t.rooms.length); $('orderTotal').textContent = t.rooms.length ? money(t.sum) : '';
@@ -264,9 +271,35 @@ $('feed').addEventListener('click', e => {
 });
 
 // run, stop, chat: through agent.js
-$('goRoom').onclick = () => { if (!furn[activeRoom]) return; syncAgent(); rejected[activeRoom] = []; ag('aiGo')?.click(); };
-$('goAll').onclick = () => { syncAgent(); for (const k in rejected) rejected[k] = []; ag('aiAll')?.click(); };
-$('stop').onclick = () => ag('aiStop')?.click();
+// whole home: one budget across the rooms worth furnishing, split by size and kind of room; what a room leaves unspent rolls on
+const SKIP = new Set(['hallway', 'closet', 'bathroom', 'entry', 'laundry', 'balcony', 'patio', 'storage', 'utility']);
+const KIND = { living: 1.35, bedroom: 1.15, dining: 0.95, office: 0.9, kitchen: 0.45 };
+const homeRooms = () => layout.rooms.filter(r => furn[r.id] && !SKIP.has(r.type) && !/closet|hall|entry|laundry|bath|balcony|patio|storage/i.test(r.name));
+const weight = r => Math.max(4, r.area_m2 || 10) * (KIND[r.type] ?? 0.8);
+function runOne(rid, roomBudget) {   // one agent.js run for one room, resolved when its Stop button hides again
+  return new Promise(resolve => {
+    activateRoom(rid); ag('aiBudget').value = Math.max(0, Math.floor(roomBudget)); ag('aiStyle').value = $('style').value; if (ag('aiTier')) ag('aiTier').value = tier;
+    rejected[rid] = []; ag('aiGo').click();
+    let started = false; const t0 = performance.now();
+    const tick = setInterval(() => { const on = ag('aiStop').style.display !== 'none'; if (on) started = true;
+      if ((started && !on) || (!started && performance.now() - t0 > 4000)) { clearInterval(tick); resolve(); } }, 150);
+  });
+}
+async function furnishHome() {
+  const rooms = homeRooms().sort((a, b) => weight(b) - weight(a)); if (!rooms.length) return;
+  homeRun = { cancelled: false }; const run = homeRun; $('go').hidden = true; $('stop').hidden = false;
+  const others = Object.keys(furn).filter(k => !rooms.some(r => r.id === k)).reduce((s, k) => s + roomSpend(k), 0);   // pieces in rooms we leave alone still count
+  let left = budget - others;
+  for (let i = 0; i < rooms.length && !run.cancelled && left > 50; i++) {
+    const rest = rooms.slice(i), share = left * weight(rooms[i]) / rest.reduce((s, r) => s + weight(r), 0);
+    status = `${roomName(rooms[i].id)}: ${money(share)} of ${money(left)} left`; changed();
+    await runOne(rooms[i].id, share);
+    left -= roomSpend(rooms[i].id);
+  }
+  homeRun = null; status = ''; $('go').hidden = false; $('stop').hidden = true; refreshRoomUi(); changed();
+}
+$('go').onclick = () => { if (scope === 'home') return furnishHome(); if (!furn[activeRoom]) return; syncAgent(); rejected[activeRoom] = []; ag('aiGo')?.click(); };
+$('stop').onclick = () => { if (homeRun) homeRun.cancelled = true; ag('aiStop')?.click(); };
 function ask(text) { if (!text || !ag('aiSend')) return; syncAgent(); chat.push({ who: 'you', text }); renderItems(); ag('aiChat').value = text; ag('aiSend').click(); }
 $('ask').onsubmit = e => { e.preventDefault(); const t = $('msg').value.trim(); $('msg').value = ''; ask(t); };
 
@@ -287,7 +320,7 @@ function toast(msg) { const el = $('toast'); el.textContent = msg; el.classList.
   while (!ag('aiLog') || !ag('aiStop')) await new Promise(r => setTimeout(r, 100));
   syncAgent();
   new MutationObserver(ms => { for (const m of ms) for (const n of m.addedNodes) if (n.nodeType === 1) readAgentLine(n); }).observe(ag('aiLog'), { childList: true });
-  const watchRun = () => { const on = ag('aiStop').style.display !== 'none'; if (on === running) return; running = on; $('stop').hidden = !on; $('goRoom').hidden = on; $('goAll').hidden = on; if (!on) status = ''; changed(); };
+  const watchRun = () => { const on = ag('aiStop').style.display !== 'none'; if (on === running) return; running = on; if (!homeRun) { $('stop').hidden = !on; $('go').hidden = on; if (!on) status = ''; } changed(); };
   new MutationObserver(watchRun).observe(ag('aiStop'), { attributes: true, attributeFilter: ['style'] }); watchRun();
 })();
 
@@ -297,3 +330,5 @@ await Promise.all(roomJobs);
 const startRoom = Q.get('room') || Q.get('agent') || (layout.rooms.find(r => r.type === 'living') || ROOMS[0]).id;
 activateRoom(startRoom);
 if (Q.get('view') === 'walk') setWalk(startRoom);
+if (Q.get('furnish') === 'home') { while (!ag('aiGo')) await new Promise(r => setTimeout(r, 100)); furnishHome(); }   // landing: "Furnish this home"
+

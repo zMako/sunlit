@@ -91,7 +91,9 @@ def place(R, items):
         return True
     def walkable(extra=None):
         # 10 cm grid BFS from each door; every item's front cell must be reachable
-        fps = [o["fp"] for o in occupied if o["cat"] != "rug"] + ([extra] if extra is not None else [])
+        SMALL = {"rug", "fixture_small", "nightstand", "side_table", "floor_lamp", "table_lamp", "mirror", "plant_pot", "plant", "stool", "ottoman", "pendant_lamp"}   # you step around these: they neither block a corridor nor need one
+        big = lambda o: o["cat"] not in SMALL and o["fp"].area >= 0.3
+        fps = [o["fp"] for o in occupied if big(o)] + ([extra] if extra is not None else [])
         minx, minz, maxx, maxz = room.poly.bounds; g = 0.1; nx, nz = int((maxx - minx) / g) + 1, int((maxz - minz) / g) + 1
         free = np.zeros((nx, nz), bool)
         from shapely.prepared import prep
@@ -114,7 +116,7 @@ def place(R, items):
         # every item must be approachable: a reachable free cell within 0.9 m of its front point OR within 0.7 m of its footprint
         # (a coffee table in front of a sofa is fine: you approach the sofa from the side)
         for o in occupied:
-            if o["cat"] in ("rug", "fixture") or o["front"] is None: continue
+            if o["cat"] in ("rug", "fixture") or o["front"] is None or not big(o): continue
             f = o["front"]; i, j = int((f[0] - minx) / g), int((f[1] - minz) / g); R_ = 9
             ok = any(0 <= i + di < nx and 0 <= j + dj < nz and seen[i + di, j + dj] for di in range(-R_, R_ + 1) for dj in range(-R_, R_ + 1))
             if not ok:

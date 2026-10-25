@@ -1,30 +1,22 @@
 {
  "usd": {
   "google": 0.403,
-  "anthropic": 9.141834
+  "anthropic": 9.143474
  },
  "counts": {
-  "anthropic_calls": 773,
+  "anthropic_calls": 774,
   "google_geocode": 77,
   "google_root_tile": 3,
   "google_tile": 65,
   "poly_pizza": 7
  },
  "tokens": {
-  "in": 3743873,
-  "out": 1486871,
+  "in": 3751938,
+  "out": 1488539,
   "cache_read": 0,
   "cache_write": 65756
  },
  "events": [
-  {
-   "t": "2026-10-24T10:01:26",
-   "bucket": "anthropic",
-   "usd": 0.001164,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_05.jpg"
-  },
   {
    "t": "2026-10-24T10:01:39",
    "bucket": "anthropic",
@@ -4013,6 +4005,14 @@
    "t": "2026-10-24T22:07:00",
    "bucket": "anthropic",
    "usd": 0.001685,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 agent shortlist bedroom"
+  },
+  {
+   "t": "2026-10-24T22:08:04",
+   "bucket": "anthropic",
+   "usd": 0.001641,
    "key": "anthropic_calls",
    "n": 1,
    "note": "claude-haiku-5-5 agent shortlist bedroom"

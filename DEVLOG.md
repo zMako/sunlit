@@ -374,3 +374,17 @@ be made live on each click, so saved per-room plans of rebuilt units (their room
   5,151 products, all with models. Tiers in planner/agent/UI: Budget (IKEA), Standard (+Amazon), Design (manufacturers,
   size-verified and priced first). First Design-tier run on the 1000 Green living room: HAY sofa, Alle coffee table,
   Dedal shelf, Artek floor light, Pocket armchair, Lolly side table, $14,329 of a $15,000 budget.
+
+## Oct 24, late night: doors
+
+Doors were drawn and read short (34% under 0.70 m, 21% under 0.60 m; not walkable) and their swings were near random
+(four options evenly split). `doors.py` on every layout: widths by what the door opens into (entry 0.91, rooms 0.81, bath
+0.76, closet 0.71; >= 1.0 m into a closet -> two-leaf bifold; >= 1.3 m in an exterior wall -> two-leaf glass; > 1.3 m
+between ordinary rooms -> cased opening), widened around the drawn centre inside the wall and clear of neighbours;
+duplicate doorways (same gap found 2-3 times on short parallel wall pieces) reduced to one (665). Swing: the four quarter
+arcs of the drawn leaf tested against the plan ink (32% clear), else the rule (into the room it serves, hinge at the end
+nearer the wall's end). Doors under 0.70 m: 2986 -> 171 (the rest sit in walls too short to widen). `door_styles.py`:
+OWLv2 finds the doors in the listing photos, CLIP classifies the crops (21 listings have photos: 16 slab, 3 shaker,
+1 panel, 1 wood; the rest default to shaker). `build.js` draws slab / shaker / six-panel / wood / glass / bifold leaves,
+hinge knuckles, lever or knob; `walk.js` animates two-leaf doors. Tested: a door drawn 0.54 m (now 0.91 m) opens with E and
+is walked through.

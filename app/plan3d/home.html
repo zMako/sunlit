@@ -116,6 +116,8 @@ body{background:radial-gradient(120% 90% at 30% 20%,#ffffff 0%,#f4f4f2 60%,#eceb
 <aside class="sheet glass" aria-label="Design with AI">
   <header><h2>Design</h2><div class="muted" id="sub">An agent picks real pieces that fit, within your budget.</div></header>
   <div class="controls">
+    <div class="field wide"><span class="label">Furnish</span>
+      <div class="seg block" id="scope" role="group" aria-label="What to furnish"><button data-v="room" aria-pressed="true" id="scopeRoom">This room</button><button data-v="home" aria-pressed="false">Whole home</button></div></div>
     <div class="field"><span class="label" id="budgetL">Budget</span>
       <div class="stepper" role="group" aria-labelledby="budgetL"><button id="bMinus" aria-label="Less">&minus;</button><output id="budget">$3,500</output><button id="bPlus" aria-label="More">+</button></div></div>
     <div class="field"><label for="style">Style</label>
@@ -123,7 +125,7 @@ body{background:radial-gradient(120% 90% at 30% 20%,#ffffff 0%,#f4f4f2 60%,#eceb
     <div class="field wide"><span class="label">Price range</span>
       <div class="seg block" id="tier" role="group" aria-label="Price range"><button data-v="any" aria-pressed="true">Any</button><button data-v="budget" aria-pressed="false">Budget</button><button data-v="standard" aria-pressed="false">Standard</button><button data-v="design" aria-pressed="false">Design</button></div></div>
   </div>
-  <div class="go"><button class="pill lg" id="goRoom">Furnish this room</button><button class="pill lg ghost" id="goAll">Whole home</button><button class="pill lg ghost" id="stop" hidden>Stop</button></div>
+  <div class="go"><button class="pill lg" id="go">Furnish this room</button><button class="pill lg ghost" id="stop" hidden>Stop</button></div>
   <div class="status"><div class="row"><span class="muted" id="spentL">Spent</span><b id="spent">$0</b></div><div class="meter" id="meter"><i></i></div></div>
   <div class="feed" id="feed" aria-live="polite"></div>
   <form class="ask" id="ask"><input class="input" id="msg" placeholder="Ask for changes" autocomplete="off" aria-label="Ask the designer for changes"><button class="icon-btn dark" aria-label="Send"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></form>

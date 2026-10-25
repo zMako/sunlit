@@ -48,8 +48,8 @@ for (const o of layout.openings) {
   const hinge = fr.a.clone().add(fr.d.clone().multiplyScalar(hingeS)); const centre = fr.a.clone().add(fr.d.clone().multiplyScalar((o.s0 + o.s1) / 2));
   let pivot = null; apt.group.traverse(obj => { if (obj.userData && obj.userData.kind === 'door' && obj.userData.opening === o.id) pivot = obj; });
   const closedAngle = -Math.atan2(fr.d.y, fr.d.x);   // fr.angle in build.js
-  const d = { id: o.id, o, fr, side, dir, hinge, centre, lw, pivot, pair, closedAngle, openDelta: -dir * side * Math.PI / 2, open: false, t: 0, anim: null, closet: o.type === 'closet_door' };
   const pair = pivot && pivot.userData.pair ? pivot.userData.pair : null;   // two leaves (doors.py): hinged at both jambs
+  const d = { id: o.id, o, fr, side, dir, hinge, centre, lw, pivot, pair, closedAngle, openDelta: -dir * side * Math.PI / 2, open: false, t: 0, anim: null, closet: o.type === 'closet_door' };
   if (pair) for (const pv of pair) pv.rotation.y = closedAngle; else if (pivot) pivot.rotation.y = closedAngle;   // start closed (the builder leaves it 9 deg ajar)
   doors.set(o.id, d);
 }
