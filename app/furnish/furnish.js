@@ -61,7 +61,7 @@ export class Furnish {
     const recorded = spec.model_glb ? (/^(https?:)?\//.test(spec.model_glb) ? spec.model_glb : '/' + spec.model_glb.replace(/^\.?\//, '')) : null;
     const byId = spec.id ? `/furnish/models/${String(spec.id).split('#')[0]}.glb` : null;   // the catalogue caches IKEA models locally by product id
     const remote = spec.model_glb_url ? `/api/model?u=${encodeURIComponent(spec.model_glb_url)}` : null;
-    const candidates = this.useIkeaModels ? [byId, recorded, remote].filter((v, i, a) => v && a.indexOf(v) === i) : [];
+    const candidates = this.useIkeaModels ? [recorded, byId, remote].filter((v, i, a) => v && a.indexOf(v) === i) : [];
     for (const glbSrc of candidates) {
       try {
         const gl = await this.loader.loadAsync(glbSrc); const m = gl.scene; m.traverse(o => { if (o.isMesh) { o.castShadow = true; o.userData.item = it; } });
@@ -177,13 +177,15 @@ export class Furnish {
     });
     this._paths();
   }
-  _paths() {   // 10 cm grid, occupied by non-rug items, BFS from each door; items whose front cell is unreachable block the walking path
+  static SMALL = new Set(['rug', 'fixture_small', 'nightstand', 'side_table', 'floor_lamp', 'table_lamp', 'mirror', 'plant_pot', 'plant', 'stool', 'ottoman', 'pendant_lamp']);
+  static bigItem(it) { const s = it.spec; return !Furnish.SMALL.has(s.category) && (+s.w_m || 0) * (+s.d_m || 0) >= 0.3; }   // same rule as place.py: small pieces neither block nor need the corridor
+  _paths() {   // 10 cm grid, occupied by big items, BFS from each door; big items whose front cell is unreachable block the walking path
     if (!this.doors.length || !this.items.length) return;
     const bb = this._bbox; const nx = Math.ceil((bb.max.x - bb.min.x) / GRID) + 1, nz = Math.ceil((bb.max.y - bb.min.y) / GRID) + 1;
     const occ = new Uint8Array(nx * nz); const idx = (x, z) => Math.floor((z - bb.min.y) / GRID) * nx + Math.floor((x - bb.min.x) / GRID);
     const fps = this.items.map(it => this.corners(it));
     for (let gz = 0; gz < nz; gz++) for (let gx = 0; gx < nx; gx++) { const p = new THREE.Vector2(bb.min.x + gx * GRID, bb.min.y + gz * GRID); let o = !Furnish.inPoly(p, this.poly);
-      if (!o) for (let i = 0; i < fps.length; i++) { if (this.items[i].spec.category === 'rug') continue; if (Furnish.inPoly(p, fps[i])) { o = 1; break; } }
+      if (!o) for (let i = 0; i < fps.length; i++) { if (!Furnish.bigItem(this.items[i])) continue; if (Furnish.inPoly(p, fps[i])) { o = 1; break; } }
       if (!o) for (const fx of this.fixtures) { if (Furnish.inPoly(p, this.corners(fx))) { o = 1; break; } }
       occ[gz * nx + gx] = o ? 1 : 0; }
     // corridor width: dilate obstacles by (CORRIDOR/2) so a walkable cell has clearance
@@ -195,7 +197,7 @@ export class Furnish {
       for (let dz = -rr; dz <= rr; dz++) for (let dx = -rr; dx <= rr; dx++) { const X = cx + dx, Z = cz + dz; if (X < 0 || Z < 0 || X >= nx || Z >= nz) continue; const kk = Z * nx + X; if (!occ2[kk] && !seen[kk]) { seen[kk] = 1; q.push(kk); } } }
     if (!q.length) return;   // doors fully blocked by walls' dilation: no path information
     while (q.length) { const k = q.shift(); const gx = k % nx, gz = (k - gx) / nx; for (const [dx, dz] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = gx + dx, Z = gz + dz; if (X < 0 || Z < 0 || X >= nx || Z >= nz) continue; const kk = Z * nx + X; if (seen[kk] || occ2[kk]) continue; seen[kk] = 1; q.push(kk); } }
-    for (const it of this.items) { if (it.spec.category === 'rug') continue; const f = this.frontCenter(it);
+    for (const it of this.items) { if (!Furnish.bigItem(it)) continue; const f = this.frontCenter(it);
       // reachable if any free cell within CORRIDOR/2+0.3 of the front centre is reached
       let ok = false; const rr = Math.round(1.2 / GRID); /* a walkable cell within 1.2 m of the item's front counts as reachable: a coffee table 0.5 m in front of a sofa is normal */ const c = idx(f.x, f.y); const cx = c % nx, cz = (c - cx) / nx;
       for (let dz = -rr; dz <= rr && !ok; dz++) for (let dx = -rr; dx <= rr; dx++) { const X = cx + dx, Z = cz + dz; if (X >= 0 && Z >= 0 && X < nx && Z < nz && seen[Z * nx + X]) { ok = true; break; } }
@@ -258,6 +260,7 @@ export class Furnish {
     const f = this._finishFor(spec); let k = 0;
     root.traverse(o => {
       if (!o.isMesh) return; const ms = Array.isArray(o.material) ? o.material : [o.material];
+      if (o.geometry && !o.geometry.attributes.normal) o.geometry.computeVertexNormals();   // some manufacturer exports carry no normals (GLTFLoader hid that with flatShading); a fresh material needs real ones or it lights black
       const nm = ms.map(mm => { const c = mm && mm.color ? mm.color : null; const hsl = c ? c.getHSL({}) : null; const keepOwn = c && hsl && hsl.s > 0.25 && hsl.l > 0.08 && hsl.l < 0.95;   // a real coloured MTL colour is kept; grey defaults are replaced
         const mat = new THREE.MeshStandardMaterial({ color: keepOwn ? c : new THREE.Color(f.color), roughness: f.roughness, metalness: f.metalness, transparent: !!f.transparent, opacity: f.opacity ?? 1 });
         if (!keepOwn) k++; return mat; });
