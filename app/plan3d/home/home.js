@@ -161,10 +161,11 @@ function setStaged(on) {
   if (on) {
     outside?.enable(false); seal?.setWalk(false);
     apt.group.traverse(o => { if (!o.isMesh || o.userData.item) return; stageSaved.set(o, o.material);
+      o.userData.castWas = o.castShadow; if (!/^pfloor_/.test(o.name)) o.castShadow = false;   // invisible walls must not shade the real floor
       o.material = /^pfloor_/.test(o.name) ? CATCH : OCCLUDE; });
     renderer.toneMappingExposure = 0.82; setSun(24, 0xffd9ae, 2.6); hemi.intensity = 0.45; scene.environmentIntensity = 0.5;   // the listing photo's warm, low window light
   } else {
-    for (const [o, m] of stageSaved) o.material = m; stageSaved.clear();
+    for (const [o, m] of stageSaved) { o.material = m; if (o.userData.castWas != null) o.castShadow = o.userData.castWas; } stageSaved.clear();
     if (mode === 'photo') { outside?.enable(true); seal?.setWalk(true); renderer.toneMappingExposure = 1.05; setSun(38, 0xfff0dc, 2.4); }
   }
   $('pCapR').textContent = on ? 'The photo, furnished in 3D (furniture added digitally)' : `${(layout.rooms.find(r => r.id === PH.photos[phIdx].room) || {}).name || 'The room'}, rebuilt in 3D from the same camera`;
