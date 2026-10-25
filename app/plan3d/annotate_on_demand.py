@@ -65,8 +65,10 @@ def run(unit):
     if bak.exists(): bak.unlink()
     subprocess.run([PY, str(HERE / "rescale.py"), unit], capture_output=True, text=True, cwd=str(ROOT))
     subprocess.run([PY, str(HERE / "rooms_export.py"), unit], capture_output=True, text=True, cwd=str(ROOT))
-    L = json.load(open(f)); update_index(L)
-    return {"ok": True, "rooms": [r["name"] for r in L["rooms"]], "fixtures": len(L["fixtures"]), "usd": usd, "area_m2": round(sum(r["area_m2"] for r in L["rooms"]), 1)}
+    L = json.load(open(f)); update_index(L); area = sum(r["area_m2"] for r in L["rooms"])
+    fp = next((p for p in json.load(open(ROOT / "feasibility/listings" / L["listing"] / "meta.json")).get("floorplans", []) if p.get("file", "").endswith(pathlib.Path(L["plan_image"]).name)), {})
+    warn = f"rooms cover only {area:.0f} m2 of a {fp['sqft']} sqft unit: the plan reader missed rooms" if fp.get("sqft") and area < 0.5 * fp["sqft"] * 0.092903 * 0.85 else None
+    return {"ok": True, "warning": warn, "rooms": [r["name"] for r in L["rooms"]], "fixtures": len(L["fixtures"]), "usd": usd, "area_m2": round(sum(r["area_m2"] for r in L["rooms"]), 1)}
 
 if __name__ == "__main__":
     args = [a for a in sys.argv[1:] if not a.startswith("--")]

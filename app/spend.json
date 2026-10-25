@@ -1,46 +1,22 @@
 {
  "usd": {
   "google": 0.403,
-  "anthropic": 8.998626
+  "anthropic": 9.06541
  },
  "counts": {
-  "anthropic_calls": 744,
+  "anthropic_calls": 747,
   "google_geocode": 77,
   "google_root_tile": 3,
   "google_tile": 65,
   "poly_pizza": 7
  },
  "tokens": {
-  "in": 3426932,
-  "out": 1439880,
+  "in": 3439709,
+  "out": 1444003,
   "cache_read": 0,
   "cache_write": 65756
  },
  "events": [
-  {
-   "t": "2026-10-24T09:54:46",
-   "bucket": "anthropic",
-   "usd": 0.001761,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_01.jpg"
-  },
-  {
-   "t": "2026-10-24T09:55:04",
-   "bucket": "anthropic",
-   "usd": 0.002204,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_02.jpg"
-  },
-  {
-   "t": "2026-10-24T09:55:22",
-   "bucket": "anthropic",
-   "usd": 0.002376,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_00.jpg"
-  },
   {
    "t": "2026-10-24T09:55:40",
    "bucket": "anthropic",
@@ -4016,6 +3992,30 @@
    "key": "anthropic_calls",
    "n": 1,
    "note": "claude-haiku-5-5 furnish living"
+  },
+  {
+   "t": "2026-10-24T17:09:00",
+   "bucket": "anthropic",
+   "usd": 0.019272,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_00.png"
+  },
+  {
+   "t": "2026-10-24T17:09:11",
+   "bucket": "anthropic",
+   "usd": 0.0284,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 plan v2 plan_00.png"
+  },
+  {
+   "t": "2026-10-24T17:09:18",
+   "bucket": "anthropic",
+   "usd": 0.019112,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_00.png"
   }
  ]
 }

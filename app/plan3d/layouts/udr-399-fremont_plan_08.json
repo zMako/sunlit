@@ -1,0 +1,218 @@
+{
+ "unit": "udr-399-fremont_plan_08",
+ "listing": "udr-399-fremont",
+ "plan_image": "/Users/maciejkopiec/sunlit/feasibility/listings/udr-399-fremont/plans/plan_08.png",
+ "scale": {
+  "m_per_px": 0.03951,
+  "from": [
+   "area:listing sqft 450",
+   "door_width"
+  ],
+  "sqft_listed": null,
+  "agreement": null,
+  "door_ref_px": 78.0,
+  "origin_px": [
+   317.0,
+   31.0
+  ],
+  "image_scale": 1.0,
+  "rescale_k": 3.582
+ },
+ "ceiling_m": 2.6,
+ "walls": [
+  {
+   "id": "w0",
+   "a": [
+    3.75,
+    0.355
+   ],
+   "b": [
+    14.653,
+    0.355
+   ],
+   "thickness_m": 0.709,
+   "exterior": true
+  },
+  {
+   "id": "w1",
+   "a": [
+    1.619,
+    0.652
+   ],
+   "b": [
+    3.75,
+    0.652
+   ],
+   "thickness_m": 0.355,
+   "exterior": false
+  },
+  {
+   "id": "w2",
+   "a": [
+    0.0,
+    6.418
+   ],
+   "b": [
+    6.87,
+    6.418
+   ],
+   "thickness_m": 0.19,
+   "exterior": false
+  },
+  {
+   "id": "w3",
+   "a": [
+    7.009,
+    6.121
+   ],
+   "b": [
+    7.009,
+    11.53
+   ],
+   "thickness_m": 0.276,
+   "exterior": true
+  },
+  {
+   "id": "w4",
+   "a": [
+    7.031,
+    0.949
+   ],
+   "b": [
+    7.031,
+    6.121
+   ],
+   "thickness_m": 0.315,
+   "exterior": false
+  }
+ ],
+ "openings": [
+  {
+   "id": "o0",
+   "wall": "w0",
+   "type": "door",
+   "s0": 0.0,
+   "s1": 2.844,
+   "width_m": 2.844,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "swing": "in_right"
+  },
+  {
+   "id": "o1",
+   "wall": "w2",
+   "type": "door",
+   "s0": 3.238,
+   "s1": 6.87,
+   "width_m": 3.632,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "swing": "out_left"
+  },
+  {
+   "id": "o2",
+   "wall": "w3",
+   "type": "door",
+   "s0": 0.0,
+   "s1": 3.08,
+   "width_m": 3.08,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "swing": "out_right"
+  }
+ ],
+ "rooms": [
+  {
+   "id": "r0",
+   "name": "Room 1",
+   "type": "other",
+   "polygon": [
+    [
+     6.791,
+     0.749
+    ],
+    [
+     6.791,
+     6.318
+    ],
+    [
+     2.052,
+     6.318
+    ],
+    [
+     2.052,
+     0.749
+    ]
+   ],
+   "area_m2": 26.17,
+   "walls": [],
+   "centre_px": [
+    429.0,
+    120.5
+   ]
+  },
+  {
+   "id": "r1",
+   "name": "Room 2",
+   "type": "other",
+   "polygon": [
+    [
+     3.395,
+     6.594
+    ],
+    [
+     6.83,
+     6.594
+    ],
+    [
+     6.83,
+     9.28
+    ],
+    [
+     3.395,
+     9.28
+    ]
+   ],
+   "area_m2": 9.36,
+   "walls": [],
+   "centre_px": [
+    446.5,
+    232.0
+   ]
+  }
+ ],
+ "fixtures": [
+  {
+   "id": "f0",
+   "type": "block",
+   "rect": {
+    "x": 1.006,
+    "z": 3.259,
+    "w": 2.092,
+    "d": 6.515,
+    "rot_deg": 0
+   },
+   "room": null,
+   "against_wall": null,
+   "height_m": 1.0
+  },
+  {
+   "id": "f1",
+   "type": "block",
+   "rect": {
+    "x": 1.956,
+    "z": 27.543,
+    "w": 2.883,
+    "d": 4.226,
+    "rot_deg": 0
+   },
+   "room": null,
+   "against_wall": null,
+   "height_m": 1.0
+  }
+ ],
+ "materials": {},
+ "review": {
+  "rounds": 0
+ }
+}

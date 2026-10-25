@@ -1,0 +1,310 @@
+{
+ "unit": "gs-14014_plan_08",
+ "listing": "gs-14014",
+ "plan_image": "/Users/maciejkopiec/sunlit/feasibility/listings/gs-14014/plans/plan_08.jpg",
+ "scale": {
+  "m_per_px": 0.03661,
+  "from": [
+   "area:prior 1 bedroom(s)",
+   "door_width"
+  ],
+  "sqft_listed": null,
+  "agreement": null,
+  "door_ref_px": 121.75,
+  "origin_px": [
+   79.0,
+   398.0
+  ],
+  "image_scale": 1.0,
+  "rescale_k": 5.185
+ },
+ "ceiling_m": 2.6,
+ "walls": [
+  {
+   "id": "w0",
+   "a": [
+    0.752,
+    0.607
+   ],
+   "b": [
+    6.409,
+    0.607
+   ],
+   "thickness_m": 0.218,
+   "exterior": true
+  },
+  {
+   "id": "w1",
+   "a": [
+    0.441,
+    4.029
+   ],
+   "b": [
+    7.84,
+    4.029
+   ],
+   "thickness_m": 0.218,
+   "exterior": false
+  },
+  {
+   "id": "w2",
+   "a": [
+    10.951,
+    6.684
+   ],
+   "b": [
+    17.62,
+    6.684
+   ],
+   "thickness_m": 0.218,
+   "exterior": true
+  },
+  {
+   "id": "w3",
+   "a": [
+    0.0,
+    11.32
+   ],
+   "b": [
+    27.14,
+    11.32
+   ],
+   "thickness_m": 0.218,
+   "exterior": true
+  },
+  {
+   "id": "w4",
+   "a": [
+    0.643,
+    0.0
+   ],
+   "b": [
+    0.643,
+    11.206
+   ],
+   "thickness_m": 0.218,
+   "exterior": true
+  },
+  {
+   "id": "w5",
+   "a": [
+    3.718,
+    0.441
+   ],
+   "b": [
+    3.718,
+    10.77
+   ],
+   "thickness_m": 0.218,
+   "exterior": false
+  },
+  {
+   "id": "w6",
+   "a": [
+    11.107,
+    4.433
+   ],
+   "b": [
+    11.107,
+    11.206
+   ],
+   "thickness_m": 0.218,
+   "exterior": true
+  },
+  {
+   "id": "w7",
+   "a": [
+    13.404,
+    6.554
+   ],
+   "b": [
+    13.404,
+    11.465
+   ],
+   "thickness_m": 0.254,
+   "exterior": false
+  },
+  {
+   "id": "w8",
+   "a": [
+    17.143,
+    6.793
+   ],
+   "b": [
+    17.143,
+    11.755
+   ],
+   "thickness_m": 0.218,
+   "exterior": false
+  }
+ ],
+ "openings": [
+  {
+   "id": "o0",
+   "wall": "w0",
+   "type": "door",
+   "s0": 0.0,
+   "s1": 2.95,
+   "width_m": 2.95,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "swing": "in_left"
+  },
+  {
+   "id": "o1",
+   "wall": "w4",
+   "type": "door",
+   "s0": 4.579,
+   "s1": 11.206,
+   "width_m": 6.632,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "swing": "out_left"
+  },
+  {
+   "id": "o2",
+   "wall": "w6",
+   "type": "door",
+   "s0": 2.199,
+   "s1": 6.777,
+   "width_m": 4.579,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "swing": "out_left"
+  },
+  {
+   "id": "o3",
+   "wall": "w8",
+   "type": "door",
+   "s0": 0.0,
+   "s1": 4.34,
+   "width_m": 4.34,
+   "sill_m": 0.0,
+   "height_m": 2.03,
+   "swing": "in_right"
+  }
+ ],
+ "rooms": [
+  {
+   "id": "r0",
+   "name": "Room 1",
+   "type": "other",
+   "polygon": [
+    [
+     0.804,
+     0.731
+    ],
+    [
+     3.552,
+     0.731
+    ],
+    [
+     3.552,
+     3.884
+    ],
+    [
+     0.804,
+     3.884
+    ]
+   ],
+   "area_m2": 8.87,
+   "walls": [],
+   "centre_px": [
+    138.5,
+    461.0
+   ]
+  },
+  {
+   "id": "r1",
+   "name": "Room 2",
+   "type": "other",
+   "polygon": [
+    [
+     0.804,
+     4.174
+    ],
+    [
+     3.552,
+     4.174
+    ],
+    [
+     3.552,
+     11.169
+    ],
+    [
+     0.804,
+     11.169
+    ]
+   ],
+   "area_m2": 19.9,
+   "walls": [],
+   "centre_px": [
+    138.5,
+    607.5
+   ]
+  },
+  {
+   "id": "r2",
+   "name": "Room 3",
+   "type": "other",
+   "polygon": [
+    [
+     11.247,
+     6.85
+    ],
+    [
+     13.223,
+     6.85
+    ],
+    [
+     13.223,
+     11.169
+    ],
+    [
+     11.247,
+     11.169
+    ]
+   ],
+   "area_m2": 8.87,
+   "walls": [],
+   "centre_px": [
+    413.0,
+    644.0
+   ]
+  },
+  {
+   "id": "r3",
+   "name": "Room 4",
+   "type": "other",
+   "polygon": [
+    [
+     13.591,
+     6.85
+    ],
+    [
+     16.998,
+     6.85
+    ],
+    [
+     16.998,
+     11.169
+    ],
+    [
+     13.591,
+     11.169
+    ]
+   ],
+   "area_m2": 15.06,
+   "walls": [],
+   "centre_px": [
+    496.5,
+    644.0
+   ]
+  }
+ ],
+ "fixtures": [],
+ "materials": {},
+ "review": {
+  "rounds": 0
+ }
+}
