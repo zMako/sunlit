@@ -284,3 +284,14 @@ Segmentation + harness -> segmentation-driven layout -> panorama completion -> l
   annotation button under the ledger; (2) honest side-by-side: listing photo | our render from the photo's camera |
   low-strength img2img polish with our depth as control; (3) metrics: breadth, plan-to-3D seconds, scale accuracy vs
   printed dims/sqft, CubiCasa5K sample if obtainable -> metrics/summary.json shown on the landing page.
+
+## Oct 24 21:30: side-by-side, catalogue, metrics landed
+- Side-by-side (`app/plan3d/polish/`, Opus): camera per photo from VGGT FOV + single-view metrology (wall x-ranges
+  marked by hand where geom's corner split failed), render + depth from polishcam.js, SD1.5 img2img strength 0.35 with
+  depth ControlNet 0.9 and IP-Adapter 0.5 on the listing photo. Six pairs; one demo-worthy (1000 Green corner living),
+  one close, one fair, two weak, one poor (a plan-engine bug: jagged south wall + toilet in a bedroom, gs-20665 r0).
+  Gallery polish.html with verdicts. The gap is mostly plan-vs-photo unit mismatch and plain materials, not the polish.
+- Catalogue: 466 IKEA products, 383 local GLBs (507 MB), all images, style tags, variants. Materials: 2,927 CC0 done.
+- Metrics (`app/plan3d/metrics/`): 444 plans / 26 buildings / 359 walkable units; plan -> layout 0.49 s median, page to
+  first frame 3.8 s (SwiftShader); door-width scale vs printed dims 12.6% median error (n=41), room dims 11.3% (n=80);
+  CubiCasa5K 100-plan sample: room IoU 27% vs the paper's trained 57%, out of domain, not for the landing page.
