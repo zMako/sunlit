@@ -52,12 +52,12 @@ def cart(rooms):
         plan = json.load(open(p))
         for it in plan.get("items", []):
             if it.get("category") == "fixture" or "x" not in it: continue
-            items.append({"room": room, "room_label": plan.get("room_type") or room.split("__")[-1], "id": it.get("id"), "name": it.get("name"), "category": it.get("category", "other"), "price_usd": float(it.get("price_usd") or 0), "product_url": it.get("product_url"), "image": it.get("image"), "dims": [it.get("w_m"), it.get("d_m"), it.get("h_m")], "priority": PRIORITY.get(it.get("category", "other"), 3)})
+            items.append({"room": room, "room_label": plan.get("room_type") or room.split("__")[-1], "id": it.get("id"), "name": it.get("name"), "category": it.get("category", "other"), "price_usd": float(it.get("price_usd") or 0), "price_known": it.get("price_usd") is not None, "source": "amazon" if str(it.get("id", "")).startswith("abo-") else "ikea", "product_url": it.get("product_url"), "image": it.get("image"), "dims": [it.get("w_m"), it.get("d_m"), it.get("h_m")], "priority": PRIORITY.get(it.get("category", "other"), 3)})
     return items
 
 @app.get("/cart")
 def get_cart(rooms: str):
-    items = cart([r for r in rooms.split(",") if r]); return {"items": items, "total_usd": round(sum(i["price_usd"] for i in items), 2), "merchant": MERCHANT, "network": NETWORK, "facilitator": "CDP (real)" if REAL_FACILITATOR else f"mock at {FAC_URL}"}
+    items = cart([r for r in rooms.split(",") if r]); return {"items": items, "total_usd": round(sum(i["price_usd"] for i in items), 2), "unpriced": sum(1 for i in items if not i.get("price_known", True)), "note": "Amazon items have no price in our data; they are listed for you to buy on Amazon and are not charged here.", "merchant": MERCHANT, "network": NETWORK, "facilitator": "CDP (real)" if REAL_FACILITATOR else f"mock at {FAC_URL}"}
 
 # ---------------------------------------------------------------- scheduling (mock carrier) ------------------------------
 def lead_days(item_id): random.seed(item_id or "x"); return random.choice([2, 3, 3, 4, 5, 7])

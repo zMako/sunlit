@@ -223,7 +223,8 @@ export class Furnish {
         ${it.problems.length ? `<div class="fprob">${it.problems.join(' · ')}</div>` : ''}</div>`).join('') +
       `<div class="frow"><button id="fsave">Save</button> <button id="fauto">Auto-arrange</button> <button id="freload">Reload</button> <span id="fstatus" class="fdim">${this.dirty ? 'unsaved' : ''}</span></div>
        <div class="fdim"><label><input type="checkbox" id="fikea" ${this.useIkeaModels ? 'checked' : ''}> IKEA 3D models (local cache; falls back to a card when a product has no model)</label></div>
-       <div class="fdim">click select · drag move · R rotate 90° · [ ] 15° · arrows nudge 5 cm · D duplicate · Del remove · Shift no snap${this.fixtures.length ? ` · ${this.fixtures.length} built-in fixtures are obstacles` : ''}</div>`;
+       <div class="fdim">click select · drag move · R rotate 90° · [ ] 15° · arrows nudge 5 cm · D duplicate · Del remove · Shift no snap${this.fixtures.length ? ` · ${this.fixtures.length} built-in fixtures are obstacles` : ''}</div>
+       ${items.some(it => String(it.spec.id||'').startsWith('abo-')) ? `<div class="fdim">Amazon items: 3D models and images from the Amazon Berkeley Objects dataset © Amazon.com, CC BY 4.0; resized and compressed; product links may no longer be live; price shown at checkout on Amazon.</div>` : ''}`;
     this.panelEl.querySelectorAll('.fitem').forEach(el => el.onclick = () => this.select(this.items[+el.dataset.i]));
     const b = id => this.panelEl.querySelector('#' + id); b('fsave').onclick = () => this.save(); b('freload').onclick = () => this.loadPlan(); b('fauto').onclick = () => this.auto();
     b('fikea').onchange = e => { this.useIkeaModels = e.target.checked; localStorage.setItem('ikeaModels', e.target.checked ? '1' : '0'); this.loadPlan(); };
