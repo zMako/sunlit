@@ -58,17 +58,20 @@ export class Furnish {
     const w = +spec.w_m || 0.5, d = +spec.d_m || 0.5, h = +spec.h_m || 0.5;
     let built = false;
     this.useIkeaModels = this.useIkeaModels ?? (localStorage.getItem('ikeaModels') !== '0');   // default ON: models are cached locally (owner's decision)
-    const local = spec.model_glb ? (/^(https?:)?\//.test(spec.model_glb) ? spec.model_glb : '/' + spec.model_glb.replace(/^\.?\//, '')) : null;   // absolute: pages live in /plan3d/ and /
-    const glbSrc = (this.useIkeaModels && local) || (this.useIkeaModels && spec.model_glb_url ? `/api/model?u=${encodeURIComponent(spec.model_glb_url)}` : null);
-    if (glbSrc) {
+    const recorded = spec.model_glb ? (/^(https?:)?\//.test(spec.model_glb) ? spec.model_glb : '/' + spec.model_glb.replace(/^\.?\//, '')) : null;
+    const byId = spec.id ? `/furnish/models/${String(spec.id).split('#')[0]}.glb` : null;   // the catalogue caches IKEA models locally by product id
+    const remote = spec.model_glb_url ? `/api/model?u=${encodeURIComponent(spec.model_glb_url)}` : null;
+    const candidates = this.useIkeaModels ? [byId, recorded, remote].filter((v, i, a) => v && a.indexOf(v) === i) : [];
+    for (const glbSrc of candidates) {
       try {
         const gl = await this.loader.loadAsync(glbSrc); const m = gl.scene; m.traverse(o => { if (o.isMesh) { o.castShadow = true; o.userData.item = it; } });
         const bb = new THREE.Box3().setFromObject(m); const sz = bb.getSize(new THREE.Vector3()); const c = bb.getCenter(new THREE.Vector3());
         m.position.sub(c); m.position.y += sz.y / 2;   // rest on the floor, centred on footprint
         const s = new THREE.Vector3(w / Math.max(sz.x, 1e-3), h / Math.max(sz.y, 1e-3), d / Math.max(sz.z, 1e-3));
-        const wrap = new THREE.Group(); wrap.add(m); wrap.scale.copy(s); it.obj.add(wrap); built = true;
-      } catch (e) { built = false; }
+        const wrap = new THREE.Group(); wrap.add(m); wrap.scale.copy(s); it.obj.add(wrap); built = true; it.modelSrc = glbSrc; break;
+      } catch (e) { console.warn('[furnish] model failed', spec.id, glbSrc, e && e.message); }
     }
+    if (!built && candidates.length) { it.problems = it.problems || []; it.modelFailed = true; }
     if (!built) it.obj.add(this._card(spec, w, d, h, it));
     // label sprite
     const label = this._label(spec.name || spec.id || 'item'); label.position.set(0, h + 0.18, 0); it.obj.add(label); it.label = label;
