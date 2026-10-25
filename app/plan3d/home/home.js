@@ -97,9 +97,9 @@ function frameView() {   // keep the scene centred in the space left of the desi
   const W = innerWidth, H = innerHeight; renderer.setSize(W, H); camera.aspect = W / H;
   const s = sheetW(); if (s) camera.setViewOffset(W, H, s / 2, 0, W, H); else camera.clearViewOffset(); camera.updateProjectionMatrix();
 }
-function press(on, off) { $(on).setAttribute('aria-pressed', 'true'); $(off).setAttribute('aria-pressed', 'false'); }
+function pressMode(id) { for (const b of ['vDoll', 'vWalk', 'vPhoto']) $(b).setAttribute('aria-pressed', String(b === id)); }
 function setDoll() {
-  mode = 'doll'; if (look.isLocked) look.unlock(); $('bWalk').classList.remove('on'); press('vDoll', 'vWalk');
+  leavePhoto(); mode = 'doll'; if (look.isLocked) look.unlock(); $('bWalk').classList.remove('on'); pressMode('vDoll');
   outside?.enable(false); document.body.classList.remove('walking'); seal?.setWalk(false);
   if (activeRoom && furn[activeRoom]) { furn[activeRoom].panelEl = $('furn'); furn[activeRoom].setActive(true); }
   apt.ceilingMeshes.forEach(m => m.visible = false); applyClip(true); orbit.enabled = true; renderer.toneMappingExposure = 0.95; setSun(30, 0xffdcb4, 3.0); scene.environmentIntensity = 0.55; hemi.intensity = 0.6;
@@ -107,7 +107,7 @@ function setDoll() {
   const d = ext * 1.55; camera.position.set(center.x + d * 0.55, d * 0.85 + 2, center.z + d * 0.75); orbit.target.set(center.x, 0.4, center.z); orbit.update();
 }
 function setWalk(roomId, yawDeg) {
-  mode = 'walk'; $('bWalk').classList.add('on'); press('vWalk', 'vDoll'); closeMenus();
+  leavePhoto(); mode = 'walk'; $('bWalk').classList.add('on'); pressMode('vWalk'); closeMenus();
   apt.ceilingMeshes.forEach(m => m.visible = true); applyClip(false); orbit.enabled = false; renderer.toneMappingExposure = 1.05; setSun(38, 0xfff0dc, 2.4);
   outside?.enable(true); document.body.classList.add('walking'); seal?.setWalk(true);
   for (const f of Object.values(furn)) { f.select(null); f.setActive(false); }
@@ -134,7 +134,88 @@ $('vDoll').onclick = setDoll; $('vWalk').onclick = () => setWalk(activeRoom);
 renderer.domElement.addEventListener('click', () => { if (mode === 'walk' && !look.isLocked) look.lock(); });
 look.addEventListener('lock', () => { $('walkHint').hidden = true; $('cross').hidden = false; });
 look.addEventListener('unlock', () => { $('cross').hidden = true; if (mode === 'walk') $('walkHint').hidden = false; });
-addEventListener('keydown', e => { if (e.code === 'Escape' && mode === 'walk' && !look.isLocked) setDoll(); });
+addEventListener('keydown', e => {
+  if (e.code === 'Escape' && ((mode === 'walk' && !look.isLocked) || mode === 'photo')) setDoll();
+  if (mode === 'photo' && !/INPUT|TEXTAREA|SELECT/.test(e.target.tagName) && (e.code === 'ArrowLeft' || e.code === 'ArrowRight')) { e.preventDefault(); setPhoto(phIdx + (e.code === 'ArrowLeft' ? -1 : 1)); }
+});
+
+// ---------- photos: each listing photo next to the 3D view from the same camera (photos/<unit>.json, photocams.py) ----------
+let PH = null, phIdx = 0, phMode = 'side', phRect = null, phHfov = 75, phSplit = 0.5;
+const phKey = () => `photoAdj:${unit}:${PH.photos[phIdx].src}`, phAdj = () => JSON.parse(localStorage.getItem(phKey()) || '{"dy":0,"dp":0,"df":0}');
+fetch(`photos/${unit}.json`, { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(j => {
+  if (!j || !j.photos || !j.photos.length) return; PH = j; $('vPhoto').hidden = false;
+  $('pStrip').innerHTML = j.photos.map((p, i) => `<button data-i="${i}" aria-label="Photo ${i + 1}" style="background-image:url('${p.src}')"></button>`).join('');
+}).catch(() => {});
+$('vPhoto').onclick = () => setPhoto(phIdx);
+$('pStrip').onclick = e => { const b = e.target.closest('[data-i]'); if (b) setPhoto(+b.dataset.i); };
+$('pPrev').onclick = () => setPhoto(phIdx - 1); $('pNext').onclick = () => setPhoto(phIdx + 1);
+for (const b of document.querySelectorAll('[data-pm]')) b.onclick = () => { phMode = b.dataset.pm; for (const x of document.querySelectorAll('[data-pm]')) x.setAttribute('aria-pressed', String(x === b)); layoutPhotos(); };
+$('pFurn').onclick = () => { const on = $('pFurn').getAttribute('aria-pressed') !== 'true'; $('pFurn').setAttribute('aria-pressed', on); setFurnVisible(on); };
+function setFurnVisible(on) { for (const f of Object.values(furn)) f.group.visible = on; }
+function leavePhoto() { if (mode !== 'photo') return; $('photos').hidden = true; document.body.classList.remove('photomode'); renderer.domElement.style.clipPath = ''; setFurnVisible(true); }
+function setPhoto(i) {
+  if (!PH) return; phIdx = (i + PH.photos.length) % PH.photos.length;
+  if (mode !== 'photo') {
+    if (look.isLocked) look.unlock(); mode = 'photo'; $('bWalk').classList.remove('on'); pressMode('vPhoto'); closeMenus();
+    apt.ceilingMeshes.forEach(m => m.visible = true); applyClip(false); orbit.enabled = false; renderer.toneMappingExposure = 1.05; setSun(38, 0xfff0dc, 2.4);
+    outside?.enable(true); document.body.classList.add('walking', 'photomode'); seal?.setWalk(true);
+    for (const f of Object.values(furn)) { f.select(null); f.setActive(false); }
+    $('photos').hidden = false; $('tip').hidden = true; $('walkHint').hidden = true; $('cross').hidden = true;
+    setFurnVisible($('pFurn').getAttribute('aria-pressed') === 'true');
+  }
+  const p = PH.photos[phIdx], room = layout.rooms.find(r => r.id === p.room);
+  $('pPhoto').onload = layoutPhotos; $('pPhoto').src = p.src; $('pCount').textContent = `${phIdx + 1} of ${PH.photos.length}`;
+  $('pCapR').textContent = `${room ? room.name : 'The room'}, rebuilt in 3D from the same camera`;
+  $('pNote').textContent = p.source === 'metrology' ? "Camera measured from the photo's floor and ceiling lines." :
+    `Camera estimated from the photo${p.confidence < 0.5 ? '; approximate, and the gallery may show another unit with this plan' : ''}. Drag the 3D view to fine-tune.`;
+  for (const b of $('pStrip').children) b.setAttribute('aria-current', String(+b.dataset.i === phIdx));
+  if (room && furn[room.id]) activateRoom(room.id);
+  layoutPhotos(); applyPhotoCam();
+}
+function applyPhotoCam() {
+  const p = PH.photos[phIdx], a = phAdj(), yaw = THREE.MathUtils.degToRad(p.yaw + a.dy), pitch = THREE.MathUtils.degToRad(p.pitch + a.dp);
+  camera.position.set(p.pos[0], p.pos[1], p.pos[2]); camera.rotation.set(0, 0, 0);
+  camera.lookAt(p.pos[0] + Math.sin(yaw) * Math.cos(pitch), p.pos[1] + Math.sin(pitch), p.pos[2] + Math.cos(yaw) * Math.cos(pitch));
+  phHfov = Math.min(115, Math.max(35, p.hfov + a.df));
+}
+function place(el, x, y, w, h) { Object.assign(el.style, { left: x + 'px', top: y + 'px', width: w + 'px', height: h + 'px' }); }
+function layoutPhotos() {   // frames at the photo's aspect inside the scene area: toolbar on top, captions, filmstrip and dock below
+  if (!PH || mode !== 'photo') return;
+  const ph = PH.photos[phIdx], aspect = ph.aspect || 1.5, W = innerWidth - sheetW(), H = innerHeight, top = 146, bottom = 222, gap = 18, availH = Math.max(160, H - top - bottom);
+  let w, xL, xR;
+  if (phMode === 'side') { w = Math.min((W - gap * 3) / 2, availH * aspect); xL = (W - 2 * w - gap) / 2; xR = xL + w + gap; }
+  else { w = Math.min(W - gap * 2, availH * aspect); xL = xR = (W - w) / 2; }
+  const h = w / aspect, y = top + (availH - h) / 2; phRect = { x: xR, y, w, h };
+  place($('pBox'), xL, y, w, h); place($('p3d'), xR, y, w, h);
+  const img = $('pPhoto'), c = ph.crop || [0, 0, 1, 1], iw = w / (c[2] - c[0]), ih = h / (c[3] - c[1]);   // the crop box fills the frame
+  Object.assign(img.style, { width: iw + 'px', height: ih + 'px', left: (-c[0] * iw) + 'px', top: (-c[1] * ih) + 'px' });
+  const swipe = phMode === 'swipe'; $('photos').classList.toggle('swipe', swipe); $('pHandle').hidden = !swipe;
+  $('pBox').style.clipPath = swipe ? `inset(0 ${((1 - phSplit) * 100).toFixed(2)}% 0 0 round 16px 0 0 16px)` : '';
+  if (swipe) place($('pHandle'), xR + w * phSplit, y, 0, h);
+  Object.assign($('pCapL').style, { left: xL + 'px', top: (y + h + 10) + 'px', textAlign: 'left' });
+  Object.assign($('pCapR').style, swipe ? { left: (xR + w) + 'px', top: (y + h + 10) + 'px', transform: 'translateX(-100%)', textAlign: 'right' } : { left: xR + 'px', top: (y + h + 10) + 'px', transform: '', textAlign: 'left' });
+  $('pNote').style.top = (y + h + 34) + 'px'; $('pNote').style.maxWidth = Math.min(w * (swipe ? 1 : 2), 720) + 'px';
+  renderer.domElement.style.clipPath = `inset(${y}px ${innerWidth - xR - w}px ${H - y - h}px ${xR}px round 16px)`;
+}
+addEventListener('resize', () => { if (mode === 'photo') layoutPhotos(); });
+{ // fine-tune: drag turns, wheel changes the lens, double-click resets; remembered per photo in this browser
+  let drag = null; const save = a => { localStorage.setItem(phKey(), JSON.stringify(a)); applyPhotoCam(); };
+  $('p3d').addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY, a: phAdj() }; $('p3d').setPointerCapture(e.pointerId); });
+  $('p3d').addEventListener('pointermove', e => { if (!drag) return; const k = phHfov / Math.max(200, phRect.w); save({ ...drag.a, dy: drag.a.dy - (e.clientX - drag.x) * k, dp: drag.a.dp + (e.clientY - drag.y) * k }); });
+  $('p3d').addEventListener('pointerup', () => { drag = null; });
+  $('p3d').addEventListener('wheel', e => { e.preventDefault(); const a = phAdj(); save({ ...a, df: a.df + e.deltaY * 0.03 }); }, { passive: false });
+  $('p3d').addEventListener('dblclick', () => save({ dy: 0, dp: 0, df: 0 }));
+  let hd = false; $('pHandle').addEventListener('pointerdown', e => { hd = true; $('pHandle').setPointerCapture(e.pointerId); });
+  $('pHandle').addEventListener('pointermove', e => { if (!hd) return; phSplit = Math.min(1, Math.max(0, (e.clientX - phRect.x) / phRect.w)); layoutPhotos(); });
+  $('pHandle').addEventListener('pointerup', () => { hd = false; });
+}
+function renderPhotoFrame() {   // the 3D view only inside the right-hand frame, with the photo's lens
+  const r = phRect, H = innerHeight; if (!r) return;
+  renderer.setScissorTest(false); renderer.clear();
+  camera.clearViewOffset(); camera.aspect = r.w / r.h; camera.fov = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(phHfov) / 2) / camera.aspect)); camera.updateProjectionMatrix();
+  renderer.setViewport(r.x, H - r.y - r.h, r.w, r.h); renderer.setScissor(r.x, H - r.y - r.h, r.w, r.h); renderer.setScissorTest(true);
+  renderer.render(scene, camera); renderer.setScissorTest(false); renderer.setViewport(0, 0, innerWidth, innerHeight);
+}
 function roomWindowYaw(id, from) {   // face the largest window of this room (build.js tags each window with its room)
   let best = null; for (const o of layout.openings) { if (o.type !== 'window' || o.room !== id) continue; const w = layout.walls.find(x => x.id === o.wall); if (!w) continue;
     const L = Math.hypot(w.b[0] - w.a[0], w.b[1] - w.a[1]) || 1, t = (o.s0 + o.s1) / 2 / L, wx = w.a[0] + (w.b[0] - w.a[0]) * t, wz = w.a[1] + (w.b[1] - w.a[1]) * t, width = o.s1 - o.s0;
@@ -168,8 +249,9 @@ renderer.setAnimationLoop(() => {
     camera.position.lerpVectors(glide.p0, glide.p1, e); orbit.target.lerpVectors(glide.t0, glide.t1, e); if (k >= 1) glide = null; }
   if (mode === 'doll') orbit.update();
   else if ((roomTick += dt) > 0.5) { roomTick = 0; const r = currentRoom(); if (r && r !== activeRoom) activateRoom(r); }
-  if (mode === 'walk') outside?.update();
-  renderer.render(scene, camera); drawPlanMarker();
+  if (mode === 'walk' || mode === 'photo') outside?.update();
+  if (mode === 'photo') renderPhotoFrame(); else renderer.render(scene, camera);
+  drawPlanMarker();
 });
 addEventListener('resize', frameView);
 let outside = null, planName = '';
@@ -261,6 +343,7 @@ function syncAgent() { if (ag('aiBudget')) ag('aiBudget').value = Math.max(0, Ma
 function drawBudget() { $('budget').textContent = money(budget); renderTotals(); }
 $('bMinus').onclick = () => { budget = Math.max(500, budget - 250); drawBudget(); syncAgent(); };
 $('bPlus').onclick = () => { budget = Math.min(25000, budget + 250); drawBudget(); syncAgent(); };
+window.setDesignBudget = v => { budget = Math.max(0, Math.min(25000, Math.floor(+v || 0))); drawBudget(); syncAgent(); };   // furnish/bank.js (Nessie)
 $('style').onchange = syncAgent;
 for (const b of $('scope').querySelectorAll('button')) { b.setAttribute('aria-pressed', b.dataset.v === scope); b.onclick = () => { if (homeRun) return; scope = b.dataset.v; for (const x of $('scope').querySelectorAll('button')) x.setAttribute('aria-pressed', x === b); refreshRoomUi(); syncAgent(); }; }
 for (const b of $('tier').querySelectorAll('button')) { b.setAttribute('aria-pressed', b.dataset.v === tier); b.onclick = () => { tier = b.dataset.v; for (const x of $('tier').querySelectorAll('button')) x.setAttribute('aria-pressed', x === b); syncAgent(); }; }
