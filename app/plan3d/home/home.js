@@ -12,6 +12,7 @@ import { enhanceAll } from '/ui/glass.js';
 import { createOutside } from '../outside/outside.js';
 import { classifyExteriorDoors, dressExteriorDoors, sealApartment } from './hermetic.js';
 import { createAmbiance } from './ambiance.js';
+import { createSurfaces } from './surfaces.js';
 // curtains hang from the plan's window positions, which are often a little off: left out of the 3D scene unless localStorage curtains = '1'
 import('../../furnish/props.js').then(m => { const P = m.Props, orig = P && P._curtains; if (orig) P._curtains = function (...a) { if (localStorage.getItem('curtains') === '1') return orig.apply(this, a); }; }).catch(() => {});
 
@@ -40,6 +41,7 @@ const layout = await (await fetch(`layouts/${unit}.json`)).json();
 const extDoors = classifyExteriorDoors(layout);   // entrance = wood slab, balcony = glass; both shut and locked when walking
 const apt = new Apartment(layout, lib); scene.add(apt.group); apt.labels.forEach(l => l.visible = false);
 const lockedDoors = dressExteriorDoors(apt, extDoors), seal = sealApartment(apt, layout);
+const surfaces = createSurfaces({ apt, layout, lib }); window.surfaces = surfaces;   // wall tones and relief, light across surfaces, crown moulding, switches and outlets
 window.__exteriorDoors = layout._exteriorDoors;   // for checking: [{id, kind, facade score, room}]
 const pane = new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.07, roughness: 0.04, metalness: 0, depthWrite: false, side: THREE.DoubleSide });
 apt.group.traverse(o => { if (o.isMesh && o.material && o.material.transmission > 0) o.material = pane; });   // transmission glass re-renders the whole scene (city included) every frame
@@ -102,6 +104,7 @@ function frameView() {   // keep the scene centred in the space left of the desi
 }
 function pressMode(id) { for (const b of ['vDoll', 'vWalk', 'vPhoto']) $(b).setAttribute('aria-pressed', String(b === id)); }
 function setDoll() {
+  surfaces.focus(center.x, center.z, 16);
   leavePhoto(); mode = 'doll'; if (look.isLocked) look.unlock(); $('bWalk').classList.remove('on'); pressMode('vDoll');
   outside?.enable(false); document.body.classList.remove('walking'); seal?.setWalk(false);
   if (activeRoom && furn[activeRoom]) { furn[activeRoom].panelEl = $('furn'); furn[activeRoom].setActive(true); }
@@ -347,13 +350,16 @@ function flyToRoom(id) { const r = apt.roomMeshes[id]; if (!r) return; const m =
 let roomTick = 0; const clock = new THREE.Clock();
 // adaptive resolution: shading cost is per pixel (Safari on Retina was fill-bound), so trade sharpness for smoothness only when needed
 const PR_MAX = () => Math.min(devicePixelRatio, mode === 'walk' ? 1.5 : 2); let prAvg = 1 / 60, prT = 0;
+let prProbe = 0, prWait = 4;   // vsync caps frames at 16.7 ms, so headroom cannot be measured: probe one step up, step back if it costs
 function adapt(raw) {
   if (raw > 0.25) return;   // tab switch, compile, alert: not a rendering cost
-  prAvg += (raw - prAvg) * 0.05; if ((prT += raw) < 1.2) return; prT = 0;
-  const pr = renderer.getPixelRatio(), max = PR_MAX(); queueMicrotask(() => { if (renderer.getPixelRatio() !== pr) amb?.resize(); });
-  if (prAvg > 1 / 55 && pr > 1) renderer.setPixelRatio(Math.max(1, +(pr - 0.25).toFixed(2)));
-  else if (prAvg < 1 / 75 && pr < max) renderer.setPixelRatio(Math.min(max, +(pr + 0.25).toFixed(2)));
-  else if (pr > max) renderer.setPixelRatio(max);
+  prAvg += (raw - prAvg) * 0.05; if ((prT += raw) < 1.2) return; prT = 0; prProbe += 1.2;
+  const pr = renderer.getPixelRatio(), max = PR_MAX(); let next = pr;
+  if (pr > max) next = max;
+  else if (prAvg > 1 / 52 && pr > 1) { next = Math.max(1, +(pr - 0.25).toFixed(2)); prWait = Math.min(30, prWait * 2); prProbe = 0; }   // too slow: down, and wait longer before probing again
+  else if (prAvg < 1 / 57 && pr < max && prProbe > prWait) { next = Math.min(max, +(pr + 0.25).toFixed(2)); prProbe = 0; }
+  if (next !== pr) { renderer.setPixelRatio(next); amb?.resize(); }
+  if (prAvg < 1 / 57 && prProbe > 20) prWait = Math.max(4, prWait / 2);   // a long smooth stretch: probe more often again
 }
 let holdRender = true;   // until furniture and lamps are in: Safari compiles shaders serially, one light-count change = every material recompiled
 renderer.setAnimationLoop(() => {
@@ -361,7 +367,7 @@ renderer.setAnimationLoop(() => {
   if (glide) { const k = Math.min(1, (performance.now() - glide.start) / glide.ms), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
     camera.position.lerpVectors(glide.p0, glide.p1, e); orbit.target.lerpVectors(glide.t0, glide.t1, e); if (k >= 1) glide = null; }
   if (mode === 'doll') orbit.update();
-  else if ((roomTick += dt) > 0.5) { roomTick = 0; const r = currentRoom(); if (r && r !== activeRoom) activateRoom(r); }
+  else if ((roomTick += dt) > 0.5) { roomTick = 0; const r = currentRoom(); if (r && r !== activeRoom) activateRoom(r); surfaces.focus(camera.position.x, camera.position.z); }
   if (mode === 'walk' || mode === 'photo') outside?.update();
   if (captureReq) { const c = captureReq; captureReq = null; try { c.res(doCapture(c.i)); } catch (e) { console.warn('[stage] capture', e); c.res(Promise.reject(e)); } }
   if (mode !== 'photo') { if (amb) amb.render(dt); else renderer.render(scene, camera); }   // photos mode draws no 3D (captures above still run)
@@ -369,7 +375,7 @@ renderer.setAnimationLoop(() => {
 });
 addEventListener('resize', frameView);
 let outside = null, planName = '';
-const amb = createAmbiance({ renderer, scene, camera, apt, layout, sun, hemi, center, ext, sunAz, furn, Furnish,
+const amb = createAmbiance({ renderer, scene, camera, apt, layout, sun, hemi, center, ext, sunAz, furn, Furnish, surfaces,
   outside: { get world() { return outside?.world; }, get sky() { return outside?.sky; }, setTime: h => outside?.setTime(h) } });
 window.ambiance = amb;
 for (const b of document.querySelectorAll('[data-mood]')) { b.setAttribute('aria-pressed', String(b.dataset.mood === amb.mood)); b.onclick = () => { amb.setMood(b.dataset.mood); for (const x of document.querySelectorAll('[data-mood]')) x.setAttribute('aria-pressed', String(x === b)); }; }
@@ -381,7 +387,7 @@ const outsideReady = fetch('/map/listings.json').then(r => r.json()).then(d => (
 }).catch(e => console.warn('[home] outside', e));
 setDoll();
 (async () => {
-  await Promise.race([Promise.all(roomJobs), new Promise(r => setTimeout(r, 12000))]); hideAids(); amb.applyStyle($('style').value); amb.dress(); amb.budgetLights();
+  await Promise.race([Promise.all(roomJobs), new Promise(r => setTimeout(r, 12000))]); hideAids(); surfaces.applyStyle($('style').value); amb.dress(); amb.budgetLights();
   try { await renderer.compileAsync(scene, camera); } catch (e) { renderer.compile(scene, camera); }
   holdRender = false; requestAnimationFrame(() => { $('loading').style.opacity = 0; setTimeout(() => $('loading').remove(), 700); });
 })();
@@ -462,7 +468,7 @@ function drawBudget() { $('budget').textContent = money(budget); renderTotals();
 $('bMinus').onclick = () => { budget = Math.max(500, budget - 250); drawBudget(); syncAgent(); };
 $('bPlus').onclick = () => { budget = Math.min(25000, budget + 250); drawBudget(); syncAgent(); };
 window.setDesignBudget = v => { budget = Math.max(0, Math.min(25000, Math.floor(+v || 0))); drawBudget(); syncAgent(); };   // furnish/bank.js (Nessie)
-$('style').onchange = () => { syncAgent(); amb?.applyStyle($('style').value); };
+$('style').onchange = () => { syncAgent(); surfaces.applyStyle($('style').value); };
 for (const b of $('scope').querySelectorAll('button')) { b.setAttribute('aria-pressed', b.dataset.v === scope); b.onclick = () => { if (homeRun) return; scope = b.dataset.v; for (const x of $('scope').querySelectorAll('button')) x.setAttribute('aria-pressed', x === b); refreshRoomUi(); syncAgent(); }; }
 for (const b of $('tier').querySelectorAll('button')) { b.setAttribute('aria-pressed', b.dataset.v === tier); b.onclick = () => { tier = b.dataset.v; for (const x of $('tier').querySelectorAll('button')) x.setAttribute('aria-pressed', x === b); syncAgent(); }; }
 

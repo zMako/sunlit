@@ -29,7 +29,7 @@ const MOODS = {
 };
 const FABRIC = /sofa|armchair|chair|bed|rug|cushion|pouf|ottoman|bench|stool|headboard|throw|duvet/, WOOD = /table|desk|dresser|nightstand|tv_bench|bookcase|shelf|sideboard|cabinet|wardrobe|chest/;
 
-export function createAmbiance({ renderer, scene, camera, apt, layout, sun, hemi, center, ext, sunAz, furn, outside, Furnish }) {
+export function createAmbiance({ renderer, scene, camera, apt, layout, sun, hemi, center, ext, sunAz, furn, outside, Furnish, surfaces }) {
   const mood = { name: localStorage.getItem('mood') === 'day' ? 'day' : 'golden', mode: 'doll' };
   renderer.toneMapping = THREE.AgXToneMapping;
   sun.shadow.mapSize.set(2048, 2048); sun.shadow.map?.dispose(); sun.shadow.map = null;   // room-scale shadows stay crisp at 2k; 4k cost a full frame in Safari
@@ -102,23 +102,7 @@ export function createAmbiance({ renderer, scene, camera, apt, layout, sun, hemi
   resize();
 
   // ---------- materials ----------
-  function applyStyle(style) {
-    const [base, accent] = STYLE_WALLS[String(style || '').toLowerCase()] || STYLE_WALLS.default;
-    const src = apt.wallMeshes[0]?.material; if (!src) return;
-    const baseM = src.clone(); baseM.color.set(base); baseM.roughness = 0.9;
-    const accM = src.clone(); accM.color.set(accent); accM.roughness = 0.92;
-    // accent: in the main room, the longest wall stretch without openings (prefer one with nothing on the other side)
-    const main = layout.rooms.find(r => r.type === 'living') || [...layout.rooms].sort((a, b) => (b.area_m2 || 0) - (a.area_m2 || 0))[0];
-    const busy = new Set(layout.openings.map(o => o.wall)); let best = null;
-    if (main) for (const w of layout.walls) {
-      if (busy.has(w.id)) continue; const a = new THREE.Vector2(...w.a), b = new THREE.Vector2(...w.b), m = a.clone().add(b).multiplyScalar(0.5), len = a.distanceTo(b);
-      if (len < 1.8) continue; const near = main.polygon.some((p, i) => { const q = main.polygon[(i + 1) % main.polygon.length], e = new THREE.Vector2(q[0] - p[0], q[1] - p[1]), t = Math.max(0, Math.min(1, m.clone().sub(new THREE.Vector2(...p)).dot(e) / (e.lengthSq() || 1))); return m.distanceTo(new THREE.Vector2(p[0] + e.x * t, p[1] + e.y * t)) < 0.35; });
-      if (!near) continue; const score = len + (w.exterior ? 2 : 0); if (!best || score > best.score) best = { id: w.id, score };
-    }
-    for (const m of apt.wallMeshes) m.material = best && m.userData.wall === best.id ? accM : baseM;
-    apt.group.traverse(o => { if (/^pfloor_/.test(o.name) && o.material && o.material.userData && o.material.userData.category === 'wood_floor' && !o.material.userData.amb) {
-      o.material.userData.amb = true; o.material.roughness = Math.min(o.material.roughness, 0.38); o.material.envMapIntensity = 1.0; } });
-  }
+  function applyStyle(style) { surfaces?.applyStyle(style); }   // walls live in surfaces.js
   function budgetLights(maxLamps = 6) {   // per-pixel cost grows with every light, even at zero intensity: fixed budget before the compile
     for (const l of apt.lights) l.parent?.remove(l); apt.lights.length = 0;   // room ceiling-fixture lights (their glowing discs stay)
     const lamps = []; for (const f of Object.values(furn)) for (const it of f.items) if (it.lamp && it.lamp.light) lamps.push(it);
@@ -148,7 +132,7 @@ export function createAmbiance({ renderer, scene, camera, apt, layout, sun, hemi
   function apply() {
     const M = MOODS[mood.name];
     bloom.strength = M.bloom; grade.uniforms.uWarm.value = M.warm; grade.uniforms.uSat.value = M.sat; Furnish?.setLampLevel?.(M.lamps);
-    grade.uniforms.uCon.value = M.con;
+    grade.uniforms.uCon.value = M.con; surfaces?.setLight(mood.mode === 'walk' ? 'walk' : 'doll', mood.name);
     if (mood.mode === 'walk') { outside?.setTime?.(M.hour); aimSun(); }
     else if (mood.mode === 'doll') {
       sun.target.position.copy(center);
@@ -168,7 +152,8 @@ export function createAmbiance({ renderer, scene, camera, apt, layout, sun, hemi
     hemi.intensity = M.wHemi; scene.environmentIntensity = M.wEnv; renderer.toneMappingExposure = M.wExp;
   }
   function fromOutside(s) { if (mood.mode === 'walk') aimSun(); }   // outside.js re-lit for the hour: put the room's light back
-  function setMode(m) { mood.mode = m; if (m !== 'doll') scene.background = null; resize(); apply(); }
+  function setMode(m) { mood.mode = m; gtao.enabled = m === 'walk';   // AO ignores the overview's clip plane (ghosts of clipped geometry); walk needs it most
+    if (m !== 'doll') scene.background = null; resize(); apply(); }
   function render(dt) { grade.uniforms.uTime.value += dt; composer.render(dt); }
 
   return { setMood, setMode, render, resize, dress, budgetLights, applyStyle, placeWindowLights, fromOutside, get mood() { return mood.name; }, composer, pool, gtao, bloom, grade, MOODS };
