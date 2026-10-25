@@ -70,13 +70,12 @@ def main():
     cat = json.load(open(HERE / "catalog.json")); cat_items = {}
     for i in cat["items"]: cat_items.setdefault(i["category"], []).append(i)
     for k, v in cat_items.items():   # prefer products with a real 3D model; keep model-less ones only where a category has no modelled product
-        with_model = [i for i in v if i.get("model_glb")]
-        if with_model: cat_items[k] = with_model
+        cat_items[k] = [i for i in v if i.get("model_glb")]   # strict: never pick a product without a 3D model
     wanted = SETS.get(room_type, SETS["other"])
     chosen, how = (None, "skipped") if a.no_claude else pick_claude(cat_items, wanted, info, a.budget, a.style, MODELS.get(a.model, a.model), room_type, listing_hint)
     if not chosen: chosen, how = pick_deterministic(cat_items, wanted, info, a.budget)
     items = [{"id": c["id"] + (f"#{k}" if sum(1 for x in chosen[:k] if x["id"] == c["id"]) else ""), "name": c["name"], "category": c["category"], "w_m": c["width_m"], "d_m": c["depth_m"], "h_m": c["height_m"],
-              "price_usd": c.get("price_usd"), "product_url": c["product_url"], "image": c.get("image"), "model_glb_url": c.get("model_glb_url"), "model_glb": c.get("model_glb"), "why": c.get("why")} for k, c in enumerate(chosen)]
+              "price_usd": c.get("price_usd"), "product_url": c["product_url"], "image": c.get("image"), "model_glb_url": c.get("model_glb_url"), "model_glb": c.get("model_glb"), "price_source": c.get("price_source", "listed"), "search_url": c.get("search_url"), "why": c.get("why")} for k, c in enumerate(chosen)]
     placed, walkable = place.place(R, items)
     plan = {"room": a.room, "room_type": room_type, "items": placed, "total_usd": round(sum(i.get("price_usd") or 0 for i in placed if "x" in i), 2), "walkable": walkable, "picker": how, "room_info": info}
     (HERE / "plans").mkdir(exist_ok=True); json.dump(plan, open(HERE / "plans" / f"{a.room}.json", "w"), indent=1)

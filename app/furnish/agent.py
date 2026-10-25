@@ -37,8 +37,7 @@ def catalog():
     for i in c["items"]:
         if i.get("width_m") and i.get("depth_m") and i.get("height_m"): by.setdefault(i["category"], []).append(i)
     for k, v in by.items():   # prefer products with a real 3D model; model-less ones only where the category has no modelled product
-        with_model = [i for i in v if i.get("model_glb")]
-        if with_model: by[k] = with_model
+        by[k] = [i for i in v if i.get("model_glb")]   # strict: never pick a product without a 3D model
     return by
 
 def fits_room(i, info):
@@ -51,7 +50,7 @@ def passes_door(i, door_w):
 
 def to_item(c, k, why=None):
     return {"id": c["id"] + (f"#{k}" if k else ""), "name": c["name"], "category": c["category"], "w_m": c["width_m"], "d_m": c["depth_m"], "h_m": c["height_m"],
-            "price_usd": c.get("price_usd"), "product_url": c.get("product_url"), "image": c.get("image"), "model_glb_url": c.get("model_glb_url"), "model_glb": c.get("model_glb"), "why": why,
+            "price_usd": c.get("price_usd"), "product_url": c.get("product_url"), "image": c.get("image"), "model_glb_url": c.get("model_glb_url"), "model_glb": c.get("model_glb"), "price_source": c.get("price_source", "listed"), "search_url": c.get("search_url"), "why": why,
             "color": c.get("color"), "style_tags": c.get("style_tags")}
 
 def claude_json(system, text, schema, model, max_tokens, note):
