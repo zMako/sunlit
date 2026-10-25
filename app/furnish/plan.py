@@ -85,7 +85,8 @@ def main():
     for i in map(place.fix_item, cat["items"]): cat_items.setdefault(i["category"], []).append(i)   # consistent dims, repaired categories
     for k, v in cat_items.items():   # prefer products with a real 3D model; keep model-less ones only where a category has no modelled product
         cat_items[k] = tier_filter([i for i in v if i.get("model_glb")], a.tier)   # strict: never pick a product without a 3D model; tier = brands allowed
-    wanted = SETS.get(room_type, SETS["other"])
+    from agent import slots_for   # the same layered room templates as the streaming agent
+    wanted = slots_for(room_type, R.get("area_m2") or 0)
     chosen, how = (None, "skipped") if a.no_claude else pick_claude(cat_items, wanted, info, a.budget, a.style, MODELS.get(a.model, a.model), room_type, listing_hint)
     if not chosen: chosen, how = pick_deterministic(cat_items, wanted, info, a.budget)
     items = [{"id": c["id"] + (f"#{k}" if sum(1 for x in chosen[:k] if x["id"] == c["id"]) else ""), "name": c["name"], "category": c["category"], "w_m": c["width_m"], "d_m": c["depth_m"], "h_m": c["height_m"],

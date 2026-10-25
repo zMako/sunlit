@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>orient render</title>
+<style>html,body{margin:0;background:#fff}</style>
+<script type="importmap">{"imports":{"three":"/vendor/three/build/three.module.js","three/addons/":"/vendor/three/jsm/"}}</script>
+</head><body>
+<script type="module">
+// Headless renderer for orient.py: window.orientLoad(url) then window.orientShot(up, yaw, size) -> PNG data URL.
+// up: axis of the current file that should point up (y, -y, z, -z, x, -x); yaw: degrees about +Y applied after the up fix.
+// Rotation: q = qYaw * qUp with qUp from the single-axis Euler below (same table as orient.py UP_EULER).
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+const UP_EULER = { 'y': [0, 0, 0], '-y': [180, 0, 0], 'z': [-90, 0, 0], '-z': [90, 0, 0], 'x': [0, 0, 90], '-x': [0, 0, -90] };
+const D = Math.PI / 180;
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1); renderer.setClearColor(0xffffff, 1); document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8a8a, 1.6));
+const sun = new THREE.DirectionalLight(0xffffff, 1.6); sun.position.set(2, 4, 3); scene.add(sun);
+const fill = new THREE.DirectionalLight(0xffffff, 0.5); fill.position.set(-3, 1, -2); scene.add(fill);
+const cam = new THREE.PerspectiveCamera(30, 1, 0.01, 100);
+const grey = new THREE.MeshStandardMaterial({ color: 0xb4b4b4, roughness: 0.75, metalness: 0.0, side: THREE.DoubleSide, flatShading: true });   // flat shading: screen-space normals, so broken or flipped file normals never render black
+const loader = new GLTFLoader(); const draco = new DRACOLoader(); draco.setDecoderPath('/vendor/three/jsm/libs/draco/'); loader.setDRACOLoader(draco);
+let holder = null, model = null;
+window.orientLoad = async (url) => {
+  if (holder) { scene.remove(holder); holder.traverse(o => { if (o.geometry) o.geometry.dispose(); }); holder = null; }
+  const gl = await loader.loadAsync(url); model = gl.scene;
+  model.traverse(o => { if (o.isMesh) o.material = grey; });
+  const bb = new THREE.Box3().setFromObject(model); const c = bb.getCenter(new THREE.Vector3()); model.position.sub(c);
+  holder = new THREE.Group(); holder.add(model); scene.add(holder); return true;
+};
+window.orientShot = (up, yaw, size = 256, az = 35, el = 18) => {
+  const e = UP_EULER[up]; const qUp = new THREE.Quaternion().setFromEuler(new THREE.Euler(e[0] * D, e[1] * D, e[2] * D));
+  const q = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), yaw * D).multiply(qUp);
+  holder.quaternion.copy(q); holder.position.set(0, 0, 0); holder.updateMatrixWorld(true);
+  const bb = new THREE.Box3().setFromObject(holder); const c = bb.getCenter(new THREE.Vector3()); holder.position.sub(c); holder.updateMatrixWorld(true);
+  const r = bb.getSize(new THREE.Vector3()).length() / 2;
+  const dist = r / Math.sin(cam.fov * D / 2) * 1.02;
+  cam.position.set(dist * Math.cos(el * D) * Math.sin(az * D), dist * Math.sin(el * D), dist * Math.cos(el * D) * Math.cos(az * D)); cam.lookAt(0, 0, 0);
+  renderer.setSize(size, size, false); renderer.render(scene, cam);
+  return renderer.domElement.toDataURL('image/png');
+};
+window.orientReady = true;
+</script></body></html>

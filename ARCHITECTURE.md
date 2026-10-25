@@ -37,6 +37,24 @@ model_glb?, why}, total_usd, walkable, picker, room_type}`. Served by `GET/POST 
 model_glb (local), description, color, style_tags[], type_name}`. Built by `catalog.py` from IKEA US product pages
 (robots allow product and category pages; search/filter URLs are never used).
 
+Items may carry `y_m` (height of the item's bottom above the floor: a lamp on a nightstand, a pendant under the ceiling,
+a wall-hung mirror) and `floor: false` (takes no floor, overlaps nothing). `borrowed: true` marks a standard-range product
+used in the design tier because the designer range is thin in that category. Room templates (`agent.TEMPLATES`) are
+layered slot lists per room type with minimum areas; the solver's relations (`place.RELATIONAL`) place companions:
+front, under, side, corner, around (chairs face the table), foot (bench at the bed), on (lamp on a support), above (pendant).
+
+## Designer model side files (`app/furnish/designer/`)
+- `palette.json` {id: {parts[] {part, finish, hex} biggest first, dominant, accent, sheen}}: Haiku's reading of each hero
+  photo (batches in `palette/`, merged by `palette/merge.py`). The viewer assigns the first finish to the largest material
+  group. Finish classes are listed in `palette/BRIEF.md`.
+- `brand_textures.json` {id: {variants[] {name, file, mean_hex, finish}, default, has_uv, multi_material}} from the texture
+  packs Muuto, Hem and Carl Hansen ship beside their meshes; default textures resized in `textures/<id>.webp` (gitignored).
+- `orient.json` {id: {up, front_yaw_deg, confidence, flags, dims_after_m}}: which axis of the file is up and where the front
+  is (`orient.py`, report and contact sheets in `orient/`). The viewer applies `qYaw(front) * qUp` before fitting the model
+  to the listed box; the solver takes `dims_after_m` when the catalogue dims were measured from the mis-oriented file.
+- Catalogue dims and categories are repaired on load by `place.fix_item` (`canon_dims`, `RECAT`); `catalog.json` is raw.
+- Designer prices: `prices_estimate.py` fills unpriced items with brand x category medians (`price_source: estimated`).
+
 ## Catalogue sources
 - IKEA US product pages (facts + the product's own GLB cached locally; the owner accepted IKEA's terms risk for the demo).
 - Amazon Berkeley Objects (`app/furnish/abo/`, source `amazon-abo`, CC BY 4.0 with attribution, no prices, ASIN links of which roughly half are dead; models compressed with gltf-transform (Draco + WebP) into abo/models_opt). Planner and

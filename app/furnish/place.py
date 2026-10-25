@@ -39,8 +39,18 @@ def canon_dims(i):
 # products the keyword classifier filed under the wrong category (name -> category), applied on load
 RECAT = [("hooks", "other"), ("tray", "other"), ("alphabet of light", "other"), ("pot 33", "armchair"), ("ridge", "other"), ("avail", "other"), ("coil", "other"), ("gaze", "other"),
          ("table + benches", "other"), ("wall mount", "other"), ("floor panel", "other"), ("wall panel", "other"), ("magazine holder", "other"), ("carafe", "other"), ("vase", "other"), ("jug", "other")]
+_ORIENT = None
+def _orient():
+    global _ORIENT
+    if _ORIENT is None:
+        try: _ORIENT = json.load(open(pathlib.Path(__file__).parent / "designer" / "orient.json"))
+        except Exception: _ORIENT = {}
+    return _ORIENT
 def fix_item(i):
     n = (i.get("name") or "").lower()
+    od = _orient().get(i.get("id") or "")
+    if od and "catalog_dims_from_old_bbox" in (od.get("flags") or []) and od.get("dims_after_m") and (od.get("confidence") or 0) >= 0.6:   # dims were measured from the mis-oriented file: take the re-oriented box
+        w, d, h = od["dims_after_m"]; i = dict(i, width_m=w, depth_m=d, height_m=h)
     for k, c in RECAT:
         if k in n and i.get("category") != c: i = dict(i, category=c); break
     return canon_dims(i)

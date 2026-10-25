@@ -66,17 +66,31 @@ export class Furnish {
       try {
         const gl = await this.loader.loadAsync(glbSrc); const m = gl.scene; m.traverse(o => { if (o.isMesh) { o.castShadow = true; o.userData.item = it; } });
         this._dressUntextured(m, spec);   // manufacturer OBJ/FBX exports mostly come without textures: give them a plausible PBR finish from the catalogue words
-        let bb = new THREE.Box3().setFromObject(m); let sz = bb.getSize(new THREE.Vector3());
+        // orientation pass (designer/orient.json, see orient/REPORT.md): which axis is up and where the front is, found from symmetry, backrest mass and CLIP; applied when confident
+        const od = (await Furnish._data()).orient[String(spec.id || '').split('#')[0]];
+        if (od && (od.confidence ?? 0) >= 0.6 && (od.up !== 'y' || od.front_yaw_deg)) {
+          const UP = { y: [0, 0, 0], '-y': [180, 0, 0], z: [-90, 0, 0], '-z': [90, 0, 0], x: [0, 0, 90], '-x': [0, 0, -90] }; const e = UP[od.up] || UP.y; const D = Math.PI / 180;
+          const qUp = new THREE.Quaternion().setFromEuler(new THREE.Euler(e[0] * D, e[1] * D, e[2] * D)); const q = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), (od.front_yaw_deg || 0) * D).multiply(qUp);
+          const og = new THREE.Group(); og.quaternion.copy(q); og.add(m); og.updateMatrixWorld(true); var oriented = og; it.oriented = od.method;
+        }
+        const m0 = (typeof oriented !== 'undefined' && oriented) ? oriented : m;
+        let bb = new THREE.Box3().setFromObject(m0); let sz = bb.getSize(new THREE.Vector3());
         // which way up / which way round: of the 90-degree rotations, keep the one whose extents need the least anisotropic stretch to meet the listed w x h x d
         const err = (ex, ey, ez) => Math.abs(Math.log(Math.max(ex, 1e-3) / w)) + Math.abs(Math.log(Math.max(ey, 1e-3) / h)) + Math.abs(Math.log(Math.max(ez, 1e-3) / d));
         const tries = [[0, 0, 0, sz.x, sz.y, sz.z], [0, Math.PI / 2, 0, sz.z, sz.y, sz.x], [Math.PI / 2, 0, 0, sz.x, sz.z, sz.y], [Math.PI / 2, 0, Math.PI / 2, sz.y, sz.z, sz.x], [0, 0, Math.PI / 2, sz.y, sz.x, sz.z], [Math.PI / 2, Math.PI / 2, 0, sz.z, sz.x, sz.y]];
         const e0 = err(sz.x, sz.y, sz.z); let best = tries[0], be = e0;
         for (const t of tries) { const e = err(t[3], t[4], t[5]); if (e < be - 0.3) { best = t; be = e; } }   // a clear win only: near-cubic pieces keep their file orientation
-        const inner = new THREE.Group(); inner.add(m); inner.rotation.set(best[0], best[1], best[2]); inner.updateMatrixWorld(true);
+        const inner = new THREE.Group(); inner.add(m0); inner.rotation.set(best[0], best[1], best[2]); inner.updateMatrixWorld(true);
         bb = new THREE.Box3().setFromObject(inner); sz = bb.getSize(new THREE.Vector3()); const c = bb.getCenter(new THREE.Vector3());
         inner.position.sub(c); inner.position.y += sz.y / 2;   // rest on the floor, centred on footprint
         const s = new THREE.Vector3(w / Math.max(sz.x, 1e-3), h / Math.max(sz.y, 1e-3), d / Math.max(sz.z, 1e-3));
-        const wrap = new THREE.Group(); wrap.add(inner); wrap.scale.copy(s); it.obj.add(wrap); built = true; it.modelSrc = glbSrc; it.axisFix = best !== tries[0]; break;
+        const wrap = new THREE.Group(); wrap.add(inner); wrap.scale.copy(s); it.obj.add(wrap); built = true; it.modelSrc = glbSrc; it.axisFix = best !== tries[0];
+        if (spec.category === 'bed' && h < 0.42) {   // manufacturers model the frame only: add a mattress so the bed reads as a bed
+          const mat = new THREE.Mesh(new THREE.BoxGeometry(Math.max(0.6, w - 0.12), 0.22, Math.max(1.2, d - 0.16)), new THREE.MeshPhysicalMaterial({ color: 0xf2eee6, roughness: 0.95, sheen: 0.3 }));
+          mat.position.set(0, h - 0.06 + 0.11, 0.02); mat.castShadow = true; mat.userData.item = it; it.obj.add(mat);
+          Furnish._bump('fabric').then(t => { if (t) { mat.material.normalMap = t; mat.material.normalScale.set(0.4, 0.4); mat.material.needsUpdate = true; } });
+        }
+        break;
       } catch (e) { console.warn('[furnish] model failed', spec.id, glbSrc, e && e.message); }
     }
     if (!built) { it.modelFailed = true; it.problems = it.problems || []; it.problems.push('3D model missing'); }   // never draw a photo-on-a-box: an item without a model is a problem, not a prop
@@ -288,7 +302,7 @@ export class Furnish {
     rattan: { roughness: 0.9, metalness: 0 }, cork: { roughness: 0.95, metalness: 0 }, rubber: { roughness: 0.8, metalness: 0 } };
   static LAMP = new Set(['pendant_lamp', 'table_lamp', 'floor_lamp']);
   static _data() {   // palette.json (Haiku's reading of each hero photo) and brand_textures.json (Muuto/Hem/Carl Hansen texture packs), fetched once
-    if (!Furnish._dataP) Furnish._dataP = Promise.all([fetch('/furnish/designer/palette.json').then(r => r.ok ? r.json() : {}).catch(() => ({})), fetch('/furnish/designer/brand_textures.json').then(r => r.ok ? r.json() : {}).catch(() => ({}))]).then(([p, b]) => ({ palette: p, brand: b }));
+    if (!Furnish._dataP) Furnish._dataP = Promise.all([fetch('/furnish/designer/palette.json').then(r => r.ok ? r.json() : {}).catch(() => ({})), fetch('/furnish/designer/brand_textures.json').then(r => r.ok ? r.json() : {}).catch(() => ({})), fetch('/furnish/designer/orient.json').then(r => r.ok ? r.json() : {}).catch(() => ({}))]).then(([p, b, o]) => ({ palette: p, brand: b, orient: o }));
     return Furnish._dataP;
   }
   _matFor(finish, hex, sheen, isLamp) {
