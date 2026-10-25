@@ -14,7 +14,7 @@ const D2R = Math.PI / 180, FLOOR_H = 3.2, EYE = 1.6, HF = { size: 400, res: 400 
 const TILES = (window.MOVEIN_TILES || 'http://127.0.0.1:8771') + '/v1/3dtiles/root.json';   // key-hiding, spend-capped proxy (outside/tiles_server.py)
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-export function createOutside({ scene, camera, renderer, apt, layout, sun, hemi, lat, lon, planName = () => '', onStatus = () => {} }) {
+export function createOutside({ scene, camera, renderer, apt, layout, sun, hemi, lat, lon, planName = () => '', onStatus = () => {}, onLight = () => {} }) {
   const aptBox = new THREE.Box3().setFromObject(apt.group), ac = aptBox.getCenter(new THREE.Vector3());
   const ext = Math.max(aptBox.max.x - aptBox.min.x, aptBox.max.z - aptBox.min.z);
   const mainWall = findMainWall(layout);
@@ -139,11 +139,12 @@ export function createOutside({ scene, camera, renderer, apt, layout, sun, hemi,
     tint.setRGB(1.18 + 0.2 * gold - 0.8 * night, 1.14 - 0.1 * gold - 0.7 * night, 1.12 - 0.4 * gold - 0.45 * night); for (const m of tileMats) m.color.copy(tint);
     const fog = new THREE.Color().setRGB(0.82 + 0.15 * gold - 0.5 * night, 0.86 - 0.02 * gold - 0.5 * night, 0.92 - 0.2 * gold - 0.4 * night);
     if (scene.fog) { scene.fog.color.copy(fog); scene.fog.density = 0.0007 + 0.0003 * gold; } uni.nearColor.value.copy(fog).lerp(new THREE.Color(1, 1, 1), 0.55);
+    onLight({ alt, gold, k, night });   // the page's ambiance rebalances sun and fill from here
   }
 
   // ---------- public ----------
   const api = {
-    get status() { return st.status; }, get place() { return st.place; }, get info() { return st.info; },
+    get status() { return st.status; }, get place() { return st.place; }, get info() { return st.info; }, get world() { return world; }, get sky() { return sky; },
     enable(on) {
       st.enabled = on; sky.visible = on; world.visible = on && st.status === 'ready';
       if (on) { saved.pr = renderer.getPixelRatio(); renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5)); camera.near = 0.1; camera.far = 3000; camera.updateProjectionMatrix(); start(); apply(); }

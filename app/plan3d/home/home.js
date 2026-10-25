@@ -11,6 +11,9 @@ import { Furnish } from '../../furnish/furnish.js';
 import { enhanceAll } from '/ui/glass.js';
 import { createOutside } from '../outside/outside.js';
 import { classifyExteriorDoors, dressExteriorDoors, sealApartment } from './hermetic.js';
+import { createAmbiance } from './ambiance.js';
+// curtains hang from the plan's window positions, which are often a little off: left out of the 3D scene unless localStorage curtains = '1'
+import('../../furnish/props.js').then(m => { const P = m.Props, orig = P && P._curtains; if (orig) P._curtains = function (...a) { if (localStorage.getItem('curtains') === '1') return orig.apply(this, a); }; }).catch(() => {});
 
 const Q = new URLSearchParams(location.search), unit = Q.get('unit') || 'gs-22612_plan_03';
 const $ = id => document.getElementById(id);
@@ -69,7 +72,7 @@ window.apartment = { layout, roomMeshes: apt.roomMeshes, floorPlane, scene, came
 
 // ---------- furniture: one Furnish per room; only models are shown (labels, footprints and fit colours are editing aids) ----------
 const furn = {}; let activeRoom = null, changeQueued = false;
-function changed() { if (changeQueued) return; changeQueued = true; requestAnimationFrame(() => { changeQueued = false; hideAids(); renderItems(); if (typeof stageSoon === 'function') stageSoon(); }); }
+function changed() { if (changeQueued) return; changeQueued = true; requestAnimationFrame(() => { changeQueued = false; hideAids(); amb?.dress(); renderItems(); if (typeof stageSoon === 'function') stageSoon(); }); }
 function hideAids() { for (const f of Object.values(furn)) for (const it of f.items) { if (it.label) it.label.visible = false; if (it.fp) it.fp.visible = false; if (it.fm) it.fm.visible = false; } }
 const roomJobs = layout.rooms.map(async r => {
   try { const res = await fetch(`../rooms/${layout.unit}__${r.id}.json`); if (!res.ok) return;
@@ -80,7 +83,7 @@ const roomJobs = layout.rooms.map(async r => {
 function activateRoom(id) {
   if (!id || activeRoom === id) { refreshRoomUi(); return; }
   for (const [rid, f] of Object.entries(furn)) if (rid !== id && f.active) { f.setActive(false); f.panelEl = null; }
-  activeRoom = id; const f = furn[id]; if (f) { f.panelEl = $('furn'); if (mode === 'doll') f.setActive(true); }   // editing (drag, R, D, Delete) only in the overview: D is also strafe-right
+  activeRoom = id; amb?.placeWindowLights(id); const f = furn[id]; if (f) { f.panelEl = $('furn'); if (mode === 'doll') f.setActive(true); }   // editing (drag, R, D, Delete) only in the overview: D is also strafe-right
   refreshRoomUi(); renderItems();
 }
 const roomName = id => (layout.rooms.find(r => r.id === id) || {}).name || 'this room';
@@ -94,7 +97,7 @@ function applyClip(on) {   // the cut plane stays on every material and only mov
   apt.section(on ? CUT : null); for (const f of Object.values(furn)) f.setClipping([clip]);
 }
 function frameView() {   // keep the scene centred in the space left of the design sheet
-  const W = innerWidth, H = innerHeight; renderer.setSize(W, H); camera.aspect = W / H;
+  const W = innerWidth, H = innerHeight; renderer.setSize(W, H); amb?.resize(); camera.aspect = W / H;
   const s = sheetW(); if (s) camera.setViewOffset(W, H, s / 2, 0, W, H); else camera.clearViewOffset(); camera.updateProjectionMatrix();
 }
 function pressMode(id) { for (const b of ['vDoll', 'vWalk', 'vPhoto']) $(b).setAttribute('aria-pressed', String(b === id)); }
@@ -102,14 +105,14 @@ function setDoll() {
   leavePhoto(); mode = 'doll'; if (look.isLocked) look.unlock(); $('bWalk').classList.remove('on'); pressMode('vDoll');
   outside?.enable(false); document.body.classList.remove('walking'); seal?.setWalk(false);
   if (activeRoom && furn[activeRoom]) { furn[activeRoom].panelEl = $('furn'); furn[activeRoom].setActive(true); }
-  apt.ceilingMeshes.forEach(m => m.visible = false); applyClip(true); orbit.enabled = true; renderer.toneMappingExposure = 0.95; setSun(30, 0xffdcb4, 3.0); scene.environmentIntensity = 0.55; hemi.intensity = 0.6;
+  apt.ceilingMeshes.forEach(m => m.visible = false); applyClip(true); orbit.enabled = true; amb?.setMode('doll');
   $('walkHint').hidden = true; $('cross').hidden = true; camera.fov = 40; frameView();
   const d = ext * 1.55; camera.position.set(center.x + d * 0.55, d * 0.85 + 2, center.z + d * 0.75); orbit.target.set(center.x, 0.4, center.z); orbit.update();
 }
 function setWalk(roomId, yawDeg) {
   leavePhoto(); mode = 'walk'; $('bWalk').classList.add('on'); pressMode('vWalk'); closeMenus();
-  apt.ceilingMeshes.forEach(m => m.visible = true); applyClip(false); orbit.enabled = false; renderer.toneMappingExposure = 1.05; setSun(38, 0xfff0dc, 2.4);
-  outside?.enable(true); document.body.classList.add('walking'); seal?.setWalk(true);
+  apt.ceilingMeshes.forEach(m => m.visible = true); applyClip(false); orbit.enabled = false;
+  outside?.enable(true); document.body.classList.add('walking'); seal?.setWalk(true); amb?.setMode('walk');
   for (const f of Object.values(furn)) { f.select(null); f.setActive(false); }
   const id = roomId && apt.roomMeshes[roomId] ? roomId : currentRoom() || layout.rooms[0].id; activateRoom(id);
   const c = roomyPoint(id); camera.fov = 62; frameView(); $('tip').hidden = true;
@@ -243,7 +246,7 @@ function doCapture(i) {   // called from the render loop: furniture layer from t
   const keep = new Set([apt.group, sun, sun.target, hemi, ...Object.values(furn).map(f => f.group)]), vis = new Map(), ceil = apt.ceilingMeshes.map(m => m.visible);
   const save = { pos: camera.position.clone(), quat: camera.quaternion.clone(), fov: camera.fov, aspect: camera.aspect, exp: renderer.toneMappingExposure, sunPos: sun.position.clone(),
     sunCol: sun.color.clone(), sunI: sun.intensity, sunV: sun.visible, hemiI: hemi.intensity, env: scene.environmentIntensity, fog: scene.fog ? scene.fog.density : 0, clip: clip.constant };
-  const wasStaged = staged;
+  const wasStaged = staged, tm = renderer.toneMapping, bg = scene.background; renderer.toneMapping = THREE.ACESFilmicToneMapping; scene.background = null;
   for (const o of scene.children) { vis.set(o, o.visible); o.visible = keep.has(o); }
   apt.ceilingMeshes.forEach(m => m.visible = true); clip.constant = 1e6; apt.section(null); if (scene.fog) scene.fog.density = 0;
   if (!wasStaged) stageMats(true); stageLight();
@@ -252,7 +255,7 @@ function doCapture(i) {   // called from the render loop: furniture layer from t
   renderer.setClearColor(0x000000, 0); renderer.clear(); renderer.render(scene, camera);
   const gl = renderer.getContext(), buf = new Uint8Array(W * H * 4); gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   renderer.setScissorTest(false); renderer.setViewport(0, 0, innerWidth, innerHeight);
-  if (!wasStaged) stageMats(false);
+  if (!wasStaged) stageMats(false); renderer.toneMapping = tm; scene.background = bg;
   for (const [o, v] of vis) o.visible = v; apt.ceilingMeshes.forEach((m, k) => m.visible = ceil[k]);
   clip.constant = save.clip; apt.section(mode === 'doll' ? CUT : null); if (scene.fog) scene.fog.density = save.fog;
   renderer.toneMappingExposure = save.exp; sun.position.copy(save.sunPos); sun.color.copy(save.sunCol); sun.intensity = save.sunI; sun.visible = save.sunV; hemi.intensity = save.hemiI; scene.environmentIntensity = save.env;
@@ -347,7 +350,7 @@ const PR_MAX = () => Math.min(devicePixelRatio, mode === 'walk' ? 1.5 : 2); let 
 function adapt(raw) {
   if (raw > 0.25) return;   // tab switch, compile, alert: not a rendering cost
   prAvg += (raw - prAvg) * 0.05; if ((prT += raw) < 1.2) return; prT = 0;
-  const pr = renderer.getPixelRatio(), max = PR_MAX();
+  const pr = renderer.getPixelRatio(), max = PR_MAX(); queueMicrotask(() => { if (renderer.getPixelRatio() !== pr) amb?.resize(); });
   if (prAvg > 1 / 55 && pr > 1) renderer.setPixelRatio(Math.max(1, +(pr - 0.25).toFixed(2)));
   else if (prAvg < 1 / 75 && pr < max) renderer.setPixelRatio(Math.min(max, +(pr + 0.25).toFixed(2)));
   else if (pr > max) renderer.setPixelRatio(max);
@@ -361,20 +364,24 @@ renderer.setAnimationLoop(() => {
   else if ((roomTick += dt) > 0.5) { roomTick = 0; const r = currentRoom(); if (r && r !== activeRoom) activateRoom(r); }
   if (mode === 'walk' || mode === 'photo') outside?.update();
   if (captureReq) { const c = captureReq; captureReq = null; try { c.res(doCapture(c.i)); } catch (e) { console.warn('[stage] capture', e); c.res(Promise.reject(e)); } }
-  if (mode !== 'photo') renderer.render(scene, camera);   // photos mode draws no 3D (captures above still run)
+  if (mode !== 'photo') { if (amb) amb.render(dt); else renderer.render(scene, camera); }   // photos mode draws no 3D (captures above still run)
   drawPlanMarker();
 });
 addEventListener('resize', frameView);
 let outside = null, planName = '';
+const amb = createAmbiance({ renderer, scene, camera, apt, layout, sun, hemi, center, ext, sunAz, furn, Furnish,
+  outside: { get world() { return outside?.world; }, get sky() { return outside?.sky; }, setTime: h => outside?.setTime(h) } });
+window.ambiance = amb;
+for (const b of document.querySelectorAll('[data-mood]')) { b.setAttribute('aria-pressed', String(b.dataset.mood === amb.mood)); b.onclick = () => { amb.setMood(b.dataset.mood); for (const x of document.querySelectorAll('[data-mood]')) x.setAttribute('aria-pressed', String(x === b)); }; }
 const listingId = unit.split('_plan_')[0];
 const outsideReady = fetch('/map/listings.json').then(r => r.json()).then(d => (d.listings || []).find(l => l.id === listingId)).then(l => {
   outside = createOutside({ scene, camera, renderer, apt, layout, sun, hemi, lat: l ? +l.lat : NaN, lon: l ? +l.lon : NaN, planName: () => planName,
-    onStatus: s => { if (s === 'measuring') toast('Bringing in the view outside…'); } });
+    onStatus: s => { if (s === 'measuring') toast('Bringing in the view outside…'); }, onLight: st => amb.fromOutside(st) });
   window.outside = outside; if (mode === 'walk') outside.enable(true);
 }).catch(e => console.warn('[home] outside', e));
 setDoll();
 (async () => {
-  await Promise.race([Promise.all(roomJobs), new Promise(r => setTimeout(r, 12000))]); hideAids();
+  await Promise.race([Promise.all(roomJobs), new Promise(r => setTimeout(r, 12000))]); hideAids(); amb.applyStyle($('style').value); amb.dress(); amb.budgetLights();
   try { await renderer.compileAsync(scene, camera); } catch (e) { renderer.compile(scene, camera); }
   holdRender = false; requestAnimationFrame(() => { $('loading').style.opacity = 0; setTimeout(() => $('loading').remove(), 700); });
 })();
@@ -455,7 +462,7 @@ function drawBudget() { $('budget').textContent = money(budget); renderTotals();
 $('bMinus').onclick = () => { budget = Math.max(500, budget - 250); drawBudget(); syncAgent(); };
 $('bPlus').onclick = () => { budget = Math.min(25000, budget + 250); drawBudget(); syncAgent(); };
 window.setDesignBudget = v => { budget = Math.max(0, Math.min(25000, Math.floor(+v || 0))); drawBudget(); syncAgent(); };   // furnish/bank.js (Nessie)
-$('style').onchange = syncAgent;
+$('style').onchange = () => { syncAgent(); amb?.applyStyle($('style').value); };
 for (const b of $('scope').querySelectorAll('button')) { b.setAttribute('aria-pressed', b.dataset.v === scope); b.onclick = () => { if (homeRun) return; scope = b.dataset.v; for (const x of $('scope').querySelectorAll('button')) x.setAttribute('aria-pressed', x === b); refreshRoomUi(); syncAgent(); }; }
 for (const b of $('tier').querySelectorAll('button')) { b.setAttribute('aria-pressed', b.dataset.v === tier); b.onclick = () => { tier = b.dataset.v; for (const x of $('tier').querySelectorAll('button')) x.setAttribute('aria-pressed', x === b); syncAgent(); }; }
 
