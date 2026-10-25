@@ -100,9 +100,10 @@ def claude_json(system, text, schema, model, max_tokens, note):
 
 SHORTLIST_SCHEMA = {"type": "object", "additionalProperties": False, "properties": {
     "palette": {"type": "string"}, "wood": {"type": "string"}, "accent": {"type": "string"}, "notes": {"type": "string"},
+    "palette_hex": {"type": "array", "items": {"type": "string"}}, "wood_hex": {"type": "string"}, "accent_hex": {"type": "string"},   # the props kit dresses the room in these (textiles, curtains, wall art match)
     "slots": {"type": "array", "items": {"type": "object", "additionalProperties": False, "properties": {"slot": {"type": "string"}, "category": {"type": "string"},
         "picks": {"type": "array", "items": {"type": "object", "additionalProperties": False, "properties": {"id": {"type": "string"}, "why": {"type": "string"}}, "required": ["id", "why"]}}}, "required": ["slot", "category", "picks"]}}},
-    "required": ["palette", "wood", "accent", "notes", "slots"]}
+    "required": ["palette", "palette_hex", "wood", "wood_hex", "accent", "accent_hex", "notes", "slots"]}
 
 def shortlist(info, budget, style, by, wanted, hint=""):
     cands = []
@@ -120,6 +121,7 @@ def shortlist(info, budget, style, by, wanted, hint=""):
               "(sum of your first picks must be <= budget; leave 5-10% slack), in ONE coherent style: one wood tone, one accent colour, matching textiles. "
               "For each slot give 2 picks ranked: the ideal piece first, a safer/cheaper alternative second (different id). Repeated slots (two nightstands, four chairs) use the same product. "
               "Skip a slot (empty picks) if nothing suits. Candidates marked standard_range are mass-market stand-ins offered only because the designer range is thin there: pick them only when no designer piece fits the slot. "
+              "Give the palette also as palette_hex (3-5 '#rrggbb' textile and wall colours, lightest first), wood_hex and accent_hex. "
               "Keep every 'why' under 12 words. Reply JSON only.")
     area = info.get("area_m2") or 0
     size_hint = ("Scale the main piece to the room: " + ("a sofa at least 2.0 m wide, a dining table seating 6, a 160-180 cm bed" if area >= 18 else "a sofa 1.6-2.0 m wide, a table for 4, a 140-160 cm bed" if area >= 11 else "compact pieces: a two-seater, a table for 2-4, a 140 cm bed") + ". ")
@@ -179,7 +181,7 @@ def run_furnish(room, budget, style, drama=False, tier="any"):
                 rec = {kk: v for kk, v in new.items() if kk not in ("pinned", "unplaced")}; placed.append(rec); spent += c.get("price_usd") or 0
                 emit("place", item=rec, x=rec["x"], z=rec["z"], rot_deg=rec["rot_deg"], why="practical fallback that fits", spent=round(spent, 2)); done = True; break
         if not done: emit("skip", slot=slot.get("slot"), reason="no free spot left for another one" if repeated else "no candidate could be placed")
-    plan = {"room": room, "room_type": info["type"], "items": placed, "total_usd": round(spent, 2), "budget": budget, "style": style, "palette": sl.get("palette"), "notes": sl.get("notes"), "walkable": True, "picker": f"agent haiku ${usd:.4f}"}
+    plan = {"room": room, "room_type": info["type"], "items": placed, "total_usd": round(spent, 2), "budget": budget, "style": style, "palette": sl.get("palette"), "palette_hex": sl.get("palette_hex"), "wood": sl.get("wood"), "wood_hex": sl.get("wood_hex"), "accent": sl.get("accent"), "accent_hex": sl.get("accent_hex"), "notes": sl.get("notes"), "walkable": True, "picker": f"agent haiku ${usd:.4f}"}
     (HERE / "plans").mkdir(exist_ok=True); json.dump(plan, open(HERE / "plans" / f"{room}.json", "w"), indent=1)
     emit("summary", total_usd=round(spent, 2), budget=budget, saved_usd=round((budget or spent) - spent, 2), n_items=len(placed), palette=sl.get("palette"), wood=sl.get("wood"), accent=sl.get("accent"), notes=sl.get("notes"), usd=round(usd, 4))
 

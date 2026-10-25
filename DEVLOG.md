@@ -455,3 +455,43 @@ changed units were promoted (none had saved furniture) and renamed / leveled / d
 - The owner's nine "wrong" flags were all Fritz Hansen Z-up exports lying on their side; a yaw flip could not fix them and their catalogue boxes were measured lying down, so the extents fit kept tipping them back. Flags now carry `up_fix` (the up axis) and `dims_m` (the box measured upright); the viewer applies `up_fix` at full confidence and skips the extents fit, `place.fix_item` takes `dims_m`. The gallery has a **flip up** button that cycles the up axis and re-measures. The `/api/gallery_flags` read-modify-write is locked (concurrent cell saves were losing updates).
 - Sweep of all 257 Fritz Hansen items on contact sheets: 9 more fixed the same way (`by: "opus-sweep"` in the flags): After MA400 round table, Avion pendant, Dot MS3170, Taburet, Night Owl (file in decimetres), Lune JH600 and Pluralis KS439 (files in millimetres), PK33 and PK91 (low stools the stool rule in `canon_dims` tipped once they were filed as stools).
 - Categories: `designer/recat.json` (per id, applied in `fix_item` after the name rules): Sonnet pass over the brand, corrected against the renders (Little Friend are tables, castor chairs are desk chairs, Alphabet bolsters/cushions/backless platforms and single Lune modules stay "other"). Fritz Hansen "other" 178 -> 25; the agent's pool gains about 150 designer pieces (Series 7, Grand Prix, Ant, N02, Vico Duo, Essay, Analog, Superellipse, PK tables, Egg/Swan/Ro/Fri...).
+
+## Oct 25, small hours: sweep over every apartment (audit, names, fixtures, reachability)
+
+`plan3d/audit.py`: free checks on every layout, drawn into the plan's pixels, ranked: drawn rooms not built (CubiCasa
+room classes not covered), model walls missed, open outline, area vs listed, no bathroom, rooms you cannot walk into
+(free space per level, doorways open), windows on interior walls, narrow doors, generic names, stacked levels without a
+stair. `audit.overlay()` draws the layout over the plan (rooms tinted and named, walls, doors, windows, fixtures, and the
+numbered changes of connect.py) for review.
+- Names: Vision OCR read nothing on 118 plans (small coloured labels); sparse readings are redone at 2x
+  (`room_names.ocr`), and upper levels of townhouses are now matched in their own drawing (level offset was ignored).
+- `plan3d/fixtures.py` (new, in hybrid_run.sh): only 72 of 813 units had a toilet, 65 a kitchen. Generic rooms are typed
+  from the CubiCasa icons (toilet / tub -> bath) or a dominant room class; baths get tub or shower, toilet, vanity;
+  the kitchen (or the living space holding the drawn appliances) gets a run fridge | counter, stove, sink, dishwasher along
+  the wall nearest the drawn appliances; closets get a rod. Placed flush to a room edge, back to the wall, clear of door
+  swings (relaxed to 0.45 m when nothing fits) and of each other. Units with a toilet 72 -> 665, a kitchen 65 -> 628.
+- Bug: the annotation's fixtures on E / W walls faced the wall with width and depth swapped (170 repaired; source fixed in
+  `plan_engine.apply_annotation`). Verified headless: the demo bath's toilet tank and vanity tap now sit at the wall.
+- `plan3d/connect.py` (new): rooms cut off from the rest of their level (316 units). Candidates are wall stretches between
+  two free-space parts (probing through unfloored gaps); a stretch is removed only where both the learned wall mask and the
+  plan's own ink show no wall (ink tolerates tilted plans), a door is added only at a drawn door symbol or a gap in the drawn
+  wall, never on a guess (the first version guessed and put doors through solid walls). 1333 Gough "C": a closet wall ran on
+  through the hallway (removed). 243 stretches removed, 147 doors added over 252 units; unreachable 316 -> 154.
+- Haiku as a reviewer did not pass calibration: on whole overlays it called nearly every removed stretch a wall (3 of 14
+  right), on zoomed crops 16 of 21, wrong in both directions; the evidence rules scored 21 of 21 on the same marks and a
+  random sample of the final run 15 of 16 clear. Haiku is not used to accept or reject geometry.
+Backups: `layouts_prepolish/` (before this sweep).
+- Fixture overlaps (owner: "fridge inside a compartment"). Kitchen runs are now consecutive slots: fridge | counter |
+  stove | counter section with the sink set into it and the dishwasher under it (the only intended overlaps: the builder
+  draws a sink as a basin in a counter top, a dishwasher as a front panel on a counter cabinet). `fixtures.resolve_overlaps`
+  cuts any counter around a fridge / stove / washer standing in it (39, from the annotated kitchens) and drops the lesser of
+  any other two overlapping fixtures (43: a toilet in a tub, a vanity in a toilet...). Unintended overlaps over 852 units: 0.
+
+## Oct 25, late morning: props kit (lived-in rooms)
+- `app/furnish/props.js`, built after every plan load (`Props.build`) and for pieces added by hand. Props are children of their piece (they move with it), never plan items: no fit check, no path check, no cart, no picking, skipped by the selection highlight. Toggle **decor** in the furniture panel (`localStorage props`).
+- Heights come from the model, not the catalogue box: rays straight down find the mattress top and edges, the seat, the back's peak and front face, the arms, tabletops (round ones too) and every shelf of a bookcase (with an upward ray for the clearance and sideways rays for the bay width).
+- Textiles are procedural: a draped duvet (cloth mapped over the mattress with rounded edges, folds in the fall, pooling at the floor) with a turned-back band, superquadric pillows and cushions leaning on the headboard / sofa back, a throw across the bed foot and over a sofa arm, sheer pleated curtains on a rod for each window (not in kitchens, baths, halls).
+- Objects: 54 CC0 Poly Haven photoscans (`props/props.json`, Draco + WebP, 17 MB, gitignored like every GLB), chosen per surface by role and real size, kept clear of lamps standing on the same top. Books are procedural (stacks on tables, instanced runs with gaps and a leaning book on shelves).
+- Art: 28 public-domain paintings from the Art Institute of Chicago (`art/art.json`, images gitignored), matched to the room palette in Lab; framed above the bed and the sofa when a wall is right behind. With no accent in the brief, the painting's strongest colour becomes the room accent.
+- The agent now returns `palette_hex`, `wood_hex`, `accent_hex` and the plan keeps them with `wood` and `accent`; older plans fall back to colour words in the brief.
+- Checked headless (walk camera via `window.walk.teleport`) on gs-22612_plan_07 r0/r1/r2/r5 and gs-22535_plan_07 r1/r2/r11.

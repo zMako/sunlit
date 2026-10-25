@@ -66,3 +66,10 @@ app/apify/.venv/
 app/apify/jobs/
 app/apify/greystar-actor/storage/
 app/plan3d/photos/staged/
+
+# x402 wallet private keys (agent + merchant); never commit
+app/checkout/.wallets.json
+app/furnish/metrics/fit_catch_runs/
+
+# props kit: public-domain paintings (sources and URLs in app/furnish/art/art.json)
+app/furnish/art/*.jpg

@@ -3,6 +3,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import { Props, propsOn } from './props.js';
 
 const DEG = Math.PI / 180;
 const CORRIDOR = 0.75, GRID = 0.1, WALL_SNAP = 0.10, ITEM_SNAP = 0.05;
@@ -45,10 +46,10 @@ export class Furnish {
     try { const r = await fetch(`/api/furnish?room=${encodeURIComponent(this.room)}`); if (r.ok) plan = await r.json(); } catch (e) {}
     this.plan = plan; this.clear();
     for (const it of (plan.items || [])) await this.addItem(it, false);
-    this._refresh();
+    this._refresh(); Props.build(this);   // decor after the furniture: it reads the models it sits on
   }
 
-  async setPlan(plan, save = false) { this.plan = plan; this.clear(); for (const it of (plan.items || [])) await this.addItem(it, false); this._refresh(); if (save) this.save(); }
+  async setPlan(plan, save = false) { this.plan = plan; this.clear(); for (const it of (plan.items || [])) await this.addItem(it, false); this._refresh(); Props.build(this); if (save) this.save(); }
   itemById(id) { return this.items.find(it => it.spec.id === id); }
 
   // ---------- items ----------
@@ -86,10 +87,10 @@ export class Furnish {
         bb = new THREE.Box3().setFromObject(inner); sz = bb.getSize(new THREE.Vector3()); const c = bb.getCenter(new THREE.Vector3()); it.natural = [sz.x, sz.z, sz.y];   // w, d, h before stretching
         inner.position.sub(c); inner.position.y += sz.y / 2;   // rest on the floor, centred on footprint
         const s = new THREE.Vector3(w / Math.max(sz.x, 1e-3), h / Math.max(sz.y, 1e-3), d / Math.max(sz.z, 1e-3));
-        const wrap = new THREE.Group(); wrap.add(inner); wrap.scale.copy(s); it.obj.add(wrap); built = true; it.modelSrc = glbSrc; it.axisFix = best !== tries[0];
+        const wrap = new THREE.Group(); wrap.add(inner); wrap.scale.copy(s); it.obj.add(wrap); it.model = wrap; built = true; it.modelSrc = glbSrc; it.axisFix = best !== tries[0];
         if (spec.category === 'bed' && h < 0.42) {   // manufacturers model the frame only: add a mattress so the bed reads as a bed
           const mat = new THREE.Mesh(new THREE.BoxGeometry(Math.max(0.6, w - 0.12), 0.22, Math.max(1.2, d - 0.16)), new THREE.MeshPhysicalMaterial({ color: 0xf2eee6, roughness: 0.95, sheen: 0.3 }));
-          mat.position.set(0, h - 0.06 + 0.11, 0.02); mat.castShadow = true; mat.userData.item = it; it.obj.add(mat);
+          mat.position.set(0, h - 0.06 + 0.11, 0.02); mat.castShadow = true; mat.userData.item = it; it.obj.add(mat); it.mattress = mat;
           Furnish._bump('fabric').then(t => { if (t) { mat.material.normalMap = t; mat.material.normalScale.set(0.4, 0.4); mat.material.needsUpdate = true; } });
         }
         break;
@@ -107,7 +108,7 @@ export class Furnish {
     this._lamp(it);
     this._applyClip(it.obj);
     this.group.add(it.obj); this.items.push(it);
-    if (markDirty) { this._refresh(); this._touch(); }
+    if (markDirty) { this._refresh(); this._touch(); if (this._pal) Props.forItem(this, it); }
     return it;
   }
 
@@ -241,7 +242,7 @@ export class Furnish {
     for (const it of this.items) { const hard = it.problems.some(p => !p.startsWith('blocks')); const soft = it.problems.length && !hard;
       const col = hard ? 0xff5a5a : soft ? 0xffb347 : (it === this.selected ? 0x66ccff : 0x9fe3c0);
       it.fp.material.color.setHex(col); it.fm.material.color.setHex(col); it.fp.material.linewidth = 1;
-      it.obj.traverse(o => { if (o.isMesh && o.material && o.material.emissive) { o.material.emissive.setHex(it === this.selected ? 0x224466 : 0x000000); } });
+      it.obj.traverse(o => { if (o.isMesh && !o.userData.prop && o.material && o.material.emissive) { o.material.emissive.setHex(it === this.selected ? 0x224466 : 0x000000); } });
       it.label.visible = true; }
     this._panel();
   }
@@ -256,12 +257,13 @@ export class Furnish {
         <span class="fprice">${it.spec.price_usd != null ? '$' + (+it.spec.price_usd).toFixed(0) + (it.spec.price_source === 'estimated' ? ' <span class="fdim">est.</span>' : '') : '<span class="fdim">price on request</span>'}</span> ${it.spec.product_url ? `<a href="${it.spec.product_url}" target="_blank">product</a>` : ''}${it.spec.borrowed ? ' <span class="fdim">· from the standard range (few designer pieces in this category)</span>' : ''}
         ${it.problems.length ? `<div class="fprob">${it.problems.join(' · ')}</div>` : ''}</div>`).join('') +
       `<div class="frow"><button id="fsave">Save</button> <button id="fauto">Auto-arrange</button> <button id="freload">Reload</button> <span id="fstatus" class="fdim">${this.dirty ? 'unsaved' : ''}</span></div>
-       <div class="fdim"><label><input type="checkbox" id="fikea" ${this.useIkeaModels ? 'checked' : ''}> 3D product models (local cache)</label></div>
+       <div class="fdim"><label><input type="checkbox" id="fikea" ${this.useIkeaModels ? 'checked' : ''}> 3D product models (local cache)</label> <label><input type="checkbox" id="fprops" ${propsOn() ? 'checked' : ''}> decor (bedding, cushions, books, art, curtains)</label></div>
        <div class="fdim">click select · drag move · R rotate 90° · [ ] 15° · arrows nudge 5 cm · D duplicate · Del remove · Shift no snap${this.fixtures.length ? ` · ${this.fixtures.length} built-in fixtures are obstacles` : ''}</div>
        ${items.some(it => String(it.spec.id||'').startsWith('abo-')) ? `<div class="fdim">Amazon items: 3D models and images from the Amazon Berkeley Objects dataset © Amazon.com, CC BY 4.0; resized and compressed; prices marked est. are our estimates from comparable products and are confirmed at the merchant.</div>` : ''}
        ${items.some(it => it.spec.price_source === 'estimated' && String(it.spec.id||'').startsWith('dsg-')) ? `<div class="fdim">Designer prices marked est. are estimated from the brand's and category's listed prices; the final quote comes from the dealer.</div>` : ''}`;
     this.panelEl.querySelectorAll('.fitem').forEach(el => el.onclick = () => this.select(this.items[+el.dataset.i]));
     const b = id => this.panelEl.querySelector('#' + id); b('fsave').onclick = () => this.save(); b('freload').onclick = () => this.loadPlan(); b('fauto').onclick = () => this.auto();
+    b('fprops').onchange = e => Props.toggle(e.target.checked);
     b('fikea').onchange = e => { this.useIkeaModels = e.target.checked; localStorage.setItem('models3d', e.target.checked ? '1' : '0'); this.loadPlan(); };
   }
 

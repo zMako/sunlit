@@ -1,0 +1,58 @@
+# Credits
+
+All models from Poly Haven (https://polyhaven.com), licensed CC0. Attribution not required; given here anyway.
+
+- Ceramic Vase 01 (ceramic_vase_01) by James Ray Cock - https://polyhaven.com/a/ceramic_vase_01
+- Ceramic Vase 02 (ceramic_vase_02) by James Ray Cock - https://polyhaven.com/a/ceramic_vase_02
+- Ceramic Vase 03 (ceramic_vase_03) by James Ray Cock - https://polyhaven.com/a/ceramic_vase_03
+- Ceramic Vase 04 (ceramic_vase_04) by James Ray Cock - https://polyhaven.com/a/ceramic_vase_04
+- Antique Ceramic Vase 01 (antique_ceramic_vase_01) by James Ray Cock - https://polyhaven.com/a/antique_ceramic_vase_01
+- Brass Vase 01 (brass_vase_01) by Rico Cilliers - https://polyhaven.com/a/brass_vase_01
+- Brass Vase 02 (brass_vase_02) by Rico Cilliers - https://polyhaven.com/a/brass_vase_02
+- Brass Vase 03 (brass_vase_03) by Rico Cilliers - https://polyhaven.com/a/brass_vase_03
+- Brass Vase 04 (brass_vase_04) by Rico Cilliers - https://polyhaven.com/a/brass_vase_04
+- Metal Jug (metal_jug) by Anzor Lezhava - https://polyhaven.com/a/metal_jug
+- Jug 01 (jug_01) by Kuutti Siitonen - https://polyhaven.com/a/jug_01
+- Ceramic Pot (ceramic_pot) by Aron Łyczek - https://polyhaven.com/a/ceramic_pot
+- Brass Pot 02 (brass_pot_02) by Rico Cilliers - https://polyhaven.com/a/brass_pot_02
+- Wooden Bowl 01 (wooden_bowl_01) by Oliver Harries - https://polyhaven.com/a/wooden_bowl_01
+- Wooden Bowl 02 (wooden_bowl_02) by Kuutti Siitonen - https://polyhaven.com/a/wooden_bowl_02
+- Carved Wooden Plate (carved_wooden_plate) by Jan Martens - https://polyhaven.com/a/carved_wooden_plate
+- Brass Goblets (brass_goblets) by Tina - https://polyhaven.com/a/brass_goblets
+- Brass Candleholders (brass_candleholders) by Tina - https://polyhaven.com/a/brass_candleholders
+- Wooden Candlestick (wooden_candlestick) by Josh Dean - https://polyhaven.com/a/wooden_candlestick
+- Vintage Oil Lamp (vintage_oil_lamp) by Monsta3D - https://polyhaven.com/a/vintage_oil_lamp
+- Brass Diya Lantern (brass_diya_lantern) by Bhargav Kubal - https://polyhaven.com/a/brass_diya_lantern
+- Lantern 01 (Lantern_01) by Rajil Jose Macatangay - https://polyhaven.com/a/Lantern_01
+- Book Encyclopedia Set 01 (book_encyclopedia_set_01) by John Malcolm - https://polyhaven.com/a/book_encyclopedia_set_01
+- Concrete Cat Statue (concrete_cat_statue) by Rico Cilliers, Riley Queen - https://polyhaven.com/a/concrete_cat_statue
+- Carved Wooden Elephant (carved_wooden_elephant) by Greg Zaal - https://polyhaven.com/a/carved_wooden_elephant
+- Bronze Whale Statue (bronze_whale_statue) by Tina - https://polyhaven.com/a/bronze_whale_statue
+- Bronze Ray Statue (bronze_ray_statue) by Tina - https://polyhaven.com/a/bronze_ray_statue
+- Marble Bust 01 (marble_bust_01) by Rico Cilliers - https://polyhaven.com/a/marble_bust_01
+- Horse Statue 01 (horse_statue_01) by Rico Cilliers - https://polyhaven.com/a/horse_statue_01
+- Lambis Shell (lambis_shell) by Kuutti Siitonen - https://polyhaven.com/a/lambis_shell
+- Chess Set (chess_set) by Riley Queen - https://polyhaven.com/a/chess_set
+- Mantel Clock 01 (mantel_clock_01) by Yann Kervran, Rico Cilliers - https://polyhaven.com/a/mantel_clock_01
+- Alarm Clock 01 (alarm_clock_01) by Yann Kervran, James Ray Cock - https://polyhaven.com/a/alarm_clock_01
+- Wall Clock (wall_clock) by PierreB3D - https://polyhaven.com/a/wall_clock
+- Standing Picture Frame 01 (standing_picture_frame_01) by James Ray Cock - https://polyhaven.com/a/standing_picture_frame_01
+- Standing Picture Frame 02 (standing_picture_frame_02) by James Ray Cock - https://polyhaven.com/a/standing_picture_frame_02
+- Potted Plant 01 (potted_plant_01) by Rico Cilliers - https://polyhaven.com/a/potted_plant_01
+- Potted Plant 02 (potted_plant_02) by Rico Cilliers - https://polyhaven.com/a/potted_plant_02
+- Potted Plant 04 (potted_plant_04) by James Ray Cock - https://polyhaven.com/a/potted_plant_04
+- Planter Box 01 (planter_box_01) by James Ray Cock - https://polyhaven.com/a/planter_box_01
+- Wicker Basket 01 (wicker_basket_01) by Kuutti Siitonen - https://polyhaven.com/a/wicker_basket_01
+- Wicker Basket 02 (wicker_basket_02) by Kuutti Siitonen - https://polyhaven.com/a/wicker_basket_02
+- Throw Pillows 01 (throw_pillows_01) by Serhii Khromov - https://polyhaven.com/a/throw_pillows_01
+- Tea Set 01 (tea_set_01) by James Ray Cock, Rico Cilliers, Jurita Burger - https://polyhaven.com/a/tea_set_01
+- Wine Bottles 01 (wine_bottles_01) by Rico Cilliers, Jurita Burger - https://polyhaven.com/a/wine_bottles_01
+- Wooden Cutting Board (wooden_cutting_board) by Kuutti Siitonen - https://polyhaven.com/a/wooden_cutting_board
+- Vintage Electric Kettle (vintage_electric_kettle) by SV Garip - https://polyhaven.com/a/vintage_electric_kettle
+- Food Apple 01 (food_apple_01) by Oliver Harries - https://polyhaven.com/a/food_apple_01
+- Lemon (lemon) by Kuutti Siitonen - https://polyhaven.com/a/lemon
+- Pears Asian 01 (food_pears_asian_01) by Amal Kumar - https://polyhaven.com/a/food_pears_asian_01
+- Food Pomegranate 01 (food_pomegranate_01) by Oliver Harries - https://polyhaven.com/a/food_pomegranate_01
+- Vintage Suitcase (vintage_suitcase) by Maximilian Schuster - https://polyhaven.com/a/vintage_suitcase
+- Ukulele 01 (Ukulele_01) by Joseph Burgan - https://polyhaven.com/a/Ukulele_01
+- Classic Laptop (classic_laptop) by Arrangemonk - https://polyhaven.com/a/classic_laptop
