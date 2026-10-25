@@ -295,3 +295,14 @@ Segmentation + harness -> segmentation-driven layout -> panorama completion -> l
 - Metrics (`app/plan3d/metrics/`): 444 plans / 26 buildings / 359 walkable units; plan -> layout 0.49 s median, page to
   first frame 3.8 s (SwiftShader); door-width scale vs printed dims 12.6% median error (n=41), room dims 11.3% (n=80);
   CubiCasa5K 100-plan sample: room IoU 27% vs the paper's trained 57%, out of domain, not for the landing page.
+
+## Oct 24 22:40: library at 813 units / 58 buildings; on-demand annotation; metrics re-run
+- AvalonBay rejected (terms forbid robots/scrapers, despite robots.txt); Essex, Equity, Tishman bot-walled; used UDR
+  (no terms page, robots allow; per-plan sqft -> 82 true-size units) and Greystar's inner Bay Area properties (plans
+  only). `feasibility/scrape_udr.py`, `scrape_greystar_bay.py`. Geometry built for all; 813 units, 134 true size.
+- `app/plan3d/annotate_on_demand.py` + `POST /api/annotate` (ledger-checked, one at a time, keeps the old layout if
+  the new one is not annotated, warns when rooms cover < half the listed sqft). Landing and map show the button.
+- Landing hero: library counts, four metric tiles, "How we measured", side-by-side link. reindex.py now carries
+  bedrooms/sqft/annotated per unit. Spend $9.07 / $10.
+- Known: many new plans read poorly (13-16 small rooms, or only a bath found); the 444 -> 359 breadth tile predates the
+  library growth and bench.py was re-run after it.

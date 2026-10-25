@@ -1,42 +1,42 @@
 [
  {
   "key": "plans_processed",
-  "value": 444,
+  "value": 897,
   "unit": "plans",
   "label": "floor plans processed",
-  "n": 26,
-  "method": "plan images scraped from 26 Greystar SF buildings, every one run through the classical reader (sweep/sweep.json): 372 readable, 67 unreadable, 5 not a plan"
+  "n": 47,
+  "method": "plan images scraped from 47 Greystar SF buildings, every one run through the classical reader (sweep/sweep.json): 372 readable, 67 unreadable, 5 not a plan"
  },
  {
   "key": "walkable_units",
-  "value": 359,
+  "value": 813,
   "unit": "apartments",
   "label": "apartments rebuilt as walkable 3D",
-  "n": 23,
-  "method": "units in layouts/index.json (layout with >= 2 rooms, opens in apartment.html), from 23 buildings; 82% of the 439 plan images"
+  "n": 59,
+  "method": "units in layouts/index.json (layout with >= 2 rooms, opens in apartment.html), from 59 buildings; 91% of the 892 plan images"
  },
  {
   "key": "rooms_detected",
-  "value": 2523,
+  "value": 6346,
   "unit": "rooms",
   "label": "rooms detected",
-  "n": 359,
+  "n": 813,
   "method": "sum of rooms over the walkable layouts"
  },
  {
   "key": "doors_detected",
-  "value": 4775,
+  "value": 11137,
   "unit": "doors",
   "label": "doors detected",
-  "n": 359,
-  "method": "openings of type door over the walkable layouts (plus 806 cased openings)"
+  "n": 813,
+  "method": "openings of type door over the walkable layouts (plus 2188 cased openings)"
  },
  {
   "key": "windows_detected",
-  "value": 1420,
+  "value": 3247,
   "unit": "windows",
   "label": "windows detected",
-  "n": 359,
+  "n": 813,
   "method": "openings of type window over the walkable layouts"
  },
  {
@@ -81,11 +81,11 @@
  },
  {
   "key": "door_scale_unit_area_error",
-  "value": 36.2,
+  "value": 35.0,
   "unit": "%",
   "label": "unit area error from door widths alone vs printed sq ft",
-  "n": 26,
-  "method": "median |sum of room areas at door scale / (0.85 x printed sq ft) - 1|, signed median -21.6%; before the area rule (after it the error is 0 by construction)"
+  "n": 107,
+  "method": "median |sum of room areas at door scale / (0.85 x printed sq ft) - 1|, signed median -20.5%; before the area rule (after it the error is 0 by construction)"
  },
  {
   "key": "cubicasa_rooms_iou50",
