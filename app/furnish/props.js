@@ -224,6 +224,7 @@ export class Props {
     for (let x = w / 2 - 0.01; x > 0; x -= 0.02) if (near(x, zc)) { xr = x; break; }
     for (let z = -d / 2 + 0.01; z < 0; z += 0.02) if (near(0, z)) { zh = z; break; }
     for (let z = d / 2 - 0.01; z > 0; z -= 0.02) if (near(0, z)) { zf = z; break; }
+    it._sleepTop = top + 0.045;   // walk.js stands (and bounces) on the duvet
     const W = xr - xl, headboard = Math.max(P.top(0, -d / 2 + 0.03) ?? 0, P.top(0, zh - 0.04) ?? 0) > top + 0.12;
     const loft = 0.035 + r() * 0.015; const a1 = r() * 6, a2 = r() * 6;
     const hf = (x, z) => top + 0.018 + loft * Math.sin(Math.PI * clamp((x - xl) / W, 0, 1)) ** 0.45 + 0.006 * Math.sin(x * 9 + a1) * Math.sin(z * 7 + a2);

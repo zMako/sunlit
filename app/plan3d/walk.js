@@ -22,7 +22,7 @@ const LEVELS = (layout.levels && layout.levels.length > 1) ? layout.levels : [{ 
 const elev = (k) => (LEVELS.find(v => v.id === (k || 0)) || LEVELS[0]).elevation_m;
 const wallLevel = Object.fromEntries(layout.walls.map(w => [w.id, w.level || 0])); const roomLevel = Object.fromEntries(layout.rooms.map(r => [r.id, r.level || 0]));
 const levelAt = (feet) => { let k = LEVELS[0].id; for (const v of LEVELS) if (feet >= v.elevation_m - 0.3) k = v.id; return k; };
-const STAIRS = (layout.stairs || []).map(st => ({ st, steps: apt.stairSteps ? apt.stairSteps(st) : [], base: elev(st.from_level), r: st.rect }));
+const STAIRS = (layout.stairs || []).map(st => ({ st, steps: apt.stairSteps ? apt.stairSteps(st) : [], rails: apt.stairRails ? apt.stairRails(st) : [], base: elev(st.from_level), r: st.rect }));
 const inRect = (p, r, m = 0) => Math.abs(p.x - r.x) <= r.w / 2 + m && Math.abs(p.y - r.z) <= r.d / 2 + m;
 const inStairwell = (p, toLevel) => STAIRS.some(S => S.st.to_level === toLevel && inRect(p, S.r));
 const inRings = (p, rings) => rings.some(rg => pointInPoly(p, rg.outer) && !(rg.holes || []).some(h => pointInPoly(p, h)));
@@ -102,14 +102,17 @@ function itemColliders() {   // furniture, fixtures and stair steps as boxes wit
   for (const [rid, f] of Object.entries(byRoom)) for (const it of (f.items || [])) {
     const s = it.spec || {}; if (+s.h_m < 0.12 || s.category === 'rug') continue;   // rugs are walkable
     const rot = -THREE.MathUtils.degToRad(+s.rot_deg || 0); const u = new THREE.Vector2(Math.cos(rot), -Math.sin(rot));   // local x after yaw rot_deg (rotation.y = -rot)
-    const b = obb(new THREE.Vector2(+s.x || 0, +s.z || 0), u, (+s.w_m || 0.5) / 2, (+s.d_m || 0.5) / 2, 'item'); b.base = elev(roomLevel[rid.split('__').pop()]); b.top = b.base + (+s.h_m || 0.8); out.push(b);
+    const b = obb(new THREE.Vector2(+s.x || 0, +s.z || 0), u, (+s.w_m || 0.5) / 2, (+s.d_m || 0.5) / 2, 'item'); b.base = elev(roomLevel[rid.split('__').pop()]); b.top = b.base + (+s.h_m || 0.8);
+    if (s.category === 'bed') { b.bed = true; b.top = b.base + (it._sleepTop ?? (it.mattress ? +s.h_m + 0.16 : Math.min(+s.h_m || 0.5, 0.55))); }   // a bed is stood on at its duvet, not its headboard (props.js measures it)
+    out.push(b);
   }
   for (const fx of layout.fixtures || []) {   // fixtures from the layout (counters, tub...) in case no Furnish instance carries them
     const r = fx.rect || {}; if (fx.type === 'closet_rod') continue;
     const rot = -THREE.MathUtils.degToRad(+r.rot_deg || 0); const u = new THREE.Vector2(Math.cos(rot), -Math.sin(rot));
     const b = obb(new THREE.Vector2(+r.x || 0, +r.z || 0), u, (+r.w || 0.5) / 2, (+r.d || 0.5) / 2, 'fixture'); b.base = elev(fx.level); b.top = b.base + (fx.height_m || FIX_H[fx.type] || 0.8); out.push(b);
   }
-  for (const S of STAIRS) for (const st of S.steps) { const b = obb(new THREE.Vector2(st.x, st.z), new THREE.Vector2(1, 0), st.w / 2, st.d / 2, 'stair'); b.base = S.base; b.top = S.base + st.top; out.push(b); }
+  for (const S of STAIRS) for (const st of S.steps) { const b = obb(new THREE.Vector2(st.x, st.z), new THREE.Vector2(1, 0), st.w / 2, st.d / 2, 'stair'); b.base = S.base + (st.base || 0); b.top = S.base + st.top; out.push(b); }
+
   return out;
 }
 function insideBox(p, b, m = 0) { const rel = p.clone().sub(b.c); return Math.abs(rel.dot(b.u)) <= b.hu + m && Math.abs(rel.dot(b.v)) <= b.hv + m; }
@@ -152,11 +155,19 @@ function step(dt, k = keys) {
   const target = wish(k).multiplyScalar(k.ShiftLeft || k.ShiftRight ? RUN : SPEED);
   const a = target.lengthSq() > 0 ? ACCEL : FRICTION; player.vel.lerp(target, 1 - Math.exp(-a * dt));
   const items = itemColliders(); const feet = player.feet;
+  // standing on a stair: the walls of the level below inside that stairwell are under you (rooms under a stair keep them)
+  const onStair = STAIRS.find(S => player.feet > S.base + 0.1 && inRect(player.pos, S.r, 0.35) && items.some(b => b.tag === 'stair' && Math.abs(b.top - player.feet) < 0.05 && insideBox(player.pos, b, 0.1)));
   // horizontal blockers: walls of the levels the body overlaps; furniture / steps taller than a step-up
-  const cols = wallCols.filter(b => feet + STEP < b.top && feet + HEAD > b.base).concat(items.filter(b => b.top > feet + STEP && b.base < feet + HEAD));
+  // stair steps only block when far above the feet: the body (radius R) overlaps two or three treads of a steep stair before its
+  // centre stands on the first, while the height comes from the step under the centre (groundAt)
+  const cols = wallCols.filter(b => feet + STEP < b.top && feet + HEAD > b.base && !(onStair && (wallLevel[b.tag] ?? 0) === onStair.st.from_level && inRect(b.c, onStair.r, 0.4))).concat(items.filter(b => b.top > feet + (b.tag === 'stair' ? STEP + 0.45 : STEP) && b.base < feet + HEAD && !(b.tag === 'stair' && b.base > feet + 1.1)));   // a stair overhead (the next flight up) is not in the way
   const p = player.pos.clone(); let hit = false;
-  p.x += player.vel.x * dt; hit = resolve(p, cols) || hit;         // per-axis sweep: x, then z, so you slide along walls
-  p.y += player.vel.y * dt; hit = resolve(p, cols) || hit;
+  // per-axis sweep: x, then z, so you slide along walls. Edge guard: on a stair or landing a move that would drop you more than
+  // 0.45 m is refused (the open side of a flight), on a floor one that would drop you over 1 m (the stairwell's edge)
+  const guard = player.onGround ? (STAIRS.some(S => inRect(player.pos, S.r, 0.3)) && feet > 0.05 + Math.min(...LEVELS.map(v => Math.abs(feet - v.elevation_m))) * 0 && !LEVELS.some(v => Math.abs(feet - v.elevation_m) < 0.03) ? 0.45 : 1.0) : Infinity;
+  const tryAxis = (ax, dv) => { const q = p.clone(); q[ax] += dv; let h = resolve(q, cols); if (guard < Infinity && groundAt(q, feet, items) < feet - guard) return true; p.copy(q); return h; };
+  hit = tryAxis('x', player.vel.x * dt) || hit;
+  hit = tryAxis('y', player.vel.y * dt) || hit;
   // soft world bound: the unit's bounding box plus 2.5 m (balconies/patios are drawn outside the walls)
   const cx = Math.min(Math.max(p.x, UB.minX), UB.maxX), cz = Math.min(Math.max(p.y, UB.minZ), UB.maxZ); if (cx !== p.x || cz !== p.y) { p.set(cx, cz); hit = true; }
   const blocked = hit && p.distanceTo(player.pos.clone().add(player.vel.clone().multiplyScalar(dt))) > 0.004 && player.vel.length() > 0.4;
@@ -166,7 +177,12 @@ function step(dt, k = keys) {
   if ((k.Space) && player.onGround) { player.vy = JUMP; player.onGround = false; player.jumps++; click(300, 0.05); }
   player.vy -= G * dt; let nf = player.feet + player.vy * dt;
   const ground = groundAt(p, Math.max(player.feet, nf), items);
-  if (nf <= ground) { const landed = !player.onGround && player.vy < -2; nf = ground; player.vy = 0; player.onGround = true; if (landed) click(180, 0.04); }
+  if (nf <= ground) {   // landing; on a bed you bounce (as in Minecraft): ~70% of the impact back, Space held keeps it going, the head never quite reaches the ceiling
+    const impact = -player.vy; const bed = impact > 1.2 && items.find(b => b.bed && Math.abs(b.top - ground) < 0.02 && insideBox(p, b, 0.08));
+    const vMax = Math.sqrt(2 * G * Math.max(0.12, ceilingAt(p, ground) - HEAD - ground - 0.03)); const bv = bed ? Math.min(vMax, Math.max(impact * 0.7, k.Space ? JUMP : 0)) : 0;
+    nf = ground;
+    if (bv > 1.3) { player.vy = bv; player.onGround = false; player.nudge = 0.16; player.bounces = (player.bounces || 0) + 1; boing(bv / vMax); }
+    else { const landed = !player.onGround && player.vy < -2; player.vy = 0; player.onGround = true; if (landed) click(180, 0.04); } }
   else player.onGround = nf - ground < 0.02;
   const ceil = ceilingAt(p, player.feet); if (nf + HEAD > ceil) { nf = Math.max(ground, ceil - HEAD); player.vy = Math.min(player.vy, 0); }
   player.feet = nf;
@@ -197,6 +213,10 @@ const hud = document.createElement('div'); hud.id = 'walkhud';
 hud.style.cssText = 'position:fixed;left:50%;bottom:64px;transform:translateX(-50%);padding:6px 12px;border-radius:8px;background:rgba(10,14,20,.72);color:#e8edf3;font:13px/1.4 -apple-system,Inter,sans-serif;display:none;pointer-events:none;text-align:center;z-index:30';
 document.body.appendChild(hud);
 let audio = null;
+function boing(k = 1) {   // a rising springy note, brighter for a bigger bounce
+  try { audio = audio || new (window.AudioContext || window.webkitAudioContext)(); const t = audio.currentTime, o = audio.createOscillator(), g = audio.createGain(); o.type = 'sine';
+    o.frequency.setValueAtTime(150 + 60 * k, t); o.frequency.exponentialRampToValueAtTime(380 + 180 * k, t + 0.14); g.gain.setValueAtTime(0.09, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.22); o.connect(g).connect(audio.destination); o.start(t); o.stop(t + 0.24); } catch (e) {}
+}
 function click(freq = 440, dur = 0.04) { try { audio = audio || new (window.AudioContext || window.webkitAudioContext)(); const o = audio.createOscillator(), g = audio.createGain(); o.frequency.value = freq; o.type = 'triangle'; g.gain.setValueAtTime(0.08, audio.currentTime); g.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + dur); o.connect(g).connect(audio.destination); o.start(); o.stop(audio.currentTime + dur); } catch (e) { /* no audio in headless */ } }
 
 // ---------- main loop: runs after the builder's loop in the same frame; the builder's own bounded movement is overridden ----------
@@ -221,6 +241,7 @@ window.walk = {
   setEnabled: (on) => on ? window.setWalk?.() : window.setDoll?.(),
   step: (dt, k) => { step(dt, k || {}); lastPos.copy(player.pos); },   // single physics step for tests (velocity persists between calls)
   teleport: (x, z, feet = player.feet) => { player.pos.set(x, z); player.vel.set(0, 0); player.feet = feet; player.vy = 0; player.eyeY = feet + EYE; lastPos.copy(player.pos); camera.position.set(x, feet + EYE, z); },
+  probe: (x, z, feet = player.feet) => { const p = new THREE.Vector2(x, z); return { ground: groundAt(p, feet, itemColliders()), ceiling: ceilingAt(p, feet), floors: LEVELS.map(v => [v.id, onFloor(p, v)]) }; },
   levelAt: () => levelAt(player.feet), stairs: () => STAIRS.map(S => ({ rect: S.r, climb: S.st.climb, steps: S.steps.length })),
   look: (yawDeg, pitch = -0.05) => { const y = THREE.MathUtils.degToRad(yawDeg); camera.rotation.set(0, 0, 0); camera.lookAt(camera.position.x + Math.sin(y), camera.position.y + pitch, camera.position.z + Math.cos(y)); },
   lookAt: (x, z) => { camera.rotation.set(0, 0, 0); camera.lookAt(x, EYE - 0.1, z); },
