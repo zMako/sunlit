@@ -5,7 +5,7 @@
  "room_name": "Bedroom",
  "prompt": "interior real-estate photo of a furnished bedroom, dark brown wood floor, white painted walls, honey brown ceiling, large windows with daylight, natural light, photorealistic, sharp, high dynamic range",
  "negative": "furniture changed, extra objects, extra furniture, people, text, watermark, logo, distorted, deformed, cartoon, painting, blurry, oversaturated",
- "strength": 0.32,
+ "strength": 0.35,
  "steps": 24,
  "ip_adapter_scale": 0.5,
  "controlnet_scale": 0.9,
@@ -14,10 +14,10 @@
   768,
   576
  ],
- "sd_seconds": 8.2,
- "mean_abs_diff": 7.3,
- "edges_kept_2px": 0.84,
- "note": "polish changed pixels by 7.3/255 on average; 84% of the render's edges are within 2 px in the polished image",
+ "sd_seconds": 37.0,
+ "mean_abs_diff": 7.21,
+ "edges_kept_2px": 0.671,
+ "note": "polish changed pixels by 7.2/255 on average; 67% of the render's edges are within 2 px in the polished image",
  "camera": {
   "pos": [
    13.435,

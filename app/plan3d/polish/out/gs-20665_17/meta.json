@@ -1,0 +1,31 @@
+{
+ "photo": "gs-20665/17.jpg",
+ "unit": "gs-20665_plan_00",
+ "room": "r0",
+ "room_name": "Bedroom",
+ "prompt": "interior real-estate photo of a furnished bedroom, grey laminate plank floor, white painted walls, light grey ceiling, large windows with daylight, natural light, photorealistic, sharp, high dynamic range",
+ "negative": "furniture changed, extra objects, extra furniture, people, text, watermark, logo, distorted, deformed, cartoon, painting, blurry, oversaturated",
+ "strength": 0.35,
+ "steps": 24,
+ "ip_adapter_scale": 0.5,
+ "controlnet_scale": 0.9,
+ "seed": 7,
+ "work_size": [
+  768,
+  512
+ ],
+ "sd_seconds": 32.1,
+ "mean_abs_diff": 6.23,
+ "edges_kept_2px": 0.924,
+ "note": "polish changed pixels by 6.2/255 on average; 92% of the render's edges are within 2 px in the polished image",
+ "camera": {
+  "pos": [
+   6.805,
+   1.278,
+   3.93
+  ],
+  "yaw": 338.51,
+  "pitch": -2.9,
+  "fov": 90.45
+ }
+}
