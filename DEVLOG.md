@@ -388,3 +388,9 @@ OWLv2 finds the doors in the listing photos, CLIP classifies the crops (21 listi
 1 panel, 1 wood; the rest default to shaker). `build.js` draws slab / shaker / six-panel / wood / glass / bifold leaves,
 hinge knuckles, lever or knob; `walk.js` animates two-leaf doors. Tested: a door drawn 0.54 m (now 0.91 m) opens with E and
 is walked through.
+
+## Oct 25, early morning: the black slab was the bed
+- The black footprint-shaped block in the primary bedroom was the Gubi Stay Bed: its manufacturer GLB has no vertex normals (814 of 3,363 designer files), GLTFLoader hides that with flat shading, and the material fallback (`_dressUntextured`) replaced the material and lost the flag, so the mesh lit black. Fix: compute normals before re-dressing. The ceiling guard added earlier was a wrong diagnosis (harmless, kept).
+- Viewer's walking-path check now uses the solver's rule (small pieces such as nightstands, lamps, mirrors, rugs neither block nor need the 0.75 m corridor), so the panel no longer contradicts the agent.
+- Designer meshes: 2,289 of 3,363 untextured, 190 ship a pure-black material (recoloured from catalogue words).
+- Double-door "pair" error from the owner's console did not reproduce headless on gs-22612_plan_07; left as-is, watch for it on the real GPU.
