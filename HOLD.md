@@ -56,3 +56,7 @@
 15. **Plan-engine bug to fix tomorrow:** gs-20665_plan_00 bedroom (r0) has a jagged south wall with stubs and a toilet
     placed inside it (seen in the side-by-side pair 20665/17). Many new UDR/Bay Area plans read as 13-16 small rooms or
     only a bath; the on-demand annotation warns when rooms cover < half the listed sqft.
+16. **Amazon as a second catalogue (owner's ask, 23:10).** Being added from the Amazon Berkeley Objects dataset
+    (CC BY-NC 4.0: fine for the hackathon demo, not for a commercial launch without Amazon's agreement): a few hundred
+    furniture models with dimensions and ASIN links, no prices. Live prices need the Product Advertising API, which
+    requires an Amazon Associates account; if you have or want one, say so and the price field can be filled.

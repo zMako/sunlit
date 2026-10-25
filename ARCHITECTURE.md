@@ -37,6 +37,11 @@ model_glb?, why}, total_usd, walkable, picker, room_type}`. Served by `GET/POST 
 model_glb (local), description, color, style_tags[], type_name}`. Built by `catalog.py` from IKEA US product pages
 (robots allow product and category pages; search/filter URLs are never used).
 
+## Catalogue sources
+- IKEA US product pages (facts + the product's own GLB cached locally; the owner accepted IKEA's terms risk for the demo).
+- Amazon Berkeley Objects (`app/furnish/abo/`, source `amazon-abo`, CC BY-NC 4.0, no prices, ASIN links). Planner and
+  agent prefer products that have a local `model_glb`.
+
 ## Material library: `app/furnish/materials/<id>/{color,normal,roughness,thumb}.jpg` + `index.json`
 `[{id, name, category wood_floor|tile|carpet|plaster|paint|concrete|brick|metal|fabric|stone|laminate|other, source,
 license CC0, url, mean_rgb, clip[], size_m}]`. `matmatch.py <listing_dir> <photo>` -> top-3 per surface.
