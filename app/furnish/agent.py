@@ -36,6 +36,9 @@ def catalog():
     c = json.load(open(HERE / "catalog.json")); by = {}
     for i in c["items"]:
         if i.get("width_m") and i.get("depth_m") and i.get("height_m"): by.setdefault(i["category"], []).append(i)
+    for k, v in by.items():   # prefer products with a real 3D model; model-less ones only where the category has no modelled product
+        with_model = [i for i in v if i.get("model_glb")]
+        if with_model: by[k] = with_model
     return by
 
 def fits_room(i, info):

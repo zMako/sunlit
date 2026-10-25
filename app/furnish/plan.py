@@ -66,6 +66,9 @@ def main():
         if cand and (cand[0] / "meta.json").exists(): meta = json.load(open(cand[0] / "meta.json")); listing_hint = f"{meta.get('title', '')}. {meta.get('body', '')[:200]}"
     cat = json.load(open(HERE / "catalog.json")); cat_items = {}
     for i in cat["items"]: cat_items.setdefault(i["category"], []).append(i)
+    for k, v in cat_items.items():   # prefer products with a real 3D model; keep model-less ones only where a category has no modelled product
+        with_model = [i for i in v if i.get("model_glb")]
+        if with_model: cat_items[k] = with_model
     wanted = SETS.get(room_type, SETS["other"])
     chosen, how = (None, "skipped") if a.no_claude else pick_claude(cat_items, wanted, info, a.budget, a.style, MODELS.get(a.model, a.model), room_type, listing_hint)
     if not chosen: chosen, how = pick_deterministic(cat_items, wanted, info, a.budget)
