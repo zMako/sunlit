@@ -14,18 +14,23 @@ const D2R = Math.PI / 180, FLOOR_H = 3.2, EYE = 1.6, HF = { size: 400, res: 400 
 const TILES = (window.MOVEIN_TILES || 'http://127.0.0.1:8771') + '/v1/3dtiles/root.json';   // key-hiding, spend-capped proxy (outside/tiles_server.py)
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+const uniExpoSky = { value: 1 };
 export function createOutside({ scene, camera, renderer, apt, layout, sun, hemi, lat, lon, planName = () => '', onStatus = () => {}, onLight = () => {} }) {
   const aptBox = new THREE.Box3().setFromObject(apt.group), ac = aptBox.getCenter(new THREE.Vector3());
   const ext = Math.max(aptBox.max.x - aptBox.min.x, aptBox.max.z - aptBox.min.z);
   const mainWall = findMainWall(layout);
-  const sky = new THREE.Group(); const skyMesh = new Sky(); skyMesh.scale.setScalar(4400); skyMesh.renderOrder = -1; sky.add(skyMesh); sky.visible = false; scene.add(sky);
+  const sky = new THREE.Group(); const skyMesh = new Sky(); skyMesh.material.uniforms.uExpo = uniExpoSky;
+  skyMesh.material.fragmentShader = skyMesh.material.fragmentShader.replace('void main() {', 'uniform float uExpo;\nvoid main() {').replace('gl_FragColor = vec4( retColor, 1.0 );', 'gl_FragColor = vec4( retColor * uExpo, 1.0 );'); skyMesh.scale.setScalar(4400); skyMesh.renderOrder = -1; sky.add(skyMesh); sky.visible = false; scene.add(sky);
   const world = new THREE.Group(); world.visible = false; scene.add(world);
   const attr = document.createElement('div'); attr.className = 'gattr'; attr.hidden = true; document.body.appendChild(attr);
   const st = { status: 'idle', enabled: false, hour: +(new URLSearchParams(location.search).get('hour') || 16.5), place: null, info: null, tiles: null, fps: 0 };
   const set = s => { st.status = s; onStatus(s); };
   const saved = { far: camera.far, near: camera.near };
   const uni = { carveMin: { value: new THREE.Vector3(1e9, 1e9, 1e9) }, carveMax: { value: new THREE.Vector3(-1e9, -1e9, -1e9) },
-    nearColor: { value: new THREE.Color(1, 0.98, 0.95) }, nearIn: { value: 11 }, nearOut: { value: 34 }, nearAmt: { value: 0.97 } };
+    nearColor: { value: new THREE.Color(1, 0.98, 0.95) }, nearIn: { value: 11 }, nearOut: { value: 34 }, nearAmt: { value: 0.97 },
+    // real-estate exposure: the room is exposed for, the outside 2-3 stops over (bright, low contrast, a hint of trees and facades), so the windows bloom
+    expo: { value: 1 }, desat: { value: 0 }, veil: { value: 0 }, veilColor: { value: new THREE.Color(1, 1, 1) }, blur: { value: 0 } };   // blur: texture mip bias, a lens focused on the room
+  let photo = new URLSearchParams(location.search).get('outside') !== 'raw'; const over = {};   // over: live overrides from tune()   // ?outside=raw: the photogrammetry as it is
   const tint = new THREE.Color(1.12, 1.1, 1.08), tileMats = new Set();
   let H = null, G = null, basis = null;
 
@@ -46,11 +51,12 @@ export function createOutside({ scene, camera, renderer, apt, layout, sun, hemi,
     tileMats.add(m); m.color.copy(tint); m.fog = true;
     if (m.map) { m.map.anisotropy = renderer.capabilities.getMaxAnisotropy(); m.map.needsUpdate = true; }
     m.onBeforeCompile = sh => {
-      Object.assign(sh.uniforms, { uCarveMin: uni.carveMin, uCarveMax: uni.carveMax, uNearColor: uni.nearColor, uNearIn: uni.nearIn, uNearOut: uni.nearOut, uNearAmt: uni.nearAmt });
+      Object.assign(sh.uniforms, { uCarveMin: uni.carveMin, uCarveMax: uni.carveMax, uNearColor: uni.nearColor, uNearIn: uni.nearIn, uNearOut: uni.nearOut, uNearAmt: uni.nearAmt, uExpo: uni.expo, uDesat: uni.desat, uVeil: uni.veil, uVeilColor: uni.veilColor, uBlur: uni.blur });
       sh.vertexShader = 'varying vec3 vCarveW; varying float vViewDist;\n' + sh.vertexShader.replace('#include <project_vertex>', '#include <project_vertex>\nvCarveW = (modelMatrix * vec4(transformed, 1.0)).xyz; vViewDist = length(mvPosition.xyz);');
-      sh.fragmentShader = 'uniform vec3 uCarveMin; uniform vec3 uCarveMax; uniform vec3 uNearColor; uniform float uNearIn; uniform float uNearOut; uniform float uNearAmt; varying vec3 vCarveW; varying float vViewDist;\n'
-        + sh.fragmentShader.replace('void main() {', 'void main() {\nif (all(greaterThan(vCarveW, uCarveMin)) && all(lessThan(vCarveW, uCarveMax))) discard;')
-          .replace('#include <fog_fragment>', 'gl_FragColor.rgb = mix(gl_FragColor.rgb, uNearColor, uNearAmt * (1.0 - smoothstep(uNearIn, uNearOut, vViewDist)));\n#include <fog_fragment>');
+      sh.fragmentShader = 'uniform vec3 uCarveMin; uniform vec3 uCarveMax; uniform vec3 uNearColor; uniform float uNearIn; uniform float uNearOut; uniform float uNearAmt; uniform float uExpo; uniform float uDesat; uniform float uVeil; uniform vec3 uVeilColor; uniform float uBlur; varying vec3 vCarveW; varying float vViewDist;\n'
+        + sh.fragmentShader.replace('#include <map_fragment>', '#ifdef USE_MAP\nvec4 sampledDiffuseColor = texture2D( map, vMapUv, uBlur );\ndiffuseColor *= sampledDiffuseColor;\n#endif').replace('void main() {', 'void main() {\nif (all(greaterThan(vCarveW, uCarveMin)) && all(lessThan(vCarveW, uCarveMax))) discard;')
+          .replace('#include <fog_fragment>', 'vec3 cE = gl_FragColor.rgb; cE = mix(cE, vec3(dot(cE, vec3(0.2126, 0.7152, 0.0722))), uDesat); cE = mix(cE, uVeilColor, uVeil) * uExpo;\n'
+            + 'gl_FragColor.rgb = mix(cE, uNearColor * uExpo, uNearAmt * (1.0 - smoothstep(uNearIn, uNearOut, vViewDist)));\n#include <fog_fragment>');
     };
     m.customProgramCacheKey = () => 'outside'; m.needsUpdate = true;
   }
@@ -139,6 +145,11 @@ export function createOutside({ scene, camera, renderer, apt, layout, sun, hemi,
     tint.setRGB(1.18 + 0.2 * gold - 0.8 * night, 1.14 - 0.1 * gold - 0.7 * night, 1.12 - 0.4 * gold - 0.45 * night); for (const m of tileMats) m.color.copy(tint);
     const fog = new THREE.Color().setRGB(0.82 + 0.15 * gold - 0.5 * night, 0.86 - 0.02 * gold - 0.5 * night, 0.92 - 0.2 * gold - 0.4 * night);
     if (scene.fog) { scene.fog.color.copy(fog); scene.fog.density = 0.0007 + 0.0003 * gold; } uni.nearColor.value.copy(fog).lerp(new THREE.Color(1, 1, 1), 0.55);
+    const e = photo ? THREE.MathUtils.lerp(THREE.MathUtils.lerp(2.2, 1.8, gold), 1.0, night) : 1;   // stops over the room: less at golden hour, none at night
+    uni.expo.value = e; uniExpoSky.value = photo ? THREE.MathUtils.lerp(1.8, 1.0, night) : 1; uni.desat.value = photo ? 0.3 * (1 - night) : 0; uni.veil.value = photo ? 0.24 * (1 - night) : 0;
+    uni.blur.value = photo ? 3 * (1 - night) : 0; uni.nearAmt.value = photo ? 0.5 : 0.97;   // soft focus instead of white-out: the facade across the street stays a light shape, its melted detail goes
+    uni.veilColor.value.copy(fog).lerp(new THREE.Color(1, 1, 1), 0.5); if (scene.fog && photo) scene.fog.color.multiplyScalar(e);
+    for (const [k, v] of Object.entries(over)) if (k === 'sky') uniExpoSky.value = v; else if (uni[k]) uni[k].value = v;
     onLight({ alt, gold, k, night });   // the page's ambiance rebalances sun and fill from here
   }
 
@@ -151,6 +162,8 @@ export function createOutside({ scene, camera, renderer, apt, layout, sun, hemi,
       else { if (saved.pr) renderer.setPixelRatio(saved.pr); camera.near = saved.near; camera.far = saved.far; camera.updateProjectionMatrix(); if (scene.fog) scene.fog.density = 0; attr.hidden = true; for (const l of apt.lights) if (l.userData.base != null) l.intensity = l.userData.base; }
     },
     setTime(hour) { st.hour = hour; apply(); },
+    setPhoto(on) { photo = !!on; apply(); },
+    tune(o) { Object.assign(over, o); apply(); return Object.fromEntries(['expo', 'desat', 'veil', 'nearAmt', 'nearIn', 'nearOut', 'blur'].map(k => [k, uni[k].value]).concat([['sky', uniExpoSky.value]])); },   // e.g. outside.tune({ expo: 2, nearAmt: 0.6 }) get photo() { return photo; },   // real-estate exposure on/off (compare with ?outside=raw)
     windowYaw() { return Math.atan2(mainWall.n.x, mainWall.n.y) / D2R; },   // walk convention: 0 looks +z, 90 looks +x
     get hour() { return st.hour; },
     update() {   // call every frame while enabled
