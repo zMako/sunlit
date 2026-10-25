@@ -4,7 +4,7 @@ html,body{height:100%}body{overflow:hidden}
 
 /* search bar floating over the map */
 .bar{position:fixed;left:16px;top:16px;z-index:1200;display:flex;align-items:center;gap:6px;padding:6px 6px 6px 20px;border-radius:999px;max-width:calc(100vw - 520px - 32px)}
-.bar .mark{font-family:var(--serif);font-variation-settings:"opsz" 28;font-size:22px;text-decoration:none;margin-right:10px;white-space:nowrap}
+.bar .mark{font-family:var(--serif);font-size:22px;text-decoration:none;margin-right:10px;white-space:nowrap}
 .bar .input{width:260px;background:rgba(29,29,31,.05)}
 .bar .price{display:flex;gap:6px}
 .bar .price .input{width:96px}
@@ -32,7 +32,7 @@ input[type=number]::-webkit-inner-spin-button{display:none}
 /* list */
 .side{display:flex;flex-direction:column;min-height:0;background:var(--paper);box-shadow:-1px 0 0 var(--hair)}
 .sidehead{padding:22px 24px 14px;display:flex;flex-direction:column;gap:12px}
-.sidehead b{font-family:var(--serif);font-variation-settings:"opsz" 28;font-weight:400;font-size:30px;letter-spacing:-.01em}
+.sidehead b{font-family:var(--serif);font-weight:400;font-size:30px;letter-spacing:-.01em}
 .sidehead #count2{font-size:13px}
 .sidehead .opts{display:flex;justify-content:space-between;align-items:center;gap:12px}
 label.ck{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--graphite);cursor:pointer;white-space:nowrap}
@@ -47,7 +47,7 @@ label.ck input{accent-color:var(--ink);width:15px;height:15px}
 .card.hl .strip,.card:hover .strip{box-shadow:0 0 0 2px var(--ink)}
 .cbody{padding:12px 2px 0;display:flex;flex-direction:column;gap:3px}
 .crow{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
-.ctitle{font-family:var(--serif);font-variation-settings:"opsz" 28;font-weight:400;font-size:24px;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ctitle{font-family:var(--serif);font-weight:400;font-size:24px;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .price{font-weight:500;white-space:nowrap;font-variant-numeric:tabular-nums}.price.req{color:var(--graphite);font-weight:400;font-size:13px}
 .meta{color:var(--graphite);font-size:14px}
 .facts{font-size:14px;color:var(--graphite)}.facts span+span:before{content:", "}
@@ -73,7 +73,7 @@ label.ck input{accent-color:var(--ink);width:15px;height:15px}
 .drawer{position:fixed;top:0;right:0;bottom:0;width:min(820px,100%);background:var(--paper);box-shadow:-30px 0 60px rgba(29,29,31,.12);transform:translateX(102%);transition:transform .3s cubic-bezier(.2,.8,.2,1);z-index:1300;display:flex;flex-direction:column}
 .drawer.open{transform:none}
 .dhead{padding:28px 32px 16px;display:flex;gap:16px;align-items:flex-start}
-.dhead h2{margin:0;font-family:var(--serif);font-variation-settings:"opsz" 28;font-weight:400;font-size:40px;line-height:1.05;letter-spacing:-.015em}
+.dhead h2{margin:0;font-family:var(--serif);font-weight:400;font-size:40px;line-height:1.05;letter-spacing:-.015em}
 .dhead .meta{margin-top:6px}
 .dhead .x{margin-left:auto;background:rgba(29,29,31,.06);color:var(--ink);border:0;border-radius:50%;width:40px;height:40px;font-size:20px;flex:none;cursor:pointer}
 .dhead .x:hover{background:rgba(29,29,31,.1)}
@@ -102,7 +102,7 @@ label.ck input{accent-color:var(--ink);width:15px;height:15px}
 .unit .rooms{display:none}
 .unit .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .kv{display:flex;gap:28px;flex-wrap:wrap;font-size:13px;color:var(--graphite)}
-.kv div b{display:block;font-family:var(--serif);font-variation-settings:"opsz" 28;font-weight:400;font-size:26px;color:var(--ink);line-height:1.1}
+.kv div b{display:block;font-family:var(--serif);font-weight:400;font-size:26px;color:var(--ink);line-height:1.1}
 .lightbox{position:fixed;inset:0;background:rgba(255,255,255,.92);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);z-index:3000;display:none;align-items:center;justify-content:center;cursor:zoom-out}
 .lightbox.open{display:flex}.lightbox img{max-width:92vw;max-height:90vh;background:#fff;border-radius:16px;box-shadow:var(--shadow)}
 

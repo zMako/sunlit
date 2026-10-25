@@ -1,0 +1,12 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Outside the window · go / no-go spike</title>
+<!-- Go/no-go spike for the out-of-the-window view: the apartment from the plan engine, Google Photorealistic 3D Tiles placed
+     around it (world moved, apartment fixed), our own building carved out, sun / sky / haze for a chosen time of day.
+     Served by outside/tiles_server.py (:8771). Driven by window.spike for screenshots; ?auto=1 runs one default view. -->
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#dfe6ee;font:12px/1.4 -apple-system,Helvetica,Arial,sans-serif}
+#label{position:fixed;left:14px;top:12px;background:rgba(255,255,255,.82);padding:6px 10px;border-radius:10px;color:#1d1d1f;z-index:5;white-space:pre}
+#attr{position:fixed;left:14px;bottom:10px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6);z-index:5;font-size:11px}
+#attr b{font-weight:600;letter-spacing:.01em}</style>
+<script type="importmap">{"imports":{"three":"/vendor/three/build/three.module.js","three/addons/":"/vendor/three/jsm/",
+"3d-tiles-renderer":"/vendor/3d-tiles-renderer/index.three.js","3d-tiles-renderer/plugins":"/vendor/3d-tiles-renderer/index.plugins.js"}}</script>
+</head><body><div id="label">loading…</div><div id="attr"></div>
+<script type="module" src="spike.js"></script></body></html>

@@ -12,7 +12,7 @@ PRICE = {
     "anthropic_out": {"claude-opus-5-5": 20.0e-6, "claude-sonnet-5-5": 10.0e-6, "claude-haiku-5-5": 0.50e-6},
     "anthropic_cache_write": 1.25, "anthropic_cache_read": 0.10,  # multipliers on input price
 }
-CAPS = {"google": 5.00, "anthropic": 20.00}            # USD sub-caps set by the user: Anthropic raised to $20 on Oct 24 late evening, Google Maps $5
+CAPS = {"google": 10.00, "anthropic": 20.00}           # USD sub-caps set by the user: Anthropic raised to $20 on Oct 24 late evening; Google raised to $10 on Oct 24 ~22:30 (3D tiles out of the windows)
 COUNT_CAPS = {"google_root_tile": 300, "google_geocode": 400, "google_streetview": 200}  # hard counts, all inside free tiers
 
 class SpendCapExceeded(RuntimeError): pass

@@ -9,6 +9,8 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { Apartment, MaterialLib } from '../build.js';
 import { Furnish } from '../../furnish/furnish.js';
 import { enhanceAll } from '/ui/glass.js';
+import { createOutside } from '../outside/outside.js';
+import { classifyExteriorDoors, dressExteriorDoors, sealApartment } from './hermetic.js';
 
 const Q = new URLSearchParams(location.search), unit = Q.get('unit') || 'gs-22612_plan_03';
 const $ = id => document.getElementById(id);
@@ -16,6 +18,7 @@ const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '
 const money = v => '$' + Math.round(v || 0).toLocaleString('en-US');
 const sheetW = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sheet')) || 0;
 enhanceAll();
+window.__quality = 'low';   // furnish.js: lamp lights without shadows (a shadowed point light renders the scene six more times per frame)
 
 // ---------- scene ----------
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
@@ -23,7 +26,7 @@ renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(innerWid
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.localClippingEnabled = true;
 renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.outputColorSpace = THREE.SRGBColorSpace;
 $('scene').appendChild(renderer.domElement);
-const scene = new THREE.Scene();
+const scene = new THREE.Scene(); scene.fog = new THREE.FogExp2(0xdde3ea, 0);   // constant: toggling fog changes every program
 const camera = new THREE.PerspectiveCamera(40, innerWidth / innerHeight, 0.05, 300);
 const orbit = new OrbitControls(camera, renderer.domElement); orbit.enableDamping = true; orbit.dampingFactor = 0.08; orbit.maxPolarAngle = Math.PI * 0.47; orbit.enablePan = false;
 const look = new PointerLockControls(camera, renderer.domElement);
@@ -31,7 +34,12 @@ const pmrem = new THREE.PMREMGenerator(renderer); scene.environment = pmrem.from
 
 const lib = await new MaterialLib('/furnish/materials/').load();
 const layout = await (await fetch(`layouts/${unit}.json`)).json();
+const extDoors = classifyExteriorDoors(layout);   // entrance = wood slab, balcony = glass; both shut and locked when walking
 const apt = new Apartment(layout, lib); scene.add(apt.group); apt.labels.forEach(l => l.visible = false);
+const lockedDoors = dressExteriorDoors(apt, extDoors), seal = sealApartment(apt, layout);
+window.__exteriorDoors = layout._exteriorDoors;   // for checking: [{id, kind, facade score, room}]
+const pane = new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.07, roughness: 0.04, metalness: 0, depthWrite: false, side: THREE.DoubleSide });
+apt.group.traverse(o => { if (o.isMesh && o.material && o.material.transmission > 0) o.material = pane; });   // transmission glass re-renders the whole scene (city included) every frame
 const bb = apt.bounds, center = bb.getCenter(new THREE.Vector3()), size = bb.getSize(new THREE.Vector3()), ext = Math.max(size.x, size.z);
 orbit.minDistance = ext * 0.35; orbit.maxDistance = ext * 3;
 
@@ -66,22 +74,24 @@ function hideAids() { for (const f of Object.values(furn)) for (const it of f.it
 const roomJobs = layout.rooms.map(async r => {
   try { const res = await fetch(`../rooms/${layout.unit}__${r.id}.json`); if (!res.ok) return;
     const f = new Furnish({ scene, camera, renderer, controls: orbit, panelEl: null, toastEl: $('toast'), active: false, onChange: changed, title: r.name });
-    furn[r.id] = f; await f.setRoom(`${layout.unit}__${r.id}`, await res.json()); if (mode === 'doll') f.setClipping([clip]); changed();
+    furn[r.id] = f; await f.setRoom(`${layout.unit}__${r.id}`, await res.json()); f.setClipping([clip]); changed();
   } catch (e) { console.warn('[home] furnish', r.id, e); }
 });
 function activateRoom(id) {
   if (!id || activeRoom === id) { refreshRoomUi(); return; }
   for (const [rid, f] of Object.entries(furn)) if (rid !== id && f.active) { f.setActive(false); f.panelEl = null; }
-  activeRoom = id; const f = furn[id]; if (f) { f.panelEl = $('furn'); f.setActive(true); }
+  activeRoom = id; const f = furn[id]; if (f) { f.panelEl = $('furn'); if (mode !== 'walk') f.setActive(true); }   // editing (drag, R, D, Delete) only in the overview: D is also strafe-right
   refreshRoomUi(); renderItems();
 }
 const roomName = id => (layout.rooms.find(r => r.id === id) || {}).name || 'this room';
 
 // ---------- views ----------
 let mode = 'doll'; const clip = new THREE.Plane(new THREE.Vector3(0, -1, 0), 1.3);
-function applyClip(on) {
-  apt.group.traverse(o => { if (o.isMesh && o.material && o.userData.kind !== 'wall') for (const m of [].concat(o.material)) { m.clippingPlanes = on ? [clip] : []; m.clipShadows = true; } });
-  apt.section(on ? clip.constant : null); for (const f of Object.values(furn)) f.setClipping(on ? [clip] : []);
+const CUT = 1.3;
+function applyClip(on) {   // the cut plane stays on every material and only moves: adding or removing it would recompile every shader
+  clip.constant = on ? CUT : 1e6;
+  apt.group.traverse(o => { if (o.isMesh && o.material && o.userData.kind !== 'wall') for (const m of [].concat(o.material)) { if (m.clippingPlanes?.[0] !== clip) m.clippingPlanes = [clip]; m.clipShadows = true; } });
+  apt.section(on ? CUT : null); for (const f of Object.values(furn)) f.setClipping([clip]);
 }
 function frameView() {   // keep the scene centred in the space left of the design sheet
   const W = innerWidth, H = innerHeight; renderer.setSize(W, H); camera.aspect = W / H;
@@ -90,16 +100,20 @@ function frameView() {   // keep the scene centred in the space left of the desi
 function press(on, off) { $(on).setAttribute('aria-pressed', 'true'); $(off).setAttribute('aria-pressed', 'false'); }
 function setDoll() {
   mode = 'doll'; if (look.isLocked) look.unlock(); $('bWalk').classList.remove('on'); press('vDoll', 'vWalk');
-  apt.ceilingMeshes.forEach(m => m.visible = false); applyClip(true); orbit.enabled = true; renderer.toneMappingExposure = 0.95; setSun(30, 0xffdcb4, 3.0);
+  outside?.enable(false); document.body.classList.remove('walking'); seal?.setWalk(false);
+  if (activeRoom && furn[activeRoom]) { furn[activeRoom].panelEl = $('furn'); furn[activeRoom].setActive(true); }
+  apt.ceilingMeshes.forEach(m => m.visible = false); applyClip(true); orbit.enabled = true; renderer.toneMappingExposure = 0.95; setSun(30, 0xffdcb4, 3.0); scene.environmentIntensity = 0.55; hemi.intensity = 0.6;
   $('walkHint').hidden = true; $('cross').hidden = true; camera.fov = 40; frameView();
   const d = ext * 1.55; camera.position.set(center.x + d * 0.55, d * 0.85 + 2, center.z + d * 0.75); orbit.target.set(center.x, 0.4, center.z); orbit.update();
 }
 function setWalk(roomId, yawDeg) {
   mode = 'walk'; $('bWalk').classList.add('on'); press('vWalk', 'vDoll'); closeMenus();
   apt.ceilingMeshes.forEach(m => m.visible = true); applyClip(false); orbit.enabled = false; renderer.toneMappingExposure = 1.05; setSun(38, 0xfff0dc, 2.4);
+  outside?.enable(true); document.body.classList.add('walking'); seal?.setWalk(true);
+  for (const f of Object.values(furn)) { f.select(null); f.setActive(false); }
   const id = roomId && apt.roomMeshes[roomId] ? roomId : currentRoom() || layout.rooms[0].id; activateRoom(id);
   const c = roomyPoint(id); camera.fov = 62; frameView(); $('tip').hidden = true;
-  camera.position.set(c.x, c.y + 1.6, c.z); const yaw = THREE.MathUtils.degToRad(yawDeg ?? 35); camera.rotation.set(0, 0, 0); camera.lookAt(c.x + Math.sin(yaw), c.y + 1.5, c.z + Math.cos(yaw));
+  camera.position.set(c.x, c.y + 1.6, c.z); const yaw = THREE.MathUtils.degToRad(yawDeg ?? roomWindowYaw(id, c) ?? outside?.windowYaw?.() ?? 35); camera.rotation.set(0, 0, 0); camera.lookAt(c.x + Math.sin(yaw), c.y + 1.5, c.z + Math.cos(yaw));
   if (window.walk?.teleport) window.walk.teleport(c.x, c.z, c.y);
   $('walkHint').hidden = false;
 }
@@ -111,12 +125,22 @@ function roomyPoint(id) {   // the grid point inside the room polygon farthest f
   for (let i = 1; i < 24; i++) for (let j = 1; j < 24; j++) { const x = Math.min(...xs) + (Math.max(...xs) - Math.min(...xs)) * i / 24, z = Math.min(...zs) + (Math.max(...zs) - Math.min(...zs)) * j / 24; if (!inside(x, z)) continue; const d = edge(x, z); if (d > bd) { bd = d; best = new THREE.Vector3(x, base.y, z); } }
   return best || base;
 }
-window.setWalk = setWalk; window.setDoll = setDoll;   // agent.js and walk.js call these
+window.setWalk = setWalk; window.setDoll = setDoll;
+(async () => {   // exterior doors leave walk.js's door list: no prompt, no toggling, and a door not in the list is never passable
+  while (!window.walk?.doors) await new Promise(r => setTimeout(r, 100));
+  for (const id of lockedDoors) window.walk.doors.delete(id);
+})();   // agent.js and walk.js call these
 $('vDoll').onclick = setDoll; $('vWalk').onclick = () => setWalk(activeRoom);
 renderer.domElement.addEventListener('click', () => { if (mode === 'walk' && !look.isLocked) look.lock(); });
 look.addEventListener('lock', () => { $('walkHint').hidden = true; $('cross').hidden = false; });
 look.addEventListener('unlock', () => { $('cross').hidden = true; if (mode === 'walk') $('walkHint').hidden = false; });
 addEventListener('keydown', e => { if (e.code === 'Escape' && mode === 'walk' && !look.isLocked) setDoll(); });
+function roomWindowYaw(id, from) {   // face the largest window of this room (build.js tags each window with its room)
+  let best = null; for (const o of layout.openings) { if (o.type !== 'window' || o.room !== id) continue; const w = layout.walls.find(x => x.id === o.wall); if (!w) continue;
+    const L = Math.hypot(w.b[0] - w.a[0], w.b[1] - w.a[1]) || 1, t = (o.s0 + o.s1) / 2 / L, wx = w.a[0] + (w.b[0] - w.a[0]) * t, wz = w.a[1] + (w.b[1] - w.a[1]) * t, width = o.s1 - o.s0;
+    if (!best || width > best.width) best = { wx, wz, width }; }
+  return best ? Math.atan2(best.wx - from.x, best.wz - from.z) * 180 / Math.PI : null;
+}
 function currentRoom() { let best = null, bd = Infinity; for (const [id, r] of Object.entries(apt.roomMeshes)) { const d = Math.hypot(r.center.x - camera.position.x, r.center.z - camera.position.z); if (d < bd) { bd = d; best = id; } } return best; }
 
 // camera glide for room picks in the overview
@@ -127,21 +151,44 @@ function flyToRoom(id) { const r = apt.roomMeshes[id]; if (!r) return; const m =
 
 // ---------- loop ----------
 let roomTick = 0; const clock = new THREE.Clock();
+// adaptive resolution: shading cost is per pixel (Safari on Retina was fill-bound), so trade sharpness for smoothness only when needed
+const PR_MAX = () => Math.min(devicePixelRatio, mode === 'walk' ? 1.5 : 2); let prAvg = 1 / 60, prT = 0;
+function adapt(raw) {
+  if (raw > 0.25) return;   // tab switch, compile, alert: not a rendering cost
+  prAvg += (raw - prAvg) * 0.05; if ((prT += raw) < 1.2) return; prT = 0;
+  const pr = renderer.getPixelRatio(), max = PR_MAX();
+  if (prAvg > 1 / 55 && pr > 1) renderer.setPixelRatio(Math.max(1, +(pr - 0.25).toFixed(2)));
+  else if (prAvg < 1 / 75 && pr < max) renderer.setPixelRatio(Math.min(max, +(pr + 0.25).toFixed(2)));
+  else if (pr > max) renderer.setPixelRatio(max);
+}
+let holdRender = true;   // until furniture and lamps are in: Safari compiles shaders serially, one light-count change = every material recompiled
 renderer.setAnimationLoop(() => {
-  const dt = Math.min(clock.getDelta(), 0.05);
+  const raw = clock.getDelta(), dt = Math.min(raw, 0.05); if (holdRender) return; adapt(raw);
   if (glide) { const k = Math.min(1, (performance.now() - glide.start) / glide.ms), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
     camera.position.lerpVectors(glide.p0, glide.p1, e); orbit.target.lerpVectors(glide.t0, glide.t1, e); if (k >= 1) glide = null; }
   if (mode === 'doll') orbit.update();
   else if ((roomTick += dt) > 0.5) { roomTick = 0; const r = currentRoom(); if (r && r !== activeRoom) activateRoom(r); }
+  if (mode === 'walk') outside?.update();
   renderer.render(scene, camera); drawPlanMarker();
 });
 addEventListener('resize', frameView);
+let outside = null, planName = '';
+const listingId = unit.split('_plan_')[0];
+const outsideReady = fetch('/map/listings.json').then(r => r.json()).then(d => (d.listings || []).find(l => l.id === listingId)).then(l => {
+  outside = createOutside({ scene, camera, renderer, apt, layout, sun, hemi, lat: l ? +l.lat : NaN, lon: l ? +l.lon : NaN, planName: () => planName,
+    onStatus: s => { if (s === 'measuring') toast('Bringing in the view outside…'); } });
+  window.outside = outside; if (mode === 'walk') outside.enable(true);
+}).catch(e => console.warn('[home] outside', e));
 setDoll();
-requestAnimationFrame(() => { $('loading').style.opacity = 0; setTimeout(() => $('loading').remove(), 700); });
+(async () => {
+  await Promise.race([Promise.all(roomJobs), new Promise(r => setTimeout(r, 12000))]); hideAids();
+  try { await renderer.compileAsync(scene, camera); } catch (e) { renderer.compile(scene, camera); }
+  holdRender = false; requestAnimationFrame(() => { $('loading').style.opacity = 0; setTimeout(() => $('loading').remove(), 700); });
+})();
 
 // ---------- title ----------
 fetch('layouts/index.json').then(r => r.json()).then(units => {
-  const u = units.find(x => x.unit === unit); if (!u) return;
+  const u = units.find(x => x.unit === unit); if (!u) return; planName = u.plan_name || '';
   const beds = layout.rooms.filter(r => r.type === 'bedroom').length;
   $('title').textContent = [String(u.building || '').replace(/ Apartments.*$/, ''), u.plan_name].filter(Boolean).join(', ') || 'Your apartment';
   $('meta').textContent = `${beds ? beds + ' bedroom' + (beds > 1 ? 's' : '') : 'Studio'}, ${Math.round(u.area_m2)} m²`;
@@ -297,6 +344,7 @@ async function furnishHome() {
     left -= roomSpend(rooms[i].id);
   }
   homeRun = null; status = ''; $('go').hidden = false; $('stop').hidden = true; refreshRoomUi(); changed();
+  if (mode === 'doll') setDoll();   // the agent flies into each room it works on; end on the whole home
 }
 $('go').onclick = () => { if (scope === 'home') return furnishHome(); if (!furn[activeRoom]) return; syncAgent(); rejected[activeRoom] = []; ag('aiGo')?.click(); };
 $('stop').onclick = () => { if (homeRun) homeRun.cancelled = true; ag('aiStop')?.click(); };

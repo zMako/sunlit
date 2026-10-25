@@ -4,7 +4,7 @@
 <!-- Light landing (draft next to index.html). Try ?paper=warm to compare warm whites, ?accent=8a6a4f to try an accent. -->
 <script type="importmap">{"imports":{"three":"/vendor/three/build/three.module.js","three/addons/":"/vendor/three/jsm/"}}</script>
 <style>
-@font-face{font-family:"Bodoni Moda";src:url(/vendor/fonts/bodoni-moda.woff2) format("woff2");font-weight:400 600;font-style:normal;font-display:swap}
+@font-face{font-family:"Freight Display";src:url(/vendor/fonts/freight-disp-pro-medium.otf) format("opentype");font-weight:100 900;font-style:normal;font-display:swap}   /* one cut (Medium) for every display size; the weight range stops faux bold/thin */
 :root{
   --paper:#ffffff;      /* page */
   --mist:#f5f5f4;       /* quiet sections and image tiles (thumbnails are rendered on this) */
@@ -12,20 +12,18 @@
   --graphite:#6e6e73;   /* secondary text */
   --hair:#e4e4e1;       /* hairlines */
   --accent:var(--ink);  /* one accent, undecided: ?accent=hex */
-  --serif:"Bodoni Moda","Didot","Bodoni 72",Georgia,serif;
+  --serif:"Freight Display","Iowan Old Style",Georgia,serif;
   --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
   --wrap:min(1240px,100vw - 80px);
 }
 :root.warm{--paper:#faf8f4;--mist:#f2efe9;--hair:#e6e1d8}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.5 var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.5 var(--sans);font-variant-numeric:lining-nums;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:6px}
 .wrap{width:var(--wrap);margin:0 auto}
 .serif{font-family:var(--serif);font-weight:400}
-/* display serif: fix the optical size at 28; the automatic 96 at headline sizes thins the hairlines until they strain the eye */
-h1,h2,.proof p.big,.home h3,nav .mark,.steps .tile.date .day{font-optical-sizing:none;font-variation-settings:"opsz" 28}
 
 /* ---------- glass: frosted base everywhere, edge refraction added in Chromium by enhanceGlass() ---------- */
 .glass{position:relative;background:rgba(255,255,255,.5);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
@@ -190,8 +188,8 @@ if (/^[0-9a-f]{6}$/i.test(Q.get('accent') || '')) document.documentElement.style
 const HERO = 'gs-22612_plan_03';
 const HOMES = ['gs-22612_plan_01', 'gs-22612_plan_00', 'gs-18149_plan_03', 'gs-22612_plan_05', 'gs-22535_plan_07', 'gs-18149_plan_02'];
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const livingRoom = u => (u.rooms.find(r => r.type === 'living') || [...u.rooms].sort((a, b) => b.area_m2 - a.area_m2)[0] || { id: 'r0' }).id;
-const furnishUrl = (u, budget = 3500, style = 'warm scandinavian') => `home.html?unit=${encodeURIComponent(u.unit)}&agent=${livingRoom(u)}&budget=${budget}&style=${encodeURIComponent(style.toLowerCase())}&drama=1`;
+// the budget covers the whole home; the hero form starts furnishing straight away, the cards open the home ready to furnish
+const furnishUrl = (u, budget = 3500, style = 'warm scandinavian', start = false) => `home.html?unit=${encodeURIComponent(u.unit)}&scope=home&budget=${budget}&style=${encodeURIComponent(style.toLowerCase())}${start ? '&furnish=home&drama=1' : ''}`;
 const beds = u => { const n = u.rooms.filter(r => r.type === 'bedroom').length; return n ? `${n} bedroom${n > 1 ? 's' : ''}` : 'Studio'; };
 
 // move-in three weeks out, delivery two days before
@@ -209,7 +207,7 @@ const hero = byId[HERO];
 if (hero) {
   $('planimg').src = hero.plan_image;
   $('caption').innerHTML = `<b>${esc(hero.building)}, ${esc(hero.plan_name)}</b>${Math.round(hero.area_m2)} m², rebuilt from the landlord's drawing`;
-  $('ask').onsubmit = e => { e.preventDefault(); location.href = furnishUrl(hero, $('budget').value, $('style').value); };
+  $('ask').onsubmit = e => { e.preventDefault(); location.href = furnishUrl(hero, $('budget').value, $('style').value, true); };
 }
 $('allLink').textContent = `All ${units.length} apartments`;
 
@@ -217,7 +215,7 @@ $('allLink').textContent = `All ${units.length} apartments`;
 try {
   const M = Object.fromEntries((await (await fetch('metrics/summary.json', { cache: 'no-store' })).json()).map(m => [m.key, m]));
   const n = (M.walkable_units?.value ?? units.length).toLocaleString('en-US'), b = M.walkable_units?.n ?? new Set(units.map(u => u.building)).size;
-  const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'], r = M.plan_to_walkable_s ? Math.round(M.plan_to_walkable_s.value) : null, s = r == null ? null : (words[r] || r);   // Bodoni's hairline digits read poorly at display size
+  const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'], r = M.plan_to_walkable_s ? Math.round(M.plan_to_walkable_s.value) : null, s = r == null ? null : (words[r] || r);   // small numbers read better as words in display type
   $('proof').textContent = `${n} apartments in ${b} buildings, each rebuilt from the plan its landlord published${s ? `, in about ${s} seconds` : ''}.`;
   if (M.door_scale_error) $('fine').innerHTML = `Scale read from door widths alone lands within ${M.door_scale_error.value.toFixed(1)}% of the printed dimensions (median of ${M.door_scale_error.n} plans). Floor plans and photos as the listing publishes them; nothing is generated. <a href="metrics/METRICS.md">How we measured</a>`;
 } catch (e) {}
