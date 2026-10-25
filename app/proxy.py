@@ -51,6 +51,7 @@ def worker():
             import glob; names = sorted(os.path.basename(p)[:-5] for p in glob.glob(str(ROOT / "rooms" / "*.json")) if not p.endswith("index.json") and os.path.exists(p[:-5] + ".glb")); json.dump(names, open(ROOT / "rooms" / "index.json", "w"))
         except Exception: pass
 
+FLAGS_LOCK = threading.Lock()   # gallery cells save flags concurrently: serialise the read-modify-write
 ANN_LOCK = threading.Lock(); ANN = {"unit": None}   # on-demand annotation: one subprocess at a time
 class H(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *a, **k): super().__init__(*a, directory=str(ROOT), **k)
@@ -79,17 +80,19 @@ class H(http.server.SimpleHTTPRequestHandler):
                 f.parent.mkdir(parents=True, exist_ok=True); plan["room"] = name; json.dump(plan, open(f, "w"), indent=1); return self.reply(json.dumps({"saved": name, "n": len(plan.get("items", []))}).encode())
             if f.exists(): return self.reply(f.read_bytes())
             return self.send_error(404)
-        if rel == "/api/gallery_flags":   # the owner's corrections from furnish/gallery.html: {id: {flag, yaw_fix, note, t}}; the viewer applies yaw_fix
+        if rel == "/api/gallery_flags":   # the owner's corrections from furnish/gallery.html: {id: {flag, yaw_fix, up_fix, dims_m, note, t}}; the viewer applies yaw_fix and up_fix, place.fix_item takes dims_m
             f = ROOT / "furnish" / "gallery_flags.json"
             if self.command == "POST":
                 n = int(self.headers.get("Content-Length", "0") or 0); body = self.rfile.read(n) if n else b""
                 try: upd = json.loads(body or b"{}")
                 except Exception: return self.send_error(400)
-                cur = json.loads(f.read_text()) if f.exists() else {}
-                for k, v in upd.items():
-                    if v is None: cur.pop(k, None)
-                    else: cur[k] = v
-                f.write_text(json.dumps(cur, indent=0, sort_keys=True)); return self.reply(json.dumps({"n": len(cur)}).encode())
+                with FLAGS_LOCK:
+                    cur = json.loads(f.read_text()) if f.exists() else {}
+                    for k, v in upd.items():
+                        if v is None: cur.pop(k, None)
+                        else: cur[k] = v
+                    f.write_text(json.dumps(cur, indent=0, sort_keys=True))
+                return self.reply(json.dumps({"n": len(cur)}).encode())
             return self.reply(f.read_bytes() if f.exists() else b"{}")
         if rel == "/api/img":   # same-origin copy of a product image so WebGL can use it as a texture (CORS); ikea.com only
             url = dict(urllib.parse.parse_qsl(u.query)).get("u", ""); host = urllib.parse.urlsplit(url).hostname or ""

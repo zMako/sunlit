@@ -95,8 +95,8 @@ function render() {
       <div class="info"><div class="name" title="${i.name || i.id}">${i.name || i.id}</div>
       <div class="meta">${i.brand || (srcOf(i) === 'ikea' ? 'IKEA' : srcOf(i) === 'abo' ? 'Amazon' : '')} · ${i.category}${i.raw_category !== i.category ? ` <span class="tag warn">was ${i.raw_category}</span>` : ''} · ${dims}${dimsChanged ? ' <span class="tag warn">dims fixed</span>' : ''}</div>
       <div class="meta">${i.price_usd != null ? '$' + Math.round(i.price_usd) + (i.price_source === 'estimated' ? ' est.' : '') : 'price on request'} · ${i.product_url ? `<a href="${i.product_url}" target="_blank">product</a>` : ''} · <span title="${i.id}">${i.id.slice(0, 34)}</span></div>
-      <div class="tags"><span class="tag">${i.dressing}</span>${o ? `<span class="tag ${(o.confidence ?? 0) < 0.6 ? 'warn' : 'ok'}" title="${o.method || ''}">up ${o.up} · front ${o.front_yaw_deg}° · ${(o.confidence ?? 0).toFixed(2)}</span>` : ''}${f ? `<span class="tag ${f.flag === 'bad' ? 'bad' : 'ok'}">${f.flag}${f.yaw_fix ? ` · yaw ${f.yaw_fix > 0 ? '+' : ''}${f.yaw_fix}°` : ''}</span>` : ''}</div>
-      <div class="ctrl"><button data-a="rot">↻ 90°</button><button data-a="flip">flip 180°</button><button data-a="front">↺ view</button><button data-a="bad" class="${f && f.flag === 'bad' ? 'on' : ''}">✗ wrong</button><button data-a="clear">clear</button></div></div>`;
+      <div class="tags"><span class="tag">${i.dressing}</span>${o ? `<span class="tag ${(o.confidence ?? 0) < 0.6 ? 'warn' : 'ok'}" title="${o.method || ''}">up ${o.up} · front ${o.front_yaw_deg}° · ${(o.confidence ?? 0).toFixed(2)}</span>` : ''}${f ? `<span class="tag ${f.flag === 'bad' ? 'bad' : 'ok'}">${f.flag}${f.up_fix ? ` · up ${f.up_fix}` : ''}${f.yaw_fix ? ` · yaw ${f.yaw_fix > 0 ? '+' : ''}${f.yaw_fix}°` : ''}</span>` : ''}</div>
+      <div class="ctrl"><button data-a="rot">↻ 90°</button><button data-a="flip">flip 180°</button><button data-a="up" title="lying on its side or upside down: try the next up axis">⤒ flip up</button><button data-a="front">↺ view</button><button data-a="bad" class="${f && f.flag === 'bad' ? 'on' : ''}">✗ wrong</button><button data-a="clear">clear</button></div></div>`;
     $('grid').appendChild(el);
     const c = { el, view: el.querySelector('.view3d'), scene: new THREE.Scene(), camera: new THREE.PerspectiveCamera(32, 1, 0.05, 50), obj: null, yaw: 0, orbit: 0.6, item: i };
     c.scene.environment = env; c.scene.add(new THREE.HemisphereLight(0xffffff, 0x8a7a6a, 0.6)); const sun = new THREE.DirectionalLight(0xffffff, 1.6); sun.position.set(2, 4, 3); c.scene.add(sun);
@@ -104,9 +104,11 @@ function render() {
     cells.set(i.id, c);
     el.querySelector('.ctrl').onclick = async e => {
       const a = e.target.dataset.a; if (!a) return; const cur = flags[i.id] || {};
-      if (a === 'rot' || a === 'flip') { const d = a === 'rot' ? 90 : 180; const yaw = (((cur.yaw_fix || 0) + d) % 360 + 360) % 360; await saveFlag(i.id, yaw ? { ...cur, flag: cur.flag === 'bad' ? 'bad' : 'yaw fixed', yaw_fix: yaw, t: Date.now() } : (cur.flag === 'bad' ? { ...cur, yaw_fix: 0 } : null)); toast(`${i.name}: yaw ${yaw}° saved`); reload(c); }
+      if (a === 'rot' || a === 'flip') { const d = a === 'rot' ? 90 : 180; const yaw = (((cur.yaw_fix || 0) + d) % 360 + 360) % 360; await saveFlag(i.id, yaw || cur.up_fix ? { ...cur, flag: cur.flag === 'bad' ? 'bad' : cur.up_fix ? 'fixed' : 'yaw fixed', yaw_fix: yaw, t: Date.now() } : (cur.flag === 'bad' ? { ...cur, yaw_fix: 0 } : null)); toast(`${i.name}: yaw ${yaw}° saved`); reload(c); }
+      if (a === 'up') { const U = ['y', '-z', 'z', '-y', 'x', '-x']; const up = U[(U.indexOf(cur.up_fix || (i.orient && i.orient.up) || 'y') + 1) % U.length];   // the box is re-measured in the new orientation by build()
+        await saveFlag(i.id, { ...cur, flag: 'fixed', up_fix: up, dims_m: null, t: Date.now() }); toast(`${i.name}: up ${up} saved`); reload(c); }
       if (a === 'front') { c.orbit = 0.6; c.yaw = 0; }
-      if (a === 'bad') { await saveFlag(i.id, cur.flag === 'bad' ? (cur.yaw_fix ? { ...cur, flag: 'yaw fixed' } : null) : { ...cur, flag: 'bad', t: Date.now() }); toast(cur.flag === 'bad' ? 'unflagged' : 'flagged wrong'); refreshCell(c); }
+      if (a === 'bad') { await saveFlag(i.id, cur.flag === 'bad' ? (cur.up_fix ? { ...cur, flag: 'fixed' } : cur.yaw_fix ? { ...cur, flag: 'yaw fixed' } : null) : { ...cur, flag: 'bad', t: Date.now() }); toast(cur.flag === 'bad' ? 'unflagged' : 'flagged wrong'); refreshCell(c); }
       if (a === 'clear') { await saveFlag(i.id, null); toast('cleared'); reload(c); }
     };
     // drag to orbit the cell
@@ -120,7 +122,9 @@ async function reload(c) { if (c.obj) { c.scene.remove(c.obj); c.obj = null; } c
 async function build(c) {
   if (c.loaded) return; c.loaded = true; const i = c.item; const ph = c.view.querySelector('.ph');
   try {
-    const it = await furnish.addItem({ ...i, w_m: i.width_m, d_m: i.depth_m, h_m: i.height_m, x: 0, z: 0, rot_deg: 0 }, false);
+    const f = flags[i.id]; const dm = f && f.up_fix && f.dims_m;   // owner-fixed: its measured box, not the catalogue's (catalog_fixed.json catches up on the next catalog_fixed.py run)
+    const it = await furnish.addItem({ ...i, w_m: dm ? dm[0] : i.width_m, d_m: dm ? dm[1] : i.depth_m, h_m: dm ? dm[2] : i.height_m, x: 0, z: 0, rot_deg: 0 }, false);
+    if (f && f.up_fix && !dm && it.natural) { furnish.group.remove(it.obj); await saveFlag(i.id, { ...f, dims_m: it.natural.map(v => +v.toFixed(3)) }); Furnish._dataP = null; c.loaded = false; return build(c); }   // first load after a flip: measure, save, rebuild at true size
     furnish.group.remove(it.obj); if (it.label) it.label.visible = false; if (it.fp) it.fp.visible = false;
     c.obj = it.obj; c.scene.add(c.obj); const bb = new THREE.Box3().setFromObject(c.obj); const sz = bb.getSize(new THREE.Vector3()); c.r = Math.max(sz.x, sz.y, sz.z, 0.4); c.h = sz.y;
     if (ph) ph.textContent = it.modelFailed ? 'no 3D model' : '';

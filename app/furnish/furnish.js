@@ -68,7 +68,8 @@ export class Furnish {
         this._dressUntextured(m, spec);   // manufacturer OBJ/FBX exports mostly come without textures: give them a plausible PBR finish from the catalogue words
         // orientation pass (designer/orient.json, see orient/REPORT.md): which axis is up and where the front is, found from symmetry, backrest mass and CLIP; applied when confident
         const data = await Furnish._data(); const pid = String(spec.id || '').split('#')[0]; const od0 = data.orient[pid]; const fl = data.flags[pid];
-        const od = fl && fl.yaw_fix != null ? { ...(od0 || { up: 'y' }), front_yaw_deg: ((od0 && od0.front_yaw_deg) || 0) + fl.yaw_fix, confidence: 1 } : od0;   // the owner's correction from the gallery wins
+        const owner = !!(fl && fl.up_fix);   // the owner stood it upright in the gallery: that orientation is final
+        const od = fl && (owner || fl.yaw_fix != null) ? { ...(od0 || { up: 'y' }), ...(owner ? { up: fl.up_fix, method: 'owner' } : {}), front_yaw_deg: ((od0 && od0.front_yaw_deg) || 0) + (fl.yaw_fix || 0), confidence: 1 } : od0;   // the owner's correction from the gallery wins
         if (od && (od.confidence ?? 0) >= 0.6 && (od.up !== 'y' || od.front_yaw_deg)) {
           const UP = { y: [0, 0, 0], '-y': [180, 0, 0], z: [-90, 0, 0], '-z': [90, 0, 0], x: [0, 0, 90], '-x': [0, 0, -90] }; const e = UP[od.up] || UP.y; const D = Math.PI / 180;
           const qUp = new THREE.Quaternion().setFromEuler(new THREE.Euler(e[0] * D, e[1] * D, e[2] * D)); const q = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), (od.front_yaw_deg || 0) * D).multiply(qUp);
@@ -80,9 +81,9 @@ export class Furnish {
         const err = (ex, ey, ez) => Math.abs(Math.log(Math.max(ex, 1e-3) / w)) + Math.abs(Math.log(Math.max(ey, 1e-3) / h)) + Math.abs(Math.log(Math.max(ez, 1e-3) / d));
         const tries = [[0, 0, 0, sz.x, sz.y, sz.z], [0, Math.PI / 2, 0, sz.z, sz.y, sz.x], [Math.PI / 2, 0, 0, sz.x, sz.z, sz.y], [Math.PI / 2, 0, Math.PI / 2, sz.y, sz.z, sz.x], [0, 0, Math.PI / 2, sz.y, sz.x, sz.z], [Math.PI / 2, Math.PI / 2, 0, sz.z, sz.x, sz.y]];
         const e0 = err(sz.x, sz.y, sz.z); let best = tries[0], be = e0;
-        for (const t of tries) { const e = err(t[3], t[4], t[5]); if (e < be - 0.3) { best = t; be = e; } }   // a clear win only: near-cubic pieces keep their file orientation
+        if (!owner) for (const t of tries) { const e = err(t[3], t[4], t[5]); if (e < be - 0.3) { best = t; be = e; } }   // a clear win only: near-cubic pieces keep their file orientation
         const inner = new THREE.Group(); inner.add(m0); inner.rotation.set(best[0], best[1], best[2]); inner.updateMatrixWorld(true);
-        bb = new THREE.Box3().setFromObject(inner); sz = bb.getSize(new THREE.Vector3()); const c = bb.getCenter(new THREE.Vector3());
+        bb = new THREE.Box3().setFromObject(inner); sz = bb.getSize(new THREE.Vector3()); const c = bb.getCenter(new THREE.Vector3()); it.natural = [sz.x, sz.z, sz.y];   // w, d, h before stretching
         inner.position.sub(c); inner.position.y += sz.y / 2;   // rest on the floor, centred on footprint
         const s = new THREE.Vector3(w / Math.max(sz.x, 1e-3), h / Math.max(sz.y, 1e-3), d / Math.max(sz.z, 1e-3));
         const wrap = new THREE.Group(); wrap.add(inner); wrap.scale.copy(s); it.obj.add(wrap); built = true; it.modelSrc = glbSrc; it.axisFix = best !== tries[0];

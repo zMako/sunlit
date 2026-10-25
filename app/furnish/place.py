@@ -48,6 +48,13 @@ def _orient():
         try: _ORIENT = json.load(open(pathlib.Path(__file__).parent / "designer" / "orient.json"))
         except Exception: _ORIENT = {}
     return _ORIENT
+_FLAGS = None
+def _flags():   # the owner's corrections from gallery.html (up_fix / yaw_fix and the box measured in that orientation)
+    global _FLAGS
+    if _FLAGS is None:
+        try: _FLAGS = json.load(open(pathlib.Path(__file__).parent / "gallery_flags.json"))
+        except Exception: _FLAGS = {}
+    return _FLAGS
 _SIBLINGS = None
 def _sibling_category(i):
     """For an item filed under 'other': the category of a same-brand item whose name is a prefix of this one ('AAC 121' -> 'AAC 121 Soft')."""
@@ -78,6 +85,9 @@ def fix_item(i):
         w, d, h = od["dims_after_m"]; i = dict(i, width_m=w, depth_m=d, height_m=h)
     for k, c in RECAT:
         if k in n and i.get("category") != c: i = dict(i, category=c); break
+    fl = _flags().get(i.get("id") or "")
+    if fl and fl.get("up_fix") and fl.get("dims_m"):   # the owner set it upright in the gallery: that box is measured, not guessed
+        w, d, h = fl["dims_m"]; return dict(i, width_m=round(w, 3), depth_m=round(d, 3), height_m=round(h, 3))
     return canon_dims(i)
 
 def footprint(x, z, w, d, rot_deg):
