@@ -17,8 +17,9 @@ your budget, move things around or ask for changes, and order everything so it a
 4. **Checkout** (45 s). checkout.html with the two rooms, budget bar, move-in date. Agent checkout: stock, delivery two
    days before move-in, assembly the day before; card rail authorises and STOPS at Confirm purchase (we never buy);
    switch rail to x402: the 402 challenge, the signed USDC payment, verify/settle, tx link (testnet).
-5. **Close** (15 s). "Every listing on this page went through the same pipeline; 25 unit types from four buildings today,
-   and the engine reads 370 of the 418 plans we scraped." Tracks: Visa Reimagining Shopping, Coinbase x402, Best Solo
+5. **Close** (15 s). "Every listing on this page went through the same pipeline: 897 floor plans from 59 buildings,
+   813 walkable apartments, floor plan to walkable 3D in about four seconds; against the dimensions landlords print,
+   our scale from door widths alone is within 12.6 percent." (numbers from app/plan3d/metrics/summary.json) Tracks: Visa Reimagining Shopping, Coinbase x402, Best Solo
    Hack, Microsoft Built for the Real World (production-minded agent: budget limits, audit log, human confirmation),
    Creao Best One-Person Company, Anthropic track (community: people moving into an unfurnished SF rental).
 
@@ -41,5 +42,5 @@ are scaled from Claude's size estimates (±15%); materials are matched, not meas
   usefulness (fits, budget, delivery before move-in), path to production (plan reader + procedural builder run on every
   listing we scraped), responsible design (limits, logging, confirmation), end to end from listing to order.
 - **Anthropic.** Community: people moving into an unfurnished SF rental. Problem: furnishing a place you have never stood
-  in. It works on 289 real unit types from 22 buildings; Claude reads plans, names rooms, places fixtures, picks products.
+  in. It works on 813 real unit types from 59 buildings; Claude reads plans, names rooms, places fixtures, picks products.
 - **Best Solo Hack / Creao One-Person Company.** One person, one weekend, one pipeline from scraped listing to paid order.

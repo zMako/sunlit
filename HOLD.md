@@ -45,3 +45,14 @@
 12. **Map front door** (owner's idea, Oct 24 ~17:45): being built in app/map/ (Leaflet + cached OSM tiles, listing cards
     with photos/plans/price/description, detail drawer into 3D/furnish/checkout, compare tray). Scope decision still open:
     keep it as the entry screen, or grow it into a comparison site? Owner wanted to come back to this.
+
+## Added 22:45 (end of the nap work)
+13. **Library sources.** AvalonBay was dropped: its terms forbid robots/scrapers. UDR (no terms page, robots allow,
+    per-plan sqft) and Greystar's Bay Area properties were added instead: 813 unit types, 58-59 buildings, 134 true size.
+    If you know a landlord whose terms allow it and who publishes plans with sqft, that is the cheapest way to more
+    true-size units.
+14. **Spend $9.07 / $10.** On-demand annotation costs ~7 cents a click; ~13 clicks left before the ledger refuses. Raise
+    the cap before the demo if judges will click freely.
+15. **Plan-engine bug to fix tomorrow:** gs-20665_plan_00 bedroom (r0) has a jagged south wall with stubs and a toilet
+    placed inside it (seen in the side-by-side pair 20665/17). Many new UDR/Bay Area plans read as 13-16 small rooms or
+    only a bath; the on-demand annotation warns when rooms cover < half the listed sqft.
