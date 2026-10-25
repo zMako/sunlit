@@ -64,7 +64,7 @@ def passes_door(i, door_w):
 
 def to_item(c, k, why=None):
     return {"id": c["id"] + (f"#{k}" if k else ""), "name": c["name"], "category": c["category"], "w_m": c["width_m"], "d_m": c["depth_m"], "h_m": c["height_m"],
-            "price_usd": c.get("price_usd"), "product_url": c.get("product_url"), "image": c.get("image"), "model_glb_url": c.get("model_glb_url"), "model_glb": c.get("model_glb"), "price_source": c.get("price_source", "listed"), "search_url": c.get("search_url"), "why": why,
+            "price_usd": c.get("price_usd"), "product_url": c.get("product_url"), "image": c.get("image"), "model_glb_url": c.get("model_glb_url"), "model_glb": c.get("model_glb"), "price_source": c.get("price_source", "listed"), "search_url": c.get("search_url"), "brand": c.get("brand"), "designer": c.get("designer"), "color": c.get("color"), "colours": c.get("colours"), "materials": c.get("materials"), "why": why,
             "color": c.get("color"), "style_tags": c.get("style_tags")}
 
 def claude_json(system, text, schema, model, max_tokens, note):

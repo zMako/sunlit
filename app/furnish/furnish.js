@@ -65,6 +65,7 @@ export class Furnish {
     for (const glbSrc of candidates) {
       try {
         const gl = await this.loader.loadAsync(glbSrc); const m = gl.scene; m.traverse(o => { if (o.isMesh) { o.castShadow = true; o.userData.item = it; } });
+        this._dressUntextured(m, spec);   // manufacturer OBJ/FBX exports mostly come without textures: give them a plausible PBR finish from the catalogue words
         const bb = new THREE.Box3().setFromObject(m); const sz = bb.getSize(new THREE.Vector3()); const c = bb.getCenter(new THREE.Vector3());
         m.position.sub(c); m.position.y += sz.y / 2;   // rest on the floor, centred on footprint
         const s = new THREE.Vector3(w / Math.max(sz.x, 1e-3), h / Math.max(sz.y, 1e-3), d / Math.max(sz.z, 1e-3));
@@ -227,6 +228,42 @@ export class Furnish {
     this.panelEl.querySelectorAll('.fitem').forEach(el => el.onclick = () => this.select(this.items[+el.dataset.i]));
     const b = id => this.panelEl.querySelector('#' + id); b('fsave').onclick = () => this.save(); b('freload').onclick = () => this.loadPlan(); b('fauto').onclick = () => this.auto();
     b('fikea').onchange = e => { this.useIkeaModels = e.target.checked; localStorage.setItem('ikeaModels', e.target.checked ? '1' : '0'); this.loadPlan(); };
+  }
+
+
+  // ---------- material fallback for untextured models ----------
+  _finishFor(spec) {
+    const t = [spec.color, spec.colours, spec.materials, spec.name, spec.description].flat().filter(Boolean).join(' ').toLowerCase();
+    const has = (...w) => w.some(x => t.includes(x));
+    if (has('walnut', 'smoked oak', 'dark oak', 'wenge', 'black stained')) return { color: 0x4a3222, roughness: 0.55, metalness: 0 };
+    if (has('oak', 'ash', 'birch', 'beech', 'maple', 'natural wood', 'pine')) return { color: 0xc9a977, roughness: 0.6, metalness: 0 };
+    if (has('teak', 'mahogany', 'cherry')) return { color: 0x8a5a33, roughness: 0.55, metalness: 0 };
+    if (has('brass', 'gold')) return { color: 0xc8a24a, roughness: 0.35, metalness: 0.9 };
+    if (has('chrome', 'stainless', 'steel', 'aluminium', 'aluminum', 'metal')) return { color: 0xb8bcc0, roughness: 0.35, metalness: 0.85 };
+    if (has('black leather')) return { color: 0x1e1a18, roughness: 0.5, metalness: 0 };
+    if (has('cognac', 'tan leather', 'brown leather', 'leather')) return { color: 0x8b5a2b, roughness: 0.55, metalness: 0 };
+    if (has('white', 'off-white', 'cream', 'ivory')) return { color: 0xf1ede6, roughness: 0.7, metalness: 0 };
+    if (has('black', 'charcoal', 'anthracite')) return { color: 0x24262a, roughness: 0.65, metalness: 0 };
+    if (has('grey', 'gray')) return { color: 0x8d8f93, roughness: 0.75, metalness: 0 };
+    if (has('green', 'sage', 'olive')) return { color: 0x6f7f62, roughness: 0.8, metalness: 0 };
+    if (has('blue', 'navy')) return { color: 0x3d5370, roughness: 0.8, metalness: 0 };
+    if (has('beige', 'sand', 'linen', 'fabric', 'wool', 'upholster', 'textile', 'boucle')) return { color: 0xc9bca6, roughness: 0.9, metalness: 0 };
+    if (has('glass')) return { color: 0xdfe8ee, roughness: 0.1, metalness: 0, transparent: true, opacity: 0.5 };
+    if (has('marble', 'stone', 'concrete')) return { color: 0xd8d4cc, roughness: 0.4, metalness: 0 };
+    return { color: 0xb9b2a6, roughness: 0.7, metalness: 0 };   // neutral warm grey, never black
+  }
+  _dressUntextured(root, spec) {
+    let textured = false; root.traverse(o => { if (o.isMesh) { const ms = Array.isArray(o.material) ? o.material : [o.material]; if (ms.some(mm => mm && (mm.map || mm.normalMap))) textured = true; } });
+    if (textured) return;
+    const f = this._finishFor(spec); let k = 0;
+    root.traverse(o => {
+      if (!o.isMesh) return; const ms = Array.isArray(o.material) ? o.material : [o.material];
+      const nm = ms.map(mm => { const c = mm && mm.color ? mm.color : null; const hsl = c ? c.getHSL({}) : null; const keepOwn = c && hsl && hsl.s > 0.25 && hsl.l > 0.08 && hsl.l < 0.95;   // a real coloured MTL colour is kept; grey defaults are replaced
+        const mat = new THREE.MeshStandardMaterial({ color: keepOwn ? c : new THREE.Color(f.color), roughness: f.roughness, metalness: f.metalness, transparent: !!f.transparent, opacity: f.opacity ?? 1 });
+        if (!keepOwn) k++; return mat; });
+      o.material = Array.isArray(o.material) ? nm : nm[0];
+    });
+    if (k) root.userData.dressed = f;
   }
 
   // ---------- persistence ----------
