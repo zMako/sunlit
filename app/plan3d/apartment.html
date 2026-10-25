@@ -12,6 +12,12 @@ canvas{display:block}
 #toast{position:fixed;left:50%;top:14px;transform:translateX(-50%);background:rgba(14,18,26,.9);padding:6px 12px;border-radius:9px;opacity:0;transition:opacity .3s;pointer-events:none}
 #total{margin-top:6px}
 #cross{position:fixed;left:50%;top:50%;width:6px;height:6px;margin:-3px;border-radius:3px;background:rgba(255,255,255,.7);display:none}
+#plan{position:fixed;right:12px;bottom:12px;background:rgba(14,18,26,.9);border-radius:12px;padding:6px 8px 8px;backdrop-filter:blur(6px);z-index:4}
+#plan.off .pbody{display:none}
+#plan .phead{display:flex;align-items:center;gap:4px;margin-bottom:4px} #plan .phead b{margin-right:auto} #plan button{font-size:11px;padding:2px 7px;margin:0}
+#plan .pbody{position:relative;background:#fff;border-radius:6px;overflow:hidden;line-height:0} #plan img{display:block;max-width:340px;max-height:300px}
+#plan.big img{max-width:62vw;max-height:calc(100vh - 70px)} #plan svg{position:absolute;inset:0;width:100%;height:100%}
+body.hasplan #furn{max-height:calc(100vh - 380px)}
 </style>
 <script type="importmap">{"imports":{"three":"/vendor/three/build/three.module.js","three/addons/":"/vendor/three/jsm/"}}</script>
 </head><body>
@@ -22,6 +28,8 @@ canvas{display:block}
 <div id="total" class="dim"></div><div><button id="bAutoAll">Auto-furnish all rooms</button> <button id="bClearSel">Hide furniture panel</button></div></div>
 <div id="hint">WASD move · mouse look · Esc leaves · click a room name to jump</div><div id="cross"></div>
 <div id="furn"></div><div id="toast"></div>
+<div id="plan"><div class="phead"><b>Plan</b><button id="pOver" class="on" title="draw the rebuilt walls, openings and rooms over the plan">overlay</button><button id="pBig" title="enlarge">⤢</button><button id="pHide" title="hide / show the plan">–</button></div>
+<div class="pbody"><img id="pImg" alt="floor plan"><svg id="pSvg"></svg></div></div>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -175,6 +183,42 @@ let roomTick = 0;
 (function loop() { requestAnimationFrame(loop); const dt = Math.min(clock.getDelta(), 0.05); if (mode === 'walk') { stepWalk(dt); if ((roomTick += dt) > 0.5) { roomTick = 0; const r = currentRoom(); if (r && r !== activeRoom && furn[r]) activateRoom(r); } } else orbit.update(); if (contextLost) return; if (LOW || postFailed) renderer.render(scene, camera); else { try { composer.render(); } catch (e) { postFailed = true; console.warn('post-processing disabled', e); } } })();
 if (Q.has('furn')) activateRoom(Q.get('furn'));
 window.setWalk = setWalk; window.setDoll = setDoll;
+
+// ---------- plan window: the source floor plan, with the rebuilt layout drawn over it in plan pixels (debug: does the 3D match?) ----------
+(function planWindow() {
+  const box = document.getElementById('plan'), img = document.getElementById('pImg'), svg = document.getElementById('pSvg'), sc = layout.scale || {};
+  const p = layout.plan_image || '', i = p.indexOf('/listings/');
+  if (i < 0 || !sc.m_per_px || !sc.origin_px) { box.style.display = 'none'; return; }
+  document.body.classList.add('hasplan');
+  const s = sc.image_scale || 1, [ox, oy] = sc.origin_px, mpp = sc.m_per_px;
+  const P = (x, z) => [((x / mpp + ox) / s).toFixed(1), ((z / mpp + oy) / s).toFixed(1)];   // metres -> original image pixels (inverse of plan_engine's M)
+  const px = m => m / mpp / s;
+  let cam = null;
+  img.onload = () => {
+    svg.setAttribute('viewBox', `0 0 ${img.naturalWidth} ${img.naturalHeight}`);
+    const lw = Math.max(img.naturalWidth, img.naturalHeight) / 400;   // stroke width that reads at window size
+    let out = '<g id="pOv">';
+    for (const r of layout.rooms) out += `<polygon points="${r.polygon.map(q => P(q[0], q[1]).join(',')).join(' ')}" fill="rgba(37,99,235,.13)" stroke="rgba(37,99,235,.55)" stroke-width="${lw * 0.6}"><title>${r.name} · ${(r.area_m2 || 0).toFixed(1)} m²</title></polygon>`;
+    const W = {}; for (const w of layout.walls) { W[w.id] = w; const [x1, y1] = P(...w.a), [x2, y2] = P(...w.b);
+      out += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${w.exterior ? 'rgba(220,38,38,.75)' : 'rgba(234,88,12,.7)'}" stroke-width="${Math.max(px(w.thickness_m || 0.1), lw)}" stroke-linecap="butt"/>`; }
+    for (const o of layout.openings) { const w = W[o.wall]; if (!w) continue; const L = Math.hypot(w.b[0] - w.a[0], w.b[1] - w.a[1]) || 1, ux = (w.b[0] - w.a[0]) / L, uz = (w.b[1] - w.a[1]) / L;
+      const [x1, y1] = P(w.a[0] + ux * o.s0, w.a[1] + uz * o.s0), [x2, y2] = P(w.a[0] + ux * o.s1, w.a[1] + uz * o.s1);
+      out += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${o.type === 'window' ? '#06b6d4' : '#16a34a'}" stroke-width="${Math.max(px(w.thickness_m || 0.1), lw) * 1.3}"><title>${o.type} ${(o.width_m || o.s1 - o.s0).toFixed(2)} m</title></line>`; }
+    out += '</g>';
+    out += `<g id="pCam" style="display:none"><path d="M0,0 L22,-10 L22,10 Z" fill="rgba(220,38,38,.4)"/><circle r="5" fill="#dc2626" stroke="#fff" stroke-width="1.5"/></g>`;
+    svg.innerHTML = out; cam = svg.querySelector('#pCam');
+  };
+  img.src = p.slice(i);
+  const btn = id => document.getElementById(id);
+  btn('pOver').onclick = e => { const g = svg.querySelector('#pOv'); const on = e.target.classList.toggle('on'); if (g) g.style.display = on ? '' : 'none'; };
+  btn('pBig').onclick = () => { box.classList.toggle('big'); box.classList.remove('off'); };
+  btn('pHide').onclick = () => { const off = box.classList.toggle('off'); btn('pHide').textContent = off ? '+' : '–'; document.body.classList.toggle('hasplan', !off); };
+  // where you stand: camera position and heading on the plan (walk view)
+  const dir = new THREE.Vector3();
+  (function tick() { requestAnimationFrame(tick); if (!cam) return; if (mode !== 'walk') { cam.style.display = 'none'; return; }
+    camera.getWorldDirection(dir); const [x, y] = P(camera.position.x, camera.position.z);
+    cam.style.display = ''; cam.setAttribute('transform', `translate(${x},${y}) rotate(${(Math.atan2(dir.z, dir.x) * 180 / Math.PI).toFixed(1)}) scale(${(img.naturalWidth / (img.clientWidth || 1)).toFixed(3)})`); })();   // marker drawn in screen pixels at any window size
+})();
 </script>
 <script type="module" src="../furnish/agent.js"></script><script type="module" src="walk.js"></script><script type="module" src="glue.js"></script>
 <script type="module" src="polishcam.js"></script>

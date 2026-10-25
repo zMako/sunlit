@@ -33,8 +33,6 @@ const unitBeds = u => u.beds ?? (u.rooms.filter(r => r.type === 'bedroom').lengt
 function matches(l) {
   const q = $('q').value.trim().toLowerCase(), pmin = +$('pmin').value || 0, pmax = +$('pmax').value || 0, beds = $('beds').value;
   if (!(l.in_area ?? l.in_sf) || l.lat == null) return false;
-  if ($('fplan').checked && !l.has_plan) return false;
-  if ($('f3d').checked && !l.can_rebuild) return false;
   if ((pmin || pmax) && !l.price) return false;
   if (pmin && l.price < pmin) return false;
   if (pmax && l.price > pmax) return false;
@@ -105,15 +103,15 @@ function renderFeed() {
   let list = ALL.filter(l => ok.has(l.id)); const total = list.length;
   if ($('fbounds').checked) list = list.filter(l => b.contains([l.lat, l.lon]));
   list.sort((a, b) => sortKey(a) - sortKey(b)); SHOWN = list;
-  const n3d = list.filter(l => l.can_rebuild).length, nu = list.reduce((s, l) => s + l.units.length, 0);
+  const nu = list.reduce((s, l) => s + l.units.length, 0);
   $('count').textContent = `${list.length} listing${list.length === 1 ? '' : 's'}`;
-  $('count2').textContent = `${$('fbounds').checked && list.length < total ? `in view (of ${total})` : ''} · ${n3d} with 3D, ${nu} unit types`;
+  $('count2').textContent = `${$('fbounds').checked && list.length < total ? `in view (of ${total})` : ''} · ${nu} unit types`;
   $('feed').innerHTML = list.map(cardHtml).join('') || '<div class="empty">No listing matches. Zoom out, or clear a filter.</div>';
 }
 $('feed').addEventListener('mouseover', e => { const c = e.target.closest('.card'); if (c && !c.contains(e.relatedTarget)) hot(c.dataset.id, true, 'card'); });
 $('feed').addEventListener('mouseout', e => { const c = e.target.closest('.card'); if (c && !c.contains(e.relatedTarget)) hot(c.dataset.id, false, 'card'); });
 $('feed').addEventListener('click', e => { const c = e.target.closest('.card'); if (c) openDrawer(c.dataset.id); });
-for (const id of ['q', 'pmin', 'pmax', 'beds', 'fplan', 'f3d', 'fbounds', 'sort']) $(id).addEventListener('input', renderFeed);
+for (const id of ['q', 'pmin', 'pmax', 'beds', 'fbounds', 'sort']) $(id).addEventListener('input', renderFeed);
 
 // ---------- drawer ----------
 let CUR = null, SEL = null;
@@ -243,7 +241,7 @@ $('cmp').addEventListener('click', e => { if (e.target.id === 'cmpx') return $('
 // ---------- boot ----------
 initMap();
 fetch('/api/listings', { cache: 'no-store' }).then(r => r.json()).then(doc => {
-  ALL = doc.listings;
+  ALL = doc.listings.filter(l => l.can_rebuild);   // only listings we can rebuild in 3D, priced or not
   for (const l of ALL) { BYID.set(l.id, l);
     l._text = [l.title, l.address, l.building, l.neighborhood, l.id, ...l.units.map(u => u.plan_name), ...l.plans.map(p => p.name)].join(' ').toLowerCase(); }
   drawPins();

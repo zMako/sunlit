@@ -164,7 +164,7 @@ let wasEnabled = false; let lastT = performance.now();
   if (!on && wasEnabled) hud.style.display = 'none';
   wasEnabled = on; if (!on) return;
   animateDoors(now); if (dirty || [...doors.values()].some(d => d.anim)) { wallCols = wallColliders(); dirty = false; }
-  if (!window.walk.manual) { camera.position.x = lastPos.x; camera.position.z = lastPos.y; step(dt); }   // undo the builder's move, then ours
+  if (!window.walk?.manual) { camera.position.x = lastPos.x; camera.position.z = lastPos.y; step(dt); }   // undo the builder's move, then ours
   const r = roomAt(player.pos); const d = nearestDoor(); player.room = r ? r.name : null; player.prompt = d ? `E · ${d.open ? 'close' : 'open'} the ${d.closet ? 'closet' : 'door'}` : null;
   hud.innerHTML = `${r ? `<b>${r.name}</b>` : ''}${d ? ` &nbsp;·&nbsp; <span style="color:#9fc6ff">${player.prompt}</span>` : ''}` || 'walk: WASD · Shift run · E doors';
 })();

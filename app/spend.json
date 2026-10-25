@@ -1,54 +1,22 @@
 {
  "usd": {
   "google": 0.403,
-  "anthropic": 9.074642
+  "anthropic": 9.104316
  },
  "counts": {
-  "anthropic_calls": 752,
+  "anthropic_calls": 756,
   "google_geocode": 77,
   "google_root_tile": 3,
   "google_tile": 65,
   "poly_pizza": 7
  },
  "tokens": {
-  "in": 3491062,
-  "out": 1452196,
+  "in": 3520677,
+  "out": 1456471,
   "cache_read": 0,
   "cache_write": 65756
  },
  "events": [
-  {
-   "t": "2026-10-24T09:56:54",
-   "bucket": "anthropic",
-   "usd": 0.0015,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_00.jpg"
-  },
-  {
-   "t": "2026-10-24T09:57:05",
-   "bucket": "anthropic",
-   "usd": 0.001324,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_01.jpg"
-  },
-  {
-   "t": "2026-10-24T09:57:14",
-   "bucket": "anthropic",
-   "usd": 0.001194,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_02.jpg"
-  },
-  {
-   "t": "2026-10-24T09:57:22",
-   "bucket": "anthropic",
-   "usd": 0.001236,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_00.jpg"
-  },
   {
    "t": "2026-10-24T09:57:38",
    "bucket": "anthropic",
@@ -4016,6 +3984,38 @@
    "key": "anthropic_calls",
    "n": 1,
    "note": "claude-haiku-5-5 agent shortlist living"
+  },
+  {
+   "t": "2026-10-24T18:35:49",
+   "bucket": "anthropic",
+   "usd": 0.012594,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_00.jpg"
+  },
+  {
+   "t": "2026-10-24T18:35:55",
+   "bucket": "anthropic",
+   "usd": 0.013274,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-sonnet-5-5 annotate plan_00.jpg"
+  },
+  {
+   "t": "2026-10-24T18:36:31",
+   "bucket": "anthropic",
+   "usd": 0.001632,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 furnish bedroom"
+  },
+  {
+   "t": "2026-10-24T18:36:40",
+   "bucket": "anthropic",
+   "usd": 0.002174,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 furnish living"
   }
  ]
 }

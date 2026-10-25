@@ -13230,7 +13230,7 @@
    "door_width",
    "sqft"
   ],
-  "n_fixtures": 13,
+  "n_fixtures": 10,
   "bedrooms": 2,
   "sqft": null,
   "annotated": true,
@@ -26995,7 +26995,7 @@
    "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 9,
+  "n_fixtures": 7,
   "bedrooms": 2,
   "sqft": null,
   "annotated": true,
@@ -27307,7 +27307,7 @@
    "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 9,
+  "n_fixtures": 7,
   "bedrooms": 3,
   "sqft": null,
   "annotated": true,
@@ -27573,7 +27573,7 @@
    "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 10,
+  "n_fixtures": 8,
   "bedrooms": 3,
   "sqft": null,
   "annotated": true,
@@ -29325,19 +29325,19 @@
     "id": "r0",
     "name": "Bedroom",
     "type": "bedroom",
-    "area_m2": 22.58
+    "area_m2": 23.72
    },
    {
     "id": "r1",
     "name": "Living Room / Kitchen",
     "type": "living",
-    "area_m2": 28.2
+    "area_m2": 27.01
    },
    {
     "id": "r2",
     "name": "Bath",
     "type": "bathroom",
-    "area_m2": 1.92
+    "area_m2": 1.97
    }
   ],
   "area_m2": 52.7,
@@ -29347,17 +29347,17 @@
    "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 8,
+  "n_fixtures": 6,
   "bedrooms": 1,
   "sqft": null,
   "annotated": true,
   "issues": [
-   "Bath region 3 appears to include the closet/utility area and the bath; the bath entry door swing near the bedroom is not closed off",
-   "Small closet above the kitchen/bath (x 0.53-0.7, y 0.62-0.72) is not a separate room",
-   "Bedroom door opening into living room is only partially marked",
-   "Kitchen is merged with living room in region 2"
+   "Bath area likely contains a vanity room and a tub room; the overlay shows only one bath region",
+   "Closet near the bedroom door (x 0.54-0.7, y 0.62-0.72) is not marked",
+   "Kitchen is not separated from the living room, which is fine as it is open",
+   "The bedroom door swing at the bottom opens into the bath/closet area, and the opening there is not marked"
   ],
-  "materials": true
+  "materials": false
  },
  {
   "unit": "gs-20665_plan_01",
@@ -29386,7 +29386,7 @@
    "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 8,
+  "n_fixtures": 5,
   "bedrooms": 1,
   "sqft": null,
   "annotated": true,
@@ -29676,7 +29676,7 @@
    "reader_dims+estimated",
    "door_width"
   ],
-  "n_fixtures": 8,
+  "n_fixtures": 5,
   "bedrooms": 1,
   "sqft": null,
   "annotated": true,
@@ -43218,7 +43218,7 @@
    "reader_dims+printed",
    "door_width"
   ],
-  "n_fixtures": 16,
+  "n_fixtures": 13,
   "bedrooms": 2,
   "sqft": null,
   "annotated": true,

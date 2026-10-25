@@ -924,6 +924,18 @@ def vlm_annotate(E, plan_path, model="claude-sonnet-5-5"):
     if not txt: raise RuntimeError(f"annotate: no JSON (stop {r.stop_reason})")
     A = json.loads(txt); A["_usd"] = round(usd, 4); json.dump(A, open(cache, "w"), indent=1); return A
 
+BATH_FIX = {"toilet", "tub", "shower", "vanity"}; KITCHEN_FIX = {"stove", "fridge", "dishwasher", "sink", "counter", "island"}
+def sanity_fixtures(fixtures, rooms):
+    """A bathroom fixture must sit in a bathroom (else it is dropped: the VLM put it in a vestibule the engine did not
+    enclose); kitchen fixtures may sit in kitchen/living/dining/other but not in a bedroom or bathroom."""
+    rtype = {r["id"]: r["type"] for r in rooms}; out = []
+    for f in fixtures:
+        t = rtype.get(f.get("room"))
+        if f["type"] in BATH_FIX and t not in (None, "bathroom", "laundry"): continue
+        if f["type"] in KITCHEN_FIX and t in ("bedroom", "bathroom", "closet"): continue
+        out.append(f)
+    return out
+
 def apply_annotation(L, E, A):
     """Room names/types from the marks; fixtures from fractional boxes -> metres, snapped to the nearest wall of their room."""
     H, W = E["gray"].shape; sc = L["scale"]; mpp = sc["m_per_px"]; ox, oy = sc["origin_px"]
@@ -950,7 +962,7 @@ def apply_annotation(L, E, A):
             if depth_m and side in ("E", "W"): w = depth_m / mpp; cx = (max(xs) / mpp + ox - w / 2) if side == "E" else (min(xs) / mpp + ox + w / 2)
         fixtures.append({"id": f"f{k}", "type": f["type"], "rect": {"x": round((cx - ox) * mpp, 3), "z": round((cz - oy) * mpp, 3), "w": round(w * mpp, 3), "d": round(d * mpp, 3), "rot_deg": {"N": 0, "S": 180, "E": 270, "W": 90}.get(f.get("against") or "", 0)},
                          "room": room, "against_wall": f.get("against"), "height_m": HEIGHTS.get(f["type"], 0.9)})
-    L["fixtures"] = fixtures; L["review"] = {"rounds": 1, "issues": A.get("issues", []), "usd": A.get("_usd")}
+    L["fixtures"] = sanity_fixtures(fixtures, L["rooms"]); L["review"] = {"rounds": 1, "issues": A.get("issues", []), "usd": A.get("_usd")}
     if A.get("sqft_printed") and not L["scale"].get("sqft_listed"): L["scale"]["sqft_printed"] = A["sqft_printed"]
     return L
 
