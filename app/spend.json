@@ -1,46 +1,22 @@
 {
  "usd": {
   "google": 0.403,
-  "anthropic": 9.068294
+  "anthropic": 9.074642
  },
  "counts": {
-  "anthropic_calls": 749,
+  "anthropic_calls": 752,
   "google_geocode": 77,
   "google_root_tile": 3,
   "google_tile": 65,
   "poly_pizza": 7
  },
  "tokens": {
-  "in": 3454038,
-  "out": 1446906,
+  "in": 3491062,
+  "out": 1452196,
   "cache_read": 0,
   "cache_write": 65756
  },
  "events": [
-  {
-   "t": "2026-10-24T09:56:12",
-   "bucket": "anthropic",
-   "usd": 0.001581,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_01.jpg"
-  },
-  {
-   "t": "2026-10-24T09:56:28",
-   "bucket": "anthropic",
-   "usd": 0.00188,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_02.jpg"
-  },
-  {
-   "t": "2026-10-24T09:56:41",
-   "bucket": "anthropic",
-   "usd": 0.001728,
-   "key": "anthropic_calls",
-   "n": 1,
-   "note": "claude-haiku-5-5 plan plan_03.jpg"
-  },
   {
    "t": "2026-10-24T09:56:54",
    "bucket": "anthropic",
@@ -4013,6 +3989,30 @@
    "t": "2026-10-24T17:21:07",
    "bucket": "anthropic",
    "usd": 0.00038,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 agent shortlist living"
+  },
+  {
+   "t": "2026-10-24T17:22:37",
+   "bucket": "anthropic",
+   "usd": 0.000377,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 agent shortlist living"
+  },
+  {
+   "t": "2026-10-24T17:23:15",
+   "bucket": "anthropic",
+   "usd": 0.002848,
+   "key": "anthropic_calls",
+   "n": 1,
+   "note": "claude-haiku-5-5 agent shortlist living"
+  },
+  {
+   "t": "2026-10-24T17:23:34",
+   "bucket": "anthropic",
+   "usd": 0.003123,
    "key": "anthropic_calls",
    "n": 1,
    "note": "claude-haiku-5-5 agent shortlist living"

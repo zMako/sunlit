@@ -28,7 +28,7 @@ def load_room(room):
 def room_info(R):
     xs = [p[0] for p in R["polygon"]]; zs = [p[1] for p in R["polygon"]]; lens = sorted((e["len"] for e in R.get("edges", [])), reverse=True)
     doors = [d for d in R.get("doors", []) if 0.55 <= d.get("width_m", 0) <= 1.5]
-    return {"type": R.get("type") or "other", "area_m2": R.get("area_m2"), "long_m": round(lens[0], 2) if lens else round(max(xs) - min(xs), 2), "short_m": round(lens[-1], 2) if lens else round(max(zs) - min(zs), 2),
+    return {"type": R.get("type") or "other", "area_m2": R.get("area_m2"), "long_m": round(max(max(xs) - min(xs), max(zs) - min(zs)), 2), "short_m": round(min(max(xs) - min(xs), max(zs) - min(zs)), 2),   # bounding box: notched polygons have tiny edges
             "ceiling_m": R.get("ceiling_m") or 2.6, "n_windows": len(R.get("windows", [])), "n_doors": len(doors), "door_w": round(min((d["width_m"] for d in doors), default=DOOR_W_DEFAULT), 2),
             "fixtures": [f.get("type") for f in R.get("fixtures", []) or []]}
 
