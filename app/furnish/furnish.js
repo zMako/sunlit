@@ -137,7 +137,7 @@ export class Furnish {
     const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: false })); s.scale.set(0.9, 0.17, 1); return s;
   }
 
-  setClipping(planes) { this.clipPlanes = planes || []; for (const it of this.items) this._applyClip(it.obj); }
+  setClipping(planes) { this.clipPlanes = planes || []; for (const it of this.items) this._applyClip(it.obj); if (this._roomProps) this._applyClip(this._roomProps); }   // room-level decor (curtains) too
   _applyClip(obj) { obj.traverse(o => { if (o.isMesh && o.material && !o.isSprite) { const ms = Array.isArray(o.material) ? o.material : [o.material]; ms.forEach(m => { m.clippingPlanes = this.clipPlanes; m.clipShadows = true; }); } }); }
   setActive(on) { this.active = !!on; if (!on) { this.drag = null; this.select(null); } }
   _place(it, x, z, rot) { it.spec.x = x; it.spec.z = z; it.spec.rot_deg = ((rot % 360) + 360) % 360; it.obj.position.set(x, +it.spec.y_m || 0, z); it.obj.rotation.y = -it.spec.rot_deg * DEG; this._cord(it); }
