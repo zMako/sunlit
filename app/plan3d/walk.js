@@ -172,7 +172,8 @@ function step(dt, k = keys) {
   const cx = Math.min(Math.max(p.x, UB.minX), UB.maxX), cz = Math.min(Math.max(p.y, UB.minZ), UB.maxZ); if (cx !== p.x || cz !== p.y) { p.set(cx, cz); hit = true; }
   const blocked = hit && p.distanceTo(player.pos.clone().add(player.vel.clone().multiplyScalar(dt))) > 0.004 && player.vel.length() > 0.4;
   if (blocked && player.nudge <= 0) { player.nudge = 0.12; click(140, 0.05); player.vel.multiplyScalar(0.3); }
-  player.pos.copy(p); player.moving = player.vel.length() > 0.2;
+  const moved = p.distanceTo(player.pos); player.pos.copy(p); player.moving = player.vel.length() > 0.2;
+  if (player.onGround && player.moving) { stride += moved; if (stride > (k.ShiftLeft || k.ShiftRight ? 0.85 : 0.62)) { stride = 0; footstep(surfaceAt(p)); } } else if (!player.moving) stride = 0.45;   // the first step comes quickly
   // vertical: jump, gravity, land on the highest reachable surface, bump the ceiling
   if ((k.Space) && player.onGround) { player.vy = JUMP; player.onGround = false; player.jumps++; click(300, 0.05); }
   player.vy -= G * dt; let nf = player.feet + player.vy * dt;
@@ -205,7 +206,61 @@ function nearestDoor() {
   }
   return best ? best.d : null;
 }
-function tryToggle() { const d = nearestDoor(); if (d) { toggleDoor(d.id); dirty = true; } }
+// ---------- E: the nearest thing you face -- a door (open/close), a seat (sit down), a lamp (switch) ----------
+const SEATS = new Set(['sofa', 'armchair', 'dining_chair', 'desk_chair', 'bench', 'stool', 'bar_stool', 'ottoman']);
+const LAMPS = new Set(['table_lamp', 'floor_lamp', 'wall_lamp', 'pendant_lamp', 'ceiling_lamp']);
+function nearestThing() {
+  const fw = forward(); const look = new THREE.Vector3(); camera.getWorldDirection(look); const d = nearestDoor(); let best = d ? { kind: 'door', d, score: d.centre.distanceTo(player.pos) } : null; const wp = new THREE.Vector3();
+  for (const f of Object.values(window.furnishByRoom || {})) for (const it of f.items || []) {
+    const cat = it.spec.category; const kind = SEATS.has(cat) ? 'seat' : LAMPS.has(cat) && it.lamp ? 'lamp' : null; if (!kind || !it.obj) continue;
+    it.obj.getWorldPosition(wp); if (wp.y < player.feet - 0.6 || wp.y > player.feet + 2.8) continue;   // this level only
+    // distance to the piece's footprint (not its centre: you stand at a sofa's front, 1 m from its middle), and how squarely you face it
+    const rot = -THREE.MathUtils.degToRad(+it.spec.rot_deg || 0); const u = new THREE.Vector2(Math.cos(rot), -Math.sin(rot)), v = new THREE.Vector2(-u.y, u.x);
+    const rel = new THREE.Vector2(wp.x, wp.z).sub(player.pos).negate(); const lu = rel.dot(u), lv = rel.dot(v); const hu = (+it.spec.w_m || 0.5) / 2, hv = (+it.spec.d_m || 0.5) / 2;
+    const near = new THREE.Vector2(wp.x, wp.z).add(u.clone().multiplyScalar(Math.max(-hu, Math.min(hu, lu)))).add(v.clone().multiplyScalar(Math.max(-hv, Math.min(hv, lv))));
+    const to = near.sub(player.pos); const dist = to.length(); const facing = dist < 0.05 ? 1 : to.normalize().dot(fw);
+    const overhead = cat === 'pendant_lamp' || cat === 'ceiling_lamp';   // a light over your head: only when you look up at it
+    if (overhead && look.y < 0.35) continue;
+    if (dist > (overhead ? 1.0 : REACH) || (!overhead && facing < 0.35)) continue;
+    const score = dist + (1 - facing) * 0.6 + (overhead ? 0.5 : 0); if (!best || score < best.score) best = { kind, it, f, score };
+  }
+  return best;
+}
+function sit(it) {   // seated eye height over the real seat (props.js measured it), the spot nearest you on a sofa, looking where the piece faces
+  const s = it.spec, w = +s.w_m || 0.5, d = +s.d_m || 0.5, back = !['bench', 'stool', 'bar_stool', 'ottoman'].includes(s.category);
+  const st = it._seat || {}; const y = st.y ?? (/stool/.test(s.category) ? +s.h_m || 0.65 : Math.min(0.48, (+s.h_m || 0.8) * 0.55)); const zb = back ? (st.zb ?? -d / 2 + 0.12) : 0;
+  it.obj.updateWorldMatrix(true, false); const lp = it.obj.worldToLocal(new THREE.Vector3(player.pos.x, player.feet, player.pos.y));
+  const x0 = (st.xl ?? -w / 2 + 0.1) + 0.28, x1 = (st.xr ?? w / 2 - 0.1) - 0.28; const xs = x0 < x1 ? Math.min(Math.max(lp.x, x0), x1) : 0;
+  const eye = it.obj.localToWorld(new THREE.Vector3(xs, y + 0.74, zb + (back ? 0.24 : 0))); const ahead = it.obj.localToWorld(new THREE.Vector3(xs, y + 0.62, zb + 1.5));
+  player.sit = { it, eye, standPos: player.pos.clone(), standFeet: player.feet }; player.vel.set(0, 0);
+  camera.position.copy(eye); camera.rotation.set(0, 0, 0); camera.lookAt(ahead); footstep('rug'); click(110, 0.06);
+}
+function stand() { const S = player.sit; if (!S) return; player.sit = null; player.pos.copy(S.standPos); player.feet = S.standFeet; player.vy = 0; player.eyeY = S.standFeet + EYE; lastPos.copy(player.pos); camera.position.set(S.standPos.x, player.eyeY, S.standPos.y); footstep('wood'); }
+function tryToggle() {
+  if (player.sit) { stand(); return; }
+  const t = nearestThing(); if (!t) return;
+  if (t.kind === 'door') { toggleDoor(t.d.id); dirty = true; }
+  else if (t.kind === 'lamp') { t.it.lampOff = !t.it.lampOff; t.f._lampLevel(t.it); click(t.it.lampOff ? 380 : 620, 0.03); }
+  else sit(t.it);
+}
+// ---------- footsteps: one per stride, by what is underfoot ----------
+let noiseBuf = null, stride = 0;
+function surfaceAt(p) {
+  if (player.feet - elev(levelAt(player.feet)) > 0.25) return 'rug';   // on a bed or a sofa: soft
+  for (const f of Object.values(window.furnishByRoom || {})) for (const it of f.items || []) { const s = it.spec; if (s.category !== 'rug') continue;
+    const rot = -THREE.MathUtils.degToRad(+s.rot_deg || 0); const b = obb(new THREE.Vector2(+s.x || 0, +s.z || 0), new THREE.Vector2(Math.cos(rot), -Math.sin(rot)), (+s.w_m || 1) / 2, (+s.d_m || 1) / 2, 'rug'); if (insideBox(p, b, 0)) return 'rug'; }
+  const r = roomAt(p); return r && /bath|kitchen|wc|toilet|shower|laundry|utility/i.test(r.name || '') ? 'tile' : 'wood';
+}
+function footstep(surface = 'wood') {
+  try {
+    audio = audio || new (window.AudioContext || window.webkitAudioContext)(); const t = audio.currentTime;
+    if (!noiseBuf) { noiseBuf = audio.createBuffer(1, Math.floor(audio.sampleRate * 0.12), audio.sampleRate); const dd = noiseBuf.getChannelData(0); for (let i = 0; i < dd.length; i++) dd[i] = (Math.random() * 2 - 1) * (1 - i / dd.length) ** 3; }
+    const S = { rug: ['lowpass', 420, 0.05], wood: ['lowpass', 1500, 0.06], tile: ['bandpass', 2800, 0.05] }[surface] || ['lowpass', 1500, 0.06];
+    const src = audio.createBufferSource(); src.buffer = noiseBuf; src.playbackRate.value = 0.85 + Math.random() * 0.3; const fl = audio.createBiquadFilter(); fl.type = S[0]; fl.frequency.value = S[1]; const g = audio.createGain(); g.gain.value = S[2] * (0.8 + Math.random() * 0.4);
+    src.connect(fl).connect(g).connect(audio.destination); src.start(t);
+    if (surface !== 'rug') { const o = audio.createOscillator(), og = audio.createGain(); o.frequency.value = surface === 'wood' ? 92 : 160; og.gain.setValueAtTime(0.045, t); og.gain.exponentialRampToValueAtTime(0.001, t + 0.07); o.connect(og).connect(audio.destination); o.start(t); o.stop(t + 0.08); }   // the heel on a hard floor
+  } catch (e) {}
+}
 function roomAt(p) { const lv = levelAt(player.feet); for (const r of layout.rooms) if ((r.level || 0) === lv && pointInPoly(p, r.polygon)) return r; return null; }
 
 // ---------- HUD + feedback ----------
@@ -228,10 +283,12 @@ let wasEnabled = false; let lastT = performance.now();
   if (!on && wasEnabled) hud.style.display = 'none';
   wasEnabled = on; if (!on) return;
   animateDoors(now); if (dirty || [...doors.values()].some(d => d.anim)) { wallCols = wallColliders(); dirty = false; }
-  if (!window.walk?.manual) { camera.position.x = lastPos.x; camera.position.z = lastPos.y; step(dt); }   // undo the builder's move, then ours
-  const r = roomAt(player.pos); const d = nearestDoor(); player.room = r ? r.name : null; player.prompt = d ? `E · ${d.open ? 'close' : 'open'} the ${d.closet ? 'closet' : 'door'}` : null;
+  if (player.sit) { camera.position.copy(player.sit.eye); if (wish(keys).lengthSq() > 0 || keys.Space) stand(); }   // seated: look around freely; move or jump to stand
+  else if (!window.walk?.manual) { camera.position.x = lastPos.x; camera.position.z = lastPos.y; step(dt); }   // undo the builder's move, then ours
+  const r = roomAt(player.pos); const t = player.sit ? { kind: 'up' } : nearestThing(); const d = t; const nm = x => String(x.it.spec.name || x.it.spec.category).replace(/_/g, ' ').slice(0, 32); player.room = r ? r.name : null;
+  player.prompt = !t ? null : t.kind === 'up' ? 'E · stand up' : t.kind === 'door' ? `E · ${t.d.open ? 'close' : 'open'} the ${t.d.closet ? 'closet' : 'door'}` : t.kind === 'lamp' ? `E · switch ${t.it.lampOff ? 'on' : 'off'} the ${nm(t)}` : `E · sit on the ${nm(t)}`;
   const lvName = LEVELS.length > 1 ? (LEVELS.find(v => v.id === levelAt(player.feet)) || {}).name : null;
-  hud.innerHTML = `${lvName ? `<span style="color:#9aa6b5">${lvName}</span> &nbsp;` : ''}${r ? `<b>${r.name}</b>` : ''}${d ? ` &nbsp;·&nbsp; <span style="color:#9fc6ff">${player.prompt}</span>` : ''}` || 'walk: WASD · Shift run · Space jump · E doors';
+  hud.innerHTML = `${lvName ? `<span style="color:#9aa6b5">${lvName}</span> &nbsp;` : ''}${r ? `<b>${r.name}</b>` : ''}${d ? ` &nbsp;·&nbsp; <span style="color:#9fc6ff">${player.prompt}</span>` : ''}` || 'walk: WASD · Shift run · Space jump · E doors, seats, lamps';
 })();
 
 // ---------- public API (agent/render workers, headless tests) ----------
@@ -245,7 +302,7 @@ window.walk = {
   levelAt: () => levelAt(player.feet), stairs: () => STAIRS.map(S => ({ rect: S.r, climb: S.st.climb, steps: S.steps.length })),
   look: (yawDeg, pitch = -0.05) => { const y = THREE.MathUtils.degToRad(yawDeg); camera.rotation.set(0, 0, 0); camera.lookAt(camera.position.x + Math.sin(y), camera.position.y + pitch, camera.position.z + Math.cos(y)); },
   lookAt: (x, z) => { camera.rotation.set(0, 0, 0); camera.lookAt(x, EYE - 0.1, z); },
-  toggleDoor, nearestDoor: () => nearestDoor()?.id || null, doorList: () => [...doors.values()].map(d => ({ id: d.id, open: d.open, centre: [d.centre.x, d.centre.y], wall: d.fr.id, closet: d.closet })),
+  toggleDoor, nearestDoor: () => nearestDoor()?.id || null, use: () => tryToggle(), thing: () => { const t = nearestThing(); return t ? { kind: t.kind, name: t.it ? t.it.spec.name : t.d.id } : null; }, sitting: () => !!player.sit, stand: () => stand(), doorList: () => [...doors.values()].map(d => ({ id: d.id, open: d.open, centre: [d.centre.x, d.centre.y], wall: d.fr.id, closet: d.closet })),
   colliders: () => wallCols.concat(itemColliders()).length,
   near: (x, z, r = 1.0) => wallCols.concat(itemColliders()).filter(b => { const rel = new THREE.Vector2(x, z).sub(b.c); return Math.abs(rel.dot(b.u)) < b.hu + r && Math.abs(rel.dot(b.v)) < b.hv + r; }).map(b => ({ tag: b.tag, c: [+b.c.x.toFixed(2), +b.c.y.toFixed(2)], hu: +b.hu.toFixed(2), hv: +b.hv.toFixed(2), u: [+b.u.x.toFixed(2), +b.u.y.toFixed(2)] })), roomAt: (x, z) => roomAt(new THREE.Vector2(x, z))?.name || null,
 };

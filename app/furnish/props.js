@@ -266,6 +266,7 @@ export class Props {
       if (top < seat + 0.1) return side * (w / 2 - 0.03);   // armless side
       for (let x = xp; side * x > 0; x -= side * 0.02) if (armAt(x) < seat + 0.06) return x; return side * (w / 2 - 0.03); };
     const xl = arm(-1), xr = arm(1);
+    it._seat = { y: seat, zb, xl, xr };   // walk.js sits you here (E)
     const span = xr - xl; const s = sofa ? 0.46 : 0.42;
     const cols = [pal.accent, mute(pal.mid, 0.9, 0.08), pal.light.clone().lerp(col('#f2eee6'), 0.3), mute(pal.dark, 0.8, 0.1)];
     const place = (x, c, size, lean) => { const m = mesh(pillowGeo(size, 0.15, size, 0.6), fabric(f, mute(c, 0.85), { bump: 0.65, boucle: r() < 0.3 }));

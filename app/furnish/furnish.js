@@ -331,8 +331,8 @@ export class Furnish {
     it.lamp = { light, halo, base }; it.obj.add(light); it.obj.add(halo); this._lampLevel(it);
   }
   _lampLevel(it) {
-    if (!it.lamp) return; const m = Furnish.lampLevel; it.lamp.light.intensity = it.lamp.base * m; it.lamp.halo.material.opacity = Math.min(0.85, 0.1 * m);
-    it.obj.traverse(o => { if (o.isMesh && o.material && o.material.emissive && o.material.userData && o.material.userData.glow) o.material.emissiveIntensity = o.material.userData.glow * (0.4 + 1.0 * m); });
+    if (!it.lamp) return; const m = it.lampOff ? 0 : Furnish.lampLevel; it.lamp.light.intensity = it.lamp.base * m; it.lamp.halo.material.opacity = Math.min(0.85, 0.1 * m);   // lampOff: switched off in walk mode (E)
+    it.obj.traverse(o => { if (o.isMesh && o.material && o.material.emissive && o.material.userData && o.material.userData.glow) o.material.emissiveIntensity = it.lampOff ? 0 : o.material.userData.glow * (0.4 + 1.0 * m); });
   }
   static _data() {   // palette.json (Haiku's reading of each hero photo) and brand_textures.json (Muuto/Hem/Carl Hansen texture packs), fetched once
     if (!Furnish._dataP) Furnish._dataP = Promise.all([fetch('/furnish/designer/palette.json').then(r => r.ok ? r.json() : {}).catch(() => ({})), fetch('/furnish/designer/brand_textures.json').then(r => r.ok ? r.json() : {}).catch(() => ({})), fetch('/furnish/designer/orient.json').then(r => r.ok ? r.json() : {}).catch(() => ({})), fetch('/api/gallery_flags').then(r => r.ok ? r.json() : {}).catch(() => ({}))]).then(([p, b, o, f]) => ({ palette: p, brand: b, orient: o, flags: f }));
