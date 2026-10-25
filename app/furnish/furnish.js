@@ -67,7 +67,8 @@ export class Furnish {
         const gl = await this.loader.loadAsync(glbSrc); const m = gl.scene; m.traverse(o => { if (o.isMesh) { o.castShadow = true; o.userData.item = it; } });
         this._dressUntextured(m, spec);   // manufacturer OBJ/FBX exports mostly come without textures: give them a plausible PBR finish from the catalogue words
         // orientation pass (designer/orient.json, see orient/REPORT.md): which axis is up and where the front is, found from symmetry, backrest mass and CLIP; applied when confident
-        const od = (await Furnish._data()).orient[String(spec.id || '').split('#')[0]];
+        const data = await Furnish._data(); const pid = String(spec.id || '').split('#')[0]; const od0 = data.orient[pid]; const fl = data.flags[pid];
+        const od = fl && fl.yaw_fix != null ? { ...(od0 || { up: 'y' }), front_yaw_deg: ((od0 && od0.front_yaw_deg) || 0) + fl.yaw_fix, confidence: 1 } : od0;   // the owner's correction from the gallery wins
         if (od && (od.confidence ?? 0) >= 0.6 && (od.up !== 'y' || od.front_yaw_deg)) {
           const UP = { y: [0, 0, 0], '-y': [180, 0, 0], z: [-90, 0, 0], '-z': [90, 0, 0], x: [0, 0, 90], '-x': [0, 0, -90] }; const e = UP[od.up] || UP.y; const D = Math.PI / 180;
           const qUp = new THREE.Quaternion().setFromEuler(new THREE.Euler(e[0] * D, e[1] * D, e[2] * D)); const q = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), (od.front_yaw_deg || 0) * D).multiply(qUp);
@@ -302,7 +303,7 @@ export class Furnish {
     rattan: { roughness: 0.9, metalness: 0 }, cork: { roughness: 0.95, metalness: 0 }, rubber: { roughness: 0.8, metalness: 0 } };
   static LAMP = new Set(['pendant_lamp', 'table_lamp', 'floor_lamp']);
   static _data() {   // palette.json (Haiku's reading of each hero photo) and brand_textures.json (Muuto/Hem/Carl Hansen texture packs), fetched once
-    if (!Furnish._dataP) Furnish._dataP = Promise.all([fetch('/furnish/designer/palette.json').then(r => r.ok ? r.json() : {}).catch(() => ({})), fetch('/furnish/designer/brand_textures.json').then(r => r.ok ? r.json() : {}).catch(() => ({})), fetch('/furnish/designer/orient.json').then(r => r.ok ? r.json() : {}).catch(() => ({}))]).then(([p, b, o]) => ({ palette: p, brand: b, orient: o }));
+    if (!Furnish._dataP) Furnish._dataP = Promise.all([fetch('/furnish/designer/palette.json').then(r => r.ok ? r.json() : {}).catch(() => ({})), fetch('/furnish/designer/brand_textures.json').then(r => r.ok ? r.json() : {}).catch(() => ({})), fetch('/furnish/designer/orient.json').then(r => r.ok ? r.json() : {}).catch(() => ({})), fetch('/api/gallery_flags').then(r => r.ok ? r.json() : {}).catch(() => ({}))]).then(([p, b, o, f]) => ({ palette: p, brand: b, orient: o, flags: f }));
     return Furnish._dataP;
   }
   _matFor(finish, hex, sheen, isLamp) {

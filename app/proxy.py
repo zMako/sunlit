@@ -79,6 +79,18 @@ class H(http.server.SimpleHTTPRequestHandler):
                 f.parent.mkdir(parents=True, exist_ok=True); plan["room"] = name; json.dump(plan, open(f, "w"), indent=1); return self.reply(json.dumps({"saved": name, "n": len(plan.get("items", []))}).encode())
             if f.exists(): return self.reply(f.read_bytes())
             return self.send_error(404)
+        if rel == "/api/gallery_flags":   # the owner's corrections from furnish/gallery.html: {id: {flag, yaw_fix, note, t}}; the viewer applies yaw_fix
+            f = ROOT / "furnish" / "gallery_flags.json"
+            if self.command == "POST":
+                n = int(self.headers.get("Content-Length", "0") or 0); body = self.rfile.read(n) if n else b""
+                try: upd = json.loads(body or b"{}")
+                except Exception: return self.send_error(400)
+                cur = json.loads(f.read_text()) if f.exists() else {}
+                for k, v in upd.items():
+                    if v is None: cur.pop(k, None)
+                    else: cur[k] = v
+                f.write_text(json.dumps(cur, indent=0, sort_keys=True)); return self.reply(json.dumps({"n": len(cur)}).encode())
+            return self.reply(f.read_bytes() if f.exists() else b"{}")
         if rel == "/api/img":   # same-origin copy of a product image so WebGL can use it as a texture (CORS); ikea.com only
             url = dict(urllib.parse.parse_qsl(u.query)).get("u", ""); host = urllib.parse.urlsplit(url).hostname or ""
             if not (host == "www.ikea.com" or host.endswith(".ikea.com")): return self.send_error(403)
@@ -186,4 +198,4 @@ class H(http.server.SimpleHTTPRequestHandler):
 if __name__ == "__main__":
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 8765
     threading.Thread(target=worker, daemon=True).start()
-    print(f"rooms platform on http://127.0.0.1:{port}/"); http.server.ThreadingHTTPServer(("127.0.0.1", port), H).serve_forever()
+    print(f"rooms platform on http://127.0.0.1:{port}/"); http.server.ThreadingHTTPServer.request_queue_size = 256; http.server.ThreadingHTTPServer(("127.0.0.1", port), H).serve_forever()   # the gallery fires a hundred requests at once; the default backlog of 5 resets connections

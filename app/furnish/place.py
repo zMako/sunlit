@@ -32,8 +32,10 @@ def canon_dims(i):
     elif cat == "mirror": d = v[0]; w, h = [x for x in (w, d, h) if x != v[0]][:2] if len({w, d, h}) == 3 else (v[1], v[2])   # thin: depth is the smallest
     elif cat == "bed": w, d = min(w, d), max(w, d)                               # a bed is longer than it is wide; the headboard is the width
     elif cat in WIDE_ON_WALL: w, d = max(w, d), min(w, d)                         # wall-backed pieces are wider than deep
-    elif cat in ("floor_lamp", "pendant_lamp", "table_lamp", "plant_pot", "stool", "bar_stool", "dining_chair", "desk_chair", "armchair"):
-        if h < max(w, d) and max(w, d) / max(h, 1e-6) > 1.6 and cat not in ("armchair", "plant_pot", "pendant_lamp"): h, (w, d) = v[2], sorted([v[0], v[1]])   # tall things: height is the largest number
+    elif cat in ("dining_chair", "desk_chair", "bar_stool", "stool"):
+        if h < 0.95 * max(w, d): h, (d, w) = v[2], sorted([v[0], v[1]])                # a chair is taller than it is deep: height is the largest number
+    elif cat in ("floor_lamp", "table_lamp"):
+        if h < max(w, d) and max(w, d) / max(h, 1e-6) > 1.6: h, (w, d) = v[2], sorted([v[0], v[1]])   # tall things: height is the largest number
     i = dict(i); i["width_m"], i["depth_m"], i["height_m"] = round(w, 3), round(d, 3), round(h, 3); return i
 
 # products the keyword classifier filed under the wrong category (name -> category), applied on load
@@ -46,8 +48,26 @@ def _orient():
         try: _ORIENT = json.load(open(pathlib.Path(__file__).parent / "designer" / "orient.json"))
         except Exception: _ORIENT = {}
     return _ORIENT
+_SIBLINGS = None
+def _sibling_category(i):
+    """For an item filed under 'other': the category of a same-brand item whose name is a prefix of this one ('AAC 121' -> 'AAC 121 Soft')."""
+    global _SIBLINGS
+    if _SIBLINGS is None:
+        try:
+            cat = json.load(open(pathlib.Path(__file__).parent / "catalog.json"))["items"]
+            _SIBLINGS = {}
+            for x in cat:
+                if x.get("category") not in (None, "other") and len(x.get("name") or "") >= 5: _SIBLINGS.setdefault(x.get("brand") or "", []).append(((x["name"] or "").lower(), x["category"]))
+        except Exception: _SIBLINGS = {}
+    n = (i.get("name") or "").lower(); best = None
+    for name, c in _SIBLINGS.get(i.get("brand") or "", []):
+        if n != name and n.startswith(name) and (best is None or len(name) > len(best[0])): best = (name, c)
+    return best[1] if best else None
 def fix_item(i):
     n = (i.get("name") or "").lower()
+    if i.get("category") == "other" and i.get("id", "").startswith("dsg-"):
+        c = _sibling_category(i)
+        if c: i = dict(i, category=c)
     od = _orient().get(i.get("id") or "")
     if od and "catalog_dims_from_old_bbox" in (od.get("flags") or []) and od.get("dims_after_m") and (od.get("confidence") or 0) >= 0.6:   # dims were measured from the mis-oriented file: take the re-oriented box
         w, d, h = od["dims_after_m"]; i = dict(i, width_m=w, depth_m=d, height_m=h)

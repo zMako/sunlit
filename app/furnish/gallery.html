@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Catalogue gallery</title>
+<!-- Every product in the catalogue, 100 per page, each in its own live 3D cell rendered through the SAME code path as the
+     apartment viewer (furnish.js addItem: model, dressing, orientation, fit), next to its hero photo. One WebGL canvas
+     draws all visible cells (scissor viewports). Flip / rotate a cell to correct a wrong front; flags and yaw fixes are
+     saved to /api/gallery_flags and the viewer applies them. -->
+<script type="importmap">{"imports":{"three":"/vendor/three/build/three.module.js","three/addons/":"/vendor/three/jsm/"}}</script>
+<style>
+  :root { --bg:#0f1115; --panel:#171a21; --ink:#e8e8ea; --dim:#9a9ea8; --hair:#272b34; --ok:#7cd6a4; --warn:#f0b35a; --bad:#f07a7a; --acc:#6fa8ff; }
+  * { box-sizing:border-box } body { margin:0; background:var(--bg); color:var(--ink); font:13px/1.35 -apple-system,BlinkMacSystemFont,"SF Pro Text",Helvetica,Arial,sans-serif }
+  #gl { position:fixed; inset:0; width:100vw; height:100vh; pointer-events:none; z-index:3 }   /* drawn over the grid, only inside each cell's 3D rect (scissor), transparent elsewhere */
+  header { position:sticky; top:0; z-index:4; background:rgba(15,17,21,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--hair); padding:8px 14px; display:flex; gap:8px; flex-wrap:wrap; align-items:center }
+  header b { font-size:15px; margin-right:6px } select, input, button { background:var(--panel); color:var(--ink); border:1px solid var(--hair); border-radius:6px; padding:5px 8px; font:inherit }
+  button { cursor:pointer } button:hover { border-color:var(--acc) } button.on { background:#2a3550; border-color:var(--acc) }
+  .count { color:var(--dim) } .pager { margin-left:auto; display:flex; gap:6px; align-items:center }
+  main { position:relative; z-index:2; display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:10px; padding:12px 14px 80px }
+  .cell { background:var(--panel); border:1px solid var(--hair); border-radius:10px; overflow:hidden; display:flex; flex-direction:column }
+  .cell.flag-bad { border-color:var(--bad) } .cell.flag-fixed { border-color:var(--ok) }
+  .views { display:grid; grid-template-columns:1fr 1fr; height:200px; background:#1d2129 }
+  .view3d { position:relative } .view3d .ph { position:absolute; inset:0; display:grid; place-items:center; color:var(--dim); font-size:12px }
+  .hero { background:#23272f center/contain no-repeat; border-left:1px solid var(--hair) } .hero.none::after { content:"no photo"; color:var(--dim); display:grid; place-items:center; height:100% }
+  .info { padding:8px 10px; display:flex; flex-direction:column; gap:3px; flex:1 }
+  .name { font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis } .meta { color:var(--dim); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+  .tags { display:flex; gap:4px; flex-wrap:wrap } .tag { font-size:11px; padding:1px 6px; border-radius:10px; background:#232833; color:var(--dim) }
+  .tag.ok { color:var(--ok) } .tag.warn { color:var(--warn) } .tag.bad { color:var(--bad) }
+  .ctrl { display:flex; gap:4px; margin-top:auto; padding-top:4px } .ctrl button { padding:3px 7px; font-size:12px }
+  a { color:var(--acc); text-decoration:none } a:hover { text-decoration:underline }
+  #toast { position:fixed; bottom:14px; left:50%; transform:translateX(-50%); background:#2a3550; padding:8px 14px; border-radius:8px; z-index:5; display:none }
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<header>
+  <b>Catalogue</b>
+  <select id="src"><option value="">all sources</option><option value="ikea">IKEA</option><option value="abo">Amazon</option><option value="dsg">designer</option></select>
+  <select id="brand"><option value="">all brands</option></select>
+  <select id="cat"><option value="">all categories</option></select>
+  <select id="dress"><option value="">any dressing</option><option>own textures</option><option>brand texture</option><option>photo palette</option><option>brand colour</option><option>product words</option></select>
+  <select id="conf"><option value="">any orientation confidence</option><option value="low">orientation below 0.6</option><option value="changed">up axis changed</option><option value="flagged">flagged by me</option></select>
+  <input id="q" placeholder="search name / id" size="22">
+  <label><input type="checkbox" id="spin" checked> spin</label>
+  <span class="count" id="count"></span>
+  <div class="pager"><button id="prev">‹ prev</button><span id="page"></span><button id="next">next ›</button><select id="per"><option>50</option><option selected>100</option><option>150</option></select></div>
+</header>
+<main id="grid"></main>
+<div id="toast"></div>
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { Furnish } from '/furnish/furnish.js';
+
+const $ = id => document.getElementById(id);
+const canvas = $('gl'); const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setScissorTest(true); renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
+const env = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+// one hidden Furnish instance builds items exactly as the apartment viewer does; we then move each item's object into its own small scene
+const hidden = new THREE.Scene(); const furnish = new Furnish({ scene: hidden, camera: new THREE.PerspectiveCamera(), renderer, controls: null, panelEl: null, toastEl: null, active: false });
+furnish.poly = []; furnish.doors = []; furnish.useIkeaModels = true;
+
+const [cat, flags] = await Promise.all([fetch('/furnish/catalog_fixed.json').then(r => r.json()), fetch('/api/gallery_flags').then(r => r.ok ? r.json() : {}).catch(() => ({}))]);
+let items = cat.items; const srcOf = i => i.id.startsWith('abo') ? 'abo' : i.id.startsWith('dsg-') ? 'dsg' : 'ikea';
+// filters
+const brands = [...new Set(items.map(i => i.brand || (srcOf(i) === 'ikea' ? 'IKEA' : '')).filter(Boolean))].sort(); for (const b of brands) $('brand').insertAdjacentHTML('beforeend', `<option>${b}</option>`);
+const cats = [...new Set(items.map(i => i.category))].sort(); for (const c of cats) $('cat').insertAdjacentHTML('beforeend', `<option>${c}</option>`);
+const Q = new URLSearchParams(location.search); for (const k of ['src', 'brand', 'cat', 'dress', 'conf', 'q']) if (Q.get(k)) $(k).value = Q.get(k);
+let page = +(Q.get('page') || 0);
+function filtered() {
+  const s = $('src').value, b = $('brand').value, c = $('cat').value, d = $('dress').value, cf = $('conf').value, q = $('q').value.trim().toLowerCase();
+  return items.filter(i => (!s || srcOf(i) === s) && (!b || (i.brand || (srcOf(i) === 'ikea' ? 'IKEA' : '')) === b) && (!c || i.category === c) && (!d || i.dressing === d)
+    && (!cf || (cf === 'low' ? (i.orient && (i.orient.confidence ?? 1) < 0.6) : cf === 'changed' ? (i.orient && i.orient.up !== 'y') : cf === 'flagged' ? !!flags[i.id] : true))
+    && (!q || (i.name || '').toLowerCase().includes(q) || i.id.toLowerCase().includes(q)));
+}
+const cells = new Map();   // id -> {el, scene, camera, obj, r}
+const toast = m => { const t = $('toast'); t.textContent = m; t.style.display = 'block'; clearTimeout(t._t); t._t = setTimeout(() => t.style.display = 'none', 1600); };
+async function saveFlag(id, v) { flags[id] = v; if (v === null) delete flags[id]; await fetch('/api/gallery_flags', { method: 'POST', body: JSON.stringify({ [id]: v }) }); }
+
+function heroUrl(i) {
+  if (srcOf(i) === 'dsg') return i.image ? `/furnish/designer/palette/thumbs/${i.id}.jpg` : null;
+  if (!i.image) return null; return /^https?:/.test(i.image) ? `/api/img?u=${encodeURIComponent(i.image)}` : '/' + i.image.replace(/^\//, '');
+}
+function render() {
+  for (const c of cells.values()) { if (c.obj) furnish.remove ? null : null; }   // objects are plain groups: let GC take them
+  cells.clear(); queue.length = 0; $('grid').innerHTML = '';
+  const list = filtered(); const per = +$('per').value; const pages = Math.max(1, Math.ceil(list.length / per)); page = Math.min(page, pages - 1);
+  $('count').textContent = `${list.length} items`; $('page').textContent = `page ${page + 1} / ${pages}`;
+  const u = new URL(location); for (const k of ['src', 'brand', 'cat', 'dress', 'conf', 'q']) u.searchParams.set(k, $(k).value); u.searchParams.set('page', page); history.replaceState(null, '', u);
+  for (const i of list.slice(page * per, (page + 1) * per)) {
+    const f = flags[i.id]; const el = document.createElement('div'); el.className = 'cell' + (f ? (f.flag === 'bad' ? ' flag-bad' : ' flag-fixed') : ''); el.dataset.id = i.id;
+    const hero = heroUrl(i); const o = i.orient; const dims = `${(+i.width_m).toFixed(2)} × ${(+i.depth_m).toFixed(2)} × ${(+i.height_m).toFixed(2)} m`;
+    const dimsChanged = i.raw_dims && (i.raw_dims[0] !== i.width_m || i.raw_dims[1] !== i.depth_m || i.raw_dims[2] !== i.height_m);
+    el.innerHTML = `<div class="views"><div class="view3d"><div class="ph">loading…</div></div><div class="hero ${hero ? '' : 'none'}" ${hero ? `style="background-image:url('${hero}')"` : ''}></div></div>
+      <div class="info"><div class="name" title="${i.name || i.id}">${i.name || i.id}</div>
+      <div class="meta">${i.brand || (srcOf(i) === 'ikea' ? 'IKEA' : srcOf(i) === 'abo' ? 'Amazon' : '')} · ${i.category}${i.raw_category !== i.category ? ` <span class="tag warn">was ${i.raw_category}</span>` : ''} · ${dims}${dimsChanged ? ' <span class="tag warn">dims fixed</span>' : ''}</div>
+      <div class="meta">${i.price_usd != null ? '$' + Math.round(i.price_usd) + (i.price_source === 'estimated' ? ' est.' : '') : 'price on request'} · ${i.product_url ? `<a href="${i.product_url}" target="_blank">product</a>` : ''} · <span title="${i.id}">${i.id.slice(0, 34)}</span></div>
+      <div class="tags"><span class="tag">${i.dressing}</span>${o ? `<span class="tag ${(o.confidence ?? 0) < 0.6 ? 'warn' : 'ok'}" title="${o.method || ''}">up ${o.up} · front ${o.front_yaw_deg}° · ${(o.confidence ?? 0).toFixed(2)}</span>` : ''}${f ? `<span class="tag ${f.flag === 'bad' ? 'bad' : 'ok'}">${f.flag}${f.yaw_fix ? ` · yaw ${f.yaw_fix > 0 ? '+' : ''}${f.yaw_fix}°` : ''}</span>` : ''}</div>
+      <div class="ctrl"><button data-a="rot">↻ 90°</button><button data-a="flip">flip 180°</button><button data-a="front">↺ view</button><button data-a="bad" class="${f && f.flag === 'bad' ? 'on' : ''}">✗ wrong</button><button data-a="clear">clear</button></div></div>`;
+    $('grid').appendChild(el);
+    const c = { el, view: el.querySelector('.view3d'), scene: new THREE.Scene(), camera: new THREE.PerspectiveCamera(32, 1, 0.05, 50), obj: null, yaw: 0, orbit: 0.6, item: i };
+    c.scene.environment = env; c.scene.add(new THREE.HemisphereLight(0xffffff, 0x8a7a6a, 0.6)); const sun = new THREE.DirectionalLight(0xffffff, 1.6); sun.position.set(2, 4, 3); c.scene.add(sun);
+    const floor = new THREE.Mesh(new THREE.CircleGeometry(1.6, 48), new THREE.MeshStandardMaterial({ color: 0x2a2f3a, roughness: 0.9 })); floor.rotation.x = -Math.PI / 2; floor.position.y = -0.002; c.scene.add(floor);
+    cells.set(i.id, c);
+    el.querySelector('.ctrl').onclick = async e => {
+      const a = e.target.dataset.a; if (!a) return; const cur = flags[i.id] || {};
+      if (a === 'rot' || a === 'flip') { const d = a === 'rot' ? 90 : 180; const yaw = (((cur.yaw_fix || 0) + d) % 360 + 360) % 360; await saveFlag(i.id, yaw ? { ...cur, flag: cur.flag === 'bad' ? 'bad' : 'yaw fixed', yaw_fix: yaw, t: Date.now() } : (cur.flag === 'bad' ? { ...cur, yaw_fix: 0 } : null)); toast(`${i.name}: yaw ${yaw}° saved`); reload(c); }
+      if (a === 'front') { c.orbit = 0.6; c.yaw = 0; }
+      if (a === 'bad') { await saveFlag(i.id, cur.flag === 'bad' ? (cur.yaw_fix ? { ...cur, flag: 'yaw fixed' } : null) : { ...cur, flag: 'bad', t: Date.now() }); toast(cur.flag === 'bad' ? 'unflagged' : 'flagged wrong'); refreshCell(c); }
+      if (a === 'clear') { await saveFlag(i.id, null); toast('cleared'); reload(c); }
+    };
+    // drag to orbit the cell
+    let drag = null; c.view.style.pointerEvents = 'auto'; c.view.style.cursor = 'grab';
+    c.view.onpointerdown = e => { drag = [e.clientX, c.yaw]; c.view.setPointerCapture(e.pointerId); }; c.view.onpointermove = e => { if (drag) c.yaw = drag[1] + (e.clientX - drag[0]) * 0.01; }; c.view.onpointerup = () => drag = null;
+  }
+  loadVisible();
+}
+function refreshCell(c) { const f = flags[c.item.id]; c.el.className = 'cell' + (f ? (f.flag === 'bad' ? ' flag-bad' : ' flag-fixed') : ''); }
+async function reload(c) { if (c.obj) { c.scene.remove(c.obj); c.obj = null; } c.loaded = false; Furnish._dataP = null; await build(c); refreshCell(c); const f = flags[c.item.id]; c.el.querySelector('.tags').insertAdjacentHTML('beforeend', f && f.yaw_fix ? `<span class="tag ok">yaw ${f.yaw_fix}° applied</span>` : ''); }
+async function build(c) {
+  if (c.loaded) return; c.loaded = true; const i = c.item; const ph = c.view.querySelector('.ph');
+  try {
+    const it = await furnish.addItem({ ...i, w_m: i.width_m, d_m: i.depth_m, h_m: i.height_m, x: 0, z: 0, rot_deg: 0 }, false);
+    furnish.group.remove(it.obj); if (it.label) it.label.visible = false; if (it.fp) it.fp.visible = false;
+    c.obj = it.obj; c.scene.add(c.obj); const bb = new THREE.Box3().setFromObject(c.obj); const sz = bb.getSize(new THREE.Vector3()); c.r = Math.max(sz.x, sz.y, sz.z, 0.4); c.h = sz.y;
+    if (ph) ph.textContent = it.modelFailed ? 'no 3D model' : '';
+    if (it.axisFix) c.el.querySelector('.tags').insertAdjacentHTML('beforeend', '<span class="tag warn">viewer re-oriented by extents</span>');
+    if (it.oriented) c.el.querySelector('.tags').insertAdjacentHTML('beforeend', `<span class="tag" title="${it.oriented}">orient.json applied</span>`);
+  } catch (e) { if (ph) ph.textContent = 'failed: ' + (e && e.message || e).toString().slice(0, 60); }
+}
+// at most 6 cells load at a time (the browser has 6 connections per host; a hundred parallel GLB fetches stall)
+let active = 0; const queue = [];
+function pump() { while (active < 6 && queue.length) { const c = queue.shift(); if (c.loaded) continue; active++; build(c).finally(() => { active--; pump(); }); } }
+function loadVisible() {
+  for (const c of cells.values()) { if (c.loaded || c.queued) continue; const r = c.view.getBoundingClientRect(); if (r.bottom < -400 || r.top > innerHeight + 400) continue; c.queued = true; queue.push(c); }
+  pump();
+}
+addEventListener('scroll', loadVisible, { passive: true });
+function frame() {
+  requestAnimationFrame(frame);
+  const W = innerWidth, H = innerHeight; if (canvas.width !== W * renderer.getPixelRatio() || canvas.height !== H * renderer.getPixelRatio()) renderer.setSize(W, H, false);
+  renderer.setClearColor(0x000000, 0); renderer.setScissorTest(false); renderer.clear(); renderer.setScissorTest(true);
+  const spin = $('spin').checked; const t = performance.now() / 1000;
+  for (const c of cells.values()) {
+    if (!c.obj) continue; const r = c.view.getBoundingClientRect(); if (r.bottom < 0 || r.top > H || r.right < 0 || r.left > W) continue;
+    const w = r.width, h = r.height; const bottom = H - r.bottom; const hh = document.querySelector('header').offsetHeight; const top = Math.max(r.top, hh); if (top >= r.bottom) continue;
+    renderer.setViewport(r.left, bottom, w, h); renderer.setScissor(r.left, bottom, w, r.bottom - top);   // never over the sticky header
+    c.camera.aspect = w / h; c.camera.updateProjectionMatrix(); const a = c.yaw + (spin ? t * 0.35 : 0) + 0.6; const d = c.r * 2.1;
+    c.camera.position.set(Math.sin(a) * d, c.r * 0.9 + 0.2, Math.cos(a) * d); c.camera.lookAt(0, (c.h || c.r) * 0.45, 0); renderer.render(c.scene, c.camera);
+  }
+}
+frame(); render();
+for (const k of ['src', 'brand', 'cat', 'dress', 'conf', 'per']) $(k).onchange = () => { page = 0; render(); }; $('q').oninput = () => { page = 0; render(); };
+$('prev').onclick = () => { page = Math.max(0, page - 1); render(); scrollTo(0, 0); }; $('next').onclick = () => { page++; render(); scrollTo(0, 0); };
+</script>
+</body>
+</html>
