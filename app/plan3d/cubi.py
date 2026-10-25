@@ -13,6 +13,10 @@ HERE = pathlib.Path(__file__).resolve().parent; ROOT = HERE.parents[1]
 REPO = ROOT / "feasibility" / "cubicasa5k_repo"
 WEIGHTS = pathlib.Path(os.environ.get("CUBI_WEIGHTS") or ROOT / "feasibility" / "weights" / "cubicasa_model_best_val_loss_var.pkl")
 TAG = os.environ.get("CUBI_TAG", "")   # cache suffix for predictions from other weights (fine-tuned): cubi_<stem>_<tag>.npz
+# what the engine uses (masks_at): walls + crop + levels from the fine-tuned model (ft1: fixes 74% of the reviewed wall errors on
+# held-out plans), windows + doors from the pretrained one (the fine-tune made them slightly worse); either falls back to the
+# pretrained cache when its own is missing
+WALLS_TAG = os.environ.get("CUBI_WALLS_TAG", "ft1"); ICONS_TAG = os.environ.get("CUBI_ICONS_TAG", "")
 TARGET_T = 12.0; MAX_SIDE = 2200
 ROOM_CLASSES = ["Background", "Outdoor", "Wall", "Kitchen", "Living Room", "Bed Room", "Bath", "Entry", "Railing", "Storage", "Garage", "Undefined"]
 ICON_CLASSES = ["No Icon", "Window", "Door", "Closet", "Electrical Appliance", "Toilet", "Sink", "Sauna Bench", "Fire Place", "Bathtub", "Chimney"]
@@ -94,15 +98,22 @@ def predict(path, force=False):
 def load(path, tag=None):
     npz, meta = cache_paths(path, tag)
     if not (npz.exists() and meta.exists()): return None
-    d = np.load(npz); M = json.load(open(meta)); M.update(rooms=d["rooms"], icons=d["icons"], crop=d["crop"]); return M
+    d = np.load(npz); M = json.load(open(meta)); M.update(rooms=d["rooms"], icons=d["icons"], crop=d["crop"], tag=TAG if tag is None else tag); return M
+
+def load_engine(path):
+    """(walls source, icons source): the hybrid the engine uses, each falling back to the pretrained prediction"""
+    Pw = load(path, WALLS_TAG) or load(path, ""); Pi = load(path, ICONS_TAG) or load(path, "")
+    if Pw is not None and Pi is not None and Pw["rooms"].shape != Pi["icons"].shape: Pi = Pw   # predicted at different scales: no mixing
+    return Pw, Pi
 
 def masks_at(path, shape):
-    """Cropped wall / window / door masks resampled to `shape` (H, W), e.g. plan_engine's work image. None if not predicted."""
-    P = load(path)
+    """Cropped wall / window / door masks resampled to `shape` (H, W), e.g. plan_engine's work image. None if not predicted.
+    Walls, crop and levels from WALLS_TAG, windows and doors from ICONS_TAG (see load_engine)."""
+    P, Pi = load_engine(path)
     if P is None: return None
     H, W = shape; rs = lambda a: cv2.resize(a.astype(np.uint8), (W, H), interpolation=cv2.INTER_NEAREST)
-    crop = rs(P["crop"]); out = {"crop": crop}
-    out["wall"] = rs(P["rooms"] == WALL) & crop; out["window"] = rs(P["icons"] == WINDOW) & crop; out["door"] = rs(P["icons"] == DOOR) & crop
+    crop = rs(P["crop"]); out = {"crop": crop, "walls_tag": P.get("tag", ""), "icons_tag": Pi.get("tag", "")}
+    out["wall"] = rs(P["rooms"] == WALL) & crop; out["window"] = rs(Pi["icons"] == WINDOW) & crop; out["door"] = rs(Pi["icons"] == DOOR) & crop
     out["rooms"] = rs(P["rooms"]) * crop; out["levels"] = [{"bbox": [v * W / P["size"][0] if j % 2 == 0 else v * H / P["size"][1] for j, v in enumerate(L["bbox"])], "area_px": L["area_px"]} for L in P["levels"]]
     return out
 

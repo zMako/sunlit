@@ -17,7 +17,10 @@ def item_tier(i):
     return "ikea"
 def tier_filter(items, tier):
     allowed = TIERS.get(tier or "any")
-    return items if allowed is None else [i for i in items if item_tier(i) in allowed]
+    items = [i for i in items if not i.get("dims_mismatch")]          # mesh size disagrees with the listing: not placeable with confidence
+    pool = items if allowed is None else [i for i in items if item_tier(i) in allowed]
+    priced = [i for i in pool if i.get("price_usd")]                   # designer pieces without a shop price are "price on request": use only when nothing priced fits
+    return priced if priced else pool
 
 MODELS = {"haiku": "claude-haiku-5-5", "sonnet": "claude-sonnet-5-5", "opus": "claude-opus-5-5"}
 

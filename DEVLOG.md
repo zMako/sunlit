@@ -336,3 +336,41 @@ CubiCasa5K (pretrained, no training) found walls far better on 23 test plans, so
   Google Earth / Street View outside the windows back on the list for tomorrow within the $5 Maps budget.
 - Catalogue is model-only now (83 IKEA products without models removed); Amazon prices are estimates (IKEA category
   median x 1.5) labelled "est." in viewer, cart and receipt; dead Amazon links fall back to a search link (checker running).
+
+## Oct 24, night: townhouses, stairs, jumping; fine-tune
+
+- `levels.py`: a plan with two or more drawings is multi-level when it has stair labels (UP / DN) or level captions;
+  "Typical / Alternate" drawings without them are variants and stay as they were (40). Levels ordered by UP vs DN and
+  captions (ENTRY / LOWER / FIRST vs UPPER / SECOND / LOFT); upper levels aligned onto the lowest by template matching the
+  predicted wall masks. Stairs: tread-length lines clustered from the label outwards give the stair compartment; a straight
+  run climbs along its long side from the label's end; walls inside the compartment are cut. Footprint per level (flood
+  fill of the closed wall mask) -> floor slab (above ground) and ceiling slab, minus the stairwell; "OPEN TO BELOW"
+  mezzanines keep room floors only. 24 units stacked, 15 with stairs, 11 lofts / mezzanines.
+- `build.js`: one group per level at its elevation; slabs; floors / ceilings with the stairwell cut; generated steps.
+- `apartment.html`: level buttons (one level cut at the section height, or all lifted apart); furniture rides with its level.
+- `walk.js`: feet height, gravity, Space jumps (~0.9 m), auto step-up 0.32 m (stairs), walls per level band, furniture /
+  fixtures / steps are surfaces below step height and obstacles above it, the next level's slab is the ceiling except over
+  the stairwell. Tested headless: up the 14 steps of gs-22226_plan_22 to the upper level and along its hall; jump arc;
+  standing on a tub.
+- Found: the app proxy's listen backlog (5) resets connections when the viewer imports ~40 modules on a loaded machine.
+- `finetune.py`: CubiCasa model fine-tuned on the 300 reviewed training plans (BCE + Dice on p(wall), p(window),
+  p(door), batch-norm frozen, 3000 iterations of 4 random 512 px crops, ~31 min on MPS); scored on the 20 held-out plans.
+
+## Oct 24, late night: hybrid model live, no protected units
+
+Fine-tune result on the 20 held-out plans (20 buildings): walls fix 74% of the reviewer-flagged pixels, wall precision
+0.94 -> 0.98, 1.3% of already-right wall pixels broken; windows / doors slightly worse (tolerant F1 0.93 -> 0.89, 0.98 -> 0.95).
+Pixel IoU fell (walls 0.90 -> 0.85) partly because the labels inherit the pretrained model's exact edges. Visually the
+fine-tuned walls are cleaner (diagonal plans, counters, showers). So the engine now uses a hybrid (`cubi.WALLS_TAG = ft1`
+walls + crop + levels, `ICONS_TAG = ''` pretrained windows + doors); `hybrid_run.sh` re-predicts, rebuilds every unit
+(names / fixtures / materials carried from `layouts_ink/`, the original annotated layouts), promotes, renames from plan
+text and re-stacks levels. The previous live set is in `layouts_zs/`. No protected units any more: furnishing is meant to
+be made live on each click, so saved per-room plans of rebuilt units (their room ids change) moved to
+`app/furnish/plans_archive/`.
+
+## Oct 25 03:10: design tier live
+- Manufacturer scrape (Sonnet): 3,268 designer pieces with compressed GLBs (10 GB -> 440 MB), 14 brands; ~550 priced
+  (brand shops in EUR/GBP/USD converted, DWR matches for HAY/Muuto/Fritz Hansen); 544 flagged dims_mismatch. Catalogue:
+  5,151 products, all with models. Tiers in planner/agent/UI: Budget (IKEA), Standard (+Amazon), Design (manufacturers,
+  size-verified and priced first). First Design-tier run on the 1000 Green living room: HAY sofa, Alle coffee table,
+  Dedal shelf, Artek floor light, Pocket armchair, Lolly side table, $14,329 of a $15,000 budget.

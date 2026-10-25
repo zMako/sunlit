@@ -44,10 +44,11 @@ regenerate it.
 | 4 | Photo -> plan room -> facing walls | `app/pipeline2/plan_link.py` |
 | 5a | Plan -> learned wall / window / door masks (CubiCasa5K, pretrained, CC BY-NC) + automatic crop to the drawing(s) | `app/plan3d/cubi.py` (`predict`); repo in `feasibility/cubicasa5k_repo/`, weights in `feasibility/weights/` |
 | 5 | Plan -> layout JSON (walls, openings, rooms, fixtures, scale); walls from the learned masks on the ink, ink-only fallback (`PLAN_WALLS=ink`) | `app/plan3d/plan_engine.py` (`layout <plan>`), `rebuild.py` (offline rebuild, `--promote`), `room_names.py` (names from plan text), `batch.py`, `sweep.py`, `reindex.py`, `cleanup.py` |
-| 5b | Fine-tuning labels: Claude subagents flag the model's mistakes, code snaps them to the ink; 20 held-out test plans | `app/plan3d/labels.py`, `app/plan3d/labels/REVIEWER.md` |
+| 5b | Fine-tuning labels: Claude subagents flag the model's mistakes, code snaps them to the ink; 20 held-out test plans; fine-tune + held-out score | `app/plan3d/labels.py`, `app/plan3d/labels/REVIEWER.md`, `app/plan3d/finetune.py`, `finetune_run.sh` |
+| 5c | Townhouses: drawings of one plan stacked as levels (aligned, ordered by UP/DN and captions), stairs from tread lines, stairwells, floor/ceiling slabs, open-to-below mezzanines | `app/plan3d/levels.py` |
 | 6 | Layout -> per-room JSON for furnishing | `app/plan3d/rooms_export.py` |
 | 7 | Photos -> materials, window specs | `app/furnish/matmatch.py`, `app/plan3d/photo_facts.py`, `app/plan3d/materials_assign.py` |
-| 8 | Layout -> three.js apartment (dollhouse, walk) | `app/plan3d/apartment.html`, `app/plan3d/build.js` |
+| 8 | Layout -> three.js apartment (dollhouse with level view, walk with gravity / jump / stairs / furniture you can stand on), plan window | `app/plan3d/apartment.html`, `app/plan3d/build.js`, `app/plan3d/walk.js` |
 | 9 | Catalogue of real products | `app/furnish/catalog.py` -> `app/furnish/catalog.json` |
 | 10 | Furnishing: solver, planner, agent, UI | `app/furnish/place.py`, `plan.py`, `agent.py`, `furnish.js`, `agent.js` |
 | 11 | Checkout (card sandbox + x402), move-in scheduling | `app/checkout/` |

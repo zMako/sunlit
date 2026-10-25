@@ -12,8 +12,7 @@ HERE = pathlib.Path(__file__).resolve().parent; ROOT = HERE.parents[1]; PY = str
 sys.path.insert(0, str(HERE))
 import plan_engine, cubi
 
-# units with saved furnishing plans keyed by room id (app/furnish/plans/<unit>__<room>.json): a rebuild renumbers rooms
-PROTECTED = {p.name.split("__")[0] for p in (HERE.parent / "furnish" / "plans").glob("*__*.json")}
+PROTECTED = set()   # (was: units with saved furnishing plans; furnishing is now made live, saved plans of rebuilt units are archived)
 MODEL_TYPE = {3: ("kitchen", "Kitchen"), 4: ("living", "Living Room"), 5: ("bedroom", "Bedroom"), 6: ("bathroom", "Bath"), 7: ("hallway", "Entry"), 9: ("closet", "Closet"), 10: ("other", "Garage"), 11: ("other", "Room")}
 
 def to_px(L):
@@ -85,7 +84,10 @@ def transfer(new, old, plan_path):
     return new
 
 def build(unit, out_dir):
-    old_f = HERE / "layouts" / f"{unit}.json"; old = json.load(open(old_f)) if old_f.exists() else None
+    # names / fixtures / materials come from the original layout (Claude annotation, no level shift) when there is one
+    old_f = HERE / "layouts_ink" / f"{unit}.json"
+    if not old_f.exists(): old_f = HERE / "layouts" / f"{unit}.json"
+    old = json.load(open(old_f)) if old_f.exists() else None
     pth = pathlib.Path(old["plan_image"]) if old else None
     if pth and not pth.is_absolute(): pth = ROOT / pth
     L, out = plan_engine.run(pth, old["listing"], unit, out_dir, offline=True)

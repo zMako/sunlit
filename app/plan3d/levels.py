@@ -36,7 +36,7 @@ def words_px(L):
     return out
 
 def level_boxes(L):
-    P = cubi.load(plan_path(L), tag=""); k = P["k"]
+    P, _ = cubi.load_engine(plan_path(L)); k = P["k"]
     return [[v / k for v in lv["bbox"]] for lv in P["levels"]], P
 
 def assign(L, boxes):
@@ -56,8 +56,10 @@ def order_levels(boxes, words):
     info = []
     for i, (x0, y0, x1, y1) in enumerate(boxes):
         h = y1 - y0; inside = [w for w in words if x0 <= w["x"] <= x1 and y0 <= w["y"] <= y1]
-        near = [w for w in words if x0 - 0.05 * (x1 - x0) <= w["x"] <= x1 + 0.05 * (x1 - x0) and (y0 - 0.25 * h <= w["y"] <= y0 or y1 <= w["y"] <= y1 + 0.25 * h)]
-        cap = " ".join(w["t"] for w in sorted(near, key=lambda w: (w["y"], w["x"])) if LEVELW.search(w["t"]) or LOWER.search(w["t"]) or UPPER.search(w["t"]))
+        near = [w for w in words if x0 - 0.05 * (x1 - x0) <= w["x"] <= x1 + 0.05 * (x1 - x0) and (y0 - 0.25 * h <= w["y"] <= y0 or y1 <= w["y"] <= y1 + 0.25 * h)
+                and (LEVELW.search(w["t"]) or LOWER.search(w["t"]) or UPPER.search(w["t"]))]
+        # the caption: the one OCR line closest to the drawing (a neighbour's caption can also fall in the search band)
+        cap = min(near, key=lambda w: min(abs(w["y"] - y0), abs(w["y"] - y1)) + 0.3 * abs(w["x"] - (x0 + x1) / 2))["t"] if near else ""
         up = [w for w in inside if UPW.match(w["t"])]; dn = [w for w in inside if DNW.match(w["t"])]
         score = (2 if up else 0) - (2 if dn else 0) + (3 if LOWER.search(cap) else 0) - (3 if UPPER.search(cap) else 0)
         info.append({"i": i, "score": score, "caption": cap.title() if cap else None, "up": up, "dn": dn})
@@ -79,6 +81,10 @@ def align(P, base_box, box):
     r = cv2.matchTemplate(canvas, B, cv2.TM_CCORR_NORMED); _, score, _, (lx, ly) = cv2.minMaxLoc(r)
     # B's top-left lands at canvas (lx, ly) = A-crop (lx - mw, ly - mh) = image (ax + lx - mw, ay + ly - mh); B now sits at (bx, by)
     return (ax + lx - mw - bx) / k, (ay + ly - mh - by) / k, float(score)
+
+def has_open_below(bbox, words):
+    x0, y0, x1, y1 = bbox; inside = " ".join(w["t"] for w in words if x0 <= w["x"] <= x1 and y0 <= w["y"] <= y1)
+    return bool(re.search(r"OPEN", inside) and re.search(r"BELOW", inside))
 
 def footprint(P, bbox_orig):
     """the drawing's footprint (inside of its outer walls, walls included) as a polygon in original px"""
@@ -172,7 +178,10 @@ def apply_levels(L):
         ox, oz = sh(f["level"]); f["rect"]["x"] = round(f["rect"]["x"] + ox, 3); f["rect"]["z"] = round(f["rect"]["z"] + oz, 3); f["level"] = rank[f["level"]]
     L["levels"] = [{"id": rank[i], "name": next(d for d in info if d["i"] == i)["caption"] or f"Level {rank[i] + 1}", "elevation_m": round(rank[i] * ceil, 3),
                     "plan_offset_m": [round(-sh(i)[0], 3), round(-sh(i)[1], 3)], "align_score": scores.get(i)} for i in order]
-    L["levels"].sort(key=lambda v: v["id"])
+    L["levels"].sort(key=lambda v: v["id"]); seen = set()
+    for v in L["levels"]:
+        if v["name"] in seen: v["name"] = f"Level {v['id'] + 1}"
+        seen.add(v["name"])
     L["stairs"] = stairs_for(L, boxes, info, order, offsets)
     # the stairwell is open: the stair's own drawing (stringers, landing edges) and any wall crossing the compartment were read
     # as walls; cut every wall of the two levels at the compartment's edge (inside part removed, a crossing wall split in two)
@@ -205,12 +214,15 @@ def apply_levels(L):
     def rings(g):
         geoms = list(g.geoms) if hasattr(g, "geoms") else [g]
         return [{"outer": [[round(x, 3), round(z, 3)] for x, z in q.exterior.coords[:-1]], "holes": [[[round(x, 3), round(z, 3)] for x, z in hh.coords[:-1]] for hh in q.interiors]} for q in geoms if q.area > 0.05]
+    open_below = {rank[i] for i in order if has_open_below(boxes[i], words)}   # mezzanines: the outline also holds a double-height void
     for i in order:
+        if rank[i] in open_below: continue   # its floor is its rooms only (no slab), and the level below keeps room ceilings
         fp = footprint(P, boxes[i])
         if fp is None: continue
         dx, dy = offsets[i]; fm = Polygon([to_m(x + dx, y + dy) for x, y in fp.exterior.coords]).buffer(0)
         lv = next(v for v in L["levels"] if v["id"] == rank[i]); lv["footprint"] = rings(fm)
         for kind in ("floor", "ceiling"):
+            if kind == "ceiling" and rank[i] + 1 in open_below: continue
             g = fm
             for h in holes.get((kind, rank[i]), []): g = g.difference(h)
             lv[f"{kind}_slab"] = rings(g)
@@ -225,12 +237,42 @@ def apply_levels(L):
             if r["level"] == st["from_level"]: r["ceiling_cut"] = rings
     return "levels"
 
+def refresh_names(L):
+    """level names from the plan captions again (geometry untouched)"""
+    boxes, P = level_boxes(L); order, info, _ = order_levels(boxes, words_px(L)); seen = set()
+    for rank, i in enumerate(order):
+        lv = next((v for v in L["levels"] if v["id"] == rank), None); cap = next(d for d in info if d["i"] == i)["caption"]
+        name = cap if cap and cap not in seen else f"Level {rank + 1}"; n = rank + 1
+        while name in seen: n += 1; name = f"Level {n}"
+        seen.add(name)
+        if lv: lv["name"] = name
+
 if __name__ == "__main__":
     idx_f = HERE / "layouts" / "index.json"; idx = json.load(open(idx_f)); by = {d["unit"]: d for d in idx}
+    if "--fix-open" in sys.argv:   # units stacked before the mezzanine rule: drop the slabs over open-to-below voids
+        for f in sorted((HERE / "layouts").glob("*.json")):
+            if f.name == "index.json": continue
+            L = json.load(open(f))
+            if not L.get("levels"): continue
+            boxes, P = level_boxes(L); order, _, _ = order_levels(boxes, words_px(L)); words = words_px(L); hit = []
+            for rank, i in enumerate(order):
+                if has_open_below(boxes[i], words):
+                    lv = next(v for v in L["levels"] if v["id"] == rank); lv.pop("floor_slab", None); hit.append(rank)
+                    below = next((v for v in L["levels"] if v["id"] == rank - 1), None)
+                    if below: below.pop("ceiling_slab", None)
+            if hit: json.dump(L, open(f, "w"), indent=1); print(f"[levels] {L['unit']}: open to below on level(s) {hit}")
+        sys.exit()
+    if "--names" in sys.argv:
+        for f in sorted((HERE / "layouts").glob("*.json")):
+            if f.name == "index.json": continue
+            L = json.load(open(f))
+            if not L.get("levels"): continue
+            refresh_names(L); json.dump(L, open(f, "w"), indent=1); print(f"[levels] {L['unit']}: {[v['name'] for v in L['levels']]}")
+        sys.exit()
     units = sys.argv[1:]
     if not units:
         for d in idx:
-            P = cubi.load(str(ROOT / "feasibility/listings" / d["listing"] / "plans" / pathlib.Path(d["plan_image"]).name), tag="")
+            P, _ = cubi.load_engine(str(ROOT / "feasibility/listings" / d["listing"] / "plans" / pathlib.Path(d["plan_image"]).name))
             if P and len(P["levels"]) >= 2 and d.get("walls_from"): units.append(d["unit"])
     stats = {}
     for u in units:

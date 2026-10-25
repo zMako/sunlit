@@ -25,7 +25,7 @@ dm = [i for i in items if i.get("dims_source") == "listed" and i.get("model_dims
 bad = [i for i in dm if i.get("width_m") and i.get("height_m") and (abs(i["model_dims_m"][2] / i["height_m"] - 1) > .35)]
 L += [f"## Dimensions check", f"Items with listed dims: {len(dm)}; height differs >35% from model bbox: {len(bad)}; items using bbox dims only: {sum(1 for i in items if i.get('dims_source') == 'glb_bbox')}.", ""]
 walls = json.load(open(H / "raw/walls.json")) if (H / "raw/walls.json").exists() else {}
-L += ["## Bot walls hit (not bypassed)", ""] + [f"- {h}: HTTP {w['status']} at {w['url']}" for h, w in walls.items()] + [""]
+L += ["## Bot walls hit (not bypassed)", ""] + [f"- {h}: HTTP {w['status']} at {w['url']}" for h, w in walls.items() if w["status"] != 200] + [""]
 (H / "REPORT.md").write_text("\n".join(L))
 LG = ["# Login-gated 3D files (owner to fetch)", "", "Brands whose 3D/CAD sit behind a professional login or a bot wall. Nothing here was accessed.", ""]
 for f in sorted(glob.glob(str(H / "raw/login_*.md"))): LG += [pathlib.Path(f).read_text().strip(), ""]

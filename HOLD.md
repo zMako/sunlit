@@ -60,3 +60,10 @@
     (CC BY 4.0 per the dataset's own LICENSE: attribution to Amazon.com required; commercial use allowed): a few hundred
     furniture models with dimensions and ASIN links, no prices. Live prices need the Product Advertising API, which
     requires an Amazon Associates account; if you have or want one, say so and the price field can be filled.
+17. **Design tier (manufacturer scrape) outcome.** 3,268 pieces from 14 brands merged (HAY, Muuto, Fritz Hansen, Carl
+    Hansen, Gubi, Louis Poulsen, Artek, Tom Dixon, Hem, Flos, Moroso, Poliform, Artemide, String); 396 are both
+    size-verified and priced, which is what the Design tier draws from; unpriced ones show "price on request". The
+    worker stopped at the permission classifier when probing Audo, Normann, Ferm Living and the rest of Flos (their
+    showroom API); it did not retry. Decide whether you want those fetched by hand. Login-gated: Flexform, Minotti,
+    Thonet, USM; walled: Vitra, Cassina, B&B Italia; SKP/RFA only: Herman Miller, Knoll. Details in
+    app/furnish/designer/LOGIN_NEEDED.md and REPORT.md.

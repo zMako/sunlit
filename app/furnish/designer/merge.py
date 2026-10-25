@@ -51,6 +51,7 @@ cnt = lambda L, k="category": dict(sorted(collections.Counter(i.get(k) for i in 
 before = cat["items"]; print("before", len(before), cnt(before))
 bak = H / "raw/catalog.json.bak"
 if not bak.exists(): shutil.copy(CAT, bak)
+json.dump({"items": ok}, open(H / "catalog_designer.json", "w"), indent=1)
 ids = {i["id"] for i in ok}
 cat["items"] = [i for i in before if i["id"] not in ids] + ok
 tmp = CAT.with_suffix(".json.tmp"); json.dump(cat, open(tmp, "w"), indent=1); tmp.replace(CAT)

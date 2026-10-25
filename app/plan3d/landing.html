@@ -23,7 +23,9 @@ body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.5 var(--sans)
 a{color:inherit}
 :focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:6px}
 .wrap{width:var(--wrap);margin:0 auto}
-.serif{font-family:var(--serif);font-weight:400;font-optical-sizing:auto}
+.serif{font-family:var(--serif);font-weight:400}
+/* display serif: fix the optical size at 28; the automatic 96 at headline sizes thins the hairlines until they strain the eye */
+h1,h2,.proof p.big,.home h3,nav .mark,.steps .tile.date .day{font-optical-sizing:none;font-variation-settings:"opsz" 28}
 
 /* ---------- glass: frosted base everywhere, edge refraction added in Chromium by enhanceGlass() ---------- */
 .glass{position:relative;background:rgba(255,255,255,.5);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
@@ -33,7 +35,7 @@ a{color:inherit}
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
 
 /* ---------- nav ---------- */
-nav{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:20;display:flex;align-items:center;gap:6px;padding:6px 6px 6px 22px;border-radius:999px;white-space:nowrap}
+nav.glass{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:20;display:flex;align-items:center;gap:6px;padding:6px 6px 6px 22px;border-radius:999px;white-space:nowrap}
 nav .mark{font-family:var(--serif);font-size:22px;letter-spacing:-.01em;text-decoration:none;margin-right:18px}
 nav .links a{font-size:14px;text-decoration:none;color:var(--ink);padding:8px 12px;border-radius:999px;opacity:.78}
 nav .links a:hover{opacity:1}
@@ -50,14 +52,14 @@ nav .links a:hover{opacity:1}
 .hero .copy > *{pointer-events:auto}
 h1{font-family:var(--serif);font-weight:400;font-size:clamp(56px,7.4vw,112px);line-height:.94;letter-spacing:-.025em;margin:0 0 28px}
 .lede{font-size:20px;line-height:1.45;color:var(--graphite);max-width:30ch;margin:0 0 34px}
-.ask{display:flex;align-items:center;border-radius:999px;padding:6px;width:max-content;max-width:100%}
-.ask .field{display:flex;flex-direction:column;padding:6px 22px 6px 20px;border-right:1px solid var(--hair)}
+.ask{--gap:6px;display:flex;align-items:stretch;border-radius:999px;padding:var(--gap);width:max-content;max-width:100%}
+.ask .field{display:flex;flex-direction:column;justify-content:center;padding:6px 22px 6px 20px;border-right:1px solid var(--hair)}
 .ask .field:nth-of-type(2){border-right:0}
 .ask label{font-size:12px;color:var(--graphite)}
 .ask select{appearance:none;-webkit-appearance:none;border:0;background:transparent;font:500 16px/1.3 var(--sans);color:var(--ink);padding:0 18px 0 0;cursor:pointer;
   background-image:linear-gradient(45deg,transparent 50%,var(--graphite) 50%),linear-gradient(135deg,var(--graphite) 50%,transparent 50%);background-position:right 4px center,right 0 center;background-size:4px 4px;background-repeat:no-repeat}
-.ask .pill{padding:15px 22px;font-size:15px;margin-left:6px}
-.caption{position:absolute;right:max(40px,(100vw - 1240px)/2);bottom:11svh;text-align:right;font-size:13px;line-height:1.5;color:var(--graphite);max-width:28ch}
+.ask .pill{align-self:stretch;padding:0 24px;font-size:15px;margin-left:var(--gap)}
+.caption{position:absolute;right:max(40px,(100vw - 1240px)/2);bottom:4svh;text-align:right;font-size:13px;line-height:1.5;color:var(--graphite);max-width:36ch}
 .caption b{display:block;font-weight:500;color:var(--ink)}
 
 /* ---------- sections ---------- */
@@ -111,9 +113,9 @@ footer a{text-decoration:none}footer a:hover{text-decoration:underline}
   .hero{height:auto;min-height:0;padding-top:76px}
   #stage{position:relative;height:56svh}
   .hero .copy{position:static;width:var(--wrap);margin:0 auto 64px}
-  .ask{flex-wrap:wrap;border-radius:24px;width:100%}
+  .ask{--r:24px;flex-wrap:wrap;border-radius:var(--r);width:100%}
   .ask .field{flex:1;border-right:0}
-  .ask .pill{width:100%;justify-content:center;margin:6px 0 0}
+  .ask .pill{width:100%;justify-content:center;margin:var(--gap) 0 0;min-height:50px;border-radius:calc(var(--r) - var(--gap))}   /* concentric with the card corners */
   section{padding:96px 0}
   .steps,.homes .grid{grid-template-columns:1fr}
   .head{flex-direction:column}
@@ -153,9 +155,9 @@ footer a{text-decoration:none}footer a:hover{text-decoration:underline}
   <ol class="steps">
     <li><div class="tile sheet"><img id="planimg" alt="The landlord's floor plan of the 1000 Green Sutro unit"></div>
       <h3>The plan</h3><p>Walls, doors and windows, read from the landlord's drawing.</p></li>
-    <li><div class="tile"><img src="landing/thumbs/gs-22612_plan_03.jpg" alt="The same unit rebuilt in 3D, empty"></div>
+    <li><div class="tile"><img src="landing/thumbs/gs-22612_plan_03-tall.jpg" alt="The same unit rebuilt in 3D, empty"></div>
       <h3>The apartment</h3><p>Measured from the printed dimensions and built in 3D.</p></li>
-    <li><div class="tile"><img src="landing/thumbs/gs-22612_plan_03-furnished.jpg" alt="The same unit furnished"></div>
+    <li><div class="tile"><img src="landing/thumbs/gs-22612_plan_03-furnished-tall.jpg" alt="The same unit furnished"></div>
       <h3>Furnished</h3><p>An agent picks real pieces that fit each room and your budget, and tells you why.</p></li>
     <li><div class="tile date"><div><div class="day" id="day">12</div><div class="mon" id="mon">November</div></div></div>
       <h3>Delivered</h3><p id="delivp">Ordered to arrive two days before you get your keys.</p></li>
@@ -197,7 +199,7 @@ const movein = new Date(Date.now() + 21 * 864e5), deliv = new Date(movein - 2 * 
 $('day').textContent = deliv.getDate(); $('mon').textContent = deliv.toLocaleDateString('en-US', { month: 'long' });
 $('delivp').textContent = `Ordered to arrive two days before you get your keys on ${movein.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}.`;
 
-const stageOpts = () => matchMedia('(max-width:700px)').matches ? { shiftX: 0, fit: 0.95 } : { shiftX: 0.17, shiftY: 0.03, fit: 0.86 };
+const stageOpts = () => matchMedia('(max-width:700px)').matches ? { shiftX: 0, fit: 1.05 } : { shiftX: 0.19, shiftY: 0.04, fit: 1.0 };
 mountStage($('stage'), { unit: HERO, furnish: true, view: 35, pitch: 48, sway: 14, interactive: true, ...stageOpts() })
   .catch(e => { console.warn('stage', e); $('stage').style.background = `center/contain no-repeat url(landing/thumbs/${HERO}-furnished.jpg)`; $('stage').dataset.ready = '1'; });
 
@@ -215,7 +217,7 @@ $('allLink').textContent = `All ${units.length} apartments`;
 try {
   const M = Object.fromEntries((await (await fetch('metrics/summary.json', { cache: 'no-store' })).json()).map(m => [m.key, m]));
   const n = (M.walkable_units?.value ?? units.length).toLocaleString('en-US'), b = M.walkable_units?.n ?? new Set(units.map(u => u.building)).size;
-  const s = M.plan_to_walkable_s ? Math.round(M.plan_to_walkable_s.value) : null;
+  const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'], r = M.plan_to_walkable_s ? Math.round(M.plan_to_walkable_s.value) : null, s = r == null ? null : (words[r] || r);   // Bodoni's hairline digits read poorly at display size
   $('proof').textContent = `${n} apartments in ${b} buildings, each rebuilt from the plan its landlord published${s ? `, in about ${s} seconds` : ''}.`;
   if (M.door_scale_error) $('fine').innerHTML = `Scale read from door widths alone lands within ${M.door_scale_error.value.toFixed(1)}% of the printed dimensions (median of ${M.door_scale_error.n} plans). Floor plans and photos as the listing publishes them; nothing is generated. <a href="metrics/METRICS.md">How we measured</a>`;
 } catch (e) {}

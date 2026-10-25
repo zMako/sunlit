@@ -2,6 +2,32 @@
 import sys, re, json, html, pathlib, time, zipfile, collections
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from common import *
+import struct, numpy as np, trimesh  # minimal 3DS reader: Blender 5.2 has no 3DS importer
+def parse_3ds(path):
+    d = open(path, "rb").read(); meshes = []
+    def walk(o, end, depth, st):
+        while o + 6 <= end:
+            cid, ln = struct.unpack_from("<HI", d, o)
+            if ln < 6: break
+            e = min(o + ln, end)
+            if cid in (0x4D4D, 0x3D3D): walk(o + 6, e, depth + 1, st)
+            elif cid == 0x4000:
+                z = d.index(b"\0", o + 6); walk(z + 1, e, depth + 1, {"v": None, "f": None})
+                st2 = None
+            elif cid == 0x4100: st = {"v": None, "f": None, "m": None}; walk(o + 6, e, depth + 1, st); 
+            elif cid == 0x4110:
+                n = struct.unpack_from("<H", d, o + 6)[0]; st["v"] = np.frombuffer(d, "<f4", n * 3, o + 8).reshape(n, 3).astype(float)
+            elif cid == 0x4120:
+                n = struct.unpack_from("<H", d, o + 6)[0]; st["f"] = np.frombuffer(d, "<u2", n * 4, o + 8).reshape(n, 4)[:, :3].astype(int)
+            if cid == 0x4100 and st.get("v") is not None and st.get("f") is not None: meshes.append((st["v"], st["f"]))
+            o = o + ln
+    walk(0, len(d), 0, {})
+    return [trimesh.Trimesh(v, f, process=False) for v, f in meshes if len(f)]
+def convert(src, dst):
+    ms = parse_3ds(src)
+    if not ms: return False
+    trimesh.util.concatenate(ms).export(dst); return True
+
 B = "Artemide"; A = "https://www.artemide.com"; R = H / "raw/artemide"; F = R / "files"; EX = R / "ex"; F.mkdir(parents=True, exist_ok=True); t0 = time.time()
 prods = json.load(open("/tmp/w_E/ar_prods.json")) if pathlib.Path("/tmp/w_E/ar_prods.json").exists() else json.load(open(R / "prods.json")); json.dump(prods, open(R / "prods.json", "w"))
 LIMIT = int(sys.argv[1]) if len(sys.argv) > 1 else 10**9
@@ -48,6 +74,10 @@ for n_, (h, (pid_, sid, sname, t)) in enumerate(files.items()):
         c = sorted([q for q in d.rglob("*") if q.suffix.lower() in (".obj", ".fbx", ".3ds", ".dae")], key=lambda q: [".obj", ".fbx", ".3ds", ".dae"].index(q.suffix.lower()))
         if not c: rej.append((h, "zip no mesh")); continue
         mesh = c[0]
+    if mesh.suffix.lower() == ".3ds":
+        o_ = R / "obj" / (mesh.stem + ".obj"); o_.parent.mkdir(exist_ok=True)
+        if not o_.exists() and not convert(str(mesh), str(o_)): rej.append((h, "3ds parse")); continue
+        mesh = o_
     x = txt(t); title = html.unescape(re.search(r'subfamily-modal__title"><span>(.*?)</span>', t, re.S).group(1)).strip()
     name = title.split(" - ")[0].strip(); name = re.sub(r"\s+", " ", name)
     pid = f"dsg-artemide-{slug(name)}"
@@ -57,7 +87,7 @@ for n_, (h, (pid_, sid, sname, t)) in enumerate(files.items()):
     col = re.search(r"Colour: (.*?) (?:Installation|Material|Series)", x); ser = re.search(r"Series: (.*?) (?:design by|Environment)", x)
     dm = x[x.find("DIMENSIONS"):] if "DIMENSIONS" in x else ""
     dm = re.split(r"SOURCES|AWARDS|Accessories|Download all", dm)[0]
-    dd_ = {k: float(v) / 1000 for k, v in re.findall(r"([A-Za-z][A-Za-z ]*?): (\d+(?:\.\d+)?) mm", dm)}
+    dd_ = {k.replace("DIMENSIONS ", ""): float(v) / 1000 for k, v in re.findall(r"([A-Za-z][A-Za-z ]*?): (\d+(?:\.\d+)?) mm", dm)}
     main = [dd_[k] for k in ("Diameter", "Length", "Width", "Depth") if k in dd_]; allh = [v for k, v in dd_.items() if "Height" not in k]
     H_ = dd_.get("Height"); maxH = max([v for k, v in dd_.items() if "Height" in k] or [0])
     w = dd_.get("Width") or dd_.get("Diameter") or dd_.get("Length"); dep = dd_.get("Length") if dd_.get("Width") else (dd_.get("Depth") or dd_.get("Diameter"))
@@ -66,7 +96,7 @@ for n_, (h, (pid_, sid, sname, t)) in enumerate(files.items()):
     info = process_model(pid, mesh, listed=(w, dep, None) if pend else (w, dep, H_))
     if not info: rej.append((name, "parse")); continue
     bb = info["dims"]; hm = max(bb[:2]); bad = False
-    if main and not (0.65 * max(main) <= hm <= 1.35 * max(allh or main)): bad = True
+    if (allh or main) and not (hm <= 1.75 * max(allh or main) and (H_ or hm >= 0.5 * max(main or allh))): bad = True
     if H_ and not pend and not (0.65 * H_ <= bb[2] <= 1.35 * max(H_, maxH)): bad = True
     if H_ and pend and bb[2] < 0.65 * H_: bad = True
     if bad:
@@ -77,9 +107,9 @@ for n_, (h, (pid_, sid, sname, t)) in enumerate(files.items()):
     desc = f"{inst or ''} luminaire from the Artemide {ser.group(1) if ser else ''} series" + (f", design by {des.group(1).strip()}." if des else ".")
     purl = f"{A}/en/subfamily/{sid}/{sname}"
     items.append(make_item(B, name, designer=des.group(1).strip() if des else None, category=cat, w=w, d=dep, h=H_, price=None, product_url=purl, buy_url=f"{A}/en/storelocator", image=img, model=info,
-        description=desc, materials=mat.group(1) if mat else None, colours=col.group(1) if col else None, source_formats=[mesh.suffix.lower().strip(".")], pid=pid,
-        extra={"listed_dims_m": {"w": w, "d": dep, "h": H_}, "model_formats": [mesh.suffix.lower().strip(".")], "product_code_sample": None}))
-    e = mesh.suffix.lower().strip("."); fm[e] = fm.get(e, 0) + 1
+        description=desc, materials=mat.group(1) if mat else None, colours=col.group(1) if col else None, source_formats=["3ds"], pid=pid,
+        extra={"listed_dims_m": {"w": w, "d": dep, "h": H_}, "model_formats": ["3ds"], "product_code_sample": None}))
+    e = "3ds"; fm[e] = fm.get(e, 0) + 1
     if len(items) % 5 == 0: save_items(B, items)
     print("ok", cat, name, bb, flush=True)
 save_items(B, items)

@@ -10,7 +10,7 @@ async def main(jobs):
             prm.update(kv.split("=", 1) for kv in extra.split(",") if "=" in kv); q = "&".join(f"{k}={v}" for k, v in prm.items())
             name = unit + ("-furnished" if prm["furnish"] == "1" else "") + (f"-{prm['tag']}" if "tag" in prm else "")
             for attempt in range(4):   # the dev server resets connections under bursts (listen backlog 5): a reset texture renders black, so retry
-                pg = await b.new_page(viewport={"width": 1200, "height": 900}); errs = []
+                pg = await b.new_page(viewport={"width": int(prm.get("w", 1200)), "height": int(prm.get("h", 900))}); errs = []
                 pg.on("pageerror", lambda e: errs.append(str(e)[:160])); pg.on("console", lambda m: m.type == "error" and "404" not in m.text and errs.append(m.text[:160]))
                 await pg.goto(f"http://127.0.0.1:8765/plan3d/stage.html?unit={unit}&{q}", timeout=90000)
                 try: await pg.wait_for_function("document.title !== 'stage'", timeout=90000)

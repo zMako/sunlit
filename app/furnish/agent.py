@@ -41,7 +41,10 @@ def item_tier(i):
     return "ikea"
 def tier_filter(items, tier):
     allowed = TIERS.get(tier or "any")
-    return items if allowed is None else [i for i in items if item_tier(i) in allowed]
+    items = [i for i in items if not i.get("dims_mismatch")]          # mesh size disagrees with the listing: not placeable with confidence
+    pool = items if allowed is None else [i for i in items if item_tier(i) in allowed]
+    priced = [i for i in pool if i.get("price_usd")]                   # designer pieces without a shop price are "price on request": use only when nothing priced fits
+    return priced if priced else pool
 
 def catalog(tier="any"):
     c = json.load(open(HERE / "catalog.json")); by = {}
@@ -86,7 +89,7 @@ def shortlist(info, budget, style, by, wanted, hint=""):
         opts = [i for i in by.get(cat, []) if fits_room(i, info) and i.get("price_usd") and (budget is None or i["price_usd"] <= budget)]
         opts.sort(key=lambda i: i["price_usd"]); step = max(1, len(opts) // 14)
         for i in opts[::step][:14]:
-            cands.append({"id": i["id"], "cat": cat, "name": i["name"][:70], "w": i["width_m"], "d": i["depth_m"], "h": i["height_m"], "usd": i["price_usd"], "color": i.get("color"), "tags": i.get("style_tags"), "desc": (i.get("description") or "")[:120]})
+            cands.append({"id": i["id"], "cat": cat, "name": (i.get("name") or i.get("id"))[:70], "brand": i.get("brand"), "designer": i.get("designer"), "w": i["width_m"], "d": i["depth_m"], "h": i["height_m"], "usd": i["price_usd"], "color": i.get("color"), "tags": i.get("style_tags"), "desc": (i.get("description") or "")[:120]})
     system = ("You are a senior interior designer furnishing an EMPTY rental room with real catalogue products. Fill the requested slots within the TOTAL budget "
               "(sum of your first picks must be <= budget; leave 5-10% slack), in ONE coherent style: one wood tone, one accent colour, matching textiles. "
               "For each slot give 2 picks ranked: the ideal piece first, a safer/cheaper alternative second (different id). Repeated slots (two nightstands, four chairs) use the same product. "
